@@ -26,20 +26,18 @@ const getApp = () => {
 	app.use("/api", appRouter);
 
 	// Passport configuration
-	passport.use(
-		localStrategy
-	);
-	
+	passport.use(localStrategy);
+
 	passport.serializeUser(function (user, cb) {
 		cb(null, user);
 	});
-	
+
 	passport.deserializeUser(function (user, cb) {
 		// this user is id + email + name
 		return cb(null, user);
 		// if needed, we can do extra check here (e.g., double check that the user is still in the database, etc.)
 	});
-	
+
 	app.use(
 		session({
 			secret: "shhhhh... it's a secret!",

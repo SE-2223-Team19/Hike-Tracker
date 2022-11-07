@@ -1,8 +1,8 @@
 const mongoose = require("mongoose");
+const dotenv = require("dotenv");
 
-const MONGO_URI =
-	process.env.MONGO_URI ||
-	"mongodb+srv://mongo:dLyEjRm70XkaZ03A@hike-tracker-cluster0.xbf6slx.mongodb.net/hike-tracker?retryWrites=true&w=majority";
+dotenv.config();
+const MONGO_URI = `mongodb://${process.env.MONGO_HOST}:${process.env.MONGO_PORT}/${process.env.MONGO_DB}`;
 
 const runDb = () => {
 	mongoose.connect(MONGO_URI);

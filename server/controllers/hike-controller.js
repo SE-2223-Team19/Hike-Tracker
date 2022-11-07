@@ -11,12 +11,38 @@ const { Difficulty } = require("../models/enums");
  */
 async function getHikes(req, res) {
 	try {
-		// TODO: Add filters
 
-		const hikes = await hikeDAL.getHikes();
+		const { query } = req;
+
+		const schema = joi.object().keys({
+			minLength: joi.number(),
+			maxLength: joi.number(),
+			minAscent: joi.number(),
+			maxAscent: joi.number(),
+			minExpectedTime: joi.number(),
+			maxExpectedTime: joi.number(),
+			difficulty: joi.string().valid(...Object.values(Difficulty))
+			// Missing location validation
+		});
+
+		const { error, value } = schema.validate(query);
+
+		if (error) throw error;
+
+		let filter = {};
+
+		if (value.minLength) filter.length = { ...filter.length, $gt: value.minLength };
+		if (value.maxLength) filter.length = { ...filter.length, $lt: value.maxLength };
+		if (value.minAscent) filter.ascent = { ...filter.ascent, $gt: value.minAscent };
+		if (value.maxAscent) filter.ascent = { ...filter.ascent, $lt: value.maxAscent };
+		if (value.minExpectedTime) filter.expectedTime = { ...filter.expectedTime, $gt: value.minExpectedTime };
+		if (value.maxExpectedTime) filter.expectedTime = { ...filter.expectedTime, $lt: value.maxExpectedTime };
+		if (value.difficulty) filter.difficulty = value.difficulty;
+
+		const hikes = await hikeDAL.getHikes(filter);
 		return res.status(StatusCodes.OK).json(hikes);
 	} catch (err) {
-		return res.json({ err: err.message });
+		return res.status(StatusCodes.BAD_REQUEST).json({ err: err.message });
 	}
 }
 

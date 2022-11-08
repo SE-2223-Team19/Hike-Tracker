@@ -2,9 +2,9 @@ const mongoose = require("mongoose");
 const { Schema } = mongoose;
 const { LocationType } = require("./enums");
 
-// Location Schema
-const locationSchema = new Schema({
-	// MongoDB Point Schema Required Fields for GeoJSON
+// MongoDB Point Schema 
+const pointSchema = new Schema({
+	// Required Fields for GeoJSON
 	type: {
 		type: String,
 		enum: ["Point"],
@@ -13,11 +13,26 @@ const locationSchema = new Schema({
 	coordinates: {
 		type: [Number],
 		required: true,
-	},
+	}
+});
+
+// Location Schema
+const locationSchema = new Schema({
 	// Location Schema Custom Fields
-	locationType: { type: String, enum: Object.values(LocationType) },
-	description: String,
-	point: { type: pointSchema, index: { type: "2dsphere" } },
+	locationType: { 
+		type: String, 
+		enum: Object.values(LocationType),
+		required: true
+	},
+	description: {
+		type: String,
+		required: true
+	},
+	point: { 
+		type: pointSchema, 
+		index: { type: "2dsphere" }, 
+		required: true 
+	}
 });
 
 // Location Model

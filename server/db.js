@@ -7,7 +7,6 @@ dotenv.config();
 const MONGO_HOST = process.env.MONGO_HOST || "mongo";
 const MONGO_PORT = process.env.MONGO_PORT || 27017;
 const MONGO_DB = process.env.MONGO_DB || "hike-tracker";
-const MONGO_TEST_DB = process.env.MONGO_TEST_DB || "test"; // This is the test database name
 
 const MONGO_URI = `mongodb://${MONGO_HOST}:${MONGO_PORT}/${MONGO_DB}`;
 

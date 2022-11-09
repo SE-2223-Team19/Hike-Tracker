@@ -2,6 +2,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
+import Map from "./pages/Map"
 // import API from "./api";
 
 function App() {
@@ -10,6 +11,7 @@ function App() {
 			<Routes>
 				<Route path="/" element={<Layout mode="home" />} />
 				<Route path="/login" element={<Layout mode="login" />} />
+				<Route path="/map" element={<Layout mode="map" />} />
 			</Routes>
 		</BrowserRouter>
 	);
@@ -26,6 +28,9 @@ function Layout(props) {
 			break;
 		case "home":
 			outlet = <Home />;
+			break;
+		case "map":
+			outlet = <Map />;
 			break;
 		default:
 			outlet = <Home />;

@@ -1,14 +1,17 @@
 import React from "react";
-import { Button } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
+import Header from "../components/Header";
+import Hikes from "./Hikes";
 
 const Home = () => {
 	return (
 		<div>
-			<h1>Home</h1>
-			<Link to={"/login"}>
-				<Button variant="success">Login</Button>
-			</Link>
+			<Header />
+			<div className="mt-4">
+				<Routes>
+					<Route path="/" element={<Hikes />} />
+				</Routes>
+			</div>
 		</div>
 	);
 };

@@ -1,11 +1,12 @@
 /** API Hikes */
 
 const ENDPOINTS = require("./config");
+const BACKEND_URL = "http://localhost:8080/api";
 
 async function getHikes(filters = {}) {
 	try {
-		// const response = await fetch(ENDPOINTS.hikes.all, {});
-		// return response.data;
+		const response = await fetch(`${BACKEND_URL}/${ENDPOINTS.hikes.all}`, {});
+		return await response.json();
 	} catch (err) {
 		console.error(err);
 	}

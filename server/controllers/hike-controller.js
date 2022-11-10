@@ -21,8 +21,12 @@ async function getHikes(req, res) {
 			maxAscent: joi.number(),
 			minExpectedTime: joi.number(),
 			maxExpectedTime: joi.number(),
-			difficulty: joi.string().valid(...Object.values(Difficulty))
-			// Missing location validation
+			difficulty: joi.string().valid(...Object.values(Difficulty)),
+			// Location validation
+			location: joi.object().keys({
+				coordinates: joi.array().items(joi.number()).length(2).required().description("Coordinates in the format [<longitude>, <latitude>]"),
+				radius: joi.number().required().description("Max distance in kilometers")
+			})
 		});
 
 		const { error, value } = schema.validate(query);
@@ -38,6 +42,7 @@ async function getHikes(req, res) {
 		if (value.minExpectedTime) filter.expectedTime = { ...filter.expectedTime, $gt: value.minExpectedTime };
 		if (value.maxExpectedTime) filter.expectedTime = { ...filter.expectedTime, $lt: value.maxExpectedTime };
 		if (value.difficulty) filter.difficulty = value.difficulty;
+		if (value.location) filter.startingPoint = value.location;
 
 		const hikes = await hikeDAL.getHikes(filter);
 		return res.status(StatusCodes.OK).json(hikes);

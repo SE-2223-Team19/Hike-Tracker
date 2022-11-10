@@ -2,14 +2,20 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
+import Describe from "./pages/Describehikes";
+import { useState } from "react";
 // import API from "./api";
 
 function App() {
+
+	const [Describehikes,SetDescribehike]=useState([])
+
 	return (
 		<BrowserRouter>
 			<Routes>
 				<Route path="/" element={<Layout mode="home" />} />
 				<Route path="/login" element={<Layout mode="login" />} />
+				<Route path="/Describehikes" element={<Layout mode="Describehikes" />} />
 			</Routes>
 		</BrowserRouter>
 	);
@@ -27,6 +33,9 @@ function Layout(props) {
 		case "home":
 			outlet = <Home />;
 			break;
+		case "Describehikes":
+		    outlet =<Describe/>;
+			break;	
 		default:
 			outlet = <Home />;
 	}

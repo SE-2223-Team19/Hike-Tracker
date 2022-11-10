@@ -41,11 +41,83 @@ async function getHikes(filterQuery = {}) {
 			},
 			{
 				$match: filterQuery
+			},
+			{
+				$lookup: {
+					from: Location.collection.name,
+					localField: "startPoint",
+					foreignField: "_id",
+					as: "startPoint"
+				}
+			},
+			{
+				$lookup: {
+					from: Location.collection.name,
+					localField: "endPoint",
+					foreignField: "_id",
+					as: "endPoint"
+				}
+			},
+			{
+				$lookup: {
+					from: Location.collection.name,
+					localField: "referencePoints",
+					foreignField: "_id",
+					as: "referencePoints"
+				}
+			},
+			{
+				$unwind: {
+					path: "startPoint"
+				}
+			},
+			{
+				$unwind: {
+					path: "endPoint"
+				}
 			}
 		]);
 		return hikes;
 	}
-	const hikes = await Hike.find(filterQuery);
+	const hikes = await Hike.addregate([
+		{
+			$match: filterQuery
+		},
+		{
+			$lookup: {
+				from: Location.collection.name,
+				localField: "startPoint",
+				foreignField: "_id",
+				as: "startPoint"
+			}
+		},
+		{
+			$lookup: {
+				from: Location.collection.name,
+				localField: "endPoint",
+				foreignField: "_id",
+				as: "endPoint"
+			}
+		},
+		{
+			$lookup: {
+				from: Location.collection.name,
+				localField: "referencePoints",
+				foreignField: "_id",
+				as: "referencePoints"
+			}
+		},
+		{
+			$unwind: {
+				path: "startPoint"
+			}
+		},
+		{
+			$unwind: {
+				path: "endPoint"
+			}
+		}
+	]);
 	return hikes;
 }
 

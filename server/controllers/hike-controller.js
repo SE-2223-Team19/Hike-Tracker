@@ -68,6 +68,7 @@ async function createHike(req, res) {
 				.valid(...Object.values(Difficulty)),
 			description: joi.string().required(),
 			// TODO: Add validation for startPoint, endPoint, and referencePoints
+			// How to validate on database?
 		});
 
 		// Validate request body against schema

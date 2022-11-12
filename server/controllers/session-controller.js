@@ -5,7 +5,7 @@ async function getSession(req, res) {
     if (req.isAuthenticated()) {
         return res.json(req.user);
     }
-    return res.status(StatusCodes.UNAUTHORIZED);
+    return res.status(StatusCodes.UNAUTHORIZED).end();
 }
 
 async function createSession(req, res) {

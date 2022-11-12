@@ -3,6 +3,7 @@ const session = require("express-session");
 const path = require("path");
 const dotenv = require("dotenv");
 const cors = require("cors");
+const morgan = require("morgan");
 const runDb = require("./db");
 const appRouter = require("./router");
 const passport = require("passport");
@@ -27,12 +28,10 @@ const getApp = () => {
 	app.use(cors(corsOptions));
 	app.use(express.json());
 	app.use(express.urlencoded({ extended: true }));
+	app.use(morgan("dev"));
 
 	// Passport configuration
 	passport.use(localStrategy);
-
-	// Router
-	app.use("/api", appRouter);
 
 	passport.serializeUser(function (user, cb) {
 		cb(null, user);
@@ -52,6 +51,9 @@ const getApp = () => {
 		})
 	);
 	app.use(passport.authenticate("session"));
+
+	// Router
+	app.use("/api", appRouter);
 
 	return app;
 };

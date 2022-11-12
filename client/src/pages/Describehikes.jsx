@@ -1,13 +1,30 @@
 import React from "react";
 
 import Table from 'react-bootstrap/Table';
-import {Container,Row,Button} from 'react-bootstrap'
+import {Container,Row,Button, Form} from 'react-bootstrap'
+import { useState } from "react";
+import AddForm from "../Components/DescriptionFrom";
+import DescriptionRow from "../Components/DescriptionRow"
 
-function Describe() {
-  return (
+function DescribeTable(props) {
+ 
+  const [Loginstatus,setLoginstatus]=useState(true);
+  const [Formstatus,setFormstatus]=useState(false);
+  console.log(Formstatus);
+  //const ToggleLogin =()=>{setLoginstatus(false)};
+  const LoginControl=()=> {
+
+        return <p>{Loginstatus ? <Button onClick={()=>{setLoginstatus(false)}}>Logout</Button> :<Button onClick={()=>{setLoginstatus((X)=>(!X))}}>Login</Button>}</p> ;
+
+};
+
+
+  return <>
     
     
     <Container>
+    <LoginControl Loginstatus={Loginstatus} />
+    
     
     <Row>
 
@@ -21,7 +38,9 @@ function Describe() {
 
     </Row>
     <Row>
+    <Button variant="outline-success" onClick={()=>{setFormstatus(true)}}>Add</Button>{' '}
     <Table striped bordered hover>
+      
       <thead>
         <tr>
           <th>title</th>
@@ -33,68 +52,33 @@ function Describe() {
           <th>startPoint</th>
           <th>endPoint</th>
           <th>referencePoints</th>
-          <th>Action</th>
+          {Loginstatus&&<th>Action</th>}
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <td>1</td>
-          <td>Mark</td>
-          <td>Otto</td>
-          <td>@mdo</td>
-          <td>2</td>
-          <td>Jacob</td>
-          <td>Thornton</td>
-          <td>@fat</td>
-          <td>test</td>
-          <td> <ActionButtons/></td>
-        </tr>
-        <tr>
-          <td>2</td>
-          <td>Jacob</td>
-          <td>Thornton</td>
-          <td>@fat</td>
-          <td>2</td>
-          <td>Jacob</td>
-          <td>Thornton</td>
-          <td>@fat</td>
-          <td>test</td>
-          <td> <ActionButtons/></td>
-        </tr>
-        <tr>
-          <td>2</td>
-          <td>Jacob</td>
-          <td>Thornton</td>
-          <td>@fat</td>
-          <td>2</td>
-          <td>Jacob</td>
-          <td>Thornton</td>
-          <td>@fat</td>
-          <td>test</td>
-          <td> <ActionButtons/></td>
-        </tr>
+      {
+           props.Description.map((Description) => (<DescriptionRow key={Description.id} Description={Description} />))
+      }
         
         
 
       </tbody>
     </Table>
     </Row>
+    
+    {Formstatus&&<AddForm Formstatus={Formstatus} AddDescription={props.AddDescription}/>}
     </Container>
     
-  );
-}
-
-function ActionButtons() {
-  return (
-    <>
-      
-      <Button className="rounded-circle" variant="outline-warning">Edit</Button>{' '}
-      <Button className="rounded-circle"  variant="outline-danger" onClick={()=>{}}>Delete</Button>{' '}
-      <Button className="rounded-circle" variant="outline-success">Add</Button>{' '}
-      
     </>
-  );
 }
 
 
-export default Describe;
+
+
+
+
+
+
+
+
+export default DescribeTable;

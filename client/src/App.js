@@ -11,7 +11,7 @@ function App() {
 
 	
 	const [Describehikes,setDescribehike]=useState([])
-
+console.log(Describehikes);
 	const Data_Load=()=>{
 
 	}

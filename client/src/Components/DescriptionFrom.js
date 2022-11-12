@@ -1,11 +1,10 @@
 import { useState } from "react";
 import { Form ,Button, Table, Container} from "react-bootstrap";
 import DescribeTable from "../pages/Describehikes";
+//import Hike from "../../../server/models/hike-model";
+import Hike from "../testdb";
 
 
-const handlesubmit=(event)=>{
-    event.perventDefault();
-}
 function AddForm(props){
 const [code,setcode]=useState('')
 const [Title,setTitle]=useState('')
@@ -17,58 +16,70 @@ const [description,setdescription]=useState('')
 const [startPoint,setstartPoint]=useState('')
 const [endPoint,setendPoint]=useState('')
 const [referencePoints,setreferencePoints]=useState('')
+
+
+
+
+const handlesubmit=(event)=>{
+  event.perventDefault();
+  props.AddDescription(new Hike(Title,Length,ascent,expectedTime,difficulty,description,startPoint,endPoint,referencePoints))
+  props.setFormstatus(false)
+}
+
+
     return<>
     
-   <Form>
-   
-        <Form.Group className="mb-3">
-          <Form.Label htmlFor="Title"> Title</Form.Label>
-          <Form.Control id="Title" placeholder="Title" />
+   <div style={{borderColor:'gray',borderWidth:2,borderStyle:'dotted',padding:10}}>
+   <Form onSubmit={handlesubmit}>
+          
+          <Form.Group  className="mb-3">
+          <Form.Label  htmlFor="Title"> Title</Form.Label>
+          <Form.Control type="string" id="Title" placeholder="Title" onChange={(event)=>{setTitle(event.target.value)}}/>
         </Form.Group>
         <Form.Group className="mb-3">
-          <Form.Label htmlFor="length">length</Form.Label>
-          <Form.Control id="length" placeholder="length" />
+          <Form.Label  htmlFor="length">Length</Form.Label>
+          <Form.Control type="number" id="length" placeholder="length" onChange={(event)=>{setLength(event.target.value)}} />
         </Form.Group>
         <Form.Group className="mb-3">
-          <Form.Label htmlFor="ascent">ascent</Form.Label>
-          <Form.Control id="ascent" placeholder="ascent" />
+          <Form.Label htmlFor="ascent">Ascent</Form.Label>
+          <Form.Control type="number" id="ascent" placeholder="ascent" onChange={(event)=>{setascent(event.target.value)}}/>
         </Form.Group>
         <Form.Group className="mb-3">
-          <Form.Label htmlFor="expectedTime">expectedTime</Form.Label>
-          <Form.Control id="expectedTime" placeholder="expectedTime" />
+          <Form.Label htmlFor="expectedTime">ExpectedTime</Form.Label>
+          <Form.Control type="number"  id="expectedTime" placeholder="expectedTime(hour)" onChange={(event)=>{setexpectedTime(event.target.value)}}/>
         </Form.Group>
         
         <Form.Group className="mb-3">
           <Form.Label htmlFor="difficulty">difficulty</Form.Label>
-          <Form.Control id="difficulty" placeholder="difficulty" />
+          <Form.Control type="string" id="difficulty" placeholder="difficulty" onChange={(event)=>{setdifficulty(event.target.value)}}/>
         </Form.Group>
         <Form.Group className="mb-3">
           <Form.Label htmlFor="description">description</Form.Label>
-          <Form.Control id="description" placeholder="description" />
+          <Form.Control type="string" id="description" placeholder="description" onChange={(event)=>{setdescription(event.target.value)}}/>
         </Form.Group>
         <Form.Group className="mb-3">
           <Form.Label htmlFor="startPoint">startPoint</Form.Label>
-          <Form.Control id="startPoint" placeholder="startPoint" />
+          <Form.Control type="string" id="startPoint" placeholder="startPoint" onChange={(event)=>{setstartPoint(event.target.value)}}/>
         </Form.Group>
         <Form.Group className="mb-3">
           <Form.Label htmlFor="endPoint">endPoint</Form.Label>
-          <Form.Control id="endPoint" placeholder="endPoint" />
+          <Form.Control type="string" id="endPoint" placeholder="endPoint" onChange={(event)=>{setendPoint(event.target.value)}}/>
         </Form.Group>
         <Form.Group className="mb-3">
           <Form.Label htmlFor="referencePoints">referencePoints</Form.Label>
-          <Form.Control id="referencePoints" placeholder="referencePoints" />
+          <Form.Control type="string" id="referencePoints" placeholder="referencePoints" onChange={(event)=>{setreferencePoints(event.target.value)}}/>
         </Form.Group>
-        <div className="mb-2">
-        <Button variant="primary" size="lg">
+        <Button type='submit' variant="primary" size="lg">
           Submit
         </Button>{' '}
-        <Button variant="secondary" size="lg" onClick={()=>{}}>
+        <Button variant="secondary" size="lg" onClick={()=>{props.setFormstatus(false)}}>
           Cancel
         </Button>
-        </div>
-    
-    
+      
     </Form>
+    </div>
+    
+    
     
    </>
 }

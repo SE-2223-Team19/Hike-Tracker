@@ -10,11 +10,10 @@ function DescribeTable(props) {
  
   const [Loginstatus,setLoginstatus]=useState(true);
   const [Formstatus,setFormstatus]=useState(false);
-  console.log(Formstatus);
   //const ToggleLogin =()=>{setLoginstatus(false)};
   const LoginControl=()=> {
 
-        return <p>{Loginstatus ? <Button onClick={()=>{setLoginstatus(false)}}>Logout</Button> :<Button onClick={()=>{setLoginstatus((X)=>(!X))}}>Login</Button>}</p> ;
+        return <div align='right'><p>{Loginstatus ? <Button onClick={()=>{setLoginstatus(false)}}>Logout</Button> :<Button onClick={()=>{setLoginstatus((X)=>(!X))}}>Login</Button>}</p></div> ;
 
 };
 
@@ -23,7 +22,6 @@ function DescribeTable(props) {
     
     
     <Container>
-    <LoginControl Loginstatus={Loginstatus} />
     
     
     <Row>
@@ -32,6 +30,7 @@ function DescribeTable(props) {
         <thead>
           <tr>
             <td>Describehikes</td>
+            <td><LoginControl/></td>
           </tr>
         </thead>
       </Table>
@@ -57,8 +56,9 @@ function DescribeTable(props) {
       </thead>
       <tbody>
       {
-           props.Description.map((Description) => (<DescriptionRow key={Description.id} Description={Description} />))
+           props.Description.map((Description) => (<DescriptionRow key={Description.id} Description={props.Description} />))
       }
+      {/* <DescriptionRow Description={props.Description}/> */}
         
         
 
@@ -66,7 +66,7 @@ function DescribeTable(props) {
     </Table>
     </Row>
     
-    {Formstatus&&<AddForm Formstatus={Formstatus} AddDescription={props.AddDescription}/>}
+    {Formstatus&&<AddForm Formstatus={Formstatus} setFormstatus={setFormstatus} Description={props.Description} AddDescription={props.AddDescription}/>}
     </Container>
     
     </>

@@ -11,7 +11,7 @@ function DescriptionRow(props){
         <Ascent Description={props.Description.Ascent}/>
         <ExpectedTime Description={props.Description.ExpectedTime}/>
         <Difficulty Description={props.Description.Difficulty}/>
-        <Descriotion Description={props.Description.Descriotion}/>
+        <Description Description={props.Description.Descriotion}/>
         <StartPoint Description={props.Description.StartPoint}/>
         <EndPoint Description={props.Description.EndPoint}/>
         <ReferencePoints Description={props.Description.ReferencePoints}/>
@@ -49,7 +49,7 @@ function Difficulty(props){
   <td className="align-middle">{props.Description}</td>
  </>
 }
-function Descriotion(props){
+function Description(props){
     return<>
   <td className="align-middle">{props.Description}</td>
  </>

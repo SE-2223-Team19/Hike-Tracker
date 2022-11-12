@@ -3,8 +3,8 @@ const { StatusCodes } = require("http-status-codes");
 
 async function getSession(req, res) {
     if (req.isAuthenticated()) {
-		return res.json(req.user);
-	}
+        return res.json(req.user);
+    }
     return res.status(StatusCodes.UNAUTHORIZED);
 }
 

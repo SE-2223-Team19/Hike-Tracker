@@ -18,15 +18,21 @@ const getApp = () => {
 
 	// Create Express server
 	const app = express();
-	app.use(cors());
+	// set up and enable cors
+	const corsOptions = {
+		origin: 'http://localhost:3000',
+		optionsSuccessStatus: 200,
+		credentials: true,
+	};
+	app.use(cors(corsOptions));
 	app.use(express.json());
 	app.use(express.urlencoded({ extended: true }));
 
-	// Router
-	app.use("/api", appRouter);
-
 	// Passport configuration
 	passport.use(localStrategy);
+
+	// Router
+	app.use("/api", appRouter);
 
 	passport.serializeUser(function (user, cb) {
 		cb(null, user);

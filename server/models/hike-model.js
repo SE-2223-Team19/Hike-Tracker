@@ -14,6 +14,7 @@ const hikeSchema = new Schema(
 		startPoint: { type: Schema.Types.ObjectId, ref: "Location" },
 		endPoint: { type: Schema.Types.ObjectId, ref: "Location" },
 		referencePoints: { type: [Schema.Types.ObjectId], ref: "Location" },
+		gpxFilePath: String
 	},
 	{ timestamps: true }
 );

@@ -35,8 +35,8 @@ async function getHikes(filterQuery = {}, page, pageSize) {
 			},
 			{
 				$unwind: {
-					path: "$hikes"
-				}
+					path: "$hikes",
+				},
 			},
 			{
 				$replaceWith: "$hikes",
@@ -45,10 +45,10 @@ async function getHikes(filterQuery = {}, page, pageSize) {
 				$match: filterQuery,
 			},
 			{
-				$skip: (page - 1) * pageSize
+				$skip: (page - 1) * pageSize,
 			},
 			{
-				$limit: pageSize
+				$limit: pageSize,
 			},
 			{
 				$lookup: {
@@ -76,14 +76,14 @@ async function getHikes(filterQuery = {}, page, pageSize) {
 			},
 			{
 				$unwind: {
-					path: "$startPoint"
-				}
+					path: "$startPoint",
+				},
 			},
 			{
 				$unwind: {
-					path: "$endPoint"
-				}
-			}
+					path: "$endPoint",
+				},
+			},
 		]);
 		return hikes;
 	}

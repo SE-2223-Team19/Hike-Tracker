@@ -1,7 +1,8 @@
 const joi = require("joi");
 const { StatusCodes } = require("http-status-codes");
 const hikeDAL = require("../data/hike-dal");
-const { Difficulty } = require("../models/enums");
+const hikeService = require("../services/hike-service");
+const { Difficulty, LocationType } = require("../models/enums");
 
 /**
  * GET /hike
@@ -11,8 +12,9 @@ const { Difficulty } = require("../models/enums");
  */
 async function getHikes(req, res) {
 	try {
-
 		const { query } = req;
+
+		console.log(query);
 
 		const schema = joi.object().keys({
 			minLength: joi.number(),
@@ -24,9 +26,14 @@ async function getHikes(req, res) {
 			difficulty: joi.string().valid(...Object.values(Difficulty)),
 			// Location validation
 			location: joi.object().keys({
-				coordinates: joi.array().items(joi.number()).length(2).required().description("Coordinates in the format [<longitude>, <latitude>]"),
-				radius: joi.number().required().description("Max distance in kilometers")
-			})
+				coordinates: joi
+					.array()
+					.items(joi.number())
+					.length(2)
+					.required()
+					.description("Coordinates in the format [<longitude>, <latitude>]"),
+				radius: joi.number().required().description("Max distance in kilometers"),
+			}),
 		});
 
 		const { error, value } = schema.validate(query);
@@ -35,12 +42,15 @@ async function getHikes(req, res) {
 
 		let filter = {};
 
+		// This can be moved inside the database layer (DAL)
 		if (value.minLength) filter.length = { ...filter.length, $gt: value.minLength };
 		if (value.maxLength) filter.length = { ...filter.length, $lt: value.maxLength };
 		if (value.minAscent) filter.ascent = { ...filter.ascent, $gt: value.minAscent };
 		if (value.maxAscent) filter.ascent = { ...filter.ascent, $lt: value.maxAscent };
-		if (value.minExpectedTime) filter.expectedTime = { ...filter.expectedTime, $gt: value.minExpectedTime };
-		if (value.maxExpectedTime) filter.expectedTime = { ...filter.expectedTime, $lt: value.maxExpectedTime };
+		if (value.minExpectedTime)
+			filter.expectedTime = { ...filter.expectedTime, $gt: value.minExpectedTime };
+		if (value.maxExpectedTime)
+			filter.expectedTime = { ...filter.expectedTime, $lt: value.maxExpectedTime };
 		if (value.difficulty) filter.difficulty = value.difficulty;
 		if (value.location) filter.startingPoint = value.location;
 
@@ -56,7 +66,17 @@ async function createHike(req, res) {
 		// Validate request body
 		const { body } = req;
 
-		// Validation schema
+		// Location validation schema
+		const locationSchema = joi.object().keys({
+			locationType: joi
+				.string()
+				.valid(...Object.values(LocationType))
+				.required(),
+			description: joi.string().required(),
+			point: joi.array().items(joi.number()).length(2).required(),
+		});
+
+		// Hike validation schema
 		const schema = joi.object().keys({
 			title: joi.string().required(),
 			length: joi.number().required(),
@@ -67,7 +87,9 @@ async function createHike(req, res) {
 				.required()
 				.valid(...Object.values(Difficulty)),
 			description: joi.string().required(),
-			// TODO: Add validation for startPoint, endPoint, and referencePoints
+			startPoint: locationSchema.required(),
+			endPoint: locationSchema.required(),
+			referencePoints: joi.array().items(locationSchema),
 			// How to validate on database?
 		});
 
@@ -77,10 +99,10 @@ async function createHike(req, res) {
 		if (error) throw error; // Joi validation error, goes to catch block
 
 		// Create new hike
-		const createdHike = await hikeDAL.createHike(value);
+		const createdHike = await hikeService.createHike(value);
 		return res.status(StatusCodes.CREATED).json(createdHike);
 	} catch (err) {
-		return res.status(StatusCodes.BAD_REQUEST).json({ err: err.message });
+		return res.status(StatusCodes.BAD_REQUEST).json({ err: err.message, stack: err.stack });
 	}
 }
 

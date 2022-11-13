@@ -16,7 +16,7 @@ const HikeCard = ({ hike }) => {
 						<Badge bg="secondary">{capitalizeAndReplaceUnderscores(hike.difficulty)}</Badge>
 					</Stack>
 				</Card.Title>
-				<Card.Text>
+				<>
 					<Stack direction="horizontal" gap={4} className="mt-4">
 						<div className="d-flex flex-row">
 							<BiRuler size={24} />
@@ -32,7 +32,7 @@ const HikeCard = ({ hike }) => {
 						</div>
 					</Stack>
 					<div className="mt-4">{hike.description}</div>
-				</Card.Text>
+				</>
 			</Card.Body>
 		</Card>
 	);

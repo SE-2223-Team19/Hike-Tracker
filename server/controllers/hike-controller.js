@@ -1,7 +1,8 @@
 const joi = require("joi");
 const { StatusCodes } = require("http-status-codes");
 const hikeDAL = require("../data/hike-dal");
-const { Difficulty } = require("../models/enums");
+const hikeService = require("../services/hike-service");
+const { Difficulty, LocationType } = require("../models/enums");
 
 /**
  * GET /hike
@@ -11,8 +12,9 @@ const { Difficulty } = require("../models/enums");
  */
 async function getHikes(req, res) {
 	try {
-
 		const { query } = req;
+
+		console.log(query);
 
 		const schema = joi.object().keys({
 			filters: joi.object().keys({
@@ -60,7 +62,17 @@ async function createHike(req, res) {
 		// Validate request body
 		const { body } = req;
 
-		// Validation schema
+		// Location validation schema
+		const locationSchema = joi.object().keys({
+			locationType: joi
+				.string()
+				.valid(...Object.values(LocationType))
+				.required(),
+			description: joi.string().required(),
+			point: joi.array().items(joi.number()).length(2).required(),
+		});
+
+		// Hike validation schema
 		const schema = joi.object().keys({
 			title: joi.string().required(),
 			length: joi.number().required(),
@@ -71,7 +83,9 @@ async function createHike(req, res) {
 				.required()
 				.valid(...Object.values(Difficulty)),
 			description: joi.string().required(),
-			// TODO: Add validation for startPoint, endPoint, and referencePoints
+			startPoint: locationSchema.required(),
+			endPoint: locationSchema.required(),
+			referencePoints: joi.array().items(locationSchema),
 			// How to validate on database?
 		});
 
@@ -81,10 +95,10 @@ async function createHike(req, res) {
 		if (error) throw error; // Joi validation error, goes to catch block
 
 		// Create new hike
-		const createdHike = await hikeDAL.createHike(value);
+		const createdHike = await hikeService.createHike(value);
 		return res.status(StatusCodes.CREATED).json(createdHike);
 	} catch (err) {
-		return res.status(StatusCodes.BAD_REQUEST).json({ err: err.message });
+		return res.status(StatusCodes.BAD_REQUEST).json({ err: err.message, stack: err.stack });
 	}
 }
 

@@ -5,7 +5,9 @@ const BACKEND_URL = "http://localhost:8080/api";
 
 async function getHikes(filters = {}) {
 	try {
-		const response = await fetch(`${BACKEND_URL}/${ENDPOINTS.hikes.all}`, {});
+		const response = await fetch(
+			`${BACKEND_URL}/${ENDPOINTS.hikes.all}/?` + new URLSearchParams(filters)
+		);
 		return await response.json();
 	} catch (err) {
 		console.error(err);

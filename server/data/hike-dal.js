@@ -10,7 +10,7 @@ const Location = require("../models/location-model");
  */
 async function getHikes(filterQuery = {}, page, pageSize) {
 	// Need geospatial query
-	if (filterQuery.startPoint !== undefined && typeof(filterQuery.startPoint) !== "string") {
+	if (filterQuery.startPoint !== undefined && typeof filterQuery.startPoint !== "string") {
 		const coordinates = filterQuery.startPoint.coordinates;
 		const maxDistance = filterQuery.startPoint.radius;
 		delete filterQuery.startPoint;
@@ -19,19 +19,19 @@ async function getHikes(filterQuery = {}, page, pageSize) {
 				$geoNear: {
 					near: {
 						type: "Point",
-						coordinates: coordinates
+						coordinates: coordinates,
 					},
 					maxDistance: maxDistance,
-					distanceField: "distance"
-				}
+					distanceField: "distance",
+				},
 			},
 			{
 				$lookup: {
 					from: Hike.collection.name,
 					localField: "_id",
 					foreignField: "startPoint",
-					as: "hikes"
-				}
+					as: "hikes",
+				},
 			},
 			{
 				$unwind: {
@@ -39,10 +39,10 @@ async function getHikes(filterQuery = {}, page, pageSize) {
 				}
 			},
 			{
-				$replaceWith: "$hikes"
+				$replaceWith: "$hikes",
 			},
 			{
-				$match: filterQuery
+				$match: filterQuery,
 			},
 			{
 				$skip: (page - 1) * pageSize
@@ -55,24 +55,24 @@ async function getHikes(filterQuery = {}, page, pageSize) {
 					from: Location.collection.name,
 					localField: "startPoint",
 					foreignField: "_id",
-					as: "startPoint"
-				}
+					as: "startPoint",
+				},
 			},
 			{
 				$lookup: {
 					from: Location.collection.name,
 					localField: "endPoint",
 					foreignField: "_id",
-					as: "endPoint"
-				}
+					as: "endPoint",
+				},
 			},
 			{
 				$lookup: {
 					from: Location.collection.name,
 					localField: "referencePoints",
 					foreignField: "_id",
-					as: "referencePoints"
-				}
+					as: "referencePoints",
+				},
 			},
 			{
 				$unwind: {
@@ -87,45 +87,15 @@ async function getHikes(filterQuery = {}, page, pageSize) {
 		]);
 		return hikes;
 	}
-	const hikes = await Hike.aggregate([
-		{
-			$match: filterQuery
-		},
-		{
-			$lookup: {
-				from: Location.collection.name,
-				localField: "startPoint",
-				foreignField: "_id",
-				as: "startPoint"
-			}
-		},
-		{
-			$lookup: {
-				from: Location.collection.name,
-				localField: "endPoint",
-				foreignField: "_id",
-				as: "endPoint"
-			}
-		},
-		{
-			$lookup: {
-				from: Location.collection.name,
-				localField: "referencePoints",
-				foreignField: "_id",
-				as: "referencePoints"
-			}
-		},
-		{
-			$unwind: {
-				path: "$startPoint"
-			}
-		},
-		{
-			$unwind: {
-				path: "$endPoint"
-			}
-		}
-	]);
+
+	const hikes = await Hike.find(filterQuery)
+    .skip((page - 1) * pageSize)
+    .limit(pageSize)
+		.populate("startPoint")
+		.populate("endPoint")
+		.populate("referencePoints")
+		.lean();
+
 	return hikes;
 }
 

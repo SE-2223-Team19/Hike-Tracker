@@ -89,8 +89,8 @@ async function getHikes(filterQuery = {}, page, pageSize) {
 	}
 
 	const hikes = await Hike.find(filterQuery)
-    .skip((page - 1) * pageSize)
-    .limit(pageSize)
+		.skip((page - 1) * pageSize)
+		.limit(pageSize)
 		.populate("startPoint")
 		.populate("endPoint")
 		.populate("referencePoints")

@@ -10,8 +10,11 @@ const MONGO_DB = process.env.MONGO_DB || "hike-tracker";
 
 const MONGO_URI = `mongodb://${MONGO_HOST}:${MONGO_PORT}/${MONGO_DB}`;
 
-const runDb = () => {
-	mongoose.connect(MONGO_URI);
+const runDb = async () => {
+	await mongoose.connect(MONGO_URI)
+	.catch((err) => {
+		console.log("Mongoose connection error: " + err);
+	});
 
 	// Connection events
 	mongoose.connection.on("connected", () => {

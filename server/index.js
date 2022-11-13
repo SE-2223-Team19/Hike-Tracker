@@ -51,9 +51,9 @@ const getApp = () => {
 };
 
 // Server setup and start
-const startServer = () => {
+const startServer = async () => {
 	const app = getApp();
-	const db = runDb();
+	await runDb();
 	app.listen(PORT, () => {
 		console.log(`Server running on port ${PORT}`);
 	});

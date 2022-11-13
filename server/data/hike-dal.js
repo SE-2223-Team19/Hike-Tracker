@@ -4,9 +4,11 @@ const Location = require("../models/location-model");
 /**
  * Get all hikes.
  * @param {*} filterQuery Filter object for MongoDB query
+ * @param {Number} page The number of the page
+ * @param {Number} pageSize The size of the page
  * @returns Hikes
  */
-async function getHikes(filterQuery = {}) {
+async function getHikes(filterQuery = {}, page, pageSize) {
 	// Need geospatial query
 	if (filterQuery.startPoint !== undefined && typeof(filterQuery.startPoint) !== "string") {
 		const coordinates = filterQuery.startPoint.coordinates;
@@ -33,7 +35,7 @@ async function getHikes(filterQuery = {}) {
 			},
 			{
 				$unwind: {
-					path: "hikes"
+					path: "$hikes"
 				}
 			},
 			{
@@ -41,6 +43,12 @@ async function getHikes(filterQuery = {}) {
 			},
 			{
 				$match: filterQuery
+			},
+			{
+				$skip: (page - 1) * pageSize
+			},
+			{
+				$limit: pageSize
 			},
 			{
 				$lookup: {
@@ -68,18 +76,18 @@ async function getHikes(filterQuery = {}) {
 			},
 			{
 				$unwind: {
-					path: "startPoint"
+					path: "$startPoint"
 				}
 			},
 			{
 				$unwind: {
-					path: "endPoint"
+					path: "$endPoint"
 				}
 			}
 		]);
 		return hikes;
 	}
-	const hikes = await Hike.addregate([
+	const hikes = await Hike.aggregate([
 		{
 			$match: filterQuery
 		},
@@ -109,12 +117,12 @@ async function getHikes(filterQuery = {}) {
 		},
 		{
 			$unwind: {
-				path: "startPoint"
+				path: "$startPoint"
 			}
 		},
 		{
 			$unwind: {
-				path: "endPoint"
+				path: "$endPoint"
 			}
 		}
 	]);

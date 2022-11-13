@@ -8,7 +8,7 @@ const Location = require("../models/location-model");
  * @param {Number} pageSize The size of the page
  * @returns Hikes
  */
-async function getHikes(filterQuery = {}, page, pageSize) {
+async function getHikes(filterQuery = {}, page = 1, pageSize = 10) {
 	// Need geospatial query
 	if (filterQuery.startPoint !== undefined && typeof filterQuery.startPoint !== "string") {
 		const coordinates = filterQuery.startPoint.coordinates;

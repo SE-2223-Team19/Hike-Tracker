@@ -17,22 +17,25 @@ async function getHikes(req, res) {
 		console.log(query);
 
 		const schema = joi.object().keys({
-			filters: joi.object().keys({
-				minLength: joi.number(),
-				maxLength: joi.number(),
-				minAscent: joi.number(),
-				maxAscent: joi.number(),
-				minExpectedTime: joi.number(),
-				maxExpectedTime: joi.number(),
-				difficulty: joi.string().valid(...Object.values(Difficulty)),
-				// Location validation
-				location: joi.object().keys({
-					coordinates: joi.array().items(joi.number()).length(2).required().description("Coordinates in the format [<longitude>, <latitude>]"),
-					radius: joi.number().required().description("Max distance in kilometers")
-				})
+			minLength: joi.number(),
+			maxLength: joi.number(),
+			minAscent: joi.number(),
+			maxAscent: joi.number(),
+			minExpectedTime: joi.number(),
+			maxExpectedTime: joi.number(),
+			difficulty: joi.string().valid(...Object.values(Difficulty)),
+			// Location validation
+			location: joi.object().keys({
+				coordinates: joi
+					.array()
+					.items(joi.number())
+					.length(2)
+					.required()
+					.description("Coordinates in the format [<longitude>, <latitude>]"),
+				radius: joi.number().required().description("Max distance in kilometers"),
 			}),
-			page: joi.number().greater(0).required(),
-			pageSize: joi.number().greater(0).required()
+			page: joi.number().greater(0),
+			pageSize: joi.number().greater(0),
 		});
 
 		const { error, value } = schema.validate(query);
@@ -41,14 +44,16 @@ async function getHikes(req, res) {
 
 		let filter = {};
 
-		if (value.filters.minLength) filter.length = { ...filter.length, $gt: value.filters.minLength };
-		if (value.filters.maxLength) filter.length = { ...filter.length, $lt: value.filters.maxLength };
-		if (value.filters.minAscent) filter.ascent = { ...filter.ascent, $gt: value.filters.minAscent };
-		if (value.filters.maxAscent) filter.ascent = { ...filter.ascent, $lt: value.filters.maxAscent };
-		if (value.filters.minExpectedTime) filter.expectedTime = { ...filter.expectedTime, $gt: value.filters.minExpectedTime };
-		if (value.filters.maxExpectedTime) filter.expectedTime = { ...filter.expectedTime, $lt: value.filters.maxExpectedTime };
-		if (value.filters.difficulty) filter.difficulty = value.filters.difficulty;
-		if (value.filters.location) filter.startingPoint = value.filters.location;
+		if (value.minLength) filter.length = { ...filter.length, $gt: value.minLength };
+		if (value.maxLength) filter.length = { ...filter.length, $lt: value.maxLength };
+		if (value.minAscent) filter.ascent = { ...filter.ascent, $gt: value.minAscent };
+		if (value.maxAscent) filter.ascent = { ...filter.ascent, $lt: value.maxAscent };
+		if (value.minExpectedTime)
+			filter.expectedTime = { ...filter.expectedTime, $gt: value.minExpectedTime };
+		if (value.maxExpectedTime)
+			filter.expectedTime = { ...filter.expectedTime, $lt: value.maxExpectedTime };
+		if (value.difficulty) filter.difficulty = value.difficulty;
+		if (value.location) filter.startingPoint = value.location;
 
 		const hikes = await hikeDAL.getHikes(filter, value.page, value.pageSize);
 		return res.status(StatusCodes.OK).json(hikes);

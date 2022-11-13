@@ -4,8 +4,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Map from "./pages/Map";
-import { useState } from "react";
-import DescribeTable from "./pages/Describehikes";
+import DescribeHike from "./pages/DescribeHike";
 // import API from "./api";
 
 function App() {
@@ -28,19 +27,6 @@ function Layout(props) {
 
 	let outlet = <></>;
 
-	const [Describehikes, setDescribehike] = useState([]);
-	console.log(Describehikes);
-	const Data_Load = () => {};
-
-	const RemoveDescriprtion = (description) => {
-		const remove = Describehikes.filter((x) => description._id !== x._id);
-		setDescribehike(remove);
-	};
-	const AddDescription = (description) => {
-		const add = (OldDescribehikes) => [...OldDescribehikes, description];
-		setDescribehike(add);
-	};
-
 	switch (mode) {
 		case "login":
 			outlet = <Login />;
@@ -52,13 +38,7 @@ function Layout(props) {
 			outlet = <Map />;
 			break;
 		case "describe-hike":
-			outlet = (
-				<DescribeTable
-					Description={Describehikes}
-					RemoveDescriprtion={RemoveDescriprtion}
-					AddDescription={AddDescription}
-				/>
-			);
+			outlet = <DescribeHike />;
 			break;
 		default:
 			outlet = <Home />;

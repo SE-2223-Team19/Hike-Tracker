@@ -10,7 +10,6 @@ const { LocationType } = require("../models/enums");
  */
 async function getLocations(req, res) {
 	try {
-
 		const { query } = req;
 
 		const schema = joi.object().keys({
@@ -18,12 +17,17 @@ async function getLocations(req, res) {
 				type: joi.string().valid(...Object.values(LocationType)),
 				// Location validation
 				location: joi.object().keys({
-					coordinates: joi.array().items(joi.number()).length(2).required().description("Coordinates in the format [<longitude>, <latitude>]"),
-					radius: joi.number().required().description("Max distance in kilometers")
-				})
+					coordinates: joi
+						.array()
+						.items(joi.number())
+						.length(2)
+						.required()
+						.description("Coordinates in the format [<longitude>, <latitude>]"),
+					radius: joi.number().required().description("Max distance in kilometers"),
+				}),
 			}),
 			page: joi.number().greater(0).required(),
-			pageSize: joi.number().greater(0).required()
+			pageSize: joi.number().greater(0).required(),
 		});
 
 		const { error, value } = schema.validate(query);
@@ -33,15 +37,16 @@ async function getLocations(req, res) {
 		let filter = {};
 
 		if (value.filters.type) filter.type = { type: value.filters.type };
-		if (value.filters.location) filter.point = {
-            $near: {
-                $geometry: {
-                    type: "Point",
-                    coordinates: value.location.coordinates
-                },
-                $maxDistance: value.location.radius * 1000 // Wants the distance in meters
-            }
-        };
+		if (value.filters.location)
+			filter.point = {
+				$near: {
+					$geometry: {
+						type: "Point",
+						coordinates: value.location.coordinates,
+					},
+					$maxDistance: value.location.radius * 1000, // Wants the distance in meters
+				},
+			};
 
 		const locations = await locationDAL.getLocations(filter, value.page, value.pageSize);
 		return res.status(StatusCodes.OK).json(locations);
@@ -57,9 +62,12 @@ async function createLocation(req, res) {
 
 		// Validation schema
 		const schema = joi.object().keys({
-			locationType: joi.string().valid(...Object.values(LocationType)).required(),
-            description: joi.string().required(),
-            point: joi.array().items(joi.number()).length(2).required()
+			locationType: joi
+				.string()
+				.valid(...Object.values(LocationType))
+				.required(),
+			description: joi.string().required(),
+			point: joi.array().items(joi.number()).length(2).required(),
 		});
 
 		// Validate request body against schema
@@ -67,7 +75,7 @@ async function createLocation(req, res) {
 
 		if (error) throw error; // Joi validation error, goes to catch block
 
-		// Create new hike
+		// Create new location
 		const createdLocation = await locationDAL.createLocation(value);
 		return res.status(StatusCodes.CREATED).json(createdLocation);
 	} catch (err) {

@@ -67,17 +67,6 @@ async function createHike(req, res) {
 		// Validate request body
 		const { body } = req;
 
-		/* Location validation schema
-		const locationSchema = joi.object().keys({
-			locationType: joi
-				.string()
-				.valid(...Object.values(LocationType))
-				.required(),
-			description: joi.string().required(),
-			point: joi.array().items(joi.number()).length(2).required(),
-		});
-		*/
-
 		// Hike validation schema
 		const schema = joi.object().keys({
 			title: joi.string().required(),
@@ -89,7 +78,7 @@ async function createHike(req, res) {
 				.required()
 				.valid(...Object.values(Difficulty)),
 			description: joi.string().required(),
-			startPoint: joi.string().required(),
+			startPoint: joi.string().required(), // If creating point, the point must be created first and only pass the id
 			endPoint: joi.string().required(),
 			referencePoints: joi.array().items(joi.string()),
 			// How to validate on database?
@@ -108,7 +97,16 @@ async function createHike(req, res) {
 	}
 }
 
+async function updateHike(req, res) {
+	const { params, body } = req;
+
+	console.log("params", params);
+	console.log("body", body);
+	return;
+}
+
 module.exports = {
 	getHikes,
 	createHike,
+	updateHike,
 };

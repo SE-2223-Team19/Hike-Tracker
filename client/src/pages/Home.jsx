@@ -3,7 +3,7 @@ import { Route, Routes } from "react-router-dom";
 import Header from "../components/Header";
 import Hikes from "./Hikes";
 
-const Home = () => {
+const Home = (props) => {
 	return (
 		<div>
 			<Header />

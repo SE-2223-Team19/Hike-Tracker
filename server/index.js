@@ -3,6 +3,7 @@ const session = require("express-session");
 const path = require("path");
 const dotenv = require("dotenv");
 const cors = require("cors");
+const morgan = require("morgan");
 const runDb = require("./db");
 const appRouter = require("./router");
 const passport = require("passport");
@@ -18,12 +19,16 @@ const getApp = () => {
 
 	// Create Express server
 	const app = express();
-	app.use(cors());
+	// set up and enable cors
+	const corsOptions = {
+		origin: 'http://localhost:3000',
+		optionsSuccessStatus: 200,
+		credentials: true,
+	};
+	app.use(cors(corsOptions));
 	app.use(express.json());
 	app.use(express.urlencoded({ extended: true }));
-
-	// Router
-	app.use("/api", appRouter);
+	app.use(morgan("dev"));
 
 	// Passport configuration
 	passport.use(localStrategy);
@@ -46,6 +51,9 @@ const getApp = () => {
 		})
 	);
 	app.use(passport.authenticate("session"));
+
+	// Router
+	app.use("/api", appRouter);
 
 	return app;
 };

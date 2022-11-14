@@ -6,6 +6,7 @@ import Loading from "../components/Loading";
 import NoData from "../components/NoData";
 import { CgOptions } from "react-icons/cg";
 import HikeFilters from "../components/HikeFilters";
+import PositionFilterModal from "../components/PositionFilterModal";
 
 const Hikes = () => {
 	// ** State
@@ -13,6 +14,7 @@ const Hikes = () => {
 	const [loading, setLoading] = useState(true);
 	const [openFilters, setOpenFilters] = useState(false);
 	const [filters, setFilters] = useState({});
+	const [showPositionFilter, setShowPositionFilter] = useState(false);
 
 	// ** Fetch hikes from API
 	useEffect(() => {
@@ -49,10 +51,24 @@ const Hikes = () => {
 				</Button>
 			</Stack>
 			{/* Filters */}
-			{openFilters && <HikeFilters filters={filters} setFilters={setFilters} />}
+			{openFilters && <HikeFilters filters={filters} setFilters={setFilters} openModal={() => setShowPositionFilter(true)}/>}
 			{loading && <Loading />}
 			{(!hikes || hikes.length <= 0) && !loading && <NoData message={"No hikes found."} />}
 			{hikes.length > 0 && !loading && hikes.map((hike) => <HikeCard key={hike._id} hike={hike} />)}
+			<PositionFilterModal 
+				show={showPositionFilter} 
+				setShow={setShowPositionFilter} 
+				onCancel={() => setShowPositionFilter(false)} 
+				onOk={(coordinates, radius) => {
+					setShowPositionFilter(false);
+					setFilters({
+						...filters,
+						locationCoordinatesLat: coordinates[0],
+						locationCoordinatesLng: coordinates[1],
+						locationRadius: radius * 1000
+					});
+				}}
+			></PositionFilterModal>
 		</div>
 	);
 };

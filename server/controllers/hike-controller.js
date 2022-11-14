@@ -23,11 +23,8 @@ async function getHikes(req, res) {
 			maxExpectedTime: joi.number(),
 			difficulty: joi.string().valid(...Object.values(Difficulty)),
 			// Location validation
-			locationCoordinates: joi
-					.array()
-					.items(joi.number())
-					.length(2)
-					.description("Coordinates in the format [<longitude>, <latitude>]"),
+			locationCoordinatesLat: joi.number(),
+			locationCoordinatesLng: joi.number(),
 			locationRadius: joi.number().greater(0).description("Max distance in kilometers"),
 			page: joi.number().greater(0),
 			pageSize: joi.number().greater(0),
@@ -48,8 +45,8 @@ async function getHikes(req, res) {
 		if (value.maxExpectedTime)
 			filter.expectedTime = { ...filter.expectedTime, $lt: value.maxExpectedTime };
 		if (value.difficulty) filter.difficulty = value.difficulty;
-		if (value.locationCoordinates && value.locationRadius) filter.startingPoint = {
-			coordinates: value.locationCoordinates,
+		if (value.locationCoordinatesLat && value.locationCoordinatesLng && value.locationRadius) filter.startingPoint = {
+			coordinates: [value.locationCoordinatesLng, value.locationCoordinatesLat],
 			radius: value.locationRadius
 		};
 

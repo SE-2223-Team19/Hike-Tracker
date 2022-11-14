@@ -11,7 +11,7 @@ async function createUser(req, res) {
 
 		// Validation schema
 		const schema = joi.object().keys({
-			email: joi.email().required(),
+			email: joi.string().email({ tlds: { allow: false }}).required(),
             fullName: joi.string().required(),
             userType: joi.string().required().valid(...Object.values(UserType)),
             password: joi.string().required(),

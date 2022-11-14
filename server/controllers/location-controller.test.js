@@ -1,7 +1,7 @@
 'use strict';
-const hikeController = require("./hike-controller");
+const locationController = require("./location-controller");
 const { StatusCodes } = require("http-status-codes");
-const { Difficulty } = require("../models/enums");
+const { LocationType } = require("../models/enums");
 
 function ResponseHelper() {
     this.statusCode = StatusCodes.OK;
@@ -16,11 +16,11 @@ function ResponseHelper() {
     };
 }
 
-describe('getHikes', () => {
+describe('getLocations', () => {
 
     test('get the first page', async () => {
         const response = new ResponseHelper();
-        await hikeController.getHikes({
+        await locationController.getLocations({
             query: {
                 filters: {},
                 page: 1,
@@ -28,18 +28,14 @@ describe('getHikes', () => {
             }
         }, response);
         expect(response.statusCode).toBe(StatusCodes.OK);
-    }, 20000);
+    }, 10000);
 
     test('error in schema', async () => {
         const response = new ResponseHelper();
-        await hikeController.getHikes({
-            query: {
+        await locationController.getLocations({
+            body: {
                 filters: {
-                    difficulty: "Wrong difficulty",
-                    location: {
-                        coordinates: [12, 12, 12],
-                        radius: -1
-                    }
+                    type: "Wrong Type"
                 },
                 page: 0,
                 pageSize: 50
@@ -49,20 +45,15 @@ describe('getHikes', () => {
     });
 });
 
-describe('createHike', () => {
+describe('createLocation', () => {
 
-    test('insert hike', async () => {
+    test('insert location', async () => {
         const response = new ResponseHelper();
-        await hikeController.createHike({
+        await locationController.createLocation({
             body: {
-                title: "Test hike",
-                length: 12000, // 12 km
-                ascent: 200, // 200 m
-                expectedTime: 60 * 3, // 3 h
-                difficulty: Difficulty.HIKER,
-                description: "A test hike",
-                startPoint: "123413234",
-                endPoint: "456789"
+                locationType: LocationType.HUT,
+                description: "A test hut",
+                point: [7.683070, 45.068370] // Wants a <longitude>, <latitude> array
             }
         }, response);
         console.log(response.responseBody);
@@ -71,14 +62,11 @@ describe('createHike', () => {
 
     test('error in schema', async () => {
         const response = new ResponseHelper();
-        await hikeController.createHike({
+        await locationController.createLocation({
             body: {
-                title: "Test hike",
-                length: 12000, // 12 km
-                ascent: 200, // 200 m
-                expectedTime: 60 * 3, // 3 h
-                difficulty: Difficulty.HIKER
-                // missing a field
+                type: LocationType.HUT,
+                description: "A test hut",
+                point: [7.683070, 45.068370, 12.123] // Wrong array length
             }
         }, response);
         expect(response.statusCode).toBe(StatusCodes.BAD_REQUEST);

@@ -19,7 +19,11 @@ const Hikes = () => {
 		setLoading(true);
 		const fetchHikes = async () => {
 			console.log(filters);
-			const hikes = await getHikes(filters);
+			const hikes = await getHikes({ 
+				filters: filters,
+				page: 1,
+				pageSize: 100
+			});
 			setHikes(hikes);
 			setLoading(false);
 		};

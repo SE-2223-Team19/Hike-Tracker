@@ -1,20 +1,10 @@
 'use strict';
-const userController = require("./user-controller");
+const userController = require("../controllers/user-controller");
 const { StatusCodes } = require("http-status-codes");
 const { UserType } = require("../models/enums");
+const { setupDB, ResponseHelper } = require("./setup");
 
-function ResponseHelper() {
-    this.statusCode = StatusCodes.OK;
-    this.responseBody = {};
-    this.status = (code) => {
-        this.statusCode = code;
-        return this;
-    };
-    this.json = (value) => {
-        this.responseBody = value;
-        return this;
-    };
-}
+setupDB("user-controller");
 
 describe('createUser', () => {
 
@@ -29,9 +19,8 @@ describe('createUser', () => {
                 confirmPassword: "password"
             }
         }, response);
-        console.log(response.responseBody);
         expect(response.statusCode).toBe(StatusCodes.CREATED);
-    }, 20000); // May take some time for the encryption function
+    });
 
     test('error in schema', async () => {
         const response = new ResponseHelper();

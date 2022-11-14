@@ -13,19 +13,9 @@ async function getLocations(req, res) {
 		const { query } = req;
 
 		const schema = joi.object().keys({
-			filters: joi.object().keys({
-				type: joi.string().valid(...Object.values(LocationType)),
-				// Location validation
-				location: joi.object().keys({
-					coordinates: joi
-						.array()
-						.items(joi.number())
-						.length(2)
-						.required()
-						.description("Coordinates in the format [<longitude>, <latitude>]"),
-					radius: joi.number().required().description("Max distance in kilometers"),
-				}),
-			}),
+			type: joi.string().valid(...Object.values(LocationType)),
+			locationCoordinates: joi.array().items(joi.number()).length(2).description("Coordinates in the format [<longitude>, <latitude>]"),
+			locationRadius: joi.number().greater(0).description("Max distance in kilometers"),
 			page: joi.number().greater(0).required(),
 			pageSize: joi.number().greater(0).required(),
 		});
@@ -36,17 +26,16 @@ async function getLocations(req, res) {
 
 		let filter = {};
 
-		if (value.filters.type) filter.type = { type: value.filters.type };
-		if (value.filters.location)
-			filter.point = {
-				$near: {
-					$geometry: {
-						type: "Point",
-						coordinates: value.location.coordinates,
-					},
-					$maxDistance: value.location.radius * 1000, // Wants the distance in meters
-				},
-			};
+		if (value.type) filter.type = { type: value.type };
+		if (value.locationCoordinates && value.locationRadius) filter.point = {
+            $near: {
+                $geometry: {
+                    type: "Point",
+                    coordinates: value.locationCoordinates
+                },
+                $maxDistance: value.locationRadius * 1000 // Wants the distance in meters
+            }
+        };
 
 		const locations = await locationDAL.getLocations(filter, value.page, value.pageSize);
 		return res.status(StatusCodes.OK).json(locations);

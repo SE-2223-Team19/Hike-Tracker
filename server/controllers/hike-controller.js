@@ -14,8 +14,6 @@ async function getHikes(req, res) {
 	try {
 		const { query } = req;
 
-		console.log(query);
-
 		const schema = joi.object().keys({
 			minLength: joi.number(),
 			maxLength: joi.number(),
@@ -25,15 +23,12 @@ async function getHikes(req, res) {
 			maxExpectedTime: joi.number(),
 			difficulty: joi.string().valid(...Object.values(Difficulty)),
 			// Location validation
-			location: joi.object().keys({
-				coordinates: joi
+			locationCoordinates: joi
 					.array()
 					.items(joi.number())
 					.length(2)
-					.required()
 					.description("Coordinates in the format [<longitude>, <latitude>]"),
-				radius: joi.number().required().description("Max distance in kilometers"),
-			}),
+			locationRadius: joi.number().greater(0).description("Max distance in kilometers"),
 			page: joi.number().greater(0),
 			pageSize: joi.number().greater(0),
 		});
@@ -53,7 +48,10 @@ async function getHikes(req, res) {
 		if (value.maxExpectedTime)
 			filter.expectedTime = { ...filter.expectedTime, $lt: value.maxExpectedTime };
 		if (value.difficulty) filter.difficulty = value.difficulty;
-		if (value.location) filter.startingPoint = value.location;
+		if (value.locationCoordinates && value.locationRadius) filter.startingPoint = {
+			coordinates: value.locationCoordinates,
+			radius: value.locationRadius
+		};
 
 		const hikes = await hikeDAL.getHikes(filter, value.page, value.pageSize);
 		return res.status(StatusCodes.OK).json(hikes);
@@ -67,6 +65,16 @@ async function createHike(req, res) {
 		// Validate request body
 		const { body } = req;
 
+		// Location validation schema
+		const locationSchema = joi.object().keys({
+			locationType: joi
+				.string()
+				.valid(...Object.values(LocationType))
+				.required(),
+			description: joi.string().required(),
+			point: joi.array().items(joi.number()).length(2).required(),
+		});
+
 		// Hike validation schema
 		const schema = joi.object().keys({
 			title: joi.string().required(),
@@ -78,9 +86,9 @@ async function createHike(req, res) {
 				.required()
 				.valid(...Object.values(Difficulty)),
 			description: joi.string().required(),
-			startPoint: joi.string().required(), // If creating point, the point must be created first and only pass the id
-			endPoint: joi.string().required(),
-			referencePoints: joi.array().items(joi.string()),
+			startPoint: locationSchema.required(),
+			endPoint: locationSchema.required(),
+			referencePoints: joi.array().items(locationSchema),
 			// How to validate on database?
 		});
 

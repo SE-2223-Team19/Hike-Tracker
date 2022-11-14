@@ -1,20 +1,10 @@
 'use strict';
-const locationController = require("./location-controller");
+const locationController = require("../controllers/location-controller");
 const { StatusCodes } = require("http-status-codes");
 const { LocationType } = require("../models/enums");
+const { setupDB, ResponseHelper } = require("./setup");
 
-function ResponseHelper() {
-    this.statusCode = StatusCodes.OK;
-    this.responseBody = {};
-    this.status = (code) => {
-        this.statusCode = code;
-        return this;
-    };
-    this.json = (value) => {
-        this.responseBody = value;
-        return this;
-    };
-}
+setupDB("location-controller");
 
 describe('getLocations', () => {
 
@@ -22,21 +12,18 @@ describe('getLocations', () => {
         const response = new ResponseHelper();
         await locationController.getLocations({
             query: {
-                filters: {},
                 page: 1,
                 pageSize: 50
             }
         }, response);
         expect(response.statusCode).toBe(StatusCodes.OK);
-    }, 10000);
+    });
 
     test('error in schema', async () => {
         const response = new ResponseHelper();
         await locationController.getLocations({
-            body: {
-                filters: {
-                    type: "Wrong Type"
-                },
+            query: {
+                type: "Wrong Type",
                 page: 0,
                 pageSize: 50
             }
@@ -56,7 +43,6 @@ describe('createLocation', () => {
                 point: [7.683070, 45.068370] // Wants a <longitude>, <latitude> array
             }
         }, response);
-        console.log(response.responseBody);
         expect(response.statusCode).toBe(StatusCodes.CREATED);
     });
 

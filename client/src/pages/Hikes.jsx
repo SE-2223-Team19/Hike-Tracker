@@ -20,7 +20,7 @@ const Hikes = () => {
 		const fetchHikes = async () => {
 			console.log(filters);
 			const hikes = await getHikes({ 
-				filters: filters,
+				...filters,
 				page: 1,
 				pageSize: 100
 			});

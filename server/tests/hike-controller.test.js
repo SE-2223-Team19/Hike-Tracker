@@ -1,20 +1,10 @@
 'use strict';
-const hikeController = require("./hike-controller");
+const hikeController = require("../controllers/hike-controller");
 const { StatusCodes } = require("http-status-codes");
-const { Difficulty } = require("../models/enums");
+const { Difficulty, LocationType } = require("../models/enums");
+const { setupDB, ResponseHelper } = require("./setup");
 
-function ResponseHelper() {
-    this.statusCode = StatusCodes.OK;
-    this.responseBody = {};
-    this.status = (code) => {
-        this.statusCode = code;
-        return this;
-    };
-    this.json = (value) => {
-        this.responseBody = value;
-        return this;
-    };
-}
+setupDB("hike-controller");
 
 describe('getHikes', () => {
 
@@ -22,25 +12,20 @@ describe('getHikes', () => {
         const response = new ResponseHelper();
         await hikeController.getHikes({
             query: {
-                filters: {},
                 page: 1,
                 pageSize: 50
             }
         }, response);
         expect(response.statusCode).toBe(StatusCodes.OK);
-    }, 20000);
+    });
 
     test('error in schema', async () => {
         const response = new ResponseHelper();
         await hikeController.getHikes({
             query: {
-                filters: {
-                    difficulty: "Wrong difficulty",
-                    location: {
-                        coordinates: [12, 12, 12],
-                        radius: -1
-                    }
-                },
+                difficulty: "Wrong difficulty",
+                locationCoordinates: [12, 12, 12],
+                locationRadius: -1,
                 page: 0,
                 pageSize: 50
             }
@@ -61,11 +46,19 @@ describe('createHike', () => {
                 expectedTime: 60 * 3, // 3 h
                 difficulty: Difficulty.HIKER,
                 description: "A test hike",
-                startPoint: "123413234",
-                endPoint: "456789"
+                startPoint: {
+                    locationType: LocationType.PARKING_LOT,
+                    description: "Starting point",
+                    point: [12, 90]
+                },
+                endPoint: {
+                    locationType: LocationType.PARKING_LOT,
+                    description: "Ending point",
+                    point: [13, 90]
+                },
+                referencePoints: []
             }
         }, response);
-        console.log(response.responseBody);
         expect(response.statusCode).toBe(StatusCodes.CREATED);
     });
 

@@ -3,10 +3,15 @@ const Location = require("../models/location-model");
 /**
  * Get all locations.
  * @param {*} filterQuery Filter object for MongoDB query
+ * @param {Number} page The number of the page
+ * @param {Number} pageSize The size of the page
  * @returns Locations
  */
-async function getLocations(filterQuery = {}) {
-	const locations = await Location.find(filterQuery);
+async function getLocations(filterQuery = {}, page, pageSize) {
+	const locations = await Location.find(filterQuery)
+	.skip((page - 1) * pageSize)
+	.limit(pageSize)
+	.lean();
 	return locations;
 }
 

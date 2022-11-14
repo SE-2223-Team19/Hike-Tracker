@@ -14,12 +14,16 @@ async function getLocations(req, res) {
 		const { query } = req;
 
 		const schema = joi.object().keys({
-			type: joi.string().valid(...Object.values(LocationType)),
-			// Location validation
-			location: joi.object().keys({
-				coordinates: joi.array().items(joi.number()).length(2).required().description("Coordinates in the format [<longitude>, <latitude>]"),
-				radius: joi.number().required().description("Max distance in kilometers")
-			})
+			filters: joi.object().keys({
+				type: joi.string().valid(...Object.values(LocationType)),
+				// Location validation
+				location: joi.object().keys({
+					coordinates: joi.array().items(joi.number()).length(2).required().description("Coordinates in the format [<longitude>, <latitude>]"),
+					radius: joi.number().required().description("Max distance in kilometers")
+				})
+			}),
+			page: joi.number().greater(0).required(),
+			pageSize: joi.number().greater(0).required()
 		});
 
 		const { error, value } = schema.validate(query);
@@ -28,8 +32,8 @@ async function getLocations(req, res) {
 
 		let filter = {};
 
-		if (value.type) filter.type = { type: value.type };
-		if (value.location) filter.point = {
+		if (value.filters.type) filter.type = { type: value.filters.type };
+		if (value.filters.location) filter.point = {
             $near: {
                 $geometry: {
                     type: "Point",
@@ -39,7 +43,7 @@ async function getLocations(req, res) {
             }
         };
 
-		const locations = await locationDAL.getLocations(filter);
+		const locations = await locationDAL.getLocations(filter, value.page, value.pageSize);
 		return res.status(StatusCodes.OK).json(locations);
 	} catch (err) {
 		return res.status(StatusCodes.BAD_REQUEST).json({ err: err.message });
@@ -53,9 +57,9 @@ async function createLocation(req, res) {
 
 		// Validation schema
 		const schema = joi.object().keys({
-			type: joi.string().valid(...Object.values(LocationType)).required(),
+			locationType: joi.string().valid(...Object.values(LocationType)).required(),
             description: joi.string().required(),
-            point: joi.array(joi.number()).length(2).required()
+            point: joi.array().items(joi.number()).length(2).required()
 		});
 
 		// Validate request body against schema

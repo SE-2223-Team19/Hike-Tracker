@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Button, Stack } from "react-bootstrap";
 import { getHikes } from "../api/hikes";
 import HikeCard from "../components/HikeCard";
+import ModalMap from "../components/ModalMap";
 import Loading from "../components/Loading";
 import NoData from "../components/NoData";
 import { CgOptions } from "react-icons/cg";
@@ -15,6 +16,7 @@ const Hikes = () => {
 	const [openFilters, setOpenFilters] = useState(false);
 	const [filters, setFilters] = useState({});
 	const [showPositionFilter, setShowPositionFilter] = useState(false);
+	const [currentHike, setCurrentHike] = useState(null);
 
 	// ** Fetch hikes from API
 	useEffect(() => {
@@ -53,7 +55,7 @@ const Hikes = () => {
 			{openFilters && <HikeFilters filters={filters} setFilters={setFilters} openModal={() => setShowPositionFilter(true)}/>}
 			{loading && <Loading />}
 			{(!hikes || hikes.length <= 0) && !loading && <NoData message={"No hikes found."} />}
-			{hikes.length > 0 && !loading && hikes.map((hike) => <HikeCard key={hike._id} hike={hike} />)}
+			{hikes.length > 0 && !loading && hikes.map((hike) => <HikeCard key={hike._id} hike={hike} showDetails={() => setCurrentHike(hike)} />)}
 			<PositionFilterModal 
 				show={showPositionFilter} 
 				setShow={setShowPositionFilter} 
@@ -68,6 +70,10 @@ const Hikes = () => {
 					});
 				}}
 			></PositionFilterModal>
+			<ModalMap
+				handleClose={() => setCurrentHike(null)}
+				hike={currentHike}
+			></ModalMap>
 		</div>
 	);
 };

@@ -20,7 +20,6 @@ const Hikes = () => {
 	useEffect(() => {
 		setLoading(true);
 		const fetchHikes = async () => {
-			console.log(filters);
 			const hikes = await getHikes({ 
 				...filters,
 				page: 1,

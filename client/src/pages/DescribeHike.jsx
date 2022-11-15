@@ -8,7 +8,7 @@ function DescribeHike() {
 
 	return (
 		<>
-			<h1>Describe Hike</h1>
+			<h1 className="mb-5">Describe Hike</h1>
 			<DescribeHikeForm createHike={createHike} />
 		</>
 	);

@@ -1,9 +1,9 @@
 import React from "react";
-import { Col, Form, Row, Stack } from "react-bootstrap";
+import { Button, Col, Form, Row, Stack } from "react-bootstrap";
 import { Difficulty } from "../helper/enums";
 import { capitalizeAndReplaceUnderscores } from "../helper/utils";
 
-const HikeFilters = ({ filters, setFilters }) => {
+const HikeFilters = ({ filters, setFilters, openModal }) => {
 	/**
 	 * Filters format
 	 *
@@ -108,7 +108,8 @@ const HikeFilters = ({ filters, setFilters }) => {
 				</Col>
 				<Col>
 					<Form.Group>
-						<Form.Label>Starting point</Form.Label>
+						<Form.Label>Starting point</Form.Label> <br/>
+						<Button onClick={openModal} variant={"success"}>Select area</Button>
 						<Stack direction="horizontal" gap={2}>
 							{/** TODO: Define how to pass lat and long */}
 							{/* <Form.Control

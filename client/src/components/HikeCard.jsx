@@ -1,14 +1,11 @@
 import React from "react";
-import { Badge, Card, Stack } from "react-bootstrap";
+import { Badge, Button, Card, Stack } from "react-bootstrap";
 import { BiRuler, BiTrendingUp, BiTime } from "react-icons/bi";
 import { capitalizeAndReplaceUnderscores, displayExpectedTime } from "../helper/utils";
 
-const HikeCard = ({ hike }) => {
-	console.log(hike.title);
-
+const HikeCard = ({ hike, showDetails }) => {
 	return (
 		<Card className="flex-row p-3 mt-4">
-			{/* <Card.Img variant="left" src="https://via.placeholder.com/150" height={150} width={150} /> */}
 			<Card.Body>
 				<Card.Title>
 					<Stack direction="horizontal" className="justify-content-between align-items-center">
@@ -30,6 +27,7 @@ const HikeCard = ({ hike }) => {
 							<BiTime size={24} />
 							<span className="ms-1">{displayExpectedTime(hike.expectedTime)}</span>
 						</div>
+						<div className="ms-auto"><Button onClick={() => showDetails()} variant={"success"}>See on Map</Button></div>
 					</Stack>
 					<div className="mt-4">{hike.description}</div>
 				</>

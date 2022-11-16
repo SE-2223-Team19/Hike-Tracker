@@ -1,20 +1,36 @@
-import { MapContainer, TileLayer, Popup, Marker } from 'react-leaflet'
+import { useState } from 'react';
+import { MapContainer, TileLayer, Popup, Marker, useMapEvents } from 'react-leaflet'
 
 function Map(props) {
 
   // Coordinates of Turin
-  const position = [45.068370, 7.683070];
+  const [position, setPosition] = useState([45.068370, 7.683070]);
+  navigator.geolocation.getCurrentPosition((e) => setPosition([e.coords.latitude, e.coords.longitude]))
 
-  return (<MapContainer style = {{width: "100%", height: "100vh"}} center={position} zoom={13} scrollWheelZoom={false} >
+  // const MapEvents = () => {
+  //   useMapEvents({
+  //     click(e) {
+  //       console.log(e.latlng.lat);
+  //       console.log(e.latlng.lng);
+  //       setPosition(() => [e.latlng.lat, e.latlng.lng])
+  //     },
+  //   });
+  //   return false;
+  // }
+
+  //let p = navigator.geolocation.getCurrentPosition((e) => console.log(e.coords))
+
+
+  return (<MapContainer style={{ width: "100%", height: "100vh" }} center={position} zoom={13} scrollWheelZoom={false} >
     <TileLayer
-      attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
       url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
     />
-    <Marker position={position}>
+    <Marker position={position} >
       <Popup>
-        We study here .-.
+        You are in position with latitude: {position[0].toFixed(3)} and longitude: {position[1].toFixed(3)}
       </Popup>
     </Marker>
+    {/* <MapEvents/> */}
   </MapContainer>)
 }
 

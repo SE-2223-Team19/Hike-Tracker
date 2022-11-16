@@ -33,7 +33,7 @@ async function getLocations(req, res) {
                     type: "Point",
                     coordinates: value.locationCoordinates
                 },
-                $maxDistance: value.locationRadius * 1000 // Wants the distance in meters
+                $maxDistance: value.locationRadius // Distance in meters
             }
         };
 

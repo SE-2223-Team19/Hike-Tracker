@@ -3,6 +3,7 @@ const { StatusCodes } = require("http-status-codes");
 const hikeDAL = require("../data/hike-dal");
 const hikeService = require("../services/hike-service");
 const { Difficulty, LocationType } = require("../models/enums");
+const GpxParser = require("gpxparser");
 
 /**
  * GET /hike
@@ -64,7 +65,7 @@ async function createHike(req, res) {
 	try {
 		// Validate request body
 		const { body } = req;
-
+		
 		// Location validation schema
 		const locationSchema = joi.object().keys({
 			locationType: joi
@@ -88,7 +89,7 @@ async function createHike(req, res) {
 			description: joi.string().required(),
 			startPoint: locationSchema.required(),
 			endPoint: locationSchema.required(),
-			referencePoints: joi.array().items(locationSchema),
+			referencePoints: joi.array().items(locationSchema)
 			// How to validate on database?
 		});
 
@@ -96,6 +97,14 @@ async function createHike(req, res) {
 		const { error, value } = schema.validate(body);
 
 		if (error) throw error; // Joi validation error, goes to catch block
+		
+		if (!req.file) throw new Error("Must upload a file track");
+
+		const gpx = new GpxParser();
+		gpx.parse(req.file.buffer.toString());
+
+		// Load parsed track points
+		value.trackPoints = gpx.tracks[0].points.map(p => [p.lat, p.lon]);
 
 		// Create new hike
 		const createdHike = await hikeService.createHike(value);

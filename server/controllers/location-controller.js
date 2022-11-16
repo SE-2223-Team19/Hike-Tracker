@@ -15,9 +15,7 @@ async function getLocations(req, res) {
 		const schema = joi.object().keys({
 			type: joi.string().valid(...Object.values(LocationType)),
 			locationCoordinates: joi.array().items(joi.number()).length(2).description("Coordinates in the format [<longitude>, <latitude>]"),
-			locationRadius: joi.number().greater(0).description("Max distance in kilometers"),
-			page: joi.number().greater(0).required(),
-			pageSize: joi.number().greater(0).required(),
+			locationRadius: joi.number().greater(0).description("Max distance in kilometers")
 		});
 
 		const { error, value } = schema.validate(query);
@@ -37,7 +35,7 @@ async function getLocations(req, res) {
             }
         };
 
-		const locations = await locationDAL.getLocations(filter, value.page, value.pageSize);
+		const locations = await locationDAL.getLocations(filter);
 		return res.status(StatusCodes.OK).json(locations);
 	} catch (err) {
 		return res.status(StatusCodes.BAD_REQUEST).json({ err: err.message });

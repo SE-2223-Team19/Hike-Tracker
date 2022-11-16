@@ -7,10 +7,8 @@ const Location = require("../models/location-model");
  * @param {Number} pageSize The size of the page
  * @returns Locations
  */
-async function getLocations(filterQuery = {}, page, pageSize) {
+async function getLocations(filterQuery = {}) {
 	const locations = await Location.find(filterQuery)
-	.skip((page - 1) * pageSize)
-	.limit(pageSize)
 	.lean();
 	return locations;
 }

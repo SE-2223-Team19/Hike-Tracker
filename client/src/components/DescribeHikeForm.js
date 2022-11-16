@@ -7,8 +7,9 @@ import AddReferencePointsForm from "./AddReferencePointsForm";
 import { useFormik, Formik, validateYupSchema } from "formik";
 import * as Yup from "yup";
 import { getLocations } from "../api/locations";
+import { createHike } from "../api/hikes";
 
-function DescribeHikeForm({ createHike }) {
+function DescribeHikeForm() {
 	// ** Form state
 	// const [validated, setValidated] = useState(false);
 	// const [title, setTitle] = useState("");
@@ -45,9 +46,10 @@ function DescribeHikeForm({ createHike }) {
 	};
 
 	// ** On submit
-	const handleSubmit = (values) => {
+	const handleSubmit = async (values) => {
 		// Remeber to format point into array before sending to api
 		console.log(values);
+		await createHike(values);
 	};
 
 	// ** Form validation
@@ -59,12 +61,18 @@ function DescribeHikeForm({ createHike }) {
 		difficulty: Yup.string().required("Required"),
 		description: Yup.string(),
 		gpxFile: Yup.mixed(),
-		startPointLat: Yup.number().min(-90).max(90).required("Required").typeError("Must be a number"),
+		startPointId: Yup.string(),
+		startPointLat: Yup.number()
+			.min(-90)
+			.max(90)
+			.required("Required")
+			.typeError("Must be a number"),
 		startPointLng: Yup.number()
 			.min(-180)
 			.max(180)
 			.required("Required")
 			.typeError("Must be a number"),
+		endPointId: Yup.string(),
 		endPointLat: Yup.number().min(-90).max(90).required("Required").typeError("Must be a number"),
 		endPointLng: Yup.number().min(-180).max(180).required("Required").typeError("Must be a number"),
 		referencePoints: Yup.array().of(Yup.array().of(Yup.number())),
@@ -87,9 +95,9 @@ function DescribeHikeForm({ createHike }) {
 				referencePoints: [],
 				gpxFile: null,
 			}}
-			onSubmit={(values, { setSubmitting }) => {
+			onSubmit={async (values, { setSubmitting }) => {
 				setSubmitting(true);
-				handleSubmit(values);
+				await handleSubmit(values);
 				setSubmitting(false);
 			}}
 			validationSchema={validationSchema}
@@ -213,9 +221,10 @@ function DescribeHikeForm({ createHike }) {
 								<Form.Control
 									type="file"
 									name="gpxFile"
-									onChange={handleChange}
+									onChange={(e) => setFieldValue("gpxFile", e.target.files[0])}
 									onBlur={handleBlur}
-									isInvalid={!!errors.gpFile}
+									isInvalid={!!errors.gpxFile}
+									accept={".gpx,application/gpx+xml"}
 								/>
 								<Form.Control.Feedback type="invalid">{errors.gpxFile}</Form.Control.Feedback>
 							</Form.Group>
@@ -268,6 +277,7 @@ function DescribeHikeForm({ createHike }) {
 														console.log(arrayPoint);
 														setFieldValue("startPointLat", arrayPoint[0]);
 														setFieldValue("startPointLng", arrayPoint[1]);
+														setFieldValue("startPointId", e.target.selectedOptions[0].getAttribute("data-id"));
 													}
 												}}
 												onBlur={handleBlur}
@@ -281,7 +291,7 @@ function DescribeHikeForm({ createHike }) {
 											>
 												<option>Choose from saved locations</option>
 												{locations.map((location) => (
-													<option key={location._id} value={location.point}>
+													<option key={location._id} value={location.point} data-id={location._id}>
 														{location.locationType}
 													</option>
 												))}
@@ -337,6 +347,7 @@ function DescribeHikeForm({ createHike }) {
 												onClick={() => {
 													validateField("startPointLat");
 													validateField("startPointLng");
+													setFieldValue("startPointId", null);
 												}}
 											>
 												Add
@@ -392,6 +403,7 @@ function DescribeHikeForm({ createHike }) {
 														console.log(arrayPoint);
 														setFieldValue("endPointLat", arrayPoint[0]);
 														setFieldValue("endPointLng", arrayPoint[1]);
+														setFieldValue("endPointId", e.target.selectedOptions[0].getAttribute("data-id"));
 													}
 												}}
 												onBlur={handleBlur}
@@ -405,7 +417,7 @@ function DescribeHikeForm({ createHike }) {
 											>
 												<option>Choose from saved locations</option>
 												{locations.map((location) => (
-													<option key={location._id} value={location.point}>
+													<option key={location._id} value={location.point} data-id={location._id}>
 														{location.locationType}
 													</option>
 												))}
@@ -461,6 +473,7 @@ function DescribeHikeForm({ createHike }) {
 												onClick={() => {
 													validateField("endPointLat");
 													validateField("endPointLng");
+													setFieldValue("endPointId", null);
 												}}
 											>
 												Add

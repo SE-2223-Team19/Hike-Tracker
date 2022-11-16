@@ -86,11 +86,18 @@ async function createHike(req, res) {
 				.required()
 				.valid(...Object.values(Difficulty)),
 			description: joi.string().required(),
-			startPoint: locationSchema.required(),
-			endPoint: locationSchema.required(),
+			startPointId: joi.string(),
+			startPointLat: joi.number().min(-90).max(90),
+			startPointLng: joi.number().min(-180).max(180),
+			endPointId: joi.string(),
+			endPointLat: joi.number().min(-90).max(90),
+			endPointLng: joi.number().min(-180).max(180),
 			referencePoints: joi.array().items(locationSchema)
-			// How to validate on database?
 		});
+
+		if (body.referencePoints === '') { // Because with form data an empty array comes as a empty string
+			body.referencePoints = [];
+		}
 
 		// Validate request body against schema
 		const { error, value } = schema.validate(body);

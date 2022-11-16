@@ -6,6 +6,7 @@ import Login from "./pages/Login";
 import Map from "./pages/Map";
 import { useState, useEffect, Navigate } from "react";
 import { getUserInfo, logIn, logOut } from "./api/user";
+import DescribeHike from "./pages/DescribeHike";
 // import API from "./api";
 
 function App() {
@@ -46,6 +47,7 @@ function App() {
 					<Route path="/*" element={<Layout mode="home" />} />
 					<Route path="/login" element={<Layout mode="login" />} />
 					<Route path="/map" element={<Layout mode="map" />} />
+					<Route path="/describe-hike" element={<Layout mode="describe-hike"/>} />
 				</Routes>
 			</Container>
 		</BrowserRouter>
@@ -66,6 +68,9 @@ function Layout(props) {
 			break;
 		case "map":
 			outlet = <Map />;
+			break;
+		case "describe-hike":
+			outlet = <DescribeHike />
 			break;
 		default:
 			outlet = <Home />;

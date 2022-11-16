@@ -8,7 +8,7 @@ const { BACKEND_URL } = require("./config");
 async function getLocations(filters = {}) {
 	try {
 		const response = await fetch(
-			`${BACKEND_URL}/${ENDPOINTS.locations.all}/?` + new URLSearchParams(filters)
+			`${BACKEND_URL}${ENDPOINTS.locations.all}/?` + new URLSearchParams(filters)
 		);
 		return await response.json();
 	} catch (err) {

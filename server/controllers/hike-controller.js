@@ -27,8 +27,8 @@ async function getHikes(req, res) {
 			locationCoordinatesLat: joi.number(),
 			locationCoordinatesLng: joi.number(),
 			locationRadius: joi.number().greater(0).description("Max distance in kilometers"),
-			page: joi.number().greater(0),
-			pageSize: joi.number().greater(0),
+			page: joi.number().greater(0).default(1),
+			pageSize: joi.number().greater(0).default(100),
 		});
 
 		const { error, value } = schema.validate(query);
@@ -46,15 +46,15 @@ async function getHikes(req, res) {
 		if (value.maxExpectedTime)
 			filter.expectedTime = { ...filter.expectedTime, $lt: value.maxExpectedTime };
 		if (value.difficulty) filter.difficulty = value.difficulty;
-		if (value.locationCoordinatesLat && value.locationCoordinatesLng && value.locationRadius) filter.startingPoint = {
-			coordinates: [value.locationCoordinatesLng, value.locationCoordinatesLat],
-			radius: value.locationRadius
-		};
+		if (value.locationCoordinatesLat && value.locationCoordinatesLng && value.locationRadius)
+			filter.startingPoint = {
+				coordinates: [value.locationCoordinatesLng, value.locationCoordinatesLat],
+				radius: value.locationRadius,
+			};
 
 		const hikes = await hikeDAL.getHikes(filter, value.page, value.pageSize);
-		console.log(hikes)
+		console.log(hikes);
 		return res.status(StatusCodes.OK).json(hikes);
-
 	} catch (err) {
 		return res.status(StatusCodes.BAD_REQUEST).json({ err: err.message });
 	}
@@ -64,7 +64,7 @@ async function createHike(req, res) {
 	try {
 		// Validate request body
 		const { body } = req;
-		
+
 		// Location validation schema
 		const locationSchema = joi.object().keys({
 			locationType: joi
@@ -92,10 +92,11 @@ async function createHike(req, res) {
 			endPointId: joi.string(),
 			endPointLat: joi.number().min(-90).max(90),
 			endPointLng: joi.number().min(-180).max(180),
-			referencePoints: joi.array().items(locationSchema)
+			referencePoints: joi.array().items(locationSchema),
 		});
 
-		if (body.referencePoints === '') { // Because with form data an empty array comes as a empty string
+		if (body.referencePoints === "") {
+			// Because with form data an empty array comes as a empty string
 			body.referencePoints = [];
 		}
 
@@ -103,14 +104,14 @@ async function createHike(req, res) {
 		const { error, value } = schema.validate(body);
 
 		if (error) throw error; // Joi validation error, goes to catch block
-		
+
 		if (!req.file) throw new Error("Must upload a file track");
 
 		const gpx = new GpxParser();
 		gpx.parse(req.file.buffer.toString());
 
 		// Load parsed track points
-		value.trackPoints = gpx.tracks[0].points.map(p => [p.lat, p.lon]);
+		value.trackPoints = gpx.tracks[0].points.map((p) => [p.lat, p.lon]);
 
 		// Create new hike
 		const createdHike = await hikeService.createHike(value);

@@ -27,7 +27,11 @@ const HikeCard = ({ hike, showDetails }) => {
 							<BiTime size={24} />
 							<span className="ms-1">{displayExpectedTime(hike.expectedTime)}</span>
 						</div>
-						<div className="ms-auto"><Button onClick={() => showDetails()} variant={"success"}>See on Map</Button></div>
+						<div className="ms-auto">
+							<Button onClick={() => showDetails(hike)} variant={"success"}>
+								See on Map
+							</Button>
+						</div>
 					</Stack>
 					<div className="mt-4">{hike.description}</div>
 				</>

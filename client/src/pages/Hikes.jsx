@@ -22,11 +22,7 @@ const Hikes = () => {
 	useEffect(() => {
 		setLoading(true);
 		const fetchHikes = async () => {
-			const hikes = await getHikes({ 
-				...filters,
-				page: 1,
-				pageSize: 100
-			});
+			const hikes = await getHikes({ ...filters });
 			setHikes(hikes);
 			setLoading(false);
 		};
@@ -52,28 +48,33 @@ const Hikes = () => {
 				</Button>
 			</Stack>
 			{/* Filters */}
-			{openFilters && <HikeFilters filters={filters} setFilters={setFilters} openModal={() => setShowPositionFilter(true)}/>}
+			{openFilters && (
+				<HikeFilters
+					filters={filters}
+					setFilters={setFilters}
+					openModal={() => setShowPositionFilter(true)}
+				/>
+			)}
 			{loading && <Loading />}
 			{(!hikes || hikes.length <= 0) && !loading && <NoData message={"No hikes found."} />}
-			{hikes.length > 0 && !loading && hikes.map((hike) => <HikeCard key={hike._id} hike={hike} showDetails={() => setCurrentHike(hike)} />)}
-			<PositionFilterModal 
-				show={showPositionFilter} 
-				setShow={setShowPositionFilter} 
-				onCancel={() => setShowPositionFilter(false)} 
+			{hikes.length > 0 &&
+				!loading &&
+				hikes.map((hike) => <HikeCard key={hike._id} hike={hike} showDetails={setCurrentHike} />)}
+			<PositionFilterModal
+				show={showPositionFilter}
+				setShow={setShowPositionFilter}
+				onCancel={() => setShowPositionFilter(false)}
 				onOk={(coordinates, radius) => {
 					setShowPositionFilter(false);
 					setFilters({
 						...filters,
 						locationCoordinatesLat: coordinates[0],
 						locationCoordinatesLng: coordinates[1],
-						locationRadius: radius * 1000
+						locationRadius: radius * 1000,
 					});
 				}}
 			></PositionFilterModal>
-			<ModalMap
-				handleClose={() => setCurrentHike(null)}
-				hike={currentHike}
-			></ModalMap>
+			<ModalMap handleClose={setCurrentHike} hike={currentHike}></ModalMap>
 		</div>
 	);
 };

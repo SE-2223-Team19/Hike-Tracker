@@ -45,10 +45,10 @@ async function createHike(hike) {
 			data.append(key, value);
 		}
 		const response = await fetch(new URL(ENDPOINTS.hikes.insert, BACKEND_URL), {
-		    method: "POST",
+			method: "POST",
 			credentials: "include",
-			body: data
-		}).then(res => res.json());
+			body: data,
+		}).then((res) => res.json());
 		return response;
 	} catch (err) {
 		console.error(err);

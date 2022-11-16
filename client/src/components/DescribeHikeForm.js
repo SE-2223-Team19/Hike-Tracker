@@ -292,7 +292,7 @@ function DescribeHikeForm() {
 												<option>Choose from saved locations</option>
 												{locations.map((location) => (
 													<option key={location._id} value={location.point} data-id={location._id}>
-														{location.locationType}
+														{location.description}
 													</option>
 												))}
 											</Form.Select>
@@ -418,7 +418,7 @@ function DescribeHikeForm() {
 												<option>Choose from saved locations</option>
 												{locations.map((location) => (
 													<option key={location._id} value={location.point} data-id={location._id}>
-														{location.locationType}
+														{location.description}
 													</option>
 												))}
 											</Form.Select>

@@ -11,11 +11,9 @@ const upload = multer({
 });
 const hikeRouter = express.Router();
 const hikeController = require("../controllers/hike-controller");
-
 hikeRouter.get("/", hikeController.getHikes);
 // hikeRouter.get("/:id", hikeController.getHike);
 hikeRouter.post("/", upload.single("gpxFile"), hikeController.createHike);
-// hikeRouter.patch("/:id", hikeController.updateHike);
+hikeRouter.patch("/:id", hikeController.updateHike);
 // hikeRouter.delete("/:id", hikeController.deleteHike);
-
 module.exports = hikeRouter;

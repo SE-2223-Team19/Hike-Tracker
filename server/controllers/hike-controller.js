@@ -64,7 +64,7 @@ async function createHike(req, res) {
 	try {
 		// Validate request body
 		const { body } = req;
-		
+
 		// Location validation schema
 		const locationSchema = joi.object().keys({
 			locationType: joi
@@ -103,7 +103,7 @@ async function createHike(req, res) {
 		const { error, value } = schema.validate(body);
 
 		if (error) throw error; // Joi validation error, goes to catch block
-		
+
 		if (!req.file) throw new Error("Must upload a file track");
 
 		const gpx = new GpxParser();
@@ -122,10 +122,14 @@ async function createHike(req, res) {
 
 async function updateHike(req, res) {
 	const { params, body } = req;
-
-	console.log("params", params);
-	console.log("body", body);
-	return;
+	const id = params.id;
+	const description = body.description;
+	try {
+		const hike = await hikeService.updateHike(id,description);
+		return res.status(StatusCodes.OK).json(hike.id);
+	} catch (err) {
+		return res.status(StatusCodes.BAD_REQUEST).json({ err: err.message});
+	}
 }
 
 module.exports = {

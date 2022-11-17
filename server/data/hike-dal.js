@@ -110,7 +110,19 @@ async function createHike(hike) {
 	return savedHike;
 }
 
+/**
+ * Update a hike.
+ * @param {*} id Hike to update.
+ * @param {*} description description.
+ * @returns Hike
+ */
+ async function updateHike(id, description) {
+	const hike = await Hike.findById(id).update(description);
+	return hike;
+}
+
 module.exports = {
 	getHikes,
 	createHike,
+	updateHike
 };

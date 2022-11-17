@@ -17,6 +17,19 @@ async function getLocations(filters = {}) {
 	}
 }
 
+async function createLocation(formData) {
+	try {
+		const response = await fetch(`${BACKEND_URL}${ENDPOINTS.locations.insert}`, {
+			method: "POST",
+			body: JSON.stringify(formData),
+		});
+		return await response.json();
+	} catch (err) {
+		return err;
+	}
+}
+
 module.exports = {
 	getLocations,
+	createLocation,
 };

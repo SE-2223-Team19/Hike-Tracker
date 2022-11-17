@@ -4,9 +4,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Map from "./pages/Map";
-import { useState, useEffect, Navigate } from "react";
+import { useState, useEffect } from "react";
 import { getUserInfo, logIn, logOut } from "./api/user";
-import DescribeHike from "./pages/DescribeHike";
 // import API from "./api";
 
 function App() {

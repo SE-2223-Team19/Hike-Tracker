@@ -1,30 +1,13 @@
 import { useEffect, useState } from "react";
-import { Form, Button, Row, Col, Stack, ButtonGroup, ToggleButton } from "react-bootstrap";
+import { Form, Button, Row, Col } from "react-bootstrap";
 import { Difficulty } from "../helper/enums";
 import { capitalizeAndReplaceUnderscores } from "../helper/utils";
-import AddPointForm from "./AddPointForm";
-import AddReferencePointsForm from "./AddReferencePointsForm";
-import { useFormik, Formik, validateYupSchema } from "formik";
+import { Formik } from "formik";
 import * as Yup from "yup";
 import { getLocations } from "../api/locations";
 import { createHike } from "../api/hikes";
 
 function DescribeHikeForm() {
-	// ** Form state
-	// const [validated, setValidated] = useState(false);
-	// const [title, setTitle] = useState("");
-	// const [length, setLength] = useState("");
-	// const [ascent, setAscent] = useState("");
-	// const [expectedTime, setExpectedTime] = useState("");
-	// const [difficulty, setDifficulty] = useState("");
-	// const [description, setDescription] = useState("");
-	// const [startPoint, setStartPoint] = useState([]); // Array of two elements: [lat, lng] (or [lng, lat] ?)
-	// const [endPoint, setEndPoint] = useState([]); // Array of two elements: [lat, lng] (or [lng, lat] ?)
-	// const [referencePoints, setReferencePoints] = useState([[1, 2]]); // Array of array of two elements: [lat, lng] (or [lng, lat] ?)
-
-	const [addStartPointFromCoordinates, setAddStartPointFromCoordinates] = useState(false);
-	const [addEndPointFromCoordinates, setAddEndPointFromCoordinates] = useState(false);
-	const [referencePoints, setReferencePoints] = useState([]);
 	const [locations, setLocations] = useState([]);
 
 	// ** Data fetching
@@ -35,15 +18,6 @@ function DescribeHikeForm() {
 		};
 		fetchLocations();
 	}, []);
-
-	// ** Reference Points Functions
-	const addReferencePoint = (point) => {
-		setReferencePoints([...referencePoints, point]);
-	};
-
-	const removeReferencePoint = (point) => {
-		setReferencePoints(referencePoints.filter((p) => p !== point));
-	};
 
 	// ** On submit
 	const handleSubmit = async (values) => {
@@ -62,11 +36,7 @@ function DescribeHikeForm() {
 		description: Yup.string(),
 		gpxFile: Yup.mixed(),
 		startPointId: Yup.string(),
-		startPointLat: Yup.number()
-			.min(-90)
-			.max(90)
-			.required("Required")
-			.typeError("Must be a number"),
+		startPointLat: Yup.number().min(-90).max(90).required("Required").typeError("Must be a number"),
 		startPointLng: Yup.number()
 			.min(-180)
 			.max(180)
@@ -88,10 +58,8 @@ function DescribeHikeForm() {
 				expectedTime: "",
 				difficulty: "",
 				description: "",
-				startPointLat: "",
-				startPointLng: "",
-				endPointLat: "",
-				endPointLng: "",
+				startPoint: [],
+				endPoint: [],
 				referencePoints: [],
 				gpxFile: null,
 			}}
@@ -228,292 +196,6 @@ function DescribeHikeForm() {
 								/>
 								<Form.Control.Feedback type="invalid">{errors.gpxFile}</Form.Control.Feedback>
 							</Form.Group>
-						</Col>
-					</Row>
-					<Row>
-						{/** Start Point */}
-						<Col xs={12} md={6}>
-							<Stack direction="horizontal" className="align-items-center justtify-content-between">
-								<Form.Label className="mt-4">
-									Start Point Lat: {values.startPointLat} Lng: {values.startPointLng}
-								</Form.Label>
-							</Stack>
-							<Stack gap={3}>
-								<ButtonGroup className="w-100">
-									<ToggleButton
-										id={`toggle-start-locations`}
-										variant="outline-success"
-										type="checkbox"
-										name="radio"
-										checked={!addStartPointFromCoordinates}
-										value={false}
-										onChange={() => setAddStartPointFromCoordinates(false)}
-									>
-										Choose from locations
-									</ToggleButton>
-									<ToggleButton
-										id={`toggle-start-coordinates`}
-										variant="outline-success"
-										type="checkbox"
-										name="radio"
-										value={true}
-										checked={addStartPointFromCoordinates}
-										onChange={() => setAddStartPointFromCoordinates(true)}
-									>
-										Insert coordinates
-									</ToggleButton>
-								</ButtonGroup>
-								{!addStartPointFromCoordinates && (
-									<Stack direction="horizontal" gap={3} className="align-items-start">
-										<Stack>
-											<Form.Select
-												placeholder="Choose from saved locations"
-												name="startPoint"
-												onChange={(e) => {
-													if (!isNaN(e.target.value[0])) {
-														const arrayPoint = e.target.value
-															.split(",")
-															.map((item) => parseFloat(item));
-														console.log(arrayPoint);
-														setFieldValue("startPointLat", arrayPoint[0]);
-														setFieldValue("startPointLng", arrayPoint[1]);
-														setFieldValue("startPointId", e.target.selectedOptions[0].getAttribute("data-id"));
-													}
-												}}
-												onBlur={handleBlur}
-												isInvalid={!!errors.startPointLat || !!errors.startPointLng}
-												isValid={
-													!errors.startPointLat &&
-													touched.startPointLat &&
-													!errors.startPointLng &&
-													touched.startPointLng
-												}
-											>
-												<option>Choose from saved locations</option>
-												{locations.map((location) => (
-													<option key={location._id} value={location.point} data-id={location._id}>
-														{location.description}
-													</option>
-												))}
-											</Form.Select>
-											<Form.Control.Feedback type="invalid">Invalid point</Form.Control.Feedback>
-										</Stack>
-										<Button
-											variant="success"
-											type="button"
-											onClick={() => {
-												validateField("startPointLat");
-												validateField("startPointLng");
-											}}
-										>
-											Add
-										</Button>
-									</Stack>
-								)}
-								{addStartPointFromCoordinates && (
-									<Stack gap={3}>
-										<Stack direction="horizontal" gap={2}>
-											<Form.Group>
-												<Form.Control
-													type="number"
-													placeholder="Latitude"
-													name="startPointLat"
-													onChange={handleChange}
-													onBlur={handleBlur}
-													isInvalid={!!errors.startPointLat}
-													isValid={!errors.startPointLat && touched.startPointLat}
-												/>
-												<Form.Control.Feedback type="invalid">
-													{errors.startPointLat}
-												</Form.Control.Feedback>
-											</Form.Group>
-
-											<Form.Group>
-												<Form.Control
-													type="number"
-													placeholder="Longitude"
-													name="startPointLng"
-													onChange={handleChange}
-													onBlur={handleBlur}
-													isInvalid={!!errors.startPointLng}
-													isValid={!errors.startPointLng && touched.startPointLng}
-												/>
-												<Form.Control.Feedback type="invalid">
-													{errors.startPointLng}
-												</Form.Control.Feedback>
-											</Form.Group>
-											<Button
-												variant="success"
-												onClick={() => {
-													validateField("startPointLat");
-													validateField("startPointLng");
-													setFieldValue("startPointId", null);
-												}}
-											>
-												Add
-											</Button>
-										</Stack>
-									</Stack>
-								)}
-							</Stack>
-						</Col>
-						{/** End Point */}
-						<Col xs={12} md={6}>
-							<Stack direction="horizontal" className="align-items-center justtify-content-between">
-								<Form.Label className="mt-4">
-									End Point Lat: {values.endPointLat} Lng: {values.endPointLng}
-								</Form.Label>
-							</Stack>
-							<Stack gap={3}>
-								<ButtonGroup className="w-100">
-									<ToggleButton
-										id={`toggle-end-locations`}
-										variant="outline-success"
-										type="checkbox"
-										name="radio"
-										checked={!addEndPointFromCoordinates}
-										value={false}
-										onChange={() => setAddEndPointFromCoordinates(false)}
-									>
-										Choose from locations
-									</ToggleButton>
-									<ToggleButton
-										id={`toggle-end-coordinates`}
-										variant="outline-success"
-										type="checkbox"
-										name="radio"
-										value={true}
-										checked={addEndPointFromCoordinates}
-										onChange={() => setAddEndPointFromCoordinates(true)}
-									>
-										Insert coordinates
-									</ToggleButton>
-								</ButtonGroup>
-								{!addEndPointFromCoordinates && (
-									<Stack direction="horizontal" gap={3} className="align-items-start">
-										<Stack>
-											<Form.Select
-												placeholder="Choose from saved locations"
-												name="endPoint"
-												onChange={(e) => {
-													if (!isNaN(e.target.value[0])) {
-														const arrayPoint = e.target.value
-															.split(",")
-															.map((item) => parseFloat(item));
-														console.log(arrayPoint);
-														setFieldValue("endPointLat", arrayPoint[0]);
-														setFieldValue("endPointLng", arrayPoint[1]);
-														setFieldValue("endPointId", e.target.selectedOptions[0].getAttribute("data-id"));
-													}
-												}}
-												onBlur={handleBlur}
-												isInvalid={!!errors.endPointLat || !!errors.endPointLng}
-												isValid={
-													!errors.endPointLat &&
-													touched.endPointLat &&
-													!errors.endPointLng &&
-													touched.endPointLng
-												}
-											>
-												<option>Choose from saved locations</option>
-												{locations.map((location) => (
-													<option key={location._id} value={location.point} data-id={location._id}>
-														{location.description}
-													</option>
-												))}
-											</Form.Select>
-											<Form.Control.Feedback type="invalid">Invalid point</Form.Control.Feedback>
-										</Stack>
-										<Button
-											variant="success"
-											type="button"
-											onClick={() => {
-												validateField("endPoint");
-												validateField("endPointLng");
-											}}
-										>
-											Add
-										</Button>
-									</Stack>
-								)}
-								{addEndPointFromCoordinates && (
-									<Stack gap={3}>
-										<Stack direction="horizontal" gap={2}>
-											<Form.Group>
-												<Form.Control
-													type="number"
-													placeholder="Latitude"
-													name="endPointLat"
-													onChange={handleChange}
-													onBlur={handleBlur}
-													isInvalid={!!errors.endPointLat}
-													isValid={!errors.endPointLat && touched.endPointLat}
-												/>
-												<Form.Control.Feedback type="invalid">
-													{errors.endPointLat}
-												</Form.Control.Feedback>
-											</Form.Group>
-
-											<Form.Group>
-												<Form.Control
-													type="number"
-													placeholder="Longitude"
-													name="endPointLng"
-													onChange={handleChange}
-													onBlur={handleBlur}
-													isInvalid={!!errors.endPointLng}
-													isValid={!errors.endPointLng && touched.endPointLng}
-												/>
-												<Form.Control.Feedback type="invalid">
-													{errors.endPointLng}
-												</Form.Control.Feedback>
-											</Form.Group>
-											<Button
-												variant="success"
-												onClick={() => {
-													validateField("endPointLat");
-													validateField("endPointLng");
-													setFieldValue("endPointId", null);
-												}}
-											>
-												Add
-											</Button>
-										</Stack>
-									</Stack>
-								)}
-							</Stack>
-						</Col>
-					</Row>
-					<Row>
-						<Col>
-							{/** Reference Points */}
-							{/* <Form.Group className="mt-4">
-								<Form.Label htmlFor="referencePoints">Reference Points</Form.Label>
-								{/** Reference Points List */}
-							{/* <ol className="mt-3">
-									{referencePoints.map((point, index) => {
-										return (
-											<li key={index} className="mb-3">
-												<Stack
-													direction="horizontal"
-													className="align-items-center justify-content-between"
-												>
-													<p>
-														Lat: {point[0]}, Long: {point[1]}
-													</p>
-													<Button
-														variant="outline-danger"
-														onClick={() => removeReferencePoint(point)}
-													>
-														Remove
-													</Button>
-												</Stack>
-											</li>
-										);
-									})}
-								</ol> */}
-							{/** Reference Points Add */}
-							{/* </Form.Group> */}
 						</Col>
 					</Row>
 					<Button type="submit" variant="success" className="mt-4" disabled={isSubmitting}>

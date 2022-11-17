@@ -26,7 +26,7 @@ function ModalMap({ handleClose, hike }) {
 				</MapContainer>
 			</Modal.Body>
 			<Modal.Footer>
-				<Button variant="secondary" onClick={handleClose}>
+				<Button variant="secondary" onClick={() => handleClose(null)}>
 					Close
 				</Button>
 			</Modal.Footer>

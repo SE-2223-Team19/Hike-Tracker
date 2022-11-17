@@ -86,6 +86,5 @@ No previous retrospective.
 - Improvement goals for the next sprint and how to achieve them (technical tasks, team coordination, etc.)
 Better coordination and time managment.
 
-> Propose one or two
-
 - One thing you are proud of as a Team!!
+We decided to use new technologies such as MongoDB even if we didn't know them well to learn new things together and get out of our comfort zone.

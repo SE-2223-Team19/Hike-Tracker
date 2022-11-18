@@ -6,6 +6,7 @@ import { Formik } from "formik";
 import * as Yup from "yup";
 import { getLocations } from "../api/locations";
 import { createHike } from "../api/hikes";
+import GpxParser from "gpxparser";
 
 function DescribeHikeForm() {
 	const [locations, setLocations] = useState([]);
@@ -18,6 +19,20 @@ function DescribeHikeForm() {
 		};
 		fetchLocations();
 	}, []);
+
+	const onGpxFileUpload = (file, setFieldValue) => {
+		setFieldValue("gpxFile", file);
+		const fileReader = new FileReader();
+		fileReader.onloadend = (e) => {
+			const gpx = new GpxParser();
+			gpx.parse(fileReader.result);
+			setFieldValue("length", gpx.tracks[0].distance.total);
+			setFieldValue("title", gpx.tracks[0].name);
+			setFieldValue("ascent", gpx.tracks[0].elevation.max - gpx.tracks[0].elevation.min);
+			setFieldValue("description", gpx.tracks[0].desc);
+		};
+		fileReader.readAsText(file);
+	};
 
 	// ** On submit
 	const handleSubmit = async (values) => {
@@ -102,7 +117,7 @@ function DescribeHikeForm() {
 						</Col>
 						<Col xs={12} md={4}>
 							<Form.Group controlId="length" className="mt-3">
-								<Form.Label>Length</Form.Label>
+								<Form.Label>Length (in meters)</Form.Label>
 								<Form.Control
 									type="number"
 									name="length"
@@ -116,7 +131,7 @@ function DescribeHikeForm() {
 						</Col>
 						<Col xs={12} md={4}>
 							<Form.Group controlId="ascent" className="mt-3">
-								<Form.Label>Ascent</Form.Label>
+								<Form.Label>Ascent (in meters)</Form.Label>
 								<Form.Control
 									type="number"
 									name="ascent"
@@ -132,7 +147,7 @@ function DescribeHikeForm() {
 					<Row>
 						<Col xs={12} md={6}>
 							<Form.Group controlId="expectedTime" className="mt-4">
-								<Form.Label>Expected time</Form.Label>
+								<Form.Label>Expected time (in minutes)</Form.Label>
 								<Form.Control
 									type="number"
 									name="expectedTime"
@@ -189,7 +204,7 @@ function DescribeHikeForm() {
 								<Form.Control
 									type="file"
 									name="gpxFile"
-									onChange={(e) => setFieldValue("gpxFile", e.target.files[0])}
+									onChange={(e) => onGpxFileUpload(e.target.files[0], setFieldValue)}
 									onBlur={handleBlur}
 									isInvalid={!!errors.gpxFile}
 									accept={".gpx,application/gpx+xml"}

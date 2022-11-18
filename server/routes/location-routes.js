@@ -5,7 +5,7 @@ const locationController = require("../controllers/location-controller");
 locationRouter.get("/", locationController.getLocations);
 // locationRouter.get("/:id", locationController.getLocation);
 locationRouter.post("/", locationController.createLocation);
-// locationRouter.patch("/:id", locationController.updateLocation);
+ locationRouter.put("/:id", locationController.updateLocationDescription);
 // locationRouter.delete("/:id", locationController.deleteLocation);
 
 module.exports = locationRouter;

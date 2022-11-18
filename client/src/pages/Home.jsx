@@ -7,7 +7,7 @@ import Hikes from "./Hikes";
 const Home = (props) => {
 	return (
 		<div>
-			<Header />
+			<Header logout={props.logout} loggedIn={props.loggedIn} setMessage={props.setMessage} message={props.message} />
 			<div className="mt-4">
 				<Routes>
 					<Route path="/" element={<Hikes />} />

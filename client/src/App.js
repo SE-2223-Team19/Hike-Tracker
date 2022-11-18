@@ -1,6 +1,6 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Container } from "react-bootstrap";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Map from "./pages/Map";
@@ -26,7 +26,7 @@ function App() {
 		try {
 			const user = await logIn(credentials);
 			setLoggedIn(true);
-			setMessage({ msg: `Welcome, ${user.name} s${user.id}!`, type: "success" });
+			setMessage({ msg: `Welcome, ${user.fullName}!`, type: "success" });
 		} catch (err) {
 			// console.log(err);
 			setMessage({ msg: `Incorrect username or password`, type: "danger" });
@@ -36,15 +36,15 @@ function App() {
 	const handleLogout = async () => {
 		await logOut();
 		setLoggedIn(false);
-		setMessage({ msg: `Logout successful!`, type: "success" });
+		setMessage({ msg: `Logout successful!`, type: "secondary" });
 	};
 
 	return (
 		<BrowserRouter>
 			<Container className="p-4">
 				<Routes>
-					<Route path="/*" element={<Layout mode="home" logout={handleLogout} loggedIn={loggedIn} />} />
-					<Route path="/login" element={<Layout mode="login" login={handleLogin} message={message} setMessage={setMessage} />} />
+					<Route path="/*" element={<Layout mode="home" logout={handleLogout} loggedIn={loggedIn} setMessage={setMessage} message={message} />} />
+					<Route path="/login" element={loggedIn ? <Navigate replace to='/' /> : <Layout mode="login" login={handleLogin} message={message} setMessage={setMessage} />} />
 					<Route path="/map" element={<Layout mode="map" />} />
 				</Routes>
 			</Container>
@@ -62,7 +62,7 @@ function Layout(props) {
 			outlet = <Login message={props.message} setMessage={props.setMessage} login={props.login} />;
 			break;
 		case "home":
-			outlet = <Home logout={props.logout} loggedIn={props.loggedIn} />;
+			outlet = <Home logout={props.logout} loggedIn={props.loggedIn} setMessage={props.setMessage} message={props.message} />;
 			break;
 		case "map":
 			outlet = <Map />;

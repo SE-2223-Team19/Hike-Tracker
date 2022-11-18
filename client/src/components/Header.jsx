@@ -1,5 +1,6 @@
 import React from "react";
-import { Button, Nav, Navbar } from "react-bootstrap";
+import { Nav, Navbar } from "react-bootstrap";
+import { NavLink } from "react-router-dom";
 
 const Header = () => {
 	return (
@@ -11,10 +12,10 @@ const Header = () => {
 				{/* <Nav.Link href="/">Hikes</Nav.Link>
 					<Nav.Link href="/">Other #1</Nav.Link>
 					<Nav.Link href="/">Other #2</Nav.Link> */}
-				<Nav.Link href="/login">
+				<NavLink to="/login" className={"btn btn-outline-success"}>
 					{/* If use is logged in, show user info, else show login button */}
-					<Button variant="outline-success">Login</Button>
-				</Nav.Link>
+					Login
+				</NavLink>
 			</Nav>
 		</Navbar>
 	);

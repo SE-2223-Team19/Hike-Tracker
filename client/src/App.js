@@ -43,8 +43,8 @@ function App() {
 		<BrowserRouter>
 			<Container className="p-4">
 				<Routes>
-					<Route path="/*" element={<Layout mode="home" />} />
-					<Route path="/login" element={<Layout mode="login" />} />
+					<Route path="/*" element={<Layout mode="home" logout={handleLogout} loggedIn={loggedIn} />} />
+					<Route path="/login" element={<Layout mode="login" login={handleLogin} message={message} setMessage={setMessage} />} />
 					<Route path="/map" element={<Layout mode="map" />} />
 				</Routes>
 			</Container>

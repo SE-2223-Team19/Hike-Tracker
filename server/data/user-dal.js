@@ -6,7 +6,7 @@ const User = require("../models/user-model");
  * @returns Users
  */
 async function getUsers(filterQuery = {}) {
-	const users = await User.find(filterQuery);
+	const users = await User.find(filterQuery).lean();
 	return users;
 }
 

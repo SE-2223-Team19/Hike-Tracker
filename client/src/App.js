@@ -4,6 +4,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Map from "./pages/Map";
+import DescribeHut from "./components/DescribeHutForm"
 import { useState, useEffect, Navigate } from "react";
 import { getUserInfo, logIn, logOut } from "./api/user";
 import DescribeHike from "./pages/DescribeHike";
@@ -68,6 +69,8 @@ function Layout(props) {
 		case "map":
 			outlet = <Map />;
 			break;
+		case "hut":
+			outlet =<DescribeHut/>
 		default:
 			outlet = <Home />;
 	}

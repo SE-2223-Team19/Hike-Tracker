@@ -57,8 +57,8 @@ async function createHike(hike) {
  * @returns
  */
 async function updateHike(id,description){
-	const newHike = hikeDAL.updateHike(id, description);
-	return newHike;
+	const result = hikeDAL.updateHike(id, description);
+	return result;
 }
 
 module.exports = { createHike, updateHike };

@@ -45,7 +45,7 @@ async function createHike(hike) {
 			data.append(key, value);
 		}
 		const response = await fetch(new URL(ENDPOINTS.hikes.insert, BACKEND_URL), {
-		    method: "POST",
+			method: "POST",
 			credentials: "include",
 			body: data
 		}).then(res => res.json());
@@ -55,8 +55,28 @@ async function createHike(hike) {
 	}
 }
 
+async function updateHikeDescription(id, description) {
+	try {
+		const response = await fetch(`${BACKEND_URL}${ENDPOINTS.hikes.byId.replace(":id", id)}`, {
+			method: "PUT",
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({ description: description })
+		});
+		if (response.ok) {
+			return id;
+		} else {
+			return response.json();
+		}
+	} catch (err) {
+		console.error(err);
+	}
+}
+
 module.exports = {
 	getHikes,
 	getHikeById,
 	createHike,
+	updateHikeDescription
 };

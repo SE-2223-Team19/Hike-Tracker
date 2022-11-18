@@ -125,10 +125,10 @@ async function updateHike(req, res) {
 	const id = params.id;
 	const description = body.description;
 	try {
-		const hike = await hikeService.updateHike(id,description);
-		return res.status(StatusCodes.OK).json(hike.id);
+		const result = await hikeService.updateHike(id, description);
+		return res.status(StatusCodes.OK).json(result);
 	} catch (err) {
-		return res.status(StatusCodes.BAD_REQUEST).json({ err: err.message});
+		return res.status(StatusCodes.BAD_REQUEST).json({ err: err.message });
 	}
 }
 

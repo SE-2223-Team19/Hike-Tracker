@@ -117,8 +117,8 @@ async function createHike(hike) {
  * @returns Hike
  */
  async function updateHike(id, description) {
-	const hike = await Hike.findById(id).update(description);
-	return hike;
+	const result = await Hike.updateOne({id: id},{description: description});
+	return result;
 }
 
 module.exports = {

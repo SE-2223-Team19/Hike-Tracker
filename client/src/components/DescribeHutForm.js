@@ -15,8 +15,8 @@ useEffect(()=>{
 		const InsertHunt=await createLocation(descriptions,point,location)
 	    
 	    setdescriptions(InsertHunt)
-	
 	}
+	
 })
 
 function submitHandler(){
@@ -32,7 +32,7 @@ function submitHandler(){
 <Form>
 					<Row>
 						<Col xs={12} md={4}>
-							<Form.Group controlId="title" className="mt-3">
+							<Form.Group controlId="title" className="mt-3" type="string" value={descriptions} placeholder="descriptions" onChange={(event)=>{setdescriptions(event.target.value)}}>
 								<Form.Label>LocationType</Form.Label>
 								<Form.Control
 									type="text"

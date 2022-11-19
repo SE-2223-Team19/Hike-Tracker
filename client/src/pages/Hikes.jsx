@@ -29,6 +29,8 @@ const Hikes = () => {
 		fetchHikes();
 	}, [filters]);
 
+	console.log(hikes);
+
 	return (
 		<div className="w-100">
 			<Stack direction="horizontal" className="justify-content-between align-items-center">

@@ -10,7 +10,7 @@ async function getLocations(filters = {}) {
 		const url = new URL(ENDPOINTS.locations.all, BACKEND_URL);
 		url.searchParams = new URLSearchParams(filters);
 		const response = await fetch(url, {
-			credentials: "include"
+			credentials: "include",
 		});
 		return await response.json();
 	} catch (err) {

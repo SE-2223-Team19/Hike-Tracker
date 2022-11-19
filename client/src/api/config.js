@@ -13,11 +13,11 @@ const ENDPOINTS = {
 	},
 	sessions: {
 		insert: "session",
-		current: "session/current"
+		current: "session/current",
 	},
 	users: {
 		insert: "user",
-		verify: "user/verify/:uniqueString"
+		verify: "user/verify/:uniqueString",
 	},
 };
 

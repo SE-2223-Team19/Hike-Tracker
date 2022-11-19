@@ -30,7 +30,6 @@ function App() {
 			setLoggedIn(true);
 			setMessage({ msg: `Welcome, ${user.fullName}!`, type: "success" });
 		} catch (err) {
-			// console.log(err);
 			setMessage({ msg: `Incorrect username or password`, type: "danger" });
 		}
 	};
@@ -46,8 +45,33 @@ function App() {
 			<Container className="p-4">
 				<Routes>
 					<Route path="/sign-in" element={<Layout mode="sign-in" />} />
-					<Route path="/*" element={<Layout mode="home" logout={handleLogout} loggedIn={loggedIn} setMessage={setMessage} message={message} />} />
-					<Route path="/login" element={loggedIn ? <Navigate replace to='/' /> : <Layout mode="login" login={handleLogin} message={message} setMessage={setMessage} />} />
+					<Route
+						path="/*"
+						element={
+							<Layout
+								mode="home"
+								logout={handleLogout}
+								loggedIn={loggedIn}
+								setMessage={setMessage}
+								message={message}
+							/>
+						}
+					/>
+					<Route
+						path="/login"
+						element={
+							loggedIn ? (
+								<Navigate replace to="/" />
+							) : (
+								<Layout
+									mode="login"
+									login={handleLogin}
+									message={message}
+									setMessage={setMessage}
+								/>
+							)
+						}
+					/>
 					<Route path="/map" element={<Layout mode="map" />} />
 					<Route path="/verify/:uniqueString" element={<Layout mode="verify" />} />
 				</Routes>
@@ -66,7 +90,14 @@ function Layout(props) {
 			outlet = <Login message={props.message} setMessage={props.setMessage} login={props.login} />;
 			break;
 		case "home":
-			outlet = <Home logout={props.logout} loggedIn={props.loggedIn} setMessage={props.setMessage} message={props.message} />;
+			outlet = (
+				<Home
+					logout={props.logout}
+					loggedIn={props.loggedIn}
+					setMessage={props.setMessage}
+					message={props.message}
+				/>
+			);
 			break;
 		case "sign-in":
 			outlet = <SignIn />;

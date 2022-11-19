@@ -10,9 +10,11 @@ const { BACKEND_URL } = require("./config");
  */
 async function getHikes(filters = {}) {
 	try {
-		const response = await fetch(
-			`${BACKEND_URL}${ENDPOINTS.hikes.all}/?` + new URLSearchParams(filters)
-		);
+		const url = new URL(ENDPOINTS.hikes.all, BACKEND_URL);
+		url.searchParams = new URLSearchParams(filters);
+		const response = await fetch(url, {
+			credentials: "include"
+		});
 		return await response.json();
 	} catch (err) {
 		console.error(err);

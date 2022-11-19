@@ -15,7 +15,7 @@ const ENDPOINTS = {
 		insert: "session",
 		current: "session/current"
 	},
-	user: {
+	users: {
 		insert: "user",
 		verify: "user/verify/:uniqueString"
 	},

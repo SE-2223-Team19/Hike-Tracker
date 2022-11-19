@@ -9,18 +9,14 @@ async function createUser({ email, fullName, userType, password, confirmPassword
         credentials: "include",
         body: JSON.stringify({email, fullName, userType, password, confirmPassword})
     });
-    if (response.ok) {
-        const user = await response.json();
-        return user;
-    }
-    else {
+    if (!response.ok) {
         const errDetails = await response.json();
         throw errDetails;
     }
 }
 
 async function verifyUser(uniqueString) {
-    const response = await fetch(new URL(ENDPOINTS.user.verify.replace(":uniqueString", uniqueString), BACKEND_URL), {
+    const response = await fetch(new URL(ENDPOINTS.users.verify.replace(":uniqueString", uniqueString), BACKEND_URL), {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

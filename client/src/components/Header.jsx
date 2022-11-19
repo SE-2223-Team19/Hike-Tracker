@@ -15,10 +15,17 @@ const Header = (props) => {
 				}
 			</Nav>
 			<Nav className="ms-auto align-items-center">
-				{props.loggedIn ? <Button variant="secondary" onClick={() => { props.logout() }}>Logout</Button> :
-					<NavLink to="/login" className={"btn btn-outline-success"} onClick={() => { props.setMessage(''); }}>
-						Login
-					</NavLink>
+				{
+					props.loggedIn ? 
+					<Button variant="secondary" onClick={() => { props.logout() }}>Logout</Button> :
+					<>
+						<NavLink to="/login" className={"btn btn-outline-success"} onClick={() => { props.setMessage(''); }}>
+							Login
+						</NavLink>
+						<NavLink to="/sign-in" className={"btn btn-success"} onClick={() => { props.setMessage(''); }}>
+							Sign In
+						</NavLink>
+					</>
 				}
 			</Nav>
 		</Navbar>

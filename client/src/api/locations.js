@@ -7,20 +7,22 @@ const { BACKEND_URL } = require("./config");
  */
 async function getLocations(filters = {}) {
 	try {
-		const response = await fetch(
-			`${BACKEND_URL}${ENDPOINTS.locations.all}/?` + new URLSearchParams(filters)
-		);
+		const url = new URL(ENDPOINTS.locations.all, BACKEND_URL);
+		url.searchParams = new URLSearchParams(filters);
+		const response = await fetch(url, {
+			credentials: "include"
+		});
 		return await response.json();
 	} catch (err) {
-		console.log(err);
 		return err;
 	}
 }
 
 async function createLocation(formData) {
 	try {
-		const response = await fetch(`${BACKEND_URL}${ENDPOINTS.locations.insert}`, {
+		const response = await fetch(new URL(ENDPOINTS.locations.insert, BACKEND_URL), {
 			method: "POST",
+			credentials: "include",
 			body: JSON.stringify(formData),
 		});
 		return await response.json();

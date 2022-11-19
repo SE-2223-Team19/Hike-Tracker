@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { Form, Row, Col, Button, Modal, Alert } from "react-bootstrap";
 import { UserType } from "../helper/enums";
 import { capitalizeAndReplaceUnderscores } from "../helper/utils";
-import { signIn } from "../api/users";
+import { createUser } from "../api/users";
 
 function SignInForm() {
     const [email, setEmail] = useState("");
@@ -46,7 +46,7 @@ function SignInForm() {
         if ([emailValidation(), confirmPasswordValidation(), userTypeValidation()].every(a => a)) {
             try {
                 setErrors({ ...errors, form: "" });
-                await signIn({
+                await createUser({
                     email,
                     fullName,
                     userType,

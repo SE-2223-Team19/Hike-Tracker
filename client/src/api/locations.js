@@ -10,7 +10,7 @@ async function getLocations(filters = {}) {
 		const url = new URL(ENDPOINTS.locations.all, BACKEND_URL);
 		url.searchParams = new URLSearchParams(filters);
 		const response = await fetch(url, {
-			credentials: "include"
+			credentials: "include",
 		});
 		return await response.json();
 	} catch (err) {
@@ -23,18 +23,6 @@ async function createLocation(formData) {
 		const response = await fetch(new URL(ENDPOINTS.locations.insert, BACKEND_URL), {
 			method: "POST",
 			credentials: "include",
-			body: JSON.stringify(formData),
-		});
-		return await response.json();
-	} catch (err) {
-		return err;
-	}
-}
-
-async function createLocation(formData) {
-	try {
-		const response = await fetch(`${BACKEND_URL}${ENDPOINTS.locations.insert}`, {
-			method: "POST",
 			body: JSON.stringify(formData),
 		});
 		return await response.json();

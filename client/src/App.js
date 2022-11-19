@@ -30,7 +30,6 @@ function App() {
 			setLoggedIn(true);
 			setMessage({ msg: `Welcome, ${user.fullName}!`, type: "success" });
 		} catch (err) {
-			// console.log(err);
 			setMessage({ msg: `Incorrect username or password`, type: "danger" });
 		}
 	};

@@ -2,8 +2,6 @@ import { Button, Modal } from "react-bootstrap";
 import { MapContainer, Polyline, TileLayer } from "react-leaflet";
 
 function ModalMap({ handleClose, hike }) {
-	console.log(hike);
-
 	return (
 		<Modal show={hike} onHide={() => handleClose(null)}>
 			<Modal.Header>

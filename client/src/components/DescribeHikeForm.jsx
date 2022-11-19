@@ -51,7 +51,6 @@ function DescribeHikeForm() {
 		// Format points for backend
 		delete values.extractPoints;
 		delete values.gpxFile;
-		console.log(values.referencePoints);
 		const createdHike = await createHike({ ...values });
 		if (createdHike) toast.success("Hike created successfully");
 		else toast.error("Error creating hike " + createdHike);

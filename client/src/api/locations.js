@@ -18,6 +18,7 @@ async function getLocations(filters = {}) {
 }
 
 async function createLocation(formData) {
+	console.log(formData);
 	try {
 		const response = await fetch(`${BACKEND_URL}${ENDPOINTS.locations.insert}`, {
 			method: "POST",

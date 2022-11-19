@@ -1,80 +1,85 @@
-import { useEffect, useState } from "react"
+import { createLocation } from "../api/locations";
+import {useState} from "react"
 import{Form,Row,Col,Button} from "react-bootstrap"
-import { createLocation } from "../api/locations"
-import { LocationType } from "../helper/enums"
+import {LocationType} from "../helper/enums"
 import {Formik} from "formik"
 function DescribeHutForm(){
    
 	const [descriptions,setdescriptions]=useState("")
-	const [point,SetPoint]=useState("")
-	const [location,SetLocation]=useState("")
+	//console.log(descriptions);
+    const [location,SetLocation]=useState("")
+	const [pointLat,SetPointLat]=useState("")
+    const [pointLng,SetPointLng]=useState("")
+   
+    const handlesubmit=async (x)=>{
     
-useEffect(()=>{
-	const fetchCreateHunt=async()=>{
-		
-		const InsertHunt=await createLocation(descriptions,point,location)
-	    
-	    setdescriptions(InsertHunt)
-	}
-	
-})
+      const value= x.map({
+        locationType: location,
+        description: descriptions,
+        point:[pointLat,pointLng]
+      })
+      await createLocation(value)
+    }
+    
 
-function submitHandler(){
-	
-	
-	
-	
+return(
+<Formik>
 
-}
-	
-	return(
-<Formik >
-<Form>
+<Form onSubmit={handlesubmit}>
 					<Row>
 						<Col xs={12} md={4}>
-							<Form.Group controlId="title" className="mt-3" type="string" value={descriptions} placeholder="descriptions" onChange={(event)=>{setdescriptions(event.target.value)}}>
+							<Form.Group controlId="title" className="mt-3" type="string" value={LocationType.HUT} placeholder="descriptions" onChange={(event)=>{SetLocation(event.target.value)}}>
 								<Form.Label>LocationType</Form.Label>
 								<Form.Control
 									type="text"
 									name="LocationType"
-									//alue={}
+									
 								/>
-								<Form.Control.Feedback type="invalid">LocationType</Form.Control.Feedback>
+								<Form.Control.Feedback type="invalid" >LocationType</Form.Control.Feedback>
 							</Form.Group>
 						</Col>
 						<Col xs={12} md={4}>
-							<Form.Group controlId="length" className="mt-3">
+							<Form.Group controlId="length" className="mt-3"  onChange={(event)=>{setdescriptions(event.target.value)}}>
 								<Form.Label>Description</Form.Label>
 								<Form.Control
-									
+									type="text"
+									name="Description"
 								/>
 								<Form.Control.Feedback type="invalid"></Form.Control.Feedback>
 							</Form.Group>
 						</Col>
 						<Col xs={12} md={4}>
-							<Form.Group controlId="ascent" className="mt-3">
-								<Form.Label>Point</Form.Label>
+							<Form.Group controlId="ascent" className="mt-3"  onChange={(event)=>{SetPointLat(event.target.value)}}>
+								<Form.Label>Latitude Point</Form.Label>
 								<Form.Control
-									
+									type="number"
+									name="Latitude"
 								/>
 								<Form.Control.Feedback type="invalid"></Form.Control.Feedback>
 							</Form.Group>
 						</Col>
 					</Row>
+					
 					<Row>
-
-					</Row>
-					<Row>
-						<Col>
+					<Col xs={12} md={4}>
+							<Form.Group controlId="ascent" className="mt-3"  onChange={(event)=>{SetPointLng(event.target.value)}}>
+								<Form.Label>Longitude Point</Form.Label>
+								<Form.Control
+									Type="number"
+									name="Longitude"
+								/>
+								<Form.Control.Feedback type="invalid"></Form.Control.Feedback>
+							</Form.Group>
 						
 						</Col>
 					</Row>
 
 
-					<Button variant="success" className="mt-4">Create</Button>{' '}
-					<Button variant="light" className="mt-4">Cancel</Button>{' '}
+					<Button variant="success" className="mt-4" type="submit">Create</Button>{' '}
+					<Button variant="light" className="mt-4" >Cancel</Button>{' '}
 </Form>
 </Formik>
-)                    
+)
 }
+
 export default DescribeHutForm

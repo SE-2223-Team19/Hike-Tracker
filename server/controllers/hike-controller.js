@@ -3,7 +3,6 @@ const { StatusCodes } = require("http-status-codes");
 const hikeDAL = require("../data/hike-dal");
 const hikeService = require("../services/hike-service");
 const { Difficulty, LocationType } = require("../models/enums");
-const GpxParser = require("gpxparser");
 
 /**
  * GET /hike
@@ -23,6 +22,7 @@ async function getHikes(req, res) {
 			minExpectedTime: joi.number(),
 			maxExpectedTime: joi.number(),
 			difficulty: joi.string().valid(...Object.values(Difficulty)),
+			createdBy: joi.string(),
 			// Location validation
 			locationCoordinatesLat: joi.number(),
 			locationCoordinatesLng: joi.number(),
@@ -46,6 +46,7 @@ async function getHikes(req, res) {
 		if (value.maxExpectedTime)
 			filter.expectedTime = { ...filter.expectedTime, $lt: value.maxExpectedTime };
 		if (value.difficulty) filter.difficulty = value.difficulty;
+		if (value.createdBy) filter.createdBy = value.createdBy;
 		if (value.locationCoordinatesLat && value.locationCoordinatesLng && value.locationRadius)
 			filter.startingPoint = {
 				coordinates: [value.locationCoordinatesLng, value.locationCoordinatesLat],
@@ -54,6 +55,22 @@ async function getHikes(req, res) {
 
 		const hikes = await hikeDAL.getHikes(filter, value.page, value.pageSize);
 		return res.status(StatusCodes.OK).json(hikes);
+	} catch (err) {
+		return res.status(StatusCodes.BAD_REQUEST).json({ err: err.message });
+	}
+}
+
+async function getHikeById(req, red) {
+	try {
+		const { params } = req;
+
+		const hike = await hikeDAL.getHikeById(params.id);
+
+		if (hike === null) {
+			return res.status(StatusCodes.NOT_FOUND).end();
+		}
+
+		return res.status(StatusCodes.OK).json(hike);
 	} catch (err) {
 		return res.status(StatusCodes.BAD_REQUEST).json({ err: err.message });
 	}
@@ -101,6 +118,8 @@ async function createHike(req, res) {
 		if (error) throw error; // Joi validation error, goes to catch block
 
 		// Parse GPX file moved to frontend
+		// Adding currently logged in user
+		value.createdBy = req.user._id;
 
 		// Create new hike
 		const createdHike = await hikeService.createHike(value);
@@ -111,15 +130,21 @@ async function createHike(req, res) {
 }
 
 async function updateHike(req, res) {
-	const { params, body } = req;
-
-	console.log("params", params);
-	console.log("body", body);
-	return;
+	try {
+		const { params, body } = req;
+		const hike = await hikeDAL.updateOneHike({
+			_id: params.id,
+			createdBy: req.user._id
+		}, body);
+		return res.status(StatusCodes.OK).json(hike);
+	} catch (err) {
+		return res.status(StatusCodes.BAD_REQUEST).json({ err: err.message, stack: err.stack });
+	}
 }
 
 module.exports = {
 	getHikes,
+	getHikeById,
 	createHike,
 	updateHike,
 };

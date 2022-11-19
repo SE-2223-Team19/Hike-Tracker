@@ -1,8 +1,11 @@
 import { Alert, Col, Row, Card } from "react-bootstrap";
 import LoginForm from "../components/LoginForm";
-import React from "react";
+import React, { useContext } from "react";
+import { AuthContext } from "../context/AuthContext";
 
-const Login = (props) => {
+const Login = () => {
+	const { message, setMessage, handleLogin } = useContext(AuthContext);
+
 	return (
 		<Row>
 			<Col>
@@ -23,19 +26,15 @@ const Login = (props) => {
 						</h3>
 					</Card.Header>
 					<Card.Body>
-						{props.message && (
+						{message && (
 							<Row>
-								<Alert
-									variant={props.message.type}
-									onClose={() => props.setMessage("")}
-									dismissible
-								>
-									{props.message.msg}
+								<Alert variant={message.type} onClose={() => setMessage("")} dismissible>
+									{message.msg}
 								</Alert>
 							</Row>
 						)}
 						<Card.Title style={{ textAlign: "center" }}>Login</Card.Title>
-						<LoginForm login={props.login} />
+						<LoginForm login={handleLogin} />
 					</Card.Body>
 				</Card>
 			</Col>

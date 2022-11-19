@@ -5,25 +5,22 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 const Verify = () => {
-    const { uniqueString } = useParams();
-    const [message, setMessage] = useState("");
+	const { uniqueString } = useParams();
+	const [message, setMessage] = useState("");
 
-    const verify = async () => {
-        const response = await verifyUser(uniqueString);
-        setMessage(response.message);
-    };
+	useEffect(() => {
+		const verify = async () => {
+			const response = await verifyUser(uniqueString);
+			setMessage(response.message);
+		};
+		verify();
+	}, [uniqueString]);
 
-    useEffect(() => {
-        verify();
-    }, []);
-
-    return (
-        <Row>
-            <Col>
-                {message}
-            </Col>
-        </Row>
-    );
+	return (
+		<Row>
+			<Col>{message}</Col>
+		</Row>
+	);
 };
 
 export default Verify;

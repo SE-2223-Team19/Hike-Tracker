@@ -4,6 +4,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Map from "./pages/Map";
+import Verify from "./pages/Verify";
 import { useState, useEffect } from "react";
 import { getUserInfo, logIn, logOut } from "./api/sessions";
 // import API from "./api";
@@ -46,6 +47,7 @@ function App() {
 					<Route path="/*" element={<Layout mode="home" logout={handleLogout} loggedIn={loggedIn} setMessage={setMessage} message={message} />} />
 					<Route path="/login" element={loggedIn ? <Navigate replace to='/' /> : <Layout mode="login" login={handleLogin} message={message} setMessage={setMessage} />} />
 					<Route path="/map" element={<Layout mode="map" />} />
+					<Route path="/verify/:uniqueString" element={<Layout mode="verify" />} />
 				</Routes>
 			</Container>
 		</BrowserRouter>
@@ -66,6 +68,9 @@ function Layout(props) {
 			break;
 		case "map":
 			outlet = <Map />;
+			break;
+		case "verify":
+			outlet = <Verify />;
 			break;
 		default:
 			outlet = <Home />;

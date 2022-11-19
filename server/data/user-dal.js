@@ -21,10 +21,7 @@ async function createUser(user) {
 	return savedUser;
 }
 async function updateUser(user) {
-	const updatedUser = await User.findByIdAndUpdate(user._id, user, {
-		new: true,
-	});
-	return updatedUser;
+	await User.findByIdAndUpdate(user._id, { $set: user }, { new: true });
 }
 
 module.exports = {

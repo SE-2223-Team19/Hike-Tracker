@@ -19,18 +19,16 @@ async function createUser(user) {
     }
 }
 
-async function updateUser(user) {
-    const response = await fetch(new URL(ENDPOINTS.user.update, BACKEND_URL), {
-        method: 'PUT',
+async function verifyUser(uniqueString) {
+    const response = await fetch(new URL(ENDPOINTS.user.verify.replace(":uniqueString", uniqueString), BACKEND_URL), {
+        method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
-        credentials: 'include',
-        body: JSON.stringify(user),
     });
     if (response.ok) {
-        const user = await response.json();
-        return user;
+        const message = await response.json();
+        return message;
     }
     else {
         const errDetails = await response.text();
@@ -40,5 +38,5 @@ async function updateUser(user) {
 
 module.exports = {
     createUser,
-    updateUser,
+    verifyUser,
 };

@@ -53,7 +53,8 @@ async function createUser(req, res) {
 }
 async function verifyUser(req, res) {
 	const uniqueString = req.params.uniqueString;
-	const user = await userDAL.getUsers({ uniqueString: uniqueString });
+	const users = await userDAL.getUsers({ uniqueString: uniqueString });
+	const user = users[0];
 	if (user) {
 		user.isValid = true;
 		await userDAL.updateUser(user);

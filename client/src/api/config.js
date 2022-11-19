@@ -17,7 +17,7 @@ const ENDPOINTS = {
 	},
 	user: {
 		insert: "user",
-		update: "user/verify/:uniqueString"
+		verify: "user/verify/:uniqueString"
 	},
 };
 

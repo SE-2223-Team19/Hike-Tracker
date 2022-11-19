@@ -64,15 +64,20 @@ async function createHike(req, res) {
 	try {
 		// Validate request body
 		const { body } = req;
+		console.log("body", body);
 
-		// Location validation schema
+		// Location validation schemas
 		const locationSchema = joi.object().keys({
+			_id: joi.string(),
 			locationType: joi
 				.string()
 				.valid(...Object.values(LocationType))
 				.required(),
-			description: joi.string().required(),
-			point: joi.array().items(joi.number()).length(2).required(),
+			description: joi.string().allow(""),
+			point: joi.object().keys({
+				lat: joi.number().required(),
+				lng: joi.number().required(),
+			}),
 		});
 
 		// Hike validation schema
@@ -86,32 +91,18 @@ async function createHike(req, res) {
 				.required()
 				.valid(...Object.values(Difficulty)),
 			description: joi.string().required(),
-			startPointId: joi.string(),
-			startPointLat: joi.number().min(-90).max(90),
-			startPointLng: joi.number().min(-180).max(180),
-			endPointId: joi.string(),
-			endPointLat: joi.number().min(-90).max(90),
-			endPointLng: joi.number().min(-180).max(180),
+			startPoint: locationSchema.required(),
+			endPoint: locationSchema.required(),
 			referencePoints: joi.array().items(locationSchema),
+			trackPoints: joi.array().items(joi.array().items(joi.number()).length(2)),
 		});
-
-		if (body.referencePoints === "") {
-			// Because with form data an empty array comes as a empty string
-			body.referencePoints = [];
-		}
 
 		// Validate request body against schema
 		const { error, value } = schema.validate(body);
 
 		if (error) throw error; // Joi validation error, goes to catch block
 
-		if (!req.file) throw new Error("Must upload a file track");
-
-		const gpx = new GpxParser();
-		gpx.parse(req.file.buffer.toString());
-
-		// Load parsed track points
-		value.trackPoints = gpx.tracks[0].points.map((p) => [p.lat, p.lon]);
+		// Parse GPX file moved to frontend
 
 		// Create new hike
 		const createdHike = await hikeService.createHike(value);

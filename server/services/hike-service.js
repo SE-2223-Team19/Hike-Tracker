@@ -9,30 +9,45 @@ const { LocationType } = require("../models/enums");
  * @returns
  */
 async function createHike(hike) {
-	// Create new locations for the start point and end point
-	if (!hike.startPointId) {
+	// Create new locations for the start point and end point if they don't exist
+	if (!hike.startPoint._id) {
+		console.log("Creating new start point", hike.startPoint);
 		const startPoint = await locationDAL.createLocation({
 			locationType: LocationType.DEFAULT,
 			description: `Starting point of '${hike.title}'`,
-			point: [hike.startPointLng, hike.startPointLat]
+			point: [hike.startPoint.point.lng, hike.startPoint.point.lat],
 		});
 		hike.startPointId = startPoint._id;
 	}
-	if (!hike.endPointId) {
+	if (!hike.endPoint._id) {
+		console.log("Creating new end point", hike.endPoint);
+
 		const endPoint = await locationDAL.createLocation({
 			locationType: LocationType.DEFAULT,
 			description: `End point of '${hike.title}'`,
-			point: [hike.endPointLng, hike.endPointLat]
+			point: [hike.endPoint.point.lng, hike.endPoint.point.lat],
 		});
 		hike.endPointId = endPoint._id;
 	}
 
-	// Create new locations for the reference points
+	// Create new locations for the reference points if they don't exist
+	console.log("Creating new reference points", hike.referencePoints);
 	const referencePoints = await Promise.all(
-		hike.referencePoints.map((referencePoint) => locationDAL.createLocation(referencePoint))
+		hike.referencePoints.map(async (referencePoint) => {
+			if (!referencePoint._id) {
+				return await locationDAL.createLocation({
+					locationType: referencePoint.locationType,
+					description: referencePoint.description,
+					point: [referencePoint.point.lng, referencePoint.point.lat],
+				});
+			} else {
+				return referencePoint;
+			}
+		})
 	);
 
 	// Create new hike
+	console.log("Creating new hike", hike);
 	const newHike = hikeDAL.createHike({
 		title: hike.title,
 		length: hike.length,
@@ -40,10 +55,10 @@ async function createHike(hike) {
 		expectedTime: hike.expectedTime,
 		difficulty: hike.difficulty,
 		description: hike.description,
-		startPoint: hike.startPointId,
-		endPoint: hike.endPointId,
+		startPoint: hike.startPoint._id || hike.startPointId,
+		endPoint: hike.endPoint._id || hike.endPointId,
 		referencePoints: referencePoints.map((referencePoint) => referencePoint._id),
-		trackPoints: hike.trackPoints
+		trackPoints: hike.trackPoints,
 	});
 
 	return newHike;

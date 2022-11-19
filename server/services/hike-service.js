@@ -11,7 +11,6 @@ const { LocationType } = require("../models/enums");
 async function createHike(hike) {
 	// Create new locations for the start point and end point if they don't exist
 	if (!hike.startPoint._id) {
-		console.log("Creating new start point", hike.startPoint);
 		const startPoint = await locationDAL.createLocation({
 			locationType: LocationType.DEFAULT,
 			description: `Starting point of '${hike.title}'`,
@@ -20,8 +19,6 @@ async function createHike(hike) {
 		hike.startPointId = startPoint._id;
 	}
 	if (!hike.endPoint._id) {
-		console.log("Creating new end point", hike.endPoint);
-
 		const endPoint = await locationDAL.createLocation({
 			locationType: LocationType.DEFAULT,
 			description: `End point of '${hike.title}'`,
@@ -31,7 +28,6 @@ async function createHike(hike) {
 	}
 
 	// Create new locations for the reference points if they don't exist
-	console.log("Creating new reference points", hike.referencePoints);
 	const referencePoints = await Promise.all(
 		hike.referencePoints.map(async (referencePoint) => {
 			if (!referencePoint._id) {
@@ -47,7 +43,6 @@ async function createHike(hike) {
 	);
 
 	// Create new hike
-	console.log("Creating new hike", hike);
 	const newHike = hikeDAL.createHike({
 		title: hike.title,
 		length: hike.length,

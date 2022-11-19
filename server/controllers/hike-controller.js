@@ -53,7 +53,6 @@ async function getHikes(req, res) {
 			};
 
 		const hikes = await hikeDAL.getHikes(filter, value.page, value.pageSize);
-		console.log(hikes);
 		return res.status(StatusCodes.OK).json(hikes);
 	} catch (err) {
 		return res.status(StatusCodes.BAD_REQUEST).json({ err: err.message });

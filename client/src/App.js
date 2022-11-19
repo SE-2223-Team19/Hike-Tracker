@@ -5,7 +5,7 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Map from "./pages/Map";
 import { useState, useEffect } from "react";
-import { getUserInfo, logIn, logOut } from "./api/user";
+import { getUserInfo, logIn, logOut } from "./api/sessions";
 // import API from "./api";
 
 function App() {

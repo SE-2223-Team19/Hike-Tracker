@@ -14,7 +14,11 @@ const ENDPOINTS = {
 	sessions: {
 		insert: "session",
 		current: "session/current"
-	}
+	},
+	user: {
+		insert: "user",
+		update: "user/verify/:uniqueString"
+	},
 };
 
 module.exports = { ENDPOINTS, BACKEND_URL };

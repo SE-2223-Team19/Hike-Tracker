@@ -20,8 +20,15 @@ async function createUser(user) {
 	const savedUser = await newUser.save();
 	return savedUser;
 }
+async function updateUser(user) {
+	const updatedUser = await User.findByIdAndUpdate(user._id, user, {
+		new: true,
+	});
+	return updatedUser;
+}
 
 module.exports = {
 	getUsers,
 	createUser,
+	updateUser,
 };

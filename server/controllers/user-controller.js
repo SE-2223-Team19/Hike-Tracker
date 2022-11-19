@@ -27,9 +27,9 @@ async function createUser(req, res) {
 
 		// Create new user
 
-		const salt = crypto.randomBytes(16).toString();
+    const salt = crypto.randomBytes(16).toString("hex");
 
-		const hash = crypto.scryptSync(value.password, salt, 32).toString();
+    const hash = crypto.scryptSync(value.password, salt, 32).toString("hex");
 
 		const uniqueString = randString();
 
@@ -48,9 +48,13 @@ async function createUser(req, res) {
 		sendEmail(value.email, uniqueString);
 		return res.status(StatusCodes.CREATED).json(createdUser);
 	} catch (err) {
-		return res.status(StatusCodes.BAD_REQUEST).json({ err: err.message });
+		if (err.name === "MongoServerError" && err.code === 11000) {
+			return res.status(StatusCodes.UNPROCESSABLE_ENTITY).json({ err: "This email is already used for another account" });
+		}
+		return res.status(StatusCodes.BAD_REQUEST).json({ err: err.details.map(e => e.message).join(", ") });
 	}
 }
+
 async function verifyUser(req, res) {
 	const uniqueString = req.params.uniqueString;
 	const users = await userDAL.getUsers({ uniqueString: uniqueString });
@@ -63,6 +67,7 @@ async function verifyUser(req, res) {
 		return res.status(StatusCodes.NOT_FOUND).json({ message: "User not found" });
 	}
 }
+
 module.exports = {
 	createUser,
 	verifyUser

@@ -4,6 +4,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Map from "./pages/Map";
+import SignIn from "./pages/SignIn";
 import Verify from "./pages/Verify";
 import { useState, useEffect } from "react";
 import { getUserInfo, logIn, logOut } from "./api/sessions";
@@ -44,6 +45,7 @@ function App() {
 		<BrowserRouter>
 			<Container className="p-4">
 				<Routes>
+					<Route path="/sign-in" element={<Layout mode="sign-in" />} />
 					<Route path="/*" element={<Layout mode="home" logout={handleLogout} loggedIn={loggedIn} setMessage={setMessage} message={message} />} />
 					<Route path="/login" element={loggedIn ? <Navigate replace to='/' /> : <Layout mode="login" login={handleLogin} message={message} setMessage={setMessage} />} />
 					<Route path="/map" element={<Layout mode="map" />} />
@@ -65,6 +67,9 @@ function Layout(props) {
 			break;
 		case "home":
 			outlet = <Home logout={props.logout} loggedIn={props.loggedIn} setMessage={props.setMessage} message={props.message} />;
+			break;
+		case "sign-in":
+			outlet = <SignIn />;
 			break;
 		case "map":
 			outlet = <Map />;

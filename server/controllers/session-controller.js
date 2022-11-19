@@ -15,7 +15,12 @@ async function createSession(req, res) {
                 if (err) {
                     return reject(err);
                 }
-                req.login(user, (err) => {
+                req.login({
+                    _id: user._id, 
+                    email: user.email,
+                    fullName: user.fullName, 
+                    userType: user.userType
+                }, (err) => {
                     if (err) {
                         return reject(err);
                     }

@@ -26,7 +26,7 @@ function ModalMap({ handleClose, hike }) {
         <Modal.Body>
             <MapContainer style={{ width: "100%", height: "50vh" }} center={(hike && hike.trackPoints[0]) || [0, 0]} zoom={9} scrollWheelZoom={false} zoomControl={true} dragging={true} setView={(hike && hike.trackPoints[0]) || [0, 0]} >
                 <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-                <Marker key={"start"} position={(hike && startPoint.reverse()) || [0, 0]} icon={markerStartEndPoint} >
+                <Marker key={"start"} position={(hike && hike.startPoint.reverse()) || [0, 0]} icon={markerStartEndPoint} >
                     <Popup>Start Point</Popup>
                 </Marker>
                 <Marker key={"end"} position={(hike && hike.endPoint.reverse()) || [0, 0]} icon={markerStartEndPoint}>

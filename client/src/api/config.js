@@ -14,6 +14,9 @@ const ENDPOINTS = {
 	sessions: {
 		insert: "session",
 		current: "session/current"
+	},
+	users: {
+		insert: "user"
 	}
 };
 

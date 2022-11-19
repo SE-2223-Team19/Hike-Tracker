@@ -41,4 +41,5 @@ async function logOut() {
     if (response.ok)
         return null;
 }
+
 export { getUserInfo, logIn, logOut }

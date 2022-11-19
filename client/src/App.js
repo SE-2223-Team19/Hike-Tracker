@@ -4,8 +4,9 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Map from "./pages/Map";
+import SignIn from "./pages/SignIn";
 import { useState, useEffect } from "react";
-import { getUserInfo, logIn, logOut } from "./api/user";
+import { getUserInfo, logIn, logOut } from "./api/sessions";
 // import API from "./api";
 
 function App() {
@@ -45,6 +46,7 @@ function App() {
 				<Routes>
 					<Route path="/*" element={<Layout mode="home" logout={handleLogout} loggedIn={loggedIn} />} />
 					<Route path="/login" element={<Layout mode="login" login={handleLogin} message={message} setMessage={setMessage} />} />
+					<Route path="/sign-in" element={<Layout mode="sign-in" />} />
 					<Route path="/map" element={<Layout mode="map" />} />
 				</Routes>
 			</Container>
@@ -63,6 +65,9 @@ function Layout(props) {
 			break;
 		case "home":
 			outlet = <Home logout={props.logout} loggedIn={props.loggedIn} />;
+			break;
+		case "sign-in":
+			outlet = <SignIn />;
 			break;
 		case "map":
 			outlet = <Map />;

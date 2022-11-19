@@ -11,9 +11,22 @@ async function getSession(req, res) {
 async function createSession(req, res) {
     try {
         const user = await (new Promise((resolve, reject) => {
-            passport.authenticate("local", (...args) => {
-                resolve(req.user);
-            });
+            passport.authenticate("local", (err, user) => {
+                if (err) {
+                    return reject(err);
+                }
+                req.login({
+                    _id: user._id, 
+                    email: user.email,
+                    fullName: user.fullName, 
+                    userType: user.userType
+                }, (err) => {
+                    if (err) {
+                        return reject(err);
+                    }
+                    return resolve(user);
+                  });
+            })(req, res);
         }));
         return res.status(StatusCodes.CREATED).json(user);
     } catch (err) {

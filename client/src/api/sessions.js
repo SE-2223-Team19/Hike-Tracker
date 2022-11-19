@@ -1,8 +1,7 @@
-const BACKEND_URL = "http://localhost:8080/api";
+const { BACKEND_URL, ENDPOINTS } = require("./config");
 
 async function getUserInfo() {
-    const url = BACKEND_URL + '/session/current';
-    const response = await fetch(url, {
+    const response = await fetch(new URL(ENDPOINTS.sessions.current, BACKEND_URL), {
         credentials: 'include',
     });
     const user = await response.json();
@@ -16,8 +15,7 @@ async function getUserInfo() {
 }
 
 async function logIn(credentials) {
-    const url = BACKEND_URL + '/session';
-    const response = await fetch(url, {
+    const response = await fetch(new URL(ENDPOINTS.sessions.insert, BACKEND_URL), {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -36,12 +34,12 @@ async function logIn(credentials) {
 }
 
 async function logOut() {
-    const url = BACKEND_URL + '/session/current'
-    const response = await fetch(url, {
+    const response = await fetch(new URL(ENDPOINTS.sessions.current, BACKEND_URL), {
         method: 'DELETE',
         credentials: 'include'
     });
     if (response.ok)
         return null;
 }
+
 export { getUserInfo, logIn, logOut }

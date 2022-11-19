@@ -25,23 +25,10 @@ const getApp = () => {
 		optionsSuccessStatus: 200,
 		credentials: true,
 	};
+	app.use(morgan("dev"));
 	app.use(cors(corsOptions));
 	app.use(express.json());
 	app.use(express.urlencoded({ extended: true }));
-	app.use(morgan("dev"));
-
-	// Passport configuration
-	passport.use(localStrategy);
-
-	passport.serializeUser(function (user, cb) {
-		cb(null, user);
-	});
-
-	passport.deserializeUser(function (user, cb) {
-		// this user is id + email + name
-		return cb(null, user);
-		// if needed, we can do extra check here (e.g., double check that the user is still in the database, etc.)
-	});
 
 	app.use(
 		session({
@@ -50,7 +37,20 @@ const getApp = () => {
 			saveUninitialized: false,
 		})
 	);
-	app.use(passport.authenticate("session"));
+
+	app.use(passport.session());
+	// Passport configuration
+	passport.use(localStrategy);
+
+	passport.serializeUser(function (user, cb) {
+		return cb(null, user);
+	});
+
+	passport.deserializeUser(function (user, cb) {
+		// this user is id + email + name
+		return cb(null, user);
+		// if needed, we can do extra check here (e.g., double check that the user is still in the database, etc.)
+	});
 
 	// Router
 	app.use("/api", appRouter);

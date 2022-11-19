@@ -11,6 +11,14 @@ const ENDPOINTS = {
 		byId: "location/:id",
 		insert: "location",
 	},
+	sessions: {
+		insert: "session",
+		current: "session/current",
+	},
+	users: {
+		insert: "user",
+		verify: "user/verify/:uniqueString",
+	},
 };
 
 module.exports = { ENDPOINTS, BACKEND_URL };

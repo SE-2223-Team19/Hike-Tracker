@@ -64,9 +64,8 @@ async function createHike(req, res) {
 	try {
 		// Validate request body
 		const { body } = req;
-		console.log("body", body);
 
-		// Location validation schemas
+		// Location validation schema
 		const locationSchema = joi.object().keys({
 			_id: joi.string(),
 			locationType: joi

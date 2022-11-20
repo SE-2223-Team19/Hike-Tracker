@@ -185,7 +185,7 @@ async function updateHike(req, res) {
 
 		// Validate request body against schema
 		const { error, value } = schema.validate(body);
-		
+
 		if (error) throw error; // Joi validation error, goes to catch block
 		
 		const hikeUpdated = await hikeService.updateHike(params.id, value)
@@ -193,6 +193,7 @@ async function updateHike(req, res) {
 		return res.status(StatusCodes.OK).json(hikeUpdated)
 
 	} catch(err) {
+		console.log(err)
 		return res.status(StatusCodes.BAD_REQUEST).json({ err: err.message, stack: err.stack });
 	}
 	

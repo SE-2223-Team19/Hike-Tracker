@@ -1,3 +1,4 @@
+const { default: mongoose } = require("mongoose");
 const { LocationType } = require("../models/enums");
 const Hike = require("../models/hike-model");
 const Location = require("../models/location-model");
@@ -128,8 +129,9 @@ async function createHike(hike) {
 
 async function updateHike(id, hike) {
 
-	const hikeToUpdate = await Hike.findById(id)
+	const hikeToUpdate = await Hike.findById(id);
 	
+
 	hikeToUpdate.title = hike.title ? hike.title : hikeToUpdate.title
 	hikeToUpdate.length = hike.length ? hike.length : hikeToUpdate.length
 	hikeToUpdate.ascent = hike.ascent ? hike.ascent : hikeToUpdate.ascent
@@ -151,9 +153,8 @@ async function updateHike(id, hike) {
 			hikeToUpdate.trackPoints.push(e)
 		})
 	}
-
-	const res = await Hike.findByIdAndUpdate(id, hikeToUpdate)
-	return res
+	await Hike.findByIdAndUpdate(id, hikeToUpdate)
+	return hikeToUpdate
 
 }
 

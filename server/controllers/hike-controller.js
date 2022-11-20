@@ -4,6 +4,7 @@ const hikeDAL = require("../data/hike-dal");
 const hikeService = require("../services/hike-service");
 const { Difficulty, LocationType } = require("../models/enums");
 const GpxParser = require("gpxparser");
+const { param } = require("../routes/hike-routes");
 
 /**
  * GET /hike
@@ -111,15 +112,60 @@ async function createHike(req, res) {
 }
 
 async function updateHike(req, res) {
-	const { params, body } = req;
 
-	console.log("params", params);
-	console.log("body", body);
-	return;
+	try {
+		
+		// Validate request body
+		const { params, body } = req;
+
+		// Location validation schema
+		const locationSchema = joi.object().keys({
+			_id: joi.string(),
+			locationType: joi
+				.string()
+				.valid(...Object.values(LocationType))
+				.required(),
+			description: joi.string().allow(""),
+			point: joi.object().keys({
+				lat: joi.number().required(),
+				lng: joi.number().required(),
+			}).required(),
+		});
+
+		// Hike validation schema
+		const schema = joi.object().keys({
+			title: joi.string(),
+			length: joi.number(),
+			ascent: joi.number(),
+			expectedTime: joi.number(),
+			difficulty: joi
+				.string()
+				.valid(...Object.values(Difficulty)),
+			description: joi.string(),
+			startPoint: locationSchema,
+			endPoint: locationSchema,
+			referencePoints: joi.array().items(locationSchema),
+			trackPoints: joi.array().items(joi.array().items(joi.number()).length(2)),
+		});
+
+		// Validate request body against schema
+		const { error, value } = schema.validate(body);
+		
+		if (error) throw error; // Joi validation error, goes to catch block
+		
+		const hikeUpdated = await hikeService.updateHike(params.id, value)
+		
+		return res.status(StatusCodes.OK).json(hikeUpdated)
+
+	} catch(err) {
+		return res.status(StatusCodes.BAD_REQUEST).json({ err: err.message, stack: err.stack });
+	}
+	
 }
 
 module.exports = {
 	getHikes,
 	createHike,
 	updateHike,
+	updateHike
 };

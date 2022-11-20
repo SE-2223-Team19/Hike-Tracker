@@ -1,6 +1,7 @@
 const locationDAL = require("../data/location-dal");
 const hikeDAL = require("../data/hike-dal");
 const { LocationType } = require("../models/enums");
+const Hike = require("../models/hike-model");
 
 /**
  * Creates a new hike and new locations for the start point, end point and reference points.
@@ -59,4 +60,11 @@ async function createHike(hike) {
 	return newHike;
 }
 
-module.exports = { createHike };
+async function updateHike(id, hike) {
+	
+	const hikeUpdated = await hikeDAL.updateHike(id, hike)
+	return hikeUpdated
+}
+
+
+module.exports = { createHike, updateHike };

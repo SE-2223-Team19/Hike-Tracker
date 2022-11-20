@@ -5,6 +5,7 @@ const ENDPOINTS = {
 		all: "hike",
 		byId: "hike/:id",
 		insert: "hike",
+		update: "hike/:id"
 	},
 	locations: {
 		all: "location",

@@ -1,8 +1,12 @@
 import React from "react";
-import { Nav, Navbar, Button, Alert } from "react-bootstrap";
+import { useContext } from "react";
+import { Nav, Navbar, Button, Alert, Stack } from "react-bootstrap";
 import { NavLink } from "react-router-dom";
+import { AuthContext } from "../context/AuthContext";
 
-const Header = (props) => {
+const Header = () => {
+	const { message, setMessage, handleLogout, loggedIn } = useContext(AuthContext);
+
 	return (
 		<Navbar>
 			<Navbar.Brand href="/">
@@ -10,23 +14,44 @@ const Header = (props) => {
 			</Navbar.Brand>
 
 			<Nav className="ms-auto align-items-center">
-				{props.message &&
-					<Alert variant={props.message.type} onClose={() => props.setMessage('')} dismissible>{props.message.msg}</Alert>
-				}
+				{message && (
+					<Alert variant={message.type} onClose={() => setMessage("")} dismissible>
+						{message.msg}
+					</Alert>
+				)}
 			</Nav>
 			<Nav className="ms-auto align-items-center">
-				{
-					props.loggedIn ? 
-					<Button variant="secondary" onClick={() => { props.logout() }}>Logout</Button> :
-					<>
-						<NavLink to="/login" className={"btn btn-outline-success"} onClick={() => { props.setMessage(''); }}>
+				{loggedIn ? (
+					<Button
+						variant="secondary"
+						onClick={() => {
+							handleLogout();
+						}}
+					>
+						Logout
+					</Button>
+				) : (
+					<Stack direction="horizontal" gap={4}>
+						<NavLink
+							to="/login"
+							className={"btn btn-outline-success"}
+							onClick={() => {
+								setMessage("");
+							}}
+						>
 							Login
 						</NavLink>
-						<NavLink to="/sign-in" className={"btn btn-success"} onClick={() => { props.setMessage(''); }}>
+						<NavLink
+							to="/sign-in"
+							className={"btn btn-success"}
+							onClick={() => {
+								setMessage("");
+							}}
+						>
 							Sign In
 						</NavLink>
-					</>
-				}
+					</Stack>
+				)}
 			</Nav>
 		</Navbar>
 	);

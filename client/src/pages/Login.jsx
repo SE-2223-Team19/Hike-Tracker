@@ -4,7 +4,7 @@ import React, { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 
 const Login = () => {
-	const { message, setMessage, handleLogin } = useContext(AuthContext);
+	const { message, setMessage } = useContext(AuthContext);
 
 	return (
 		<Row>
@@ -34,7 +34,7 @@ const Login = () => {
 							</Row>
 						)}
 						<Card.Title style={{ textAlign: "center" }}>Login</Card.Title>
-						<LoginForm login={handleLogin} />
+						<LoginForm />
 					</Card.Body>
 				</Card>
 			</Col>

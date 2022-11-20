@@ -10,8 +10,8 @@ import { AuthProvider } from "./context/AuthContext";
 
 function App() {
 	return (
-		<AuthProvider>
-			<BrowserRouter>
+		<BrowserRouter>
+			<AuthProvider>
 				<Container className="p-4">
 					<Routes>
 						<Route path="/sign-in" element={<Layout mode="sign-in" />} />
@@ -21,8 +21,8 @@ function App() {
 						<Route path="/verify/:uniqueString" element={<Layout mode="verify" />} />
 					</Routes>
 				</Container>
-			</BrowserRouter>
-		</AuthProvider>
+			</AuthProvider>
+		</BrowserRouter>
 	);
 }
 

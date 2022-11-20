@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { createContext } from "react";
+import { useNavigate } from "react-router-dom";
 import { getUserInfo, logIn, logOut } from "../api/sessions";
 
 const AuthContext = createContext({
@@ -12,6 +13,8 @@ const AuthContext = createContext({
 });
 
 const AuthProvider = ({ children }) => {
+	const navigate = useNavigate();
+
 	const [loggedIn, setLoggedIn] = useState(false);
 	const [message, setMessage] = useState("");
 	const [user, setUser] = useState(null);
@@ -32,6 +35,7 @@ const AuthProvider = ({ children }) => {
 			const user = await logIn(credentials);
 			setUser(user);
 			setLoggedIn(true);
+			navigate("/");
 			setMessage({ msg: `Welcome, ${user.fullName}!`, type: "success" });
 		} catch (err) {
 			setMessage({ msg: `Incorrect username or password`, type: "danger" });

@@ -1,7 +1,7 @@
 const { LocationType } = require("../models/enums");
 const Hike = require("../models/hike-model");
 const Location = require("../models/location-model");
-const locationDAL = require("../data/location-dal");
+const User = require("../models/user-model");
 
 /**
  * Get all hikes.
@@ -77,6 +77,14 @@ async function getHikes(filterQuery = {}, page = 1, pageSize = 10) {
 				},
 			},
 			{
+				$lookup: {
+					from: User.collection.name,
+					localField: "createdBy",
+					foreignField: "_id",
+					as: "createdBy",
+				},
+			},
+			{
 				$unwind: {
 					path: "$startPoint",
 				},
@@ -84,6 +92,11 @@ async function getHikes(filterQuery = {}, page = 1, pageSize = 10) {
 			{
 				$unwind: {
 					path: "$endPoint",
+				},
+			},
+			{
+				$unwind: {
+					path: "$createdBy",
 				},
 			},
 		]);
@@ -96,6 +109,7 @@ async function getHikes(filterQuery = {}, page = 1, pageSize = 10) {
 		.populate("startPoint")
 		.populate("endPoint")
 		.populate("referencePoints")
+		.populate("createdBy")
 		.lean();
 
 	return hikes;
@@ -124,6 +138,7 @@ async function updateHike(id, hike) {
 	hikeToUpdate.description = hike.description ? hike.description : hikeToUpdate.description
 	hikeToUpdate.startPoint = hike.startPoint ? hike.startPoint : hikeToUpdate.startPoint
 	hikeToUpdate.endPoint = hike.endPoint ? hike.endPoint : hikeToUpdate.endPoint
+	hikeToUpdate.createdBy = hike.createdBy ? hike.createdBy : hikeToUpdate.createdBy
 
 	if(hike.referencePoints) {
 		hike.referencePoints.forEach(e => {

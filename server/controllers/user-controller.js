@@ -27,9 +27,9 @@ async function createUser(req, res) {
 
 		// Create new user
 
-    const salt = crypto.randomBytes(16).toString("hex");
+		const salt = crypto.randomBytes(16).toString("hex");
 
-    const hash = crypto.scryptSync(value.password, salt, 32).toString("hex");
+		const hash = crypto.scryptSync(value.password, salt, 32).toString("hex");
 
 		const uniqueString = randString();
 
@@ -46,7 +46,7 @@ async function createUser(req, res) {
 		});
 
 		sendEmail(value.email, uniqueString);
-		return res.status(StatusCodes.CREATED).end();
+		return res.status(StatusCodes.CREATED).json({ _id: createdUser._id });
 	} catch (err) {
 		if (err.name === "MongoServerError" && err.code === 11000) {
 			return res.status(StatusCodes.UNPROCESSABLE_ENTITY).json({ err: "This email is already used for another account" });
@@ -62,9 +62,9 @@ async function verifyUser(req, res) {
 	if (user) {
 		user.isValid = true;
 		await userDAL.updateUser(user);
-		return res.status(StatusCodes.OK).json({ message: "User verified" });
+		return res.status(StatusCodes.OK).json({ message: "Your email address has been verified.", verified: true });
 	} else {
-		return res.status(StatusCodes.NOT_FOUND).json({ message: "User not found" });
+		return res.status(StatusCodes.NOT_FOUND).json({ message: "Your email address hasn't been verified.", verified: false });
 	}
 }
 

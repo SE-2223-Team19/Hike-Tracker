@@ -55,6 +55,7 @@ async function createHike(hike) {
 		endPoint: hike.endPoint._id || hike.endPointId,
 		referencePoints: referencePoints.map((referencePoint) => referencePoint._id),
 		trackPoints: hike.trackPoints,
+		createdBy: hike.createdBy
 	});
 
 	return newHike;

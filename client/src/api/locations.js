@@ -22,6 +22,10 @@ async function createLocation(formData) {
 	try {
 		const response = await fetch(`${BACKEND_URL}${ENDPOINTS.locations.insert}`, {
 			method: "POST",
+			credentials:"include",
+			headers:{
+				"Content-Type": "application/json"
+			},
 			body: JSON.stringify(formData),
 		});
 		return await response.json();

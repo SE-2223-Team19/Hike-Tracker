@@ -7,21 +7,24 @@ function DescribeHutForm(){
    
 	const [descriptions,setdescriptions]=useState("")
 	//console.log(descriptions);
-    const [location,SetLocation]=useState("")
+    //const [location,SetLocation]=useState("")
 	const [pointLat,SetPointLat]=useState("")
     const [pointLng,SetPointLng]=useState("")
+    
    
-    const handlesubmit=async (x)=>{
-    console.log(x);
-    event.preventDefault()
-      const value= x.map({
-        locationType: location,
+   
+    async function handlesubmit(event){ 
+      event.preventDefault()
+     let data={
+        locationType:"hut",
         description: descriptions,
         point:[pointLat,pointLng]
-      })
 
-      console.log(value);
-      await createLocation(value)
+     }
+     
+
+      console.log(data);
+      await createLocation(data)
     }
     
 
@@ -30,17 +33,7 @@ return(
 
 <Form onSubmit={handlesubmit}>
 					<Row>
-						<Col xs={12} md={4}>
-							<Form.Group controlId="title" className="mt-3" type="string" value={location} placeholder="descriptions" onChange={(event)=>{SetLocation(event.target.value)}}>
-								<Form.Label>LocationType</Form.Label>
-								<Form.Control
-									type="text"
-									name="LocationType"
-									
-								/>
-								<Form.Control.Feedback type="invalid" >LocationType</Form.Control.Feedback>
-							</Form.Group>
-						</Col>
+						
 						<Col xs={12} md={4}>
 							<Form.Group controlId="length" className="mt-3" value={descriptions}  onChange={(event)=>{setdescriptions(event.target.value)}}>
 								<Form.Label>Description</Form.Label>

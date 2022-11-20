@@ -1,6 +1,6 @@
 import { createLocation } from "../api/locations";
 import {useState} from "react"
-import{Form,Row,Col,Button} from "react-bootstrap"
+import{Form,Row,Col,Button,Card} from "react-bootstrap"
 import {LocationType} from "../helper/enums"
 import {Formik} from "formik"
 function DescribeHutForm(){
@@ -28,8 +28,10 @@ function DescribeHutForm(){
     }
     
 
+
 return(
-<Formik>
+
+
 
 <Form onSubmit={handlesubmit}>
 					<Row>
@@ -74,7 +76,7 @@ return(
 					<Button variant="success" className="mt-4" type="submit">Create</Button>{' '}
 					<Button variant="light" className="mt-4" >Cancel</Button>{' '}
 </Form>
-</Formik>
+
 )
 }
 

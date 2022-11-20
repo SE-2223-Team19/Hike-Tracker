@@ -4,10 +4,10 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Map from "./pages/Map";
-import DescribeHike from "./pages/DescribeHike";
+import DescribeHut from "./pages/Describe-hut";
 import { useState, useEffect, Navigate } from "react";
 import { getUserInfo, logIn, logOut } from "./api/user";
-import DescribeHutForm from "./components/DescribeHutForm"
+
 // import API from "./api";
 
 function App() {
@@ -71,7 +71,7 @@ function Layout(props) {
 			outlet = <Map />;
 			break;
 		case "hut":
-			outlet =<DescribeHutForm/>
+			outlet =<DescribeHut/>
 			break;
 		default:
 			outlet = <Home />;

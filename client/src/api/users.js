@@ -1,13 +1,13 @@
 const { BACKEND_URL, ENDPOINTS } = require("./config");
 
 async function createUser({ email, fullName, userType, password, confirmPassword }) {
-    const response = await fetch(new URL(ENDPOINTS.users.insert, BACKEND_URL), { 
+    const response = await fetch(new URL(ENDPOINTS.users.insert, BACKEND_URL), {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
         credentials: "include",
-        body: JSON.stringify({email, fullName, userType, password, confirmPassword})
+        body: JSON.stringify({ email, fullName, userType, password, confirmPassword })
     });
     if (!response.ok) {
         const errDetails = await response.json();
@@ -22,7 +22,7 @@ async function verifyUser(uniqueString) {
             'Content-Type': 'application/json',
         },
     });
-    if (response.ok) {
+    if (response.ok || response.status === 404) {
         const message = await response.json();
         return message;
     }

@@ -56,8 +56,25 @@ async function createHike(hike) {
 	}
 }
 
+async function updateHike(hike) {
+	try {
+		const response = await fetch(new URL(ENDPOINTS.hikes.insert, BACKEND_URL), {
+			method: "PATCH",
+			credentials: "include",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify(hike),
+		});
+		return await response.json();
+	} catch (err) {
+		console.error(err);
+	}
+}
+
 module.exports = {
 	getHikes,
 	getHikeById,
 	createHike,
+	updateHike
 };

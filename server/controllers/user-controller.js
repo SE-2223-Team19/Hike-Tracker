@@ -46,7 +46,7 @@ async function createUser(req, res) {
 		});
 
 		sendEmail(value.email, uniqueString);
-		return res.status(StatusCodes.CREATED).end();
+		return res.status(StatusCodes.CREATED).json({ _id: createdUser._id });
 	} catch (err) {
 		if (err.name === "MongoServerError" && err.code === 11000) {
 			return res.status(StatusCodes.UNPROCESSABLE_ENTITY).json({ err: "This email is already used for another account" });

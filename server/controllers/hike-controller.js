@@ -24,9 +24,17 @@ async function getHikes(req, res) {
 			difficulty: joi.string().valid(...Object.values(Difficulty)),
 			createdBy: joi.string(),
 			// Location validation
-			locationCoordinatesLat: joi.number(),
-			locationCoordinatesLng: joi.number(),
-			locationRadius: joi.number().greater(0).description("Max distance in kilometers"),
+			locationCoordinatesLat: joi.number().min(-90).max(90),
+			locationCoordinatesLng: joi.number().min(-180).max(180).when(joi.ref("locationCoordinatesLat"), {
+				is: joi.exist(),
+				then: joi.required(),
+				otherwise: joi.forbidden()
+			}),
+			locationRadius: joi.number().greater(0).when(joi.ref("locationCoordinatesLat"), {
+				is: joi.exist(),
+				then: joi.required(),
+				otherwise: joi.forbidden()
+			}),
 			page: joi.number().greater(0).default(1),
 			pageSize: joi.number().greater(0).default(100),
 		});

@@ -12,12 +12,15 @@ function DescribeHutForm(){
     const [pointLng,SetPointLng]=useState("")
    
     const handlesubmit=async (x)=>{
-    
+    console.log(x);
+    event.preventDefault()
       const value= x.map({
         locationType: location,
         description: descriptions,
         point:[pointLat,pointLng]
       })
+
+      console.log(value);
       await createLocation(value)
     }
     
@@ -28,7 +31,7 @@ return(
 <Form onSubmit={handlesubmit}>
 					<Row>
 						<Col xs={12} md={4}>
-							<Form.Group controlId="title" className="mt-3" type="string" value={LocationType.HUT} placeholder="descriptions" onChange={(event)=>{SetLocation(event.target.value)}}>
+							<Form.Group controlId="title" className="mt-3" type="string" value={location} placeholder="descriptions" onChange={(event)=>{SetLocation(event.target.value)}}>
 								<Form.Label>LocationType</Form.Label>
 								<Form.Control
 									type="text"
@@ -39,7 +42,7 @@ return(
 							</Form.Group>
 						</Col>
 						<Col xs={12} md={4}>
-							<Form.Group controlId="length" className="mt-3"  onChange={(event)=>{setdescriptions(event.target.value)}}>
+							<Form.Group controlId="length" className="mt-3" value={descriptions}  onChange={(event)=>{setdescriptions(event.target.value)}}>
 								<Form.Label>Description</Form.Label>
 								<Form.Control
 									type="text"
@@ -49,7 +52,7 @@ return(
 							</Form.Group>
 						</Col>
 						<Col xs={12} md={4}>
-							<Form.Group controlId="ascent" className="mt-3"  onChange={(event)=>{SetPointLat(event.target.value)}}>
+							<Form.Group controlId="ascent" className="mt-3"  value={pointLat}  onChange={(event)=>{SetPointLat(event.target.value)}}>
 								<Form.Label>Latitude Point</Form.Label>
 								<Form.Control
 									type="number"
@@ -62,7 +65,7 @@ return(
 					
 					<Row>
 					<Col xs={12} md={4}>
-							<Form.Group controlId="ascent" className="mt-3"  onChange={(event)=>{SetPointLng(event.target.value)}}>
+							<Form.Group controlId="ascent" className="mt-3"  value={pointLng} onChange={(event)=>{SetPointLng(event.target.value)}}>
 								<Form.Label>Longitude Point</Form.Label>
 								<Form.Control
 									Type="number"

@@ -13,7 +13,7 @@ const Home = (props) => {
 				<Routes>
 					<Route path="/" element={<Hikes />} />
 					<Route path="/describe-hike" element={<DescribeHike />} />
-					<Route path="/hut" element={<DescribeHutForm/>} />
+					
 				</Routes>
 			</div>
 		</div>

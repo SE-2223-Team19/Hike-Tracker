@@ -1,8 +1,7 @@
-const { default: mongoose } = require("mongoose");
-const { LocationType } = require("../models/enums");
 const Hike = require("../models/hike-model");
 const Location = require("../models/location-model");
 const User = require("../models/user-model");
+const locationDAL = require("../data/location-dal");
 
 /**
  * Get all hikes.
@@ -127,34 +126,13 @@ async function createHike(hike) {
 	return savedHike;
 }
 
-async function updateHike(id, hike) {
+async function updateHike(id, hikeUpdated) {
 
-	const hikeToUpdate = await Hike.findById(id);
-	
+	const hikeUpdate = await Hike.findByIdAndUpdate(id, hikeUpdated, {new: true});
 
-	hikeToUpdate.title = hike.title ? hike.title : hikeToUpdate.title
-	hikeToUpdate.length = hike.length ? hike.length : hikeToUpdate.length
-	hikeToUpdate.ascent = hike.ascent ? hike.ascent : hikeToUpdate.ascent
-	hikeToUpdate.expectedTime = hike.expectedTime ? hike.expectedTime : hikeToUpdate.expectedTime
-	hikeToUpdate.difficulty = hike.difficulty ? hike.difficulty : hikeToUpdate.difficulty
-	hikeToUpdate.description = hike.description ? hike.description : hikeToUpdate.description
-	hikeToUpdate.startPoint = hike.startPoint ? hike.startPoint : hikeToUpdate.startPoint
-	hikeToUpdate.endPoint = hike.endPoint ? hike.endPoint : hikeToUpdate.endPoint
-	hikeToUpdate.createdBy = hike.createdBy ? hike.createdBy : hikeToUpdate.createdBy
+	console.log(hikeUpdate);
+	return hikeUpdate;
 
-	if(hike.referencePoints) {
-		hike.referencePoints.forEach(e => {
-			hikeToUpdate.referencePoints.push(e)
-		})
-	}
-
-	if(hike.trackPoints) {
-		hike.trackPoints.forEach(e => {
-			hikeToUpdate.trackPoints.push(e)
-		})
-	}
-	await Hike.findByIdAndUpdate(id, hikeToUpdate)
-	return hikeToUpdate
 
 }
 

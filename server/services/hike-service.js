@@ -1,7 +1,6 @@
 const locationDAL = require("../data/location-dal");
 const hikeDAL = require("../data/hike-dal");
 const { LocationType } = require("../models/enums");
-const Hike = require("../models/hike-model");
 
 /**
  * Creates a new hike and new locations for the start point, end point and reference points.
@@ -61,11 +60,54 @@ async function createHike(hike) {
 	return newHike;
 }
 
-async function updateHike(id, hike) {
-	
-	const hikeUpdated = await hikeDAL.updateHike(id, hike)
-	return hikeUpdated
+
+async function checkPropertyLocation(point) {
+
+	if (point instanceof String) {
+		const pt = await Location.findById(point);
+		return pt
+	} else {
+		if (changes.startPoint) {
+			const pt = await locationDAL.createLocation(point);
+			return pt
+		}
+	}
+
 }
+
+async function updateHike(id, changes) {
+
+	// if (changes.startPoint instanceof String) {
+	// 	const startPoint = await Location.findById(changes.startPoint);
+	// 	changes.startPoint = startPoint._id;
+	// } else {
+	// 	if (changes.startPoint) {
+	// 		const startPoint = await locationDAL.createLocation(changes.startPoint);
+	// 		changes.startPoint = startPoint._id;
+	// 	}
+	// }
+
+	changes.startPoint ? changes.startPoint = await checkPropertyLocation(changes.startPoint) : null;
+
+	// if (changes.endPoint instanceof String) {
+	// 	const endPoint = await Location.findById(changes.endPoint);
+	// 	changes.endPoint = endPoint._id;
+	// } else {
+	// 	if (changes.endPoint) {
+	// 		const endPoint = await locationDAL.createLocation(changes.endPoint);
+	// 		changes.endPoint = endPoint._id;
+	// 	}
+	// }
+
+	changes.endPoint ? changes.endPoint = await checkPropertyLocation(changes.endPoint) : null;
+
+	const updatedHike = await hikeDAL.updateHike(id, changes);
+
+	return updatedHike
+
+}
+
+
 
 
 module.exports = { createHike, updateHike };

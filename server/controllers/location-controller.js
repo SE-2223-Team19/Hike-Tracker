@@ -81,7 +81,53 @@ async function createLocation(req, res) {
 	}
 }
 
+async function getHuts(req, res) {
+	try {
+		
+		const { query } = req;
+
+		const schema = joi.object().keys({
+			description: joi.string(),
+			locationLat: joi.number().min(-90).max(90),
+			locationLon: joi.number().min(-180).max(180).when(joi.ref("locationLat"), {
+				is: joi.exist(),
+				then: joi.required(),
+				otherwise: joi.forbidden()
+			}),
+			locationRadius: joi.number().greater(0).when(joi.ref("locationLat"), {
+				is: joi.exist(),
+				then: joi.required(),
+				otherwise: joi.forbidden()
+			})
+		});
+
+		const { error, value } = schema.validate(query);
+
+		if (error) throw error;
+
+		let filter = { locationType: LocationType.HUT };
+
+		if (value.description) filter.description = { $regex: value.description };
+		if (value.locationLat && value.locationLon && value.locationRadius) filter.point = {
+			$near: {
+				$geometry: {
+					type: "Point",
+					coordinates: [value.locationLon, value.locationLat]
+				},
+				$maxDistance: value.locationRadius // Distance in meters
+			}
+		};
+
+		const huts = await locationDAL.getLocations(filter);
+		return res.status(StatusCodes.OK).json(huts);
+	} catch (err) {
+		return res.status(StatusCodes.BAD_REQUEST).json({ err: err.message });
+	}
+}
+
+
 module.exports = {
 	getLocations,
 	createLocation,
+	getHuts
 };

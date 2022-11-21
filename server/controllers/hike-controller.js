@@ -168,9 +168,9 @@ async function updateHike(req, res) {
 				.string()
 				.valid(...Object.values(Difficulty)),
 			description: joi.string(),
-			startPoint: locationSchema,
-			endPoint: locationSchema,
-			referencePoints: joi.array().items(locationSchema),
+			startPoint: [locationSchema, joi.string()],
+			endPoint: [locationSchema, joi.string()],
+			referencePoints: joi.array().items(locationSchema, joi.string()),
 			trackPoints: joi.array().items(joi.array().items(joi.number()).length(2)),
 			createdBy: joi.object().keys({
 				email: joi.string().required(),

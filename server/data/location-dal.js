@@ -23,7 +23,7 @@ async function createLocation(location) {
 	const savedLocation = await newLocation.save();
 	return savedLocation;
 }
-
+	
 module.exports = {
 	getLocations,
 	createLocation,

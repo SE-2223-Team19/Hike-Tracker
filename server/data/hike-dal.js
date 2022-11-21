@@ -129,8 +129,6 @@ async function createHike(hike) {
 async function updateHike(id, hikeUpdated) {
 
 	const hikeUpdate = await Hike.findByIdAndUpdate(id, hikeUpdated, {new: true});
-
-	console.log(hikeUpdate);
 	return hikeUpdate;
 
 

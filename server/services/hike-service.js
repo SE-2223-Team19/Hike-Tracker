@@ -60,15 +60,18 @@ async function createHike(hike) {
 	return newHike;
 }
 
-
 async function checkPropertyLocation(point) {
 
 	if (point instanceof String) {
 		const pt = await Location.findById(point);
 		return pt
 	} else {
-		if (changes.startPoint) {
-			const pt = await locationDAL.createLocation(point);
+		if (point) {
+			const pt = await locationDAL.createLocation({
+				locationType: point.locationType,
+				description: point.description,
+				point: [point.point.lng, point.point.lat],	
+			});
 			return pt
 		}
 	}
@@ -77,29 +80,27 @@ async function checkPropertyLocation(point) {
 
 async function updateHike(id, changes) {
 
-	// if (changes.startPoint instanceof String) {
-	// 	const startPoint = await Location.findById(changes.startPoint);
-	// 	changes.startPoint = startPoint._id;
-	// } else {
-	// 	if (changes.startPoint) {
-	// 		const startPoint = await locationDAL.createLocation(changes.startPoint);
-	// 		changes.startPoint = startPoint._id;
-	// 	}
-	// }
-
 	changes.startPoint ? changes.startPoint = await checkPropertyLocation(changes.startPoint) : null;
-
-	// if (changes.endPoint instanceof String) {
-	// 	const endPoint = await Location.findById(changes.endPoint);
-	// 	changes.endPoint = endPoint._id;
-	// } else {
-	// 	if (changes.endPoint) {
-	// 		const endPoint = await locationDAL.createLocation(changes.endPoint);
-	// 		changes.endPoint = endPoint._id;
-	// 	}
-	// }
-
 	changes.endPoint ? changes.endPoint = await checkPropertyLocation(changes.endPoint) : null;
+	
+	let referencePoints = [];
+	if (changes.referencePoints) {
+		referencePoints = await Promise.all(
+			changes.referencePoints.map(async (referencePoint) => {
+				if (!referencePoint._id) {
+					return await locationDAL.createLocation({
+						locationType: referencePoint.locationType,
+						description: referencePoint.description,
+						point: [referencePoint.point.lng, referencePoint.point.lat],
+					});
+				} else {
+					return referencePoint;
+				}
+			})
+		);
+	}
+
+	changes.referencePoints = referencePoints
 
 	const updatedHike = await hikeDAL.updateHike(id, changes);
 

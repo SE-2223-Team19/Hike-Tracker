@@ -31,7 +31,23 @@ async function createLocation(formData) {
 	}
 }
 
+async function getHuts(filters = {}) {
+
+	try {
+		const url = new URL(ENDPOINTS.locations.all, BACKEND_URL);
+		url.searchParams = new URLSearchParams(filters);
+		const response = await fetch(url, {
+			credentials: "include",
+		});
+		return await response.json();
+	} catch (err) {
+		return err;
+	}
+
+}
+
 module.exports = {
 	getLocations,
 	createLocation,
+	getHuts
 };

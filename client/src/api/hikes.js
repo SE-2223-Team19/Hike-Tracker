@@ -56,7 +56,7 @@ async function createHike(hike) {
 	}
 }
 
-async function updateHike(hike) {
+async function updateHike(changes) {
 	try {
 		const response = await fetch(new URL(ENDPOINTS.hikes.update, BACKEND_URL), {
 			method: "PATCH",
@@ -64,7 +64,7 @@ async function updateHike(hike) {
 			headers: {
 				"Content-Type": "application/json",
 			},
-			body: JSON.stringify(hike),
+			body: JSON.stringify(changes),
 		});
 		return await response.json();
 	} catch (err) {

@@ -68,8 +68,8 @@ function DescribeHuts() {
 					setShowPositionFilter(false);
 					setFilters({
 						...filters,
-						locationCoordinatesLat: coordinates[0],
-						locationCoordinatesLng: coordinates[1],
+						locationLat: coordinates[0],
+						locationLon: coordinates[1],
 						locationRadius: radius * 1000,
 					});
 				}}
@@ -114,7 +114,7 @@ const HutFilters = ({ filters, setFilters, openModal }) => {
                                 }}
                             />
                         </Stack>
-                        <Form.Label>Starting point</Form.Label> <br/>
+                        <Form.Label>Location</Form.Label> <br/>
 						<Button onClick={openModal} variant={"success"}>Select area</Button>
                     </Form.Group>
                 </Col>

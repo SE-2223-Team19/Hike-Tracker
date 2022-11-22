@@ -2,6 +2,7 @@
 
 const { ENDPOINTS } = require("./config");
 const { BACKEND_URL } = require("./config");
+const { addQueryParams } = require("./config");
 
 /**
  * Get all hikes
@@ -11,7 +12,9 @@ const { BACKEND_URL } = require("./config");
 async function getHikes(filters = {}) {
 	try {
 		const url = new URL(ENDPOINTS.hikes.all, BACKEND_URL);
-		url.searchParams = new URLSearchParams(filters);
+
+		addQueryParams(url, filters);
+
 		const response = await fetch(url, {
 			credentials: "include",
 		});

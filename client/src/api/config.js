@@ -22,4 +22,15 @@ const ENDPOINTS = {
 	},
 };
 
-module.exports = { ENDPOINTS, BACKEND_URL };
+/**
+ * Adds the query parameters to the url
+ * @param {URL} url 
+ * @param {Object} query 
+ */
+function addQueryParams(url, query) {
+	for (const [key, value] of Object.entries(query)) {
+		url.searchParams.append(key, value.toString());
+	}
+}
+
+module.exports = { ENDPOINTS, BACKEND_URL, addQueryParams };

@@ -9,7 +9,9 @@ const { BACKEND_URL } = require("./config");
 async function getLocations(filters = {}) {
 	try {
 		const url = new URL(ENDPOINTS.locations.all, BACKEND_URL);
-		url.searchParams = new URLSearchParams(filters);
+
+		addQueryParams(url, filters);
+		
 		const response = await fetch(url, {
 			credentials: "include",
 		});
@@ -37,12 +39,8 @@ async function getHuts(filters = {}) {
 	try {
 		
 		const url = new URL(ENDPOINTS.locations.all, BACKEND_URL);
-		
-		url.searchParams = new URLSearchParams(filters);
-		//url.searchParams.append("locationType", "hut")
-		for(let x in filters)
-			url.searchParams.append(x, filters[x])
 
+		addQueryParams(url, { ...filters, locationType: "hut" });
 
 		const response = await fetch(url, {
 			credentials: "include"

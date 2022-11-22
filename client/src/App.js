@@ -7,6 +7,7 @@ import Map from "./pages/Map";
 import SignIn from "./pages/SignIn";
 import Verify from "./pages/Verify";
 import { AuthProvider } from "./context/AuthContext";
+import DefineReferencepage from "./pages/DefineReference"
 
 function App() {
 	return (
@@ -19,6 +20,7 @@ function App() {
 						<Route path="/login" element={<Layout mode="login" />} />
 						<Route path="/map" element={<Layout mode="map" />} />
 						<Route path="/verify/:uniqueString" element={<Layout mode="verify" />} />
+						<Route path="/reference-Point" element={<Layout mode="reference-Point" />} />
 					</Routes>
 				</Container>
 			</AuthProvider>
@@ -46,6 +48,9 @@ function Layout(props) {
 			break;
 		case "verify":
 			outlet = <Verify />;
+			break;
+		case "reference-Point"	:
+		    outlet = <DefineReferencepage/>
 			break;
 		default:
 			outlet = <Home />;

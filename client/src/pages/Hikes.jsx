@@ -29,7 +29,6 @@ const Hikes = () => {
 		fetchHikes();
 	}, [filters]);
 
-	console.log(hikes);
 
 	return (
 		<div className="w-100">

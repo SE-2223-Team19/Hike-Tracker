@@ -1,3 +1,4 @@
+const { LocationType } = require("../helper/enums");
 const { ENDPOINTS } = require("./config");
 const { BACKEND_URL } = require("./config");
 
@@ -34,18 +35,47 @@ async function createLocation(formData) {
 async function getHuts(filters = {}) {
 
 	try {
+		
 		const url = new URL(ENDPOINTS.locations.all, BACKEND_URL);
-		filters.locationType = "hut";
+		
 		url.searchParams = new URLSearchParams(filters);
+		//url.searchParams.append("locationType", "hut")
+		for(let x in filters)
+			url.searchParams.append(x, filters[x])
+
+
 		const response = await fetch(url, {
-			credentials: "include",
+			credentials: "include"
 		});
-		return await response.json();
+		
+		// let huts = await response.json()
+		// huts = await Promise.all(huts.map(async function(e) {
+		// 	// const address = await getAddresses(hut.point[0],hut.point[1])
+		// 	const address = await getAddresses(45.0623969,7.5222874)
+		// 	e.address = address
+		// 	return e
+		// }))
+
+		// return huts
+		return await response.json()
+
 	} catch (err) {
 		return err;
 	}
 
 }
+
+// async function getAddresses(latitude, longitude) {
+// 	try {
+		
+// 		const url = "https://nominatim.openstreetmap.org/reverse?lat=" + latitude + "&lon=" + longitude + "&format=jsonv2"
+
+// 		const response = await fetch(url);
+// 		return await response.json();
+// 	} catch (err) {
+// 		return err;
+// 	}
+// }
 
 module.exports = {
 	getLocations,

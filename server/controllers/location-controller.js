@@ -11,7 +11,7 @@ const { LocationType } = require("../models/enums");
 async function getLocations(req, res) {
 	try {
 		const { query } = req;
-
+		console.log(query)
 		const schema = joi.object().keys({
 			locationType: joi.string().valid(...Object.values(LocationType)),
 			description: joi.string(),
@@ -45,7 +45,7 @@ async function getLocations(req, res) {
                 $maxDistance: value.locationRadius // Distance in meters
             }
         };
-
+		
 		const locations = await locationDAL.getLocations(filter);
 		return res.status(StatusCodes.OK).json(locations);
 	} catch (err) {

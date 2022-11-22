@@ -13,7 +13,7 @@ const { Difficulty, LocationType, UserType } = require("../models/enums");
 async function getHikes(req, res) {
 	try {
 		const { query } = req;
-
+		console.log(query)
 		const schema = joi.object().keys({
 			minLength: joi.number(),
 			maxLength: joi.number(),

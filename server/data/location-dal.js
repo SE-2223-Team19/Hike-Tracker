@@ -8,6 +8,7 @@ const Location = require("../models/location-model");
  * @returns Locations
  */
 async function getLocations(filterQuery = {}) {
+
 	const locations = await Location.find(filterQuery)
 	.lean();
 	return locations;

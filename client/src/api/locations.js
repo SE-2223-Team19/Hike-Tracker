@@ -35,6 +35,7 @@ async function getHuts(filters = {}) {
 
 	try {
 		const url = new URL(ENDPOINTS.locations.all, BACKEND_URL);
+		filters.locationType = "hut";
 		url.searchParams = new URLSearchParams(filters);
 		const response = await fetch(url, {
 			credentials: "include",

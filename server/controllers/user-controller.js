@@ -3,8 +3,8 @@ const crypto = require("crypto");
 const { StatusCodes } = require("http-status-codes");
 const userDAL = require("../data/user-dal");
 const { UserType } = require("../models/enums");
-const { randString } = require("../utility");
-const { sendEmail } = require("../verification");
+const { randString } = require("../mail_verification/utility");
+const { sendEmail } = require("../mail_verification/verification");
 
 async function createUser(req, res) {
 	try {

@@ -28,14 +28,7 @@ const localStrategy = new LocalStrategy(async function verify(username, password
     });
 });
 
-const isLoggedIn = (req, res, next) => {
-    if (req.isAuthenticated()) {
-        return next();
-    }
-    return res.status(StatusCodes.UNAUTHORIZED).end();
-};
 
 module.exports = {
-    localStrategy,
-    isLoggedIn
+    localStrategy
 };

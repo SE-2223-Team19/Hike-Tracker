@@ -2,7 +2,6 @@ const joi = require("joi");
 const { StatusCodes } = require("http-status-codes");
 const locationDAL = require("../data/location-dal");
 const { LocationType } = require("../models/enums");
-const { param } = require("../router");
 
 /**
  * Get all locations.

@@ -138,16 +138,65 @@ async function createHike(req, res) {
 }
 
 async function updateHike(req, res) {
-	try {
+
+try {
+		
+		// Validate request body
 		const { params, body } = req;
-		const hike = await hikeDAL.updateOneHike({
-			_id: params.id,
-			createdBy: req.user._id
-		}, body);
-		return res.status(StatusCodes.OK).json(hike);
-	} catch (err) {
+
+		// Location validation schema
+		const locationSchema = joi.object().keys({
+			_id: joi.string(),
+			locationType: joi
+				.string()
+				.valid(...Object.values(LocationType))
+				.required(),
+			description: joi.string().allow(""),
+			point: joi.object().keys({
+				lat: joi.number().required(),
+				lng: joi.number().required(),
+			}).required(),
+		});
+
+		// Hike validation schema
+		const schema = joi.object().keys({
+			title: joi.string(),
+			length: joi.number(),
+			ascent: joi.number(),
+			expectedTime: joi.number(),
+			difficulty: joi
+				.string()
+				.valid(...Object.values(Difficulty)),
+			description: joi.string(),
+			startPoint: [locationSchema, joi.string()],
+			endPoint: [locationSchema, joi.string()],
+			referencePoints: joi.array().items(locationSchema, joi.string()),
+			trackPoints: joi.array().items(joi.array().items(joi.number()).length(2)),
+			createdBy: joi.object().keys({
+				email: joi.string().required(),
+				fullName: joi.string().required(),
+				userType: joi.string().valid(...Object.values(UserType)),
+				salt: joi.string().required(),
+				hash: joi.string().required(),
+				uniqueString: joi.string().required(),
+				isValid: joi.boolean().required()
+			})
+		});
+
+		// Validate request body against schema
+		const { error, value } = schema.validate(body);
+
+		if (error) throw error; // Joi validation error, goes to catch block
+		
+		const hikeUpdated = await hikeService.updateHike(params.id, value)
+		
+		return res.status(StatusCodes.OK).json(hikeUpdated)
+
+	} catch(err) {
+		console.log(err)
 		return res.status(StatusCodes.BAD_REQUEST).json({ err: err.message, stack: err.stack });
 	}
+
 }
 
 module.exports = {

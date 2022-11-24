@@ -76,5 +76,5 @@ module.exports = {
 	getHikes,
 	getHikeById,
 	createHike,
-	updateHike,
+	updateHike
 };

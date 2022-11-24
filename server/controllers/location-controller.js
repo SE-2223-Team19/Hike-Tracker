@@ -2,6 +2,7 @@ const joi = require("joi");
 const { StatusCodes } = require("http-status-codes");
 const locationDAL = require("../data/location-dal");
 const { LocationType } = require("../models/enums");
+const { param } = require("../router");
 
 /**
  * Get all locations.
@@ -81,7 +82,20 @@ async function createLocation(req, res) {
 	}
 }
 
+async function updateLocationDescription(req,res){
+	const { params, body } = req;
+	const id = params.id;
+	const description = body.description;
+	try {
+		const result = await locationDAL.updateLocationDescription(id, description);
+		return res.status(StatusCodes.OK).json(result);
+	} catch (err) {
+		return res.status(StatusCodes.BAD_REQUEST).json({ err: err.message });
+	}
+}
+
 module.exports = {
 	getLocations,
 	createLocation,
+	updateLocationDescription
 };

@@ -60,4 +60,16 @@ async function createHike(hike) {
 	return newHike;
 }
 
-module.exports = { createHike };
+
+/**
+ * Updates a hike with description.
+ * @param {*} id Hike to be update
+ * @param {*} description description of hike
+ * @returns
+ */
+async function updateHike(id,description){
+	const result = hikeDAL.updateHike(id, description);
+	return result;
+}
+
+module.exports = { createHike, updateHike };

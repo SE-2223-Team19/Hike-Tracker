@@ -1,5 +1,5 @@
 const express = require("express");
-const { isHutWorker, isLocalGuide } = require("../authorization-middlewares");
+const { isLocalGuide } = require("../authorization-middlewares");
 const hikeRouter = express.Router();
 const hikeController = require("../controllers/hike-controller");
 

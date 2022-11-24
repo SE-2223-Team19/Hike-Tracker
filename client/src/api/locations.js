@@ -19,10 +19,14 @@ async function getLocations(filters = {}) {
 }
 
 async function createLocation(formData) {
+	console.log(formData);
 	try {
 		const response = await fetch(new URL(ENDPOINTS.locations.insert, BACKEND_URL), {
 			method: "POST",
-			credentials: "include",
+			credentials:"include",
+			headers:{
+				"Content-Type": "application/json"
+			},
 			body: JSON.stringify(formData),
 		});
 		return await response.json();

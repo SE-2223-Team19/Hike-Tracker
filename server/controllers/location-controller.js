@@ -54,6 +54,7 @@ async function getLocations(req, res) {
 }
 
 async function createLocation(req, res) {
+	
 	try {
 		// Validate request body
 		const { body } = req;
@@ -69,6 +70,7 @@ async function createLocation(req, res) {
 		});
 
 		// Validate request body against schema
+		console.log(body);
 		const { error, value } = schema.validate(body);
 
 		if (error) throw error; // Joi validation error, goes to catch block

@@ -24,7 +24,13 @@ async function createLocation(location) {
 	return savedLocation;
 }
 
+async function updateLocationDescription(id,description){
+	const result = await Location.updateOne({id: id},{description: description});
+	return result; 
+}
+
 module.exports = {
 	getLocations,
 	createLocation,
+	updateLocationDescription
 };

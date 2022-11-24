@@ -13,9 +13,19 @@ async function getLocations(req, res) {
 		const { query } = req;
 
 		const schema = joi.object().keys({
-			type: joi.string().valid(...Object.values(LocationType)),
-			locationCoordinates: joi.array().items(joi.number()).length(2).description("Coordinates in the format [<longitude>, <latitude>]"),
-			locationRadius: joi.number().greater(0).description("Max distance in kilometers")
+			locationType: joi.string().valid(...Object.values(LocationType)),
+			description: joi.string(),
+			locationLat: joi.number().min(-90).max(90),
+			locationLon: joi.number().min(-180).max(180).when(joi.ref("locationLat"), {
+				is: joi.exist(),
+				then: joi.required(),
+				otherwise: joi.forbidden()
+			}),
+			locationRadius: joi.number().greater(0).when(joi.ref("locationLat"), {
+				is: joi.exist(),
+				then: joi.required(),
+				otherwise: joi.forbidden()
+			})
 		});
 
 		const { error, value } = schema.validate(query);
@@ -24,12 +34,13 @@ async function getLocations(req, res) {
 
 		let filter = {};
 
-		if (value.type) filter.type = { type: value.type };
-		if (value.locationCoordinates && value.locationRadius) filter.point = {
+		if (value.locationType) filter.locationType = value.locationType;
+		if (value.description) filter.description = { $regex: value.description };
+		if (value.locationLat && value.locationLon && value.locationRadius) filter.point = {
             $near: {
                 $geometry: {
                     type: "Point",
-                    coordinates: value.locationCoordinates
+                    coordinates: [value.locationLon, value.locationLat]
                 },
                 $maxDistance: value.locationRadius // Distance in meters
             }
@@ -43,6 +54,7 @@ async function getLocations(req, res) {
 }
 
 async function createLocation(req, res) {
+	
 	try {
 		// Validate request body
 		const { body } = req;
@@ -58,6 +70,7 @@ async function createLocation(req, res) {
 		});
 
 		// Validate request body against schema
+		console.log(body);
 		const { error, value } = schema.validate(body);
 
 		if (error) throw error; // Joi validation error, goes to catch block
@@ -70,7 +83,20 @@ async function createLocation(req, res) {
 	}
 }
 
+async function updateLocationDescription(req,res){
+	const { params, body } = req;
+	const id = params.id;
+	const description = body.description;
+	try {
+		const result = await locationDAL.updateLocationDescription(id, description);
+		return res.status(StatusCodes.OK).json(result);
+	} catch (err) {
+		return res.status(StatusCodes.BAD_REQUEST).json({ err: err.message });
+	}
+}
+
 module.exports = {
 	getLocations,
 	createLocation,
+	updateLocationDescription
 };

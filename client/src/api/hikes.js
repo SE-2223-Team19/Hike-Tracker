@@ -10,9 +10,11 @@ const { BACKEND_URL } = require("./config");
  */
 async function getHikes(filters = {}) {
 	try {
-		const response = await fetch(
-			`${BACKEND_URL}${ENDPOINTS.hikes.all}/?` + new URLSearchParams(filters)
-		);
+		const url = new URL(ENDPOINTS.hikes.all, BACKEND_URL);
+		url.searchParams = new URLSearchParams(filters);
+		const response = await fetch(url, {
+			credentials: "include",
+		});
 		return await response.json();
 	} catch (err) {
 		console.error(err);
@@ -40,16 +42,31 @@ async function getHikeById(id) {
  */
 async function createHike(hike) {
 	try {
-		const data = new FormData();
-		for (const [key, value] of Object.entries(hike)) {
-			data.append(key, value);
-		}
 		const response = await fetch(new URL(ENDPOINTS.hikes.insert, BACKEND_URL), {
-		    method: "POST",
+			method: "POST",
 			credentials: "include",
-			body: data
-		}).then(res => res.json());
-		return response;
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify(hike),
+		});
+		return await response.json();
+	} catch (err) {
+		console.error(err);
+	}
+}
+
+async function updateHike(hike) {
+	try {
+		const response = await fetch(new URL(ENDPOINTS.hikes.byId.replace(":id", hike._id), BACKEND_URL), {
+			method: "PATCH",
+			credentials: "include",
+			headers: {
+				"Content-Type": "application/json"
+			},
+			body: JSON.stringify(hike)
+		});
+		return await response.json();
 	} catch (err) {
 		console.error(err);
 	}
@@ -59,4 +76,5 @@ module.exports = {
 	getHikes,
 	getHikeById,
 	createHike,
+	updateHike
 };

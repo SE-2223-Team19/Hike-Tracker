@@ -1,5 +1,6 @@
 const Hike = require("../models/hike-model");
 const Location = require("../models/location-model");
+const User = require("../models/user-model");
 
 /**
  * Get all hikes.
@@ -75,6 +76,14 @@ async function getHikes(filterQuery = {}, page = 1, pageSize = 10) {
 				},
 			},
 			{
+				$lookup: {
+					from: User.collection.name,
+					localField: "createdBy",
+					foreignField: "_id",
+					as: "createdBy",
+				},
+			},
+			{
 				$unwind: {
 					path: "$startPoint",
 				},
@@ -82,6 +91,11 @@ async function getHikes(filterQuery = {}, page = 1, pageSize = 10) {
 			{
 				$unwind: {
 					path: "$endPoint",
+				},
+			},
+			{
+				$unwind: {
+					path: "$createdBy",
 				},
 			},
 		]);
@@ -94,6 +108,7 @@ async function getHikes(filterQuery = {}, page = 1, pageSize = 10) {
 		.populate("startPoint")
 		.populate("endPoint")
 		.populate("referencePoints")
+		.populate("createdBy")
 		.lean();
 
 	return hikes;
@@ -110,7 +125,38 @@ async function createHike(hike) {
 	return savedHike;
 }
 
+/**
+ * Gets a hike by id
+ * @param {string} id 
+ * @returns 
+ */
+async function getHikeById(id) {
+	const hike = await Hike.findById(id)
+		.populate("startPoint")
+		.populate("endPoint")
+		.populate("referencePoints")
+		.populate("createdBy")
+		.lean();
+	return hike;
+}
+
+/**
+ * Updates one hike
+ * @param {*} filter 
+ * @param {*} newData 
+ * @returns 
+ */
+async function updateHike(id, hikeUpdated) {
+
+	const hikeUpdate = await Hike.findByIdAndUpdate(id, hikeUpdated, {new: true});
+	return hikeUpdate;
+
+
+}
+
 module.exports = {
 	getHikes,
 	createHike,
+	getHikeById,
+	updateHike
 };

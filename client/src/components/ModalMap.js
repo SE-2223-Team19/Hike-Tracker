@@ -48,4 +48,4 @@ function ModalMap({ handleClose, hike }) {
 }
 
 
-export default ModalMap
+export default ModalMap;

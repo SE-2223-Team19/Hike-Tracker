@@ -10,6 +10,9 @@ const userSchema = new Schema({
 	// Password fields
 	salt: String,
 	hash: String,
+	// verification fields:
+	uniqueString: { type: String, unique: true },
+	isValid: Boolean,
 });
 
 // User Model

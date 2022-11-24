@@ -8,13 +8,10 @@ setupDB("location-controller");
 
 describe('getLocations', () => {
 
-    test('get the first page', async () => {
+    test('get all', async () => {
         const response = new ResponseHelper();
         await locationController.getLocations({
-            query: {
-                page: 1,
-                pageSize: 50
-            }
+            query: {}
         }, response);
         expect(response.statusCode).toBe(StatusCodes.OK);
     });

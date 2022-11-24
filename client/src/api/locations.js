@@ -1,5 +1,4 @@
-const { LocationType } = require("../helper/enums");
-const { ENDPOINTS } = require("./config");
+const { ENDPOINTS, addQueryParams } = require("./config");
 const { BACKEND_URL } = require("./config");
 
 /**
@@ -10,7 +9,7 @@ async function getLocations(filters = {}) {
 	try {
 		const url = new URL(ENDPOINTS.locations.all, BACKEND_URL);
 
-		addQueryParams(url, filters);
+		addQueryParams(url, filters)
 		
 		const response = await fetch(url, {
 			credentials: "include",
@@ -39,22 +38,14 @@ async function getHuts(filters = {}) {
 	try {
 		
 		const url = new URL(ENDPOINTS.locations.all, BACKEND_URL);
-
-		addQueryParams(url, { ...filters, locationType: "hut" });
+		if(!filters.description) 
+			delete filters.description
+		addQueryParams(url, { ...filters, locationType: "default" });
 
 		const response = await fetch(url, {
 			credentials: "include"
 		});
 		
-		// let huts = await response.json()
-		// huts = await Promise.all(huts.map(async function(e) {
-		// 	// const address = await getAddresses(hut.point[0],hut.point[1])
-		// 	const address = await getAddresses(45.0623969,7.5222874)
-		// 	e.address = address
-		// 	return e
-		// }))
-
-		// return huts
 		return await response.json()
 
 	} catch (err) {

@@ -1,12 +1,117 @@
 import React, { useState, useEffect } from "react";
-import { Button, Stack, Card, Form, Row, Col } from "react-bootstrap";
-import { MapContainer, TileLayer } from "react-leaflet";
+import { Button, Stack, Card, Form, Row, Col, Container } from "react-bootstrap";
+import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import { getHuts } from "../api/locations";
 import Loading from "../components/Loading";
 import NoData from "../components/NoData";
 import { CgOptions } from "react-icons/cg";
 import PositionFilterModal from "../components/PositionFilterModal";
+import * as L from "leaflet";
 
+function getRandom() {
+    return [Math.random() * 90, Math.random() * 180]
+}
+const dummyData = [
+    {
+        description: "Test hut 1",
+        locationType: "hut",
+        point: getRandom(),
+        address: {
+            city: "Turin",
+            province: "Turin",
+            cap: "10129",
+            street: "Test Street 1"
+        }
+    },
+    {
+        description: "Test hut 2",
+        locationType: "hut",
+        point: getRandom(),
+        address: {
+            city: "Turin",
+            province: "Turin",
+            cap: "10129",
+            street: "Test Street 2"
+        }
+    },
+    {
+        description: "Test hut 3",
+        locationType: "hut",
+        point: getRandom(),
+        address: {
+            city: "Turin",
+            province: "Turin",
+            cap: "10129",
+            street: "Test Street 2"
+        }
+    },
+    {
+        description: "Test hut 4",
+        locationType: "hut",
+        point: getRandom(),
+        address: {
+            city: "Turin",
+            province: "Turin",
+            cap: "10129",
+            street: "Test Street 3"
+        }
+    },
+    {
+        description: "Test hut 5",
+        locationType: "hut",
+        point: getRandom(),
+        address: {
+            city: "Turin",
+            province: "Turin",
+            cap: "10129",
+            street: "Test Street 4"
+        }
+    },
+    {
+        description: "Test hut 6",
+        locationType: "hut",
+        point: getRandom(),
+        address: {
+            city: "Turin",
+            province: "Turin",
+            cap: "10129",
+            street: "Test Street 1"
+        }
+    },
+    {
+        description: "Test hut 7",
+        locationType: "hut",
+        point: getRandom(),
+        address: {
+            city: "Turin",
+            province: "Turin",
+            cap: "10129",
+            street: "Test Street 1"
+        }
+    },
+    {
+        description: "Test hut 8",
+        locationType: "hut",
+        point: getRandom(),
+        address: {
+            city: "Turin",
+            province: "Turin",
+            cap: "10129",
+            street: "Test Street 1"
+        }
+    },
+    {
+        description: "Test hut 9",
+        locationType: "hut",
+        point: getRandom(),
+        address: {
+            city: "Turin",
+            province: "Turin",
+            cap: "10129",
+            street: "Test Street 1"
+        }
+    }
+]
 
 function DescribeHuts() {
 
@@ -21,9 +126,9 @@ function DescribeHuts() {
         setLoading(true);
         const fetchHikes = async () => {
             const huts = await getHuts({ ...filters })
-            setHuts(huts);
+            //setHuts(huts);
+            setHuts(dummyData)
             setLoading(false);
-            console.log(filters)
         };
         fetchHikes();
     }, [filters]);
@@ -57,43 +162,54 @@ function DescribeHuts() {
             )}
             {loading && <Loading />}
             {(!huts || huts.length <= 0) && !loading && <NoData message={"No huts found."} />}
-            {huts.length > 0 &&
-                !loading &&
-                huts.map((hut) => <HutCard key={hut._id} hut={hut} />)}
+            <Container>
+                <Row className="justify-content-md-center">
+                    {huts.length > 0 &&
+                        !loading &&
+                        huts.map((hut, idx) => <HutCard key={idx} hut={hut} />)}
+                </Row>
+            </Container>
             <PositionFilterModal
-				show={showPositionFilter}
-				setShow={setShowPositionFilter}
-				onCancel={() => setShowPositionFilter(false)}
-				onOk={(coordinates, radius) => {
-					setShowPositionFilter(false);
-					setFilters({
-						...filters,
-						locationLat: coordinates[0],
-						locationLon: coordinates[1],
-						locationRadius: radius * 1000,
-					});
-				}}
-			></PositionFilterModal>
+                show={showPositionFilter}
+                setShow={setShowPositionFilter}
+                onCancel={() => setShowPositionFilter(false)}
+                onOk={(coordinates, radius) => {
+                    setShowPositionFilter(false);
+                    setFilters({
+                        ...filters,
+                        locationLat: coordinates[0],
+                        locationLon: coordinates[1],
+                        locationRadius: radius * 1000,
+                    });
+                }}
+            ></PositionFilterModal>
         </div>
     );
 };
 
 const HutCard = ({ hut }) => {
-    
-    return (
 
-        <Card className="flex-col p-3 mt-4">
-            <Card.Body>
-                <Card.Title>
-                    <Stack direction="horizontal" className="justify-content-between align-items-center">
-                        <h5>Description: {hut.description}</h5>
-                    </Stack>
-                </Card.Title>
-                <div>
-                    <MapHut hut = {hut}/>
-                </div>
-            </Card.Body>
-        </Card>
+    return (
+        <Col xs="4">
+            <Card className="flex-col p-3 mt-4">
+                <Card.Body>
+                    <Card.Title>
+                        <Stack direction="horizontal" className="justify-content-between align-items-center">
+                            <h5>Description: {hut.description}</h5>
+                        </Stack>
+                    </Card.Title>
+                    <div>
+                        <Row className="justify-content-md-center ">
+                            <MapHut hut={hut} />
+                        </Row>
+                    </div>
+                    <Row><Card.Text><strong>City:</strong> {hut.address.city}</Card.Text></Row>
+                    <Row><Card.Text><strong>Province:</strong> {hut.address.province}</Card.Text></Row>
+                    <Row><Card.Text><strong>Street:</strong> {hut.address.street}</Card.Text></Row>
+                    <Row><Card.Text><strong>Cap:</strong> {hut.address.cap}</Card.Text></Row>
+                </Card.Body>
+            </Card>
+        </Col>
     );
 };
 
@@ -109,36 +225,47 @@ const HutFilters = ({ filters, setFilters, openModal }) => {
                             <Form.Control
                                 type="string"
                                 placeholder="Insert a description of hut"
-                                onChange={(event) => {
-                                    setFilters({ ...filters, description: event.target.value });
-                                }}
-                            />
+                                onChange={(event) => { setFilters({ ...filters, description: event.target.value }) }} />
                         </Stack>
-                        <Form.Label>Location</Form.Label> <br/>
-						<Button onClick={openModal} variant={"success"}>Select area</Button>
                     </Form.Group>
                 </Col>
-            </Row>
-        </Form>
+                <Col>
+                    <Form.Group>
+                        <Form.Label>Location</Form.Label> <br />
+                        <Stack direction="horizontal" gap={2}>
+                            <Button onClick={openModal} variant={"success"}>Select area</Button>
+                        </Stack>
+                    </Form.Group>
+                </Col>
+            </Row >
+        </Form >
     );
 }
 
 function MapHut({ hut }) {
 
-    return (
-        
-        <MapContainer
-            style={{ width: "100%", height: "50vh" }}
-            // center={hut ? hut.point : [0,0] }
-            center={hut ? [45.0623969,7.5222874] : [0,0] }
-            zoom={9}
-            scrollWheelZoom={false}
-            zoomControl={false}
-            dragging={false}
-        >
-            <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+    let markerLocation = new L.icon({
+        iconUrl: require("../icons/markerLocation.png"),
+        iconSize: [35, 45],
+        iconAnchor: [17, 46],
+        popupAnchor: [0, -46],
+    })
 
-        </MapContainer>
+    return (
+        <Col xs={10} className="p-4">
+            <MapContainer
+                style={{ width: "100%", height: "30vh" }}
+                center={hut ? hut.point : [0, 0]}
+                zoom={9}
+                scrollWheelZoom={false}
+                zoomControl={false}
+                dragging={false}
+            >
+                <Marker position={hut.point} icon={markerLocation}><Popup>Reference point</Popup></Marker>
+                <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+
+            </MapContainer>
+        </Col>
     );
 }
 

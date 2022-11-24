@@ -6,7 +6,7 @@ const User = require("../models/user-model");
  * @returns Users
  */
 async function getUsers(filterQuery = {}) {
-	const users = await User.find(filterQuery);
+	const users = await User.find(filterQuery).lean();
 	return users;
 }
 
@@ -20,8 +20,12 @@ async function createUser(user) {
 	const savedUser = await newUser.save();
 	return savedUser;
 }
+async function updateUser(user) {
+	await User.findByIdAndUpdate(user._id, { $set: user }, { new: true });
+}
 
 module.exports = {
 	getUsers,
 	createUser,
+	updateUser,
 };

@@ -3,7 +3,6 @@ const { StatusCodes } = require("http-status-codes");
 const hikeDAL = require("../data/hike-dal");
 const hikeService = require("../services/hike-service");
 const { Difficulty, LocationType } = require("../models/enums");
-const GpxParser = require("gpxparser");
 
 /**
  * GET /hike
@@ -23,10 +22,19 @@ async function getHikes(req, res) {
 			minExpectedTime: joi.number(),
 			maxExpectedTime: joi.number(),
 			difficulty: joi.string().valid(...Object.values(Difficulty)),
+			createdBy: joi.string(),
 			// Location validation
-			locationCoordinatesLat: joi.number(),
-			locationCoordinatesLng: joi.number(),
-			locationRadius: joi.number().greater(0).description("Max distance in kilometers"),
+			locationCoordinatesLat: joi.number().min(-90).max(90),
+			locationCoordinatesLng: joi.number().min(-180).max(180).when(joi.ref("locationCoordinatesLat"), {
+				is: joi.exist(),
+				then: joi.required(),
+				otherwise: joi.forbidden()
+			}),
+			locationRadius: joi.number().greater(0).when(joi.ref("locationCoordinatesLat"), {
+				is: joi.exist(),
+				then: joi.required(),
+				otherwise: joi.forbidden()
+			}),
 			page: joi.number().greater(0).default(1),
 			pageSize: joi.number().greater(0).default(100),
 		});
@@ -46,6 +54,7 @@ async function getHikes(req, res) {
 		if (value.maxExpectedTime)
 			filter.expectedTime = { ...filter.expectedTime, $lt: value.maxExpectedTime };
 		if (value.difficulty) filter.difficulty = value.difficulty;
+		if (value.createdBy) filter.createdBy = value.createdBy;
 		if (value.locationCoordinatesLat && value.locationCoordinatesLng && value.locationRadius)
 			filter.startingPoint = {
 				coordinates: [value.locationCoordinatesLng, value.locationCoordinatesLat],
@@ -53,8 +62,23 @@ async function getHikes(req, res) {
 			};
 
 		const hikes = await hikeDAL.getHikes(filter, value.page, value.pageSize);
-		console.log(hikes);
 		return res.status(StatusCodes.OK).json(hikes);
+	} catch (err) {
+		return res.status(StatusCodes.BAD_REQUEST).json({ err: err.message });
+	}
+}
+
+async function getHikeById(req, red) {
+	try {
+		const { params } = req;
+
+		const hike = await hikeDAL.getHikeById(params.id);
+
+		if (hike === null) {
+			return res.status(StatusCodes.NOT_FOUND).end();
+		}
+
+		return res.status(StatusCodes.OK).json(hike);
 	} catch (err) {
 		return res.status(StatusCodes.BAD_REQUEST).json({ err: err.message });
 	}
@@ -67,12 +91,16 @@ async function createHike(req, res) {
 
 		// Location validation schema
 		const locationSchema = joi.object().keys({
+			_id: joi.string(),
 			locationType: joi
 				.string()
 				.valid(...Object.values(LocationType))
 				.required(),
-			description: joi.string().required(),
-			point: joi.array().items(joi.number()).length(2).required(),
+			description: joi.string().allow(""),
+			point: joi.object().keys({
+				lat: joi.number().required(),
+				lng: joi.number().required(),
+			}),
 		});
 
 		// Hike validation schema
@@ -86,32 +114,20 @@ async function createHike(req, res) {
 				.required()
 				.valid(...Object.values(Difficulty)),
 			description: joi.string().required(),
-			startPointId: joi.string(),
-			startPointLat: joi.number().min(-90).max(90),
-			startPointLng: joi.number().min(-180).max(180),
-			endPointId: joi.string(),
-			endPointLat: joi.number().min(-90).max(90),
-			endPointLng: joi.number().min(-180).max(180),
+			startPoint: locationSchema.required(),
+			endPoint: locationSchema.required(),
 			referencePoints: joi.array().items(locationSchema),
+			trackPoints: joi.array().items(joi.array().items(joi.number()).length(2)),
 		});
-
-		if (body.referencePoints === "") {
-			// Because with form data an empty array comes as a empty string
-			body.referencePoints = [];
-		}
 
 		// Validate request body against schema
 		const { error, value } = schema.validate(body);
 
 		if (error) throw error; // Joi validation error, goes to catch block
 
-		if (!req.file) throw new Error("Must upload a file track");
-
-		const gpx = new GpxParser();
-		gpx.parse(req.file.buffer.toString());
-
-		// Load parsed track points
-		value.trackPoints = gpx.tracks[0].points.map((p) => [p.lat, p.lon]);
+		// Parse GPX file moved to frontend
+		// Adding currently logged in user
+		value.createdBy = req.user._id;
 
 		// Create new hike
 		const createdHike = await hikeService.createHike(value);
@@ -122,15 +138,70 @@ async function createHike(req, res) {
 }
 
 async function updateHike(req, res) {
-	const { params, body } = req;
 
-	console.log("params", params);
-	console.log("body", body);
-	return;
+	try {
+		
+		// Validate request body
+		const { params, body } = req;
+
+		// Location validation schema
+		const locationSchema = joi.object().keys({
+			_id: joi.string(),
+			locationType: joi
+				.string()
+				.valid(...Object.values(LocationType))
+				.required(),
+			description: joi.string().allow(""),
+			point: joi.object().keys({
+				lat: joi.number().required(),
+				lng: joi.number().required(),
+			}).required(),
+		});
+
+		// Hike validation schema
+		const schema = joi.object().keys({
+			title: joi.string(),
+			length: joi.number(),
+			ascent: joi.number(),
+			expectedTime: joi.number(),
+			difficulty: joi
+				.string()
+				.valid(...Object.values(Difficulty)),
+			description: joi.string(),
+			startPoint: [locationSchema, joi.string()],
+			endPoint: [locationSchema, joi.string()],
+			referencePoints: joi.array().items(locationSchema, joi.string()),
+			trackPoints: joi.array().items(joi.array().items(joi.number()).length(2)),
+			createdBy: joi.object().keys({
+				email: joi.string().required(),
+				fullName: joi.string().required(),
+				userType: joi.string().valid(...Object.values(UserType)),
+				salt: joi.string().required(),
+				hash: joi.string().required(),
+				uniqueString: joi.string().required(),
+				isValid: joi.boolean().required()
+			})
+		});
+
+		// Validate request body against schema
+		const { error, value } = schema.validate(body);
+
+		if (error) throw error; // Joi validation error, goes to catch block
+		
+		const hikeUpdated = await hikeService.updateHike(params.id, value)
+		
+		return res.status(StatusCodes.OK).json(hikeUpdated)
+
+	} catch(err) {
+		console.log(err)
+		return res.status(StatusCodes.BAD_REQUEST).json({ err: err.message, stack: err.stack });
+	}
+
 }
 
 module.exports = {
 	getHikes,
+	getHikeById,
 	createHike,
 	updateHike,
 };

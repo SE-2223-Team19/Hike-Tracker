@@ -139,7 +139,7 @@ async function createHike(req, res) {
 
 async function updateHike(req, res) {
 
-try {
+	try {
 		
 		// Validate request body
 		const { params, body } = req;

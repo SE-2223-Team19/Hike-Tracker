@@ -64,12 +64,35 @@ async function createHike(hike) {
 /**
  * Updates a hike with description.
  * @param {*} id Hike to be update
- * @param {*} description description of hike
+ * @param {*} changes changes to be applied
  * @returns
  */
-async function updateHike(id,description){
-	const result = hikeDAL.updateHike(id, description);
-	return result;
+async function updateHike(id, changes){
+	changes.startPoint ? changes.startPoint = await checkPropertyLocation(changes.startPoint) : null;
+	changes.endPoint ? changes.endPoint = await checkPropertyLocation(changes.endPoint) : null;
+	
+	let referencePoints = [];
+	if (changes.referencePoints) {
+		referencePoints = await Promise.all(
+			changes.referencePoints.map(async (referencePoint) => {
+				if (!referencePoint._id) {
+					return await locationDAL.createLocation({
+						locationType: referencePoint.locationType,
+						description: referencePoint.description,
+						point: [referencePoint.point.lng, referencePoint.point.lat],
+					});
+				} else {
+					return referencePoint;
+				}
+			})
+		);
+	}
+
+	changes.referencePoints = referencePoints
+
+	const updatedHike = await hikeDAL.updateHike(id, changes);
+
+	return updatedHike
 }
 
 module.exports = { createHike, updateHike };

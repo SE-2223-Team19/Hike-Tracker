@@ -1,28 +1,28 @@
 version: "2.1"
 services:
-  client:
-    build:
-      context: ./client
-    environment:
-      - CHOKIDAR_USEPOLLING=true # For hot reloading on Windows
-    ports:
-      - "3000:3000"
-    volumes:
-      - "./client:/client/"
-      - "/client/node_modules"
+  # client:
+  #   build:
+  #     context: ./client
+  #   environment:
+  #     - CHOKIDAR_USEPOLLING=true # For hot reloading on Windows
+  #   ports:
+  #     - "3000:3000"
+  #   volumes:
+  #     - "./client:/client/"
+  #     - "/client/node_modules"
 
-  server:
-    build:
-      context: ./server
-    env_file:
-      - ./server/.env
-    depends_on:
-      - mongo
-    ports:
-      - "8080:8080"
-    volumes:
-      - "./server:/api/"
-      - "/api/node_modules"
+  # server:
+  #   build:
+  #     context: ./server
+  #   env_file:
+  #     - ./server/.env
+  #   depends_on:
+  #     - mongo
+  #   ports:
+  #     - "8080:8080"
+  #   volumes:
+  #     - "./server:/api/"
+  #     - "/api/node_modules"
 
   mongo:
     image: mongo
@@ -30,3 +30,9 @@ services:
       - "27017:27017"
     volumes:
       - "./mongo:/data/db"
+
+  mongo_seed:
+    build:
+      context: ./mongo_seed
+    depends_on:
+      - mongo

@@ -37,7 +37,7 @@ async function createLocation(formData) {
 
 async function updateLocationDescription(id, description) {
 	try {
-		const response = await fetch(`${BACKEND_URL}${ENDPOINTS.locations.byId.replace(":id", id)}`, {
+		const response = await fetch(new URL(ENDPOINTS.locations.byId.replace(":id", id), BACKEND_URL), {
 			method: "PUT",
 			headers: {
 				'Content-Type': 'application/json',

@@ -14,6 +14,8 @@ async function getHikes(req, res) {
 	try {
 		const { query } = req;
 
+		console.log(query);
+
 		const schema = joi.object().keys({
 			minLength: joi.number(),
 			maxLength: joi.number(),
@@ -25,21 +27,27 @@ async function getHikes(req, res) {
 			createdBy: joi.string(),
 			// Location validation
 			locationCoordinatesLat: joi.number().min(-90).max(90),
-			locationCoordinatesLng: joi.number().min(-180).max(180).when(joi.ref("locationCoordinatesLat"), {
-				is: joi.exist(),
-				then: joi.required(),
-				otherwise: joi.forbidden()
-			}),
+			locationCoordinatesLng: joi
+				.number()
+				.min(-180)
+				.max(180)
+				.when(joi.ref("locationCoordinatesLat"), {
+					is: joi.exist(),
+					then: joi.required(),
+					otherwise: joi.forbidden(),
+				}),
 			locationRadius: joi.number().greater(0).when(joi.ref("locationCoordinatesLat"), {
 				is: joi.exist(),
 				then: joi.required(),
-				otherwise: joi.forbidden()
+				otherwise: joi.forbidden(),
 			}),
 			page: joi.number().greater(0).default(1),
-			pageSize: joi.number().greater(0).default(100),
+			pageSize: joi.number().greater(0).default(200), // TODO: Change this when pagination is implemented
 		});
 
 		const { error, value } = schema.validate(query);
+
+		console.log(value);
 
 		if (error) throw error;
 
@@ -68,7 +76,7 @@ async function getHikes(req, res) {
 	}
 }
 
-async function getHikeById(req, red) {
+async function getHikeById(req, res) {
 	try {
 		const { params } = req;
 
@@ -138,9 +146,7 @@ async function createHike(req, res) {
 }
 
 async function updateHike(req, res) {
-
 	try {
-		
 		// Validate request body
 		const { params, body } = req;
 
@@ -152,10 +158,13 @@ async function updateHike(req, res) {
 				.valid(...Object.values(LocationType))
 				.required(),
 			description: joi.string().allow(""),
-			point: joi.object().keys({
-				lat: joi.number().required(),
-				lng: joi.number().required(),
-			}).required(),
+			point: joi
+				.object()
+				.keys({
+					lat: joi.number().required(),
+					lng: joi.number().required(),
+				})
+				.required(),
 		});
 
 		// Hike validation schema
@@ -164,9 +173,7 @@ async function updateHike(req, res) {
 			length: joi.number(),
 			ascent: joi.number(),
 			expectedTime: joi.number(),
-			difficulty: joi
-				.string()
-				.valid(...Object.values(Difficulty)),
+			difficulty: joi.string().valid(...Object.values(Difficulty)),
 			description: joi.string(),
 			startPoint: [locationSchema, joi.string()],
 			endPoint: [locationSchema, joi.string()],
@@ -179,24 +186,22 @@ async function updateHike(req, res) {
 				salt: joi.string().required(),
 				hash: joi.string().required(),
 				uniqueString: joi.string().required(),
-				isValid: joi.boolean().required()
-			})
+				isValid: joi.boolean().required(),
+			}),
 		});
 
 		// Validate request body against schema
 		const { error, value } = schema.validate(body);
 
 		if (error) throw error; // Joi validation error, goes to catch block
-		
-		const hikeUpdated = await hikeService.updateHike(params.id, value)
-		
-		return res.status(StatusCodes.OK).json(hikeUpdated)
 
-	} catch(err) {
-		console.log(err)
+		const hikeUpdated = await hikeService.updateHike(params.id, value);
+
+		return res.status(StatusCodes.OK).json(hikeUpdated);
+	} catch (err) {
+		console.log(err);
 		return res.status(StatusCodes.BAD_REQUEST).json({ err: err.message, stack: err.stack });
 	}
-
 }
 
 module.exports = {

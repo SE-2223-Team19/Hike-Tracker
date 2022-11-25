@@ -1,5 +1,4 @@
 import React from "react";
-import DescribeHikeForm from "../components/DescribeHikeForm";
 import DescribeHutForm from "../components/DescribeHutForm";
 
 function DescribeHut() {

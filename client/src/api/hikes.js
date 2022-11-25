@@ -59,9 +59,9 @@ async function createHike(hike) {
 	}
 }
 
-async function updateHike(changes) {
+async function updateHike(id,changes) {
 	try {
-		const response = await fetch(new URL(ENDPOINTS.hikes.update, BACKEND_URL), {
+		const response = await fetch(new URL(ENDPOINTS.hikes.update.replace(":id",id), BACKEND_URL), {
 			method: "PATCH",
 			credentials: "include",
 			headers: {

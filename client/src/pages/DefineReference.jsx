@@ -10,7 +10,7 @@ function DefineReferencepage() {
              <Header/>
              
              <Table>
-                <Row><h1 className="md-5">Define Reference Point</h1></Row>
+                <Row><h1 className="md-5">Add Reference Point</h1></Row>
              </Table>
             
             <Table>

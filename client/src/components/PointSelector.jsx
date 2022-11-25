@@ -28,7 +28,7 @@ const PointSelector = ({ name, handleChange, value, isInvalid, multiple }) => {
 			<option value="">Select a location</option>
 			{locations.map((option) => (
 				<option key={option._id} value={option._id}>
-					{option.locationType}
+					{option.description}
 				</option>
 			))}
 		</Form.Select>

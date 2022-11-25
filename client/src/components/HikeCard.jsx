@@ -1,9 +1,13 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Badge, Button, Card, Stack } from "react-bootstrap";
 import { BiRuler, BiTrendingUp, BiTime } from "react-icons/bi";
+import { AuthContext } from "../context/AuthContext";
 import { capitalizeAndReplaceUnderscores, displayExpectedTime, metersToKm } from "../helper/utils";
 
 const HikeCard = ({ hike, showDetails }) => {
+	// ** User (if user is not logged in cannot see hike details)
+	const { loggedIn } = useContext(AuthContext);
+
 	return (
 		<Card className="flex-row p-3 mt-4">
 			<Card.Body>
@@ -28,9 +32,11 @@ const HikeCard = ({ hike, showDetails }) => {
 							<span className="ms-1">{displayExpectedTime(hike.expectedTime)}</span>
 						</div>
 						<div className="ms-auto">
-							<Button onClick={() => showDetails(hike)} variant={"success"}>
-								See on Map
-							</Button>
+							{loggedIn && (
+								<Button onClick={() => showDetails(hike)} variant={"success"}>
+									See on Map
+								</Button>
+							)}
 						</div>
 					</Stack>
 					<div className="mt-4">{hike.description}</div>

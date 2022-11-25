@@ -8,6 +8,7 @@ import DescribeHut from "./pages/Describe-hut";
 import SignIn from "./pages/SignIn";
 import Verify from "./pages/Verify";
 import { AuthProvider } from "./context/AuthContext";
+import Profile from "./pages/Profile";
 
 function App() {
 	return (
@@ -21,6 +22,7 @@ function App() {
 						<Route path="/map" element={<Layout mode="map" />} />
 						<Route path="/hut" element={<Layout mode="hut" />} />
 						<Route path="/verify/:uniqueString" element={<Layout mode="verify" />} />
+						<Route path="/profile" element={<Profile />} />
 					</Routes>
 				</Container>
 			</AuthProvider>

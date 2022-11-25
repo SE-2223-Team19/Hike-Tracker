@@ -44,6 +44,7 @@ const AuthProvider = ({ children }) => {
 
 	const handleLogout = async () => {
 		await logOut();
+		navigate("/");
 		setLoggedIn(false);
 		setUser(null);
 		setMessage({ msg: `Logout successful!`, type: "secondary" });

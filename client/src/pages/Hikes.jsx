@@ -82,7 +82,7 @@ const Hikes = () => {
 					});
 				}}
 			></PositionFilterModal>
-			<ModalMap handleClose={setCurrentHike} hike={currentHike}></ModalMap>
+			<ModalMap handleClose={() => setCurrentHike(null)} hike={currentHike}></ModalMap>
 		</div>
 	);
 };

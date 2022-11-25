@@ -30,3 +30,9 @@ services:
       - "27017:27017"
     volumes:
       - "./mongo:/data/db"
+
+  mongo_seed:
+    build:
+      context: ./mongo_seed
+    depends_on:
+      - mongo

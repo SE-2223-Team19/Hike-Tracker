@@ -1,11 +1,13 @@
 import React from "react";
 import { useContext } from "react";
 import { Nav, Navbar, Button, Alert, Stack } from "react-bootstrap";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
+import { capitalizeAndReplaceUnderscores } from "../helper/utils";
 
 const Header = () => {
-	const { message, setMessage, handleLogout, loggedIn } = useContext(AuthContext);
+	const navigate = useNavigate();
+	const { message, setMessage, loggedIn, user } = useContext(AuthContext);
 
 	return (
 		<Navbar>
@@ -22,14 +24,20 @@ const Header = () => {
 			</Nav>
 			<Nav className="ms-auto align-items-center">
 				{loggedIn ? (
-					<Button
-						variant="secondary"
-						onClick={() => {
-							handleLogout();
-						}}
-					>
-						Logout
-					</Button>
+					<Stack direction="horizontal" gap={6}>
+						<div className="d-flex flex-column justify-content-center align-items-end me-3" gap={0}>
+							<p className="m-0">{user.fullName}</p>
+							<p className="m-0">{capitalizeAndReplaceUnderscores(user.userType)}</p>
+						</div>
+						<Button
+							variant="success"
+							onClick={() => {
+								navigate("/profile");
+							}}
+						>
+							Profile
+						</Button>
+					</Stack>
 				) : (
 					<Stack direction="horizontal" gap={4}>
 						<NavLink

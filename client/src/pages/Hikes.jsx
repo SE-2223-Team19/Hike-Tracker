@@ -23,13 +23,16 @@ const Hikes = () => {
 		setLoading(true);
 		const fetchHikes = async () => {
 			const hikes = await getHikes({ ...filters });
+			if (hikes.error) {
+				setHikes(-1);
+				setLoading(false);
+				return;
+			}
 			setHikes(hikes);
 			setLoading(false);
 		};
 		fetchHikes();
 	}, [filters]);
-
-	console.log(hikes);
 
 	return (
 		<div className="w-100">
@@ -58,7 +61,10 @@ const Hikes = () => {
 				/>
 			)}
 			{loading && <Loading />}
-			{(!hikes || hikes.length <= 0) && !loading && <NoData message={"No hikes found."} />}
+			{hikes.length <= 0 && !loading && <NoData message={"No hikes found."} />}
+			{hikes === -1 && !loading && (
+				<NoData message={"Something went wrong during the request. Try again later."} />
+			)}
 			{hikes.length > 0 &&
 				!loading &&
 				hikes.map((hike) => <HikeCard key={hike._id} hike={hike} showDetails={setCurrentHike} />)}
@@ -76,7 +82,7 @@ const Hikes = () => {
 					});
 				}}
 			></PositionFilterModal>
-			<ModalMap handleClose={setCurrentHike} hike={currentHike}></ModalMap>
+			<ModalMap handleClose={() => setCurrentHike(null)} hike={currentHike}></ModalMap>
 		</div>
 	);
 };

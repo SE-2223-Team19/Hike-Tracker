@@ -1,11 +1,26 @@
 import { Button, Modal } from "react-bootstrap";
-import { MapContainer, Polyline, TileLayer } from "react-leaflet";
+import { MapContainer, Marker, Polyline, TileLayer, Popup } from "react-leaflet";
+import * as L from "leaflet";
 
 function ModalMap({ handleClose, hike }) {
+	let markerStartEndPoint = new L.icon({
+		iconUrl: require("../icons/marker_start_end_point.png"),
+		iconSize: [35, 45],
+		iconAnchor: [17, 46],
+		popupAnchor: [0, -46],
+	});
+
+	let markerLocation = new L.icon({
+		iconUrl: require("../icons/markerLocation.png"),
+		iconSize: [35, 45],
+		iconAnchor: [17, 46],
+		popupAnchor: [0, -46],
+	});
+
 	return (
-		<Modal show={hike} onHide={() => handleClose(null)}>
+		<Modal show={hike} onHide={handleClose}>
 			<Modal.Header>
-				<Modal.Title>Hike: {hike && hike.title}</Modal.Title>
+				<Modal.Title>{hike && hike.title}</Modal.Title>
 			</Modal.Header>
 			<Modal.Body>
 				<MapContainer
@@ -13,10 +28,34 @@ function ModalMap({ handleClose, hike }) {
 					center={(hike && hike.trackPoints[0]) || [0, 0]}
 					zoom={9}
 					scrollWheelZoom={false}
-					zoomControl={false}
-					dragging={false}
+					zoomControl={true}
+					dragging={true}
+					setView={(hike && hike.trackPoints[0]) || [0, 0]}
 				>
 					<TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+					<Marker
+						key={"start"}
+						position={(hike && hike.startPoint.point.reverse()) || [0, 0]}
+						icon={markerStartEndPoint}
+					>
+						<Popup>Start Point</Popup>
+					</Marker>
+					<Marker
+						key={"end"}
+						position={(hike && hike.endPoint.point.reverse()) || [0, 0]}
+						icon={markerStartEndPoint}
+					>
+						<Popup>End Point</Popup>
+					</Marker>
+					{hike ? (
+						hike.referencePoints.map((point) => (
+							<Marker key={point._id} position={[...point.point].reverse()} icon={markerLocation}>
+								<Popup>{point.description || "Reference Point"}</Popup>
+							</Marker>
+						))
+					) : (
+						<></>
+					)}
 					<Polyline
 						pathOptions={{ fillColor: "red", color: "blue" }}
 						positions={(hike && hike.trackPoints) || []}
@@ -24,7 +63,7 @@ function ModalMap({ handleClose, hike }) {
 				</MapContainer>
 			</Modal.Body>
 			<Modal.Footer>
-				<Button variant="secondary" onClick={() => handleClose(null)}>
+				<Button variant="secondary" onClick={handleClose}>
 					Close
 				</Button>
 			</Modal.Footer>

@@ -127,8 +127,8 @@ async function createHike(hike) {
 
 /**
  * Gets a hike by id
- * @param {string} id 
- * @returns 
+ * @param {string} id
+ * @returns
  */
 async function getHikeById(id) {
 	const hike = await Hike.findById(id)
@@ -142,18 +142,18 @@ async function getHikeById(id) {
 
 /**
  * Updates one hike
- * @param {*} filter 
- * @param {*} newData 
- * @returns 
+ * @param {*} filter
+ * @param {*} newData
+ * @returns
  */
-async function updateOneHike(filter, newData) {
-	const updatedHike = await Hike.findOneAndUpdate(filter, newData);
-	return updatedHike;
+async function updateHike(id, hikeUpdated) {
+	const hikeUpdate = await Hike.findByIdAndUpdate(id, hikeUpdated, { new: true });
+	return hikeUpdate;
 }
 
 module.exports = {
 	getHikes,
 	createHike,
 	getHikeById,
-	updateOneHike
+	updateHike,
 };

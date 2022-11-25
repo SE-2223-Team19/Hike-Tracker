@@ -5,6 +5,7 @@ const { isHutWorker, isLocalGuide } = require("../authorization-middlewares");
 
 locationRouter.get("/", locationController.getLocations);
 // locationRouter.get("/:id", locationController.getLocation);
+locationRouter.put("/:id", locationController.updateLocationDescription);
 locationRouter.post("/", isLocalGuide, locationController.createLocation);
 // locationRouter.patch("/:id", locationController.updateLocation);
 // locationRouter.delete("/:id", locationController.deleteLocation);

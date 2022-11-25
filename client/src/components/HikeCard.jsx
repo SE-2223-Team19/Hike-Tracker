@@ -2,11 +2,25 @@ import React, { useContext } from "react";
 import { Badge, Button, Card, Stack } from "react-bootstrap";
 import { BiRuler, BiTrendingUp, BiTime } from "react-icons/bi";
 import { AuthContext } from "../context/AuthContext";
+import { Difficulty } from "../helper/enums";
 import { capitalizeAndReplaceUnderscores, displayExpectedTime, metersToKm } from "../helper/utils";
 
 const HikeCard = ({ hike, showDetails }) => {
 	// ** User (if user is not logged in cannot see hike details)
 	const { loggedIn } = useContext(AuthContext);
+
+	const difficultyToColor = (difficulty) => {
+		switch (difficulty) {
+			case Difficulty.TOURIST:
+				return "info";
+			case Difficulty.HIKER:
+				return "warning";
+			case Difficulty.PROFESSIONAL_HIKER:
+				return "danger";
+			default:
+				return "secondary";
+		}
+	};
 
 	return (
 		<Card className="flex-row p-3 mt-4">
@@ -14,7 +28,9 @@ const HikeCard = ({ hike, showDetails }) => {
 				<Card.Title>
 					<Stack direction="horizontal" className="justify-content-between align-items-center">
 						<h5>{hike.title}</h5>
-						<Badge bg="secondary">{capitalizeAndReplaceUnderscores(hike.difficulty)}</Badge>
+						<Badge bg={difficultyToColor(hike.difficulty)}>
+							{capitalizeAndReplaceUnderscores(hike.difficulty)}
+						</Badge>
 					</Stack>
 				</Card.Title>
 				<>

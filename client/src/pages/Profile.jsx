@@ -19,17 +19,16 @@ const Profile = () => {
 
 	useEffect(() => {
 		const fetchHikes = async () => {
-			let id = user._id;
 			const hikes = await getHikes({});
 			if (hikes.error) {
 				setHikes(-1);
 				return;
 			}
-			setHikes(hikes);
+			setHikes(hikes.data);
 		};
 		fetchHikes();
 	}, []);
-	let hikesfiltered = Object.values(hikes)[0].filter(h => h.createdBy._id == user._id);
+	let hikesfiltered = hikes.filter(h => h.createdBy._id == user._id);
 
 	return (
 		<>

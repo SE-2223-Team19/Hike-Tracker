@@ -3,7 +3,11 @@ import { Badge, Button, Card, Stack } from "react-bootstrap";
 import { BiRuler, BiTrendingUp, BiTime } from "react-icons/bi";
 import { AuthContext } from "../context/AuthContext";
 import { Difficulty } from "../helper/enums";
-import { capitalizeAndReplaceUnderscores, displayExpectedTime, metersToKm } from "../helper/utils";
+import {
+	capitalizeAndReplaceUnderscores,
+	displayExpectedTime,
+	displayLength,
+} from "../helper/utils";
 
 const HikeCard = ({ hike, showDetails }) => {
 	// ** User (if user is not logged in cannot see hike details)
@@ -37,11 +41,11 @@ const HikeCard = ({ hike, showDetails }) => {
 					<Stack direction="horizontal" gap={4} className="mt-4">
 						<div className="d-flex flex-row">
 							<BiRuler size={24} />
-							<span className="ms-1">{metersToKm(hike.length)} Km</span>
+							<span className="ms-1">{displayLength(hike.length)} Km</span>
 						</div>
 						<div className="d-flex flex-row">
 							<BiTrendingUp size={24} />
-							<span className="ms-1">{hike.ascent} m</span>
+							<span className="ms-1">{hike.ascent.toFixed(2)} m</span>
 						</div>
 						<div className="d-flex flex-row">
 							<BiTime size={24} />

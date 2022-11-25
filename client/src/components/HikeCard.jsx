@@ -1,7 +1,7 @@
 import React from "react";
 import { Badge, Button, Card, Stack } from "react-bootstrap";
 import { BiRuler, BiTrendingUp, BiTime } from "react-icons/bi";
-import { capitalizeAndReplaceUnderscores, displayExpectedTime } from "../helper/utils";
+import { capitalizeAndReplaceUnderscores, displayExpectedTime, metersToKm } from "../helper/utils";
 
 const HikeCard = ({ hike, showDetails }) => {
 	return (
@@ -17,7 +17,7 @@ const HikeCard = ({ hike, showDetails }) => {
 					<Stack direction="horizontal" gap={4} className="mt-4">
 						<div className="d-flex flex-row">
 							<BiRuler size={24} />
-							<span className="ms-1">{hike.length} Km</span>
+							<span className="ms-1">{metersToKm(hike.length)} Km</span>
 						</div>
 						<div className="d-flex flex-row">
 							<BiTrendingUp size={24} />

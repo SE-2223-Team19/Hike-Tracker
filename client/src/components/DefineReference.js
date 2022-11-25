@@ -11,9 +11,9 @@ function NewReferencePoint() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const Location = { locationType: LocationType, description: Description, point: [LatitudePoint, LongitudePoint] };
-    let result = await createLocation(Location);
-    console.log(result._id);
+    const Location = { locationType: LocationType, description: Description, point: {lat: LatitudePoint, lng: LongitudePoint }};
+    const result = await updateHike(id,{referencePoints: [Location]});
+    console.log(result);
   }
 
   return (<Form onSubmit={handleSubmit}>
@@ -58,8 +58,7 @@ function FromList() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     const tmp = Locations[LocationToAdd.split(")")[0] - 1];
-    const l={_id: tmp._id, locationType: tmp.locationType, description: tmp.description, point: {lat: tmp.point[0], lgn: tmp.point[1]}};
-    const result = await updateHike("6380a48e833343b0b8906306", {referencePoints : [l]});
+    const result = await updateHike("6380a48e833343b0b8906306", {referencePoints : tmp._id});
     console.log(result);
   }
 

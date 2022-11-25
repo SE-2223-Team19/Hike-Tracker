@@ -13,7 +13,7 @@ const { Difficulty, LocationType, UserType } = require("../models/enums");
 async function getHikes(req, res) {
 	try {
 		const { query } = req;
-		console.log(query)
+		
 		const schema = joi.object().keys({
 			minLength: joi.number(),
 			maxLength: joi.number(),
@@ -68,7 +68,7 @@ async function getHikes(req, res) {
 	}
 }
 
-async function getHikeById(req, red) {
+async function getHikeById(req, res) {
 	try {
 		const { params } = req;
 
@@ -143,7 +143,6 @@ async function updateHike(req, res) {
 		
 		// Validate request body
 		const { params, body } = req;
-
 		// Location validation schema
 		const locationSchema = joi.object().keys({
 			_id: joi.string(),
@@ -188,7 +187,9 @@ async function updateHike(req, res) {
 
 		if (error) throw error; // Joi validation error, goes to catch block
 		
-		const hikeUpdated = await hikeService.updateHike(params.id, value)
+		const hikeToUpdate = await hikeService.getHikeById(params.id)
+		console.log(body)
+		const hikeUpdated = await hikeService.updateHike(params.id, value, hikeToUpdate)
 		
 		return res.status(StatusCodes.OK).json(hikeUpdated)
 

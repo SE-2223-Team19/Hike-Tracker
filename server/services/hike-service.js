@@ -78,11 +78,12 @@ async function checkPropertyLocation(point) {
 
 }
 
-async function updateHike(id, changes) {
+async function updateHike(id, changes, hikeToUpdate) {
 
 	changes.startPoint ? changes.startPoint = await checkPropertyLocation(changes.startPoint) : null;
 	changes.endPoint ? changes.endPoint = await checkPropertyLocation(changes.endPoint) : null;
-	
+	console.log(changes)
+	console.log(hikeToUpdate.referencePoints)
 	let referencePoints = [];
 	if (changes.referencePoints) {
 		referencePoints = await Promise.all(
@@ -98,7 +99,12 @@ async function updateHike(id, changes) {
 				}
 			})
 		);
+		
 	}
+
+	hikeToUpdate.referencePoints.forEach(x => {
+		referencePoints.push(x)
+	})
 
 	changes.referencePoints = referencePoints
 
@@ -108,7 +114,13 @@ async function updateHike(id, changes) {
 
 }
 
+async function getHikeById(id) {
+
+	const hike = await hikeDAL.getHikeById(id)
+	return hike
+}
 
 
 
-module.exports = { createHike, updateHike };
+
+module.exports = { createHike, updateHike, getHikeById };

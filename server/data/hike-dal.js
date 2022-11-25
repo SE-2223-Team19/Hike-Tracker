@@ -134,8 +134,15 @@ async function updateHike(id, hikeUpdated) {
 
 }
 
+async function getHikeById(id) {
+	const hike = await Hike.findById(id)
+		
+	return hike;
+}
+
 module.exports = {
 	getHikes,
 	createHike,
-	updateHike
+	updateHike,
+	getHikeById
 };

@@ -8,8 +8,10 @@ import {
 	displayExpectedTime,
 	displayLength,
 } from "../helper/utils";
+import { useNavigate } from "react-router-dom";
 
-const HikeCard = ({ hike, showDetails }) => {
+const HikeCard = ({ hike, showDetails, from }) => {
+	const navigate = useNavigate();
 	// ** User (if user is not logged in cannot see hike details)
 	const { loggedIn } = useContext(AuthContext);
 
@@ -58,6 +60,9 @@ const HikeCard = ({ hike, showDetails }) => {
 								</Button>
 							)}
 						</div>
+						{from == "profile" ? <div>
+							<Button onClick={() => navigate("/reference-Point/" + hike._id)}>Add reference points</Button>
+						</div> : <></>}
 					</Stack>
 					<div className="mt-4">{hike.description}</div>
 				</>

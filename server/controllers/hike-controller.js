@@ -41,8 +41,8 @@ async function getHikes(req, res) {
 				then: joi.required(),
 				otherwise: joi.forbidden(),
 			}),
-			page: joi.number().greater(0).default(1),
-			pageSize: joi.number().greater(0).default(200), // TODO: Change this when pagination is implemented
+			page: joi.number().greater(0),
+			pageSize: joi.number().greater(0), // TODO: Change this when pagination is implemented
 		});
 
 		const { error, value } = schema.validate(query);

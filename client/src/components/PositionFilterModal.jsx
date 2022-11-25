@@ -2,7 +2,7 @@ import { React, useState } from "react";
 import { Button, Container, Form, Modal, Row, Col } from "react-bootstrap";
 import { MapContainer, TileLayer, useMapEvent, Circle } from 'react-leaflet';
 
-const PositionFilterModal = ({ onCancel, onOk, show, setShow }) => {
+const PositionFilterModal = ({ onCancel, onOk, onRemoveFilter, show, setShow }) => {
 	const [ coordinates, setCoordinates ] = useState([45.068370, 7.683070]);
     const [ radius, setRadius ] = useState(50); // Radius in meters
     const MapEvents = () => {
@@ -43,6 +43,7 @@ const PositionFilterModal = ({ onCancel, onOk, show, setShow }) => {
             </Modal.Body>
 
             <Modal.Footer>
+                <Button onClick={onRemoveFilter} variant={"danger"}>Remove</Button>
                 <Button onClick={onCancel} variant={"secondary"}>Cancel</Button>
                 <Button onClick={() => {
                     onOk(coordinates, radius);

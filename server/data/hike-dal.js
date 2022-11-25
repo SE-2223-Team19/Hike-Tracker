@@ -10,12 +10,14 @@ const User = require("../models/user-model");
  * @returns Hikes
  */
 async function getHikes(filterQuery = {}, page = 1, pageSize = 10) {
+	let pipeline = [];
+
 	// Need geospatial query
 	if (filterQuery.startPoint !== undefined && typeof filterQuery.startPoint !== "string") {
 		const coordinates = filterQuery.startPoint.coordinates;
 		const maxDistance = filterQuery.startPoint.radius;
 		delete filterQuery.startPoint;
-		const hikes = await Location.aggregate([
+		pipeline = [
 			{
 				$geoNear: {
 					near: {
@@ -42,76 +44,93 @@ async function getHikes(filterQuery = {}, page = 1, pageSize = 10) {
 			{
 				$replaceWith: "$hikes",
 			},
-			{
-				$match: filterQuery,
-			},
-			{
-				$skip: (page - 1) * pageSize,
-			},
-			{
-				$limit: pageSize,
-			},
-			{
-				$lookup: {
-					from: Location.collection.name,
-					localField: "startPoint",
-					foreignField: "_id",
-					as: "startPoint",
-				},
-			},
-			{
-				$lookup: {
-					from: Location.collection.name,
-					localField: "endPoint",
-					foreignField: "_id",
-					as: "endPoint",
-				},
-			},
-			{
-				$lookup: {
-					from: Location.collection.name,
-					localField: "referencePoints",
-					foreignField: "_id",
-					as: "referencePoints",
-				},
-			},
-			{
-				$lookup: {
-					from: User.collection.name,
-					localField: "createdBy",
-					foreignField: "_id",
-					as: "createdBy",
-				},
-			},
-			{
-				$unwind: {
-					path: "$startPoint",
-				},
-			},
-			{
-				$unwind: {
-					path: "$endPoint",
-				},
-			},
-			{
-				$unwind: {
-					path: "$createdBy",
-				},
-			},
-		]);
-		return hikes;
+		];
 	}
+	pipeline = [ ...pipeline,
+		{
+			$match: filterQuery,
+		},
+		{
+			$lookup: {
+				from: Location.collection.name,
+				localField: "startPoint",
+				foreignField: "_id",
+				as: "startPoint",
+			},
+		},
+		{
+			$lookup: {
+				from: Location.collection.name,
+				localField: "endPoint",
+				foreignField: "_id",
+				as: "endPoint",
+			},
+		},
+		{
+			$lookup: {
+				from: Location.collection.name,
+				localField: "referencePoints",
+				foreignField: "_id",
+				as: "referencePoints",
+			},
+		},
+		{
+			$lookup: {
+				from: User.collection.name,
+				localField: "createdBy",
+				foreignField: "_id",
+				as: "createdBy",
+			},
+		},
+		{
+			$unwind: {
+				path: "$startPoint",
+			},
+		},
+		{
+			$unwind: {
+				path: "$endPoint",
+			},
+		},
+		{
+			$unwind: {
+				path: "$createdBy",
+			},
+		},
+		{
+			$facet: {
+				data: [
+					{
+						$skip: (page - 1) * pageSize
+					},
+					{
+						$limit: pageSize
+					}
+				],
+				metadata: [
+					{
+						$count: "totalElements"
+					},
+					{
+						$addFields: {
+							type: "pagination",
+							currentPage: page,
+							pageSize: pageSize,
+							totalPages: {
+								$ceil: {
+									$divide: [ "$totalElements", pageSize ]
+								}
+							}
+						}
+					}
+				]
+			}
+		}
+	];
 
-	const hikes = await Hike.find(filterQuery)
-		.skip((page - 1) * pageSize)
-		.limit(pageSize)
-		.populate("startPoint")
-		.populate("endPoint")
-		.populate("referencePoints")
-		.populate("createdBy")
-		.lean();
+	const hikes = await Hike.aggregate(pipeline);
 
-	return hikes;
+	return hikes[0];
 }
 
 /**

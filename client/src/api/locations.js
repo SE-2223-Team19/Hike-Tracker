@@ -1,4 +1,4 @@
-const { ENDPOINTS } = require("./config");
+const { ENDPOINTS, addQueryParams } = require("./config");
 const { BACKEND_URL } = require("./config");
 
 /**
@@ -8,7 +8,9 @@ const { BACKEND_URL } = require("./config");
 async function getLocations(filters = {}) {
 	try {
 		const url = new URL(ENDPOINTS.locations.all, BACKEND_URL);
-		url.searchParams = new URLSearchParams(filters);
+
+		addQueryParams(url, filters)
+		
 		const response = await fetch(url, {
 			credentials: "include",
 		});
@@ -35,6 +37,39 @@ async function createLocation(formData) {
 	}
 }
 
+async function getHuts(filters = {}) {
+
+	try {
+		
+		const url = new URL(ENDPOINTS.locations.all, BACKEND_URL);
+		if(!filters.description) 
+			delete filters.description
+		addQueryParams(url, { ...filters, locationType: "default" });
+
+		const response = await fetch(url, {
+			credentials: "include"
+		});
+		
+		return await response.json()
+
+	} catch (err) {
+		return err;
+	}
+
+}
+
+// async function getAddresses(latitude, longitude) {
+// 	try {
+		
+// 		const url = "https://nominatim.openstreetmap.org/reverse?lat=" + latitude + "&lon=" + longitude + "&format=jsonv2"
+
+// 		const response = await fetch(url);
+// 		return await response.json();
+// 	} catch (err) {
+// 		return err;
+// 	}
+// }
+
 async function updateLocationDescription(id, description) {
 	try {
 		const response = await fetch(new URL(ENDPOINTS.locations.byId.replace(":id", id), BACKEND_URL), {
@@ -58,4 +93,5 @@ module.exports = {
 	getLocations,
 	updateLocationDescription,
 	createLocation,
+	getHuts
 };

@@ -4,14 +4,16 @@ const locationDAL = require("../data/location-dal");
 const { LocationType } = require("../models/enums");
 
 /**
+ * GET /location
  * Get all locations.
- * @param {*} req
- * @param {*} res
+ * @param {Request} req
+ * @param {Response} res
+ * @returns {Promise<Response>}
  */
 async function getLocations(req, res) {
 	try {
 		const { query } = req;
-
+		console.log(query)
 		const schema = joi.object().keys({
 			locationType: joi.string().valid(...Object.values(LocationType)),
 			description: joi.string(),
@@ -53,6 +55,13 @@ async function getLocations(req, res) {
 	}
 }
 
+/**
+ * POST /location
+ * Creates a new location
+ * @param {Request} req 
+ * @param {Response} res 
+ * @returns {Promise<Response>}
+ */
 async function createLocation(req, res) {
 
 	try {

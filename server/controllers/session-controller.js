@@ -1,6 +1,13 @@
 const passport = require("passport");
 const { StatusCodes } = require("http-status-codes");
 
+/**
+ * GET /session/current
+ * Gets the current session's user if it exists
+ * @param {Request} req 
+ * @param {Response} res 
+ * @returns {Promise<Response>}
+ */
 async function getSession(req, res) {
     if (req.isAuthenticated()) {
         return res.json(req.user);
@@ -8,6 +15,13 @@ async function getSession(req, res) {
     return res.status(StatusCodes.UNAUTHORIZED).end();
 }
 
+/**
+ * POST /session
+ * Creates a new session (log the user in)
+ * @param {Request} req 
+ * @param {Response} res 
+ * @returns {Promise<Response>}
+ */
 async function createSession(req, res) {
     try {
         const user = await (new Promise((resolve, reject) => {
@@ -35,6 +49,13 @@ async function createSession(req, res) {
     }
 }
 
+/**
+ * DELETE /session/current
+ * Deletes the current session (logs the user out)
+ * @param {Request} req 
+ * @param {Response} res 
+ * @returns {Promise<void>}
+ */
 async function deleteSession(req, res) {
     req.logout(() => {
         res.status(StatusCodes.OK).end();

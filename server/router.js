@@ -9,6 +9,5 @@ router.use("/hike", hikeRoutes);
 router.use("/user", userRoutes);
 router.use("/session", sessionRoutes);
 router.use("/location", locationRoutes);
-router.use("/hike", hikeRoutes);
 
 module.exports = router;

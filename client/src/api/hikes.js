@@ -1,5 +1,6 @@
 /** API Hikes */
 const { ENDPOINTS, BACKEND_URL } = require("./config");
+const { addQueryParams } = require("./config");
 
 /**
  * Get all hikes
@@ -8,10 +9,11 @@ const { ENDPOINTS, BACKEND_URL } = require("./config");
  */
 async function getHikes(filters = {}) {
 	try {
-		// FIXME: With the current implementation, '/api' from BACKEND_URL is removed
-		// const url = new URL(ENDPOINTS.hikes.all, BACKEND_URL);
-		const searchParams = new URLSearchParams(filters);
-		const response = await fetch(`${BACKEND_URL}/${ENDPOINTS.hikes.all}/?` + searchParams, {
+		const url = new URL(ENDPOINTS.hikes.all, BACKEND_URL);
+
+		addQueryParams(url, filters);
+
+		const response = await fetch(url, {
 			credentials: "include",
 		});
 		return await response.json();
@@ -56,19 +58,16 @@ async function createHike(hike) {
 	}
 }
 
-async function updateHike(hike) {
+async function updateHike(id,changes) {
 	try {
-		const response = await fetch(
-			new URL(ENDPOINTS.hikes.byId.replace(":id", hike._id), BACKEND_URL),
-			{
-				method: "PATCH",
-				credentials: "include",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify(hike),
-			}
-		);
+		const response = await fetch(new URL(ENDPOINTS.hikes.update.replace(":id",id), BACKEND_URL), {
+			method: "PATCH",
+			credentials: "include",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify(changes),
+		});
 		return await response.json();
 	} catch (err) {
 		console.error(err);
@@ -79,5 +78,5 @@ module.exports = {
 	getHikes,
 	getHikeById,
 	createHike,
-	updateHike,
+	updateHike
 };

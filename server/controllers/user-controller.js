@@ -6,6 +6,13 @@ const { UserType } = require("../models/enums");
 const { randString } = require("../mail_verification/utility");
 const { sendEmail } = require("../mail_verification/verification");
 
+/**
+ * POST /user
+ * Creates a new user and sends the verification email
+ * @param {Request} req 
+ * @param {Response} res 
+ * @returns {Promise<Response>}
+ */
 async function createUser(req, res) {
 	try {
 		// Validate request body
@@ -45,7 +52,7 @@ async function createUser(req, res) {
 			isValid: isValid
 		});
 
-		sendEmail(value.email, uniqueString);
+		await sendEmail(value.email, uniqueString);
 		return res.status(StatusCodes.CREATED).json({ _id: createdUser._id });
 	} catch (err) {
 		if (err.name === "MongoServerError" && err.code === 11000) {
@@ -55,6 +62,13 @@ async function createUser(req, res) {
 	}
 }
 
+/**
+ * POST /user/:uniqueString
+ * Verifies the user by the uniqueString in the url
+ * @param {Request} req 
+ * @param {Response} res 
+ * @returns {Promise<Response>}
+ */
 async function verifyUser(req, res) {
 	const uniqueString = req.params.uniqueString;
 	const users = await userDAL.getUsers({ uniqueString: uniqueString });

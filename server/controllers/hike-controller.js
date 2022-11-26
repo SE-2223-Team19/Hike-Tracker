@@ -6,13 +6,15 @@ const { Difficulty, LocationType, UserType } = require("../models/enums");
 
 /**
  * GET /hike
- * Get all hikes.
- * @param {*} req
- * @param {*} res
+ * Get hikes with a pagination mechanism
+ * @param {Request} req
+ * @param {Response} res
+ * @returns {Promise<Response>}
  */
 async function getHikes(req, res) {
 	try {
 		const { query } = req;
+		
 
 		const schema = joi.object().keys({
 			minLength: joi.number(),
@@ -40,7 +42,7 @@ async function getHikes(req, res) {
 				otherwise: joi.forbidden(),
 			}),
 			page: joi.number().greater(0),
-			pageSize: joi.number().greater(0), // TODO: Change this when pagination is implemented
+			pageSize: joi.number().greater(0),
 		});
 
 		const { error, value } = schema.validate(query);
@@ -72,6 +74,13 @@ async function getHikes(req, res) {
 	}
 }
 
+/**
+ * GET /hike/:id
+ * Gets a single Hike by its id
+ * @param {Request} req 
+ * @param {Response} res 
+ * @returns {Promise<Response>}
+ */
 async function getHikeById(req, res) {
 	try {
 		const { params } = req;
@@ -88,6 +97,13 @@ async function getHikeById(req, res) {
 	}
 }
 
+/**
+ * POST /hike
+ * Creates a new hike
+ * @param {Request} req 
+ * @param {Response} res 
+ * @returns {Promise<Response>}
+ */
 async function createHike(req, res) {
 	try {
 		// Validate request body
@@ -141,7 +157,15 @@ async function createHike(req, res) {
 	}
 }
 
+/**
+ * PATCH /hike/:id
+ * Updates an hike
+ * @param {Request} req 
+ * @param {Response} res 
+ * @returns {Promise<Response>}
+ */
 async function updateHike(req, res) {
+
 	try {
 		// Validate request body
 		const { params, body } = req;
@@ -191,13 +215,15 @@ async function updateHike(req, res) {
 
 		if (error) throw error; // Joi validation error, goes to catch block
 
-		const hikeUpdated = await hikeService.updateHike(params.id, value);
+		const hike = await hikeService.getHikeById(params.id)
+		const hikeUpdated = await hikeService.updateHike(params.id, value, hike);
 
 		return res.status(StatusCodes.OK).json(hikeUpdated);
 	} catch (err) {
 		console.log(err.message);
 		return res.status(StatusCodes.BAD_REQUEST).json({ err: err.message, stack: err.stack });
 	}
+	
 }
 
 module.exports = {

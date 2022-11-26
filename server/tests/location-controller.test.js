@@ -55,3 +55,48 @@ describe('createLocation', () => {
         expect(response.statusCode).toBe(StatusCodes.BAD_REQUEST);
     });
 });
+
+describe('updateLocationDescription', () => {
+
+    test('update location', async () => {
+        const response = new ResponseHelper();
+        await locationController.createLocation({
+            body: {
+                locationType: LocationType.HUT,
+                description: "A test hut",
+                point: [7.683070, 45.068370] // Wants a <longitude>, <latitude> array
+            }
+        }, response);
+        expect(response.statusCode).toBe(StatusCodes.CREATED);
+        await locationController.updateLocationDescription({
+            params: {
+                id: response.responseBody._id
+            },
+            body: {
+                description: "A test hut updated"
+            }
+        }, response);
+        expect(response.statusCode).toBe(StatusCodes.OK);
+    });
+
+    test('error in schema', async () => {
+        const response = new ResponseHelper();
+        await locationController.createLocation({
+            body: {
+                locationType: LocationType.HUT,
+                description: "A test hut",
+                point: [7.683070, 45.068370]
+            }
+        }, response);
+        expect(response.statusCode).toBe(StatusCodes.CREATED);
+        await locationController.updateLocationDescription({
+            params: {
+                id: response.responseBody._id
+            },
+            body: {
+                description: 123
+            }
+        }, response);
+        expect(response.statusCode).toBe(StatusCodes.BAD_REQUEST);
+    });
+});

@@ -35,4 +35,28 @@ describe('createUser', () => {
         }, response);
         expect(response.statusCode).toBe(StatusCodes.BAD_REQUEST);
     });
+
+    test('duplicate insert user', async () => {
+        const response = new ResponseHelper();
+        await userController.createUser({
+            body: {
+                email: "hiker@test.com",
+                fullName: "John Doe",
+                userType: UserType.HIKER,
+                password: "password",
+                confirmPassword: "password"
+            }
+        }, response);
+        expect(response.statusCode).toBe(StatusCodes.CREATED);
+        await userController.createUser({
+            body: {
+                email: "hiker@test.com",
+                fullName: "John Doe",
+                userType: UserType.HIKER,
+                password: "password",
+                confirmPassword: "password"
+            }
+        }, response);
+        expect(response.statusCode).toBe(StatusCodes.UNPROCESSABLE_ENTITY);
+    });
 });

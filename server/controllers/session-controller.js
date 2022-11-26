@@ -16,20 +16,21 @@ async function createSession(req, res) {
                     return reject(err);
                 }
                 req.login({
-                    _id: user._id, 
+                    _id: user._id,
                     email: user.email,
-                    fullName: user.fullName, 
+                    fullName: user.fullName,
                     userType: user.userType
                 }, (err) => {
                     if (err) {
                         return reject(err);
                     }
                     return resolve(user);
-                  });
+                });
             })(req, res);
         }));
         return res.status(StatusCodes.CREATED).json(user);
     } catch (err) {
+        console.log(err);
         return res.status(StatusCodes.UNAUTHORIZED).json({ err: err.message });
     }
 }

@@ -2,7 +2,7 @@ const joi = require("joi");
 const { StatusCodes } = require("http-status-codes");
 const hikeDAL = require("../data/hike-dal");
 const hikeService = require("../services/hike-service");
-const { Difficulty, LocationType } = require("../models/enums");
+const { Difficulty, LocationType, UserType } = require("../models/enums");
 
 /**
  * GET /hike
@@ -13,8 +13,6 @@ const { Difficulty, LocationType } = require("../models/enums");
 async function getHikes(req, res) {
 	try {
 		const { query } = req;
-
-		console.log(query);
 
 		const schema = joi.object().keys({
 			minLength: joi.number(),
@@ -46,8 +44,6 @@ async function getHikes(req, res) {
 		});
 
 		const { error, value } = schema.validate(query);
-
-		console.log(value);
 
 		if (error) throw error;
 
@@ -83,7 +79,7 @@ async function getHikeById(req, res) {
 		const hike = await hikeDAL.getHikeById(params.id);
 
 		if (hike === null) {
-			return res.status(StatusCodes.NOT_FOUND).end();
+			return res.status(StatusCodes.NOT_FOUND);
 		}
 
 		return res.status(StatusCodes.OK).json(hike);
@@ -199,7 +195,7 @@ async function updateHike(req, res) {
 
 		return res.status(StatusCodes.OK).json(hikeUpdated);
 	} catch (err) {
-		console.log(err);
+		console.log(err.message);
 		return res.status(StatusCodes.BAD_REQUEST).json({ err: err.message, stack: err.stack });
 	}
 }

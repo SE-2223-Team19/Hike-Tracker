@@ -37,14 +37,14 @@ async function getLocations(req, res) {
 		if (value.locationType) filter.locationType = value.locationType;
 		if (value.description) filter.description = { $regex: value.description };
 		if (value.locationLat && value.locationLon && value.locationRadius) filter.point = {
-            $near: {
-                $geometry: {
-                    type: "Point",
-                    coordinates: [value.locationLon, value.locationLat]
-                },
-                $maxDistance: value.locationRadius // Distance in meters
-            }
-        };
+			$near: {
+				$geometry: {
+					type: "Point",
+					coordinates: [value.locationLon, value.locationLat]
+				},
+				$maxDistance: value.locationRadius // Distance in meters
+			}
+		};
 
 		const locations = await locationDAL.getLocations(filter);
 		return res.status(StatusCodes.OK).json(locations);
@@ -54,7 +54,7 @@ async function getLocations(req, res) {
 }
 
 async function createLocation(req, res) {
-	
+
 	try {
 		// Validate request body
 		const { body } = req;
@@ -79,15 +79,23 @@ async function createLocation(req, res) {
 		const createdLocation = await locationDAL.createLocation(value);
 		return res.status(StatusCodes.CREATED).json(createdLocation);
 	} catch (err) {
+		console.log(err.message);
 		return res.status(StatusCodes.BAD_REQUEST).json({ err: err.message });
 	}
 }
 
-async function updateLocationDescription(req,res){
-	const { params, body } = req;
-	const id = params.id;
-	const description = body.description;
+async function updateLocationDescription(req, res) {
 	try {
+		const { params, body } = req;
+		const id = params.id;
+		const schema = joi.object().keys({
+			description: joi.string().required()
+		});
+
+		const { error, value } = schema.validate(body);
+
+		if (error) throw error;
+		const description = value.description;
 		const result = await locationDAL.updateLocationDescription(id, description);
 		return res.status(StatusCodes.OK).json(result);
 	} catch (err) {

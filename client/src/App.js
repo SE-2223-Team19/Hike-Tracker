@@ -5,6 +5,7 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Map from "./pages/Map";
 import DescribeHut from "./pages/Describe-hut";
+import DescribeParking from "./pages/Describe-parking";
 import SignIn from "./pages/SignIn";
 import Verify from "./pages/Verify";
 import { AuthProvider } from "./context/AuthContext";
@@ -22,6 +23,7 @@ function App() {
 						<Route path="/login" element={<Layout mode="login" />} />
 						<Route path="/map" element={<Layout mode="map" />} />
 						<Route path="/hut" element={<Layout mode="hut" />} />
+						<Route path="/parking" element={<Layout mode="parking" />} />
 						<Route path="/verify/:uniqueString" element={<Layout mode="verify" />} />
 						<Route path="/reference-Point" element={<Layout mode="reference-Point" />} />
 						<Route path="/describe-Huts" element={<Layout mode="describe-Huts" />} />
@@ -52,6 +54,9 @@ function Layout(props) {
 			break;
 		case "hut":
 			outlet = <DescribeHut />;
+			break;
+    	case "parking":
+			outlet = <DescribeParking />;
 			break;
 		case "verify":
 			outlet = <Verify />;

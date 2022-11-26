@@ -35,14 +35,14 @@ function ModalMap({ handleClose, hike }) {
 					<TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
 					<Marker
 						key={"start"}
-						position={(hike && hike.startPoint.point.reverse()) || [0, 0]}
+						position={(hike && [...hike.startPoint.point].reverse()) || [0, 0]}
 						icon={markerStartEndPoint}
 					>
 						<Popup>Start Point</Popup>
 					</Marker>
 					<Marker
 						key={"end"}
-						position={(hike && hike.endPoint.point.reverse()) || [0, 0]}
+						position={(hike && [...hike.endPoint.point].reverse()) || [0, 0]}
 						icon={markerStartEndPoint}
 					>
 						<Popup>End Point</Popup>

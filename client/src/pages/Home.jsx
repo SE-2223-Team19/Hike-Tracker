@@ -4,6 +4,7 @@ import Header from "../components/Header";
 import DefineReferencepage from "./DefineReference";
 import DescribeHike from "./DescribeHike";
 import Hikes from "./Hikes";
+import Huts from "./Huts";
 
 const Home = (props) => {
 	return (
@@ -14,6 +15,7 @@ const Home = (props) => {
 					<Route path="/" element={<Hikes />} />
 					<Route path="/describe-hike" element={<DescribeHike />} />
 					<Route path="/reference-point/:hikeId" element={<DefineReferencepage />} />
+					<Route path="/huts" element={<Huts />} />
 				</Routes>
 			</div>
 		</div>

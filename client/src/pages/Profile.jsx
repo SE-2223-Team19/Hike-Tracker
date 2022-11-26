@@ -8,6 +8,7 @@ import { getHikes } from "../api/hikes.js";
 import HikeCard from "../components/HikeCard";
 import ModalMap from "../components/ModalMap";
 import NoData from "../components/NoData";
+import { UserType } from "../helper/enums";
 
 // TODO: Modify the Profile page based on the user type (for now only local_guide)
 
@@ -46,7 +47,15 @@ const Profile = () => {
 					Logout
 				</Button>
 			</Stack>
-			<h2>My Hikes</h2>
+			{user.userType === UserType.LOCAL_GUIDE && (
+				<Stack direction="horizontal" className="justify-content-between align-items-center">
+					<h2>My Hikes</h2>
+
+					<Button variant="success" onClick={() => navigate("/huts")}>
+						Huts
+					</Button>
+				</Stack>
+			)}
 			{!hikes && <NoData />}
 			{hikes.length === 0 && <NoData message={"You have not created any hikes yet."} />}
 			{hikes.map((hike) => (

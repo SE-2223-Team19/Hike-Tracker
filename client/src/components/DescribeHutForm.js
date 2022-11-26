@@ -5,8 +5,6 @@ import { LocationType } from "../helper/enums";
 
 function DescribeHutForm() {
 	const [descriptions, setdescriptions] = useState("");
-	//console.log(descriptions);
-	//const [location,SetLocation]=useState("")
 	const [pointLat, SetPointLat] = useState("");
 	const [pointLng, SetPointLng] = useState("");
 
@@ -25,23 +23,23 @@ function DescribeHutForm() {
 	return (
 		<Form onSubmit={handlesubmit}>
 			<Row>
-				<Col xs={12} md={4}>
+				<Col xs={12} md={6}>
 					<Form.Group
-						controlId="length"
+						controlId="lng"
 						className="mt-3"
-						value={descriptions}
+						value={pointLng}
 						onChange={(event) => {
-							setdescriptions(event.target.value);
+							SetPointLng(event.target.value);
 						}}
 					>
-						<Form.Label>Description</Form.Label>
-						<Form.Control type="text" name="Description" />
+						<Form.Label>Longitude Point</Form.Label>
+						<Form.Control Type="number" name="Longitude" />
 						<Form.Control.Feedback type="invalid"></Form.Control.Feedback>
 					</Form.Group>
 				</Col>
-				<Col xs={12} md={4}>
+				<Col xs={12} md={6}>
 					<Form.Group
-						controlId="ascent"
+						controlId="lat"
 						className="mt-3"
 						value={pointLat}
 						onChange={(event) => {
@@ -55,17 +53,17 @@ function DescribeHutForm() {
 				</Col>
 			</Row>
 			<Row>
-				<Col xs={12} md={4}>
+				<Col xs={12} md={12}>
 					<Form.Group
-						controlId="ascent"
+						controlId="description"
 						className="mt-3"
-						value={pointLng}
+						value={descriptions}
 						onChange={(event) => {
-							SetPointLng(event.target.value);
+							setdescriptions(event.target.value);
 						}}
 					>
-						<Form.Label>Longitude Point</Form.Label>
-						<Form.Control Type="number" name="Longitude" />
+						<Form.Label>Description</Form.Label>
+						<Form.Control type="text" name="Description" />
 						<Form.Control.Feedback type="invalid"></Form.Control.Feedback>
 					</Form.Group>
 				</Col>

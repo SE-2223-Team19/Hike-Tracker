@@ -3,12 +3,12 @@ import { Container } from "react-bootstrap";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
-import DescribeHut from "./pages/Describe-hut";
-import DescribeParking from "./pages/Describe-parking";
+import DescribeHut from "./pages/DescribeHut";
+import DescribeParking from "./pages/DescribeParking";
 import SignIn from "./pages/SignIn";
 import Verify from "./pages/Verify";
 import { AuthProvider } from "./context/AuthContext";
-import DescribeHuts from "./pages/DescribeHuts";
+import Huts from "./pages/Huts";
 import Profile from "./pages/Profile";
 
 function App() {
@@ -24,7 +24,8 @@ function App() {
 						<Route path="/hut" element={<Layout mode="hut" />} />
 						<Route path="/parking" element={<Layout mode="parking" />} />
 						<Route path="/verify/:uniqueString" element={<Layout mode="verify" />} />
-						<Route path="/describe-huts" element={<Layout mode="describe-huts" />} />
+						<Route path="/describe-hut" element={<Layout mode="describe-hut" />} />
+						<Route path="/huts" element={<Layout mode="huts" />} />
 						<Route path="/profile" element={<Profile />} />
 					</Routes>
 				</Container>
@@ -54,14 +55,17 @@ function Layout(props) {
 		case "hut":
 			outlet = <DescribeHut />;
 			break;
-    	case "parking":
+		case "parking":
 			outlet = <DescribeParking />;
 			break;
 		case "verify":
 			outlet = <Verify />;
 			break;
-		case "describe-huts":
-			outlet = <DescribeHuts />;
+		case "describe-hut":
+			outlet = <DescribeHut />;
+			break;
+		case "huts":
+			outlet = <Huts />;
 			break;
 		default:
 			outlet = <Home />;

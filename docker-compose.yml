@@ -16,6 +16,8 @@ services:
       context: ./server
     env_file:
       - ./server/.env
+    environment:
+      - CHOKIDAR_USEPOLLING=true # For hot reloading on Windows
     depends_on:
       - mongo
     ports:

@@ -13,7 +13,7 @@ import Paginator from "../components/Paginator";
 const Hikes = () => {
 	// ** State
 	const [hikes, setHikes] = useState([]);
-	const [pagination, setPagination] = useState({currentPage: 1, totalPages: 1, pageSize: 25});
+	const [pagination, setPagination] = useState({ currentPage: 1, totalPages: 1, pageSize: 25 });
 	const [loading, setLoading] = useState(true);
 	const [openFilters, setOpenFilters] = useState(false);
 	const [filters, setFilters] = useState({});
@@ -24,14 +24,25 @@ const Hikes = () => {
 	useEffect(() => {
 		setLoading(true);
 		const fetchHikes = async () => {
-			const hikes = await getHikes({ ...filters, page: pagination.currentPage, pageSize: pagination.pageSize });
+			const hikes = await getHikes({
+				...filters,
+				page: pagination.currentPage,
+				pageSize: pagination.pageSize,
+			});
 			if (hikes.error) {
 				setHikes(-1);
 				setLoading(false);
 				return;
 			}
 			setHikes(hikes.data);
-			setPagination(old => hikes.metadata.find(m => m.type === "pagination") || { ...old, currentPage: 1, totalPages: 0 });
+			setPagination(
+				(old) =>
+					hikes.metadata.find((m) => m.type === "pagination") || {
+						...old,
+						currentPage: 1,
+						totalPages: 0,
+					}
+			);
 			setLoading(false);
 		};
 		fetchHikes();
@@ -86,12 +97,16 @@ const Hikes = () => {
 				}}
 				onRemoveFilter={() => {
 					setShowPositionFilter(false);
-					const {locationCoordinatesLat, locationCoordinatesLng, locationRadius, ...f} = filters;
+					const { locationCoordinatesLat, locationCoordinatesLng, locationRadius, ...f } = filters;
 					setFilters(f);
 				}}
 			></PositionFilterModal>
-			<ModalMap handleClose={() => () => setCurrentHike(null)(null)} hike={currentHike}></ModalMap>
-			<Paginator setPage={(page) => setPagination({...pagination, currentPage: page})} setPageSize={(pageSize) => setPagination({...pagination, pageSize: pageSize})} {...pagination}/>
+			<ModalMap handleClose={() => setCurrentHike(null)} hike={currentHike}></ModalMap>
+			<Paginator
+				setPage={(page) => setPagination({ ...pagination, currentPage: page })}
+				setPageSize={(pageSize) => setPagination({ ...pagination, pageSize: pageSize })}
+				{...pagination}
+			/>
 		</div>
 	);
 };

@@ -7,15 +7,15 @@ import { capitalizeAndReplaceUnderscores } from "../helper/utils";
 import { getHikes } from "../api/hikes.js";
 import HikeCard from "../components/HikeCard";
 import ModalMap from "../components/ModalMap";
+import NoData from "../components/NoData";
 
-
+// TODO: Modify the Profile page based on the user type (for now only local_guide)
 
 const Profile = () => {
 	const navigate = useNavigate();
 	const { user, handleLogout } = useContext(AuthContext);
 	const [hikes, setHikes] = useState([]);
 	const [currentHike, setCurrentHike] = useState(null);
-
 
 	useEffect(() => {
 		const fetchHikes = async () => {
@@ -24,11 +24,13 @@ const Profile = () => {
 				setHikes(-1);
 				return;
 			}
-			setHikes(hikes.data);
+			let hikesfiltered = hikes.data.filter((h) => h.createdBy._id === user._id);
+			setHikes(hikesfiltered);
 		};
-		fetchHikes();
-	}, []);
-	let hikesfiltered = hikes.filter(h => h.createdBy._id == user._id);
+		if (user) {
+			fetchHikes();
+		}
+	}, [user]);
 
 	return (
 		<>
@@ -44,9 +46,13 @@ const Profile = () => {
 					Logout
 				</Button>
 			</Stack>
-			{hikesfiltered.map((hike) => <HikeCard key={hike._id} hike={hike} showDetails={setCurrentHike} from="profile" />)}
+			<h2>My Hikes</h2>
+			{!hikes && <NoData />}
+			{hikes.length === 0 && <NoData message={"You have not created any hikes yet."} />}
+			{hikes.map((hike) => (
+				<HikeCard key={hike._id} hike={hike} showDetails={setCurrentHike} from="profile" />
+			))}
 			<ModalMap handleClose={() => setCurrentHike(null)} hike={currentHike}></ModalMap>
-
 		</>
 	);
 };

@@ -12,7 +12,12 @@ const Header = () => {
 	return (
 		<Navbar>
 			<Navbar.Brand href="/">
-				<img src="./snowed-mountains.png" alt="Hike Tracker" width="36" height="36" />
+				<img
+					src={"http://localhost:3000/snowed-mountains.png"}
+					alt="Hike Tracker"
+					width="36"
+					height="36"
+				/>
 			</Navbar.Brand>
 
 			<Nav className="ms-auto align-items-center">

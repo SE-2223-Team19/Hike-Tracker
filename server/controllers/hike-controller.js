@@ -14,7 +14,6 @@ const { Difficulty, LocationType, UserType } = require("../models/enums");
 async function getHikes(req, res) {
 	try {
 		const { query } = req;
-		
 
 		const schema = joi.object().keys({
 			minLength: joi.number(),
@@ -77,8 +76,8 @@ async function getHikes(req, res) {
 /**
  * GET /hike/:id
  * Gets a single Hike by its id
- * @param {Request} req 
- * @param {Response} res 
+ * @param {Request} req
+ * @param {Response} res
  * @returns {Promise<Response>}
  */
 async function getHikeById(req, res) {
@@ -100,8 +99,8 @@ async function getHikeById(req, res) {
 /**
  * POST /hike
  * Creates a new hike
- * @param {Request} req 
- * @param {Response} res 
+ * @param {Request} req
+ * @param {Response} res
  * @returns {Promise<Response>}
  */
 async function createHike(req, res) {
@@ -160,12 +159,11 @@ async function createHike(req, res) {
 /**
  * PATCH /hike/:id
  * Updates an hike
- * @param {Request} req 
- * @param {Response} res 
+ * @param {Request} req
+ * @param {Response} res
  * @returns {Promise<Response>}
  */
 async function updateHike(req, res) {
-
 	try {
 		// Validate request body
 		const { params, body } = req;
@@ -199,15 +197,6 @@ async function updateHike(req, res) {
 			endPoint: [locationSchema, joi.string()],
 			referencePoints: joi.array().items(locationSchema, joi.string()),
 			trackPoints: joi.array().items(joi.array().items(joi.number()).length(2)),
-			createdBy: joi.object().keys({
-				email: joi.string().required(),
-				fullName: joi.string().required(),
-				userType: joi.string().valid(...Object.values(UserType)),
-				salt: joi.string().required(),
-				hash: joi.string().required(),
-				uniqueString: joi.string().required(),
-				isValid: joi.boolean().required(),
-			}),
 		});
 
 		// Validate request body against schema
@@ -215,7 +204,8 @@ async function updateHike(req, res) {
 
 		if (error) throw error; // Joi validation error, goes to catch block
 
-		const hike = await hikeService.getHikeById(params.id)
+		const hike = await hikeService.getHikeById(params.id);
+
 		const hikeUpdated = await hikeService.updateHike(params.id, value, hike);
 
 		return res.status(StatusCodes.OK).json(hikeUpdated);
@@ -223,7 +213,6 @@ async function updateHike(req, res) {
 		console.log(err.message);
 		return res.status(StatusCodes.BAD_REQUEST).json({ err: err.message, stack: err.stack });
 	}
-	
 }
 
 module.exports = {

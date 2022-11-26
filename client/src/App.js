@@ -3,14 +3,13 @@ import { Container } from "react-bootstrap";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
-import Map from "./pages/Map";
 import DescribeHut from "./pages/Describe-hut";
 import DescribeParking from "./pages/Describe-parking";
 import SignIn from "./pages/SignIn";
 import Verify from "./pages/Verify";
 import { AuthProvider } from "./context/AuthContext";
-import DefineReferencepage from "./pages/DefineReference"
 import DescribeHuts from "./pages/DescribeHuts";
+import Profile from "./pages/Profile";
 
 function App() {
 	return (
@@ -25,8 +24,8 @@ function App() {
 						<Route path="/hut" element={<Layout mode="hut" />} />
 						<Route path="/parking" element={<Layout mode="parking" />} />
 						<Route path="/verify/:uniqueString" element={<Layout mode="verify" />} />
-						<Route path="/reference-Point" element={<Layout mode="reference-Point" />} />
-						<Route path="/describe-Huts" element={<Layout mode="describe-Huts" />} />
+						<Route path="/describe-huts" element={<Layout mode="describe-huts" />} />
+						<Route path="/profile" element={<Profile />} />
 					</Routes>
 				</Container>
 			</AuthProvider>
@@ -49,8 +48,8 @@ function Layout(props) {
 		case "sign-in":
 			outlet = <SignIn />;
 			break;
-		case "map":
-			outlet = <Map />;
+		case "profile":
+			outlet = <Profile />;
 			break;
 		case "hut":
 			outlet = <DescribeHut />;
@@ -61,11 +60,8 @@ function Layout(props) {
 		case "verify":
 			outlet = <Verify />;
 			break;
-		case "reference-Point"	:
-		    outlet = <DefineReferencepage/>
-			break;
-		case "describe-Huts":
-			outlet = <DescribeHuts/>
+		case "describe-huts":
+			outlet = <DescribeHuts />;
 			break;
 		default:
 			outlet = <Home />;

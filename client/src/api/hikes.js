@@ -16,7 +16,7 @@ async function getHikes(filters = {}) {
 		const response = await fetch(url, {
 			credentials: "include",
 		});
-		return await response.json();
+		return response.json();
 	} catch (err) {
 		console.log(err);
 		return { error: err };
@@ -30,8 +30,10 @@ async function getHikes(filters = {}) {
  */
 async function getHikeById(id) {
 	try {
-		// const response = await fetch(ENDPOINTS.hikes.byId.replace(":id", id), {});
-		// return response.data;
+		const response = await fetch(ENDPOINTS.hikes.byId.replace(":id", id), {
+			credentials: "include",
+		});
+		return response.json();
 	} catch (err) {
 		console.error(err);
 	}
@@ -58,9 +60,9 @@ async function createHike(hike) {
 	}
 }
 
-async function updateHike(id,changes) {
+async function updateHike(id, changes) {
 	try {
-		const response = await fetch(new URL(ENDPOINTS.hikes.update.replace(":id",id), BACKEND_URL), {
+		const response = await fetch(new URL(ENDPOINTS.hikes.update.replace(":id", id), BACKEND_URL), {
 			method: "PATCH",
 			credentials: "include",
 			headers: {
@@ -78,5 +80,5 @@ module.exports = {
 	getHikes,
 	getHikeById,
 	createHike,
-	updateHike
+	updateHike,
 };

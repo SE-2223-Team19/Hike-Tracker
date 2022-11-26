@@ -8,111 +8,6 @@ import { CgOptions } from "react-icons/cg";
 import PositionFilterModal from "../components/PositionFilterModal";
 import * as L from "leaflet";
 
-function getRandom() {
-    return [Math.random() * 90, Math.random() * 180]
-}
-const dummyData = [
-    {
-        description: "Test hut 1",
-        locationType: "hut",
-        point: getRandom(),
-        address: {
-            city: "Turin",
-            province: "Turin",
-            cap: "10129",
-            street: "Test Street 1"
-        }
-    },
-    {
-        description: "Test hut 2",
-        locationType: "hut",
-        point: getRandom(),
-        address: {
-            city: "Turin",
-            province: "Turin",
-            cap: "10129",
-            street: "Test Street 2"
-        }
-    },
-    {
-        description: "Test hut 3",
-        locationType: "hut",
-        point: getRandom(),
-        address: {
-            city: "Turin",
-            province: "Turin",
-            cap: "10129",
-            street: "Test Street 2"
-        }
-    },
-    {
-        description: "Test hut 4",
-        locationType: "hut",
-        point: getRandom(),
-        address: {
-            city: "Turin",
-            province: "Turin",
-            cap: "10129",
-            street: "Test Street 3"
-        }
-    },
-    {
-        description: "Test hut 5",
-        locationType: "hut",
-        point: getRandom(),
-        address: {
-            city: "Turin",
-            province: "Turin",
-            cap: "10129",
-            street: "Test Street 4"
-        }
-    },
-    {
-        description: "Test hut 6",
-        locationType: "hut",
-        point: getRandom(),
-        address: {
-            city: "Turin",
-            province: "Turin",
-            cap: "10129",
-            street: "Test Street 1"
-        }
-    },
-    {
-        description: "Test hut 7",
-        locationType: "hut",
-        point: getRandom(),
-        address: {
-            city: "Turin",
-            province: "Turin",
-            cap: "10129",
-            street: "Test Street 1"
-        }
-    },
-    {
-        description: "Test hut 8",
-        locationType: "hut",
-        point: getRandom(),
-        address: {
-            city: "Turin",
-            province: "Turin",
-            cap: "10129",
-            street: "Test Street 1"
-        }
-    },
-    {
-        description: "Test hut 9",
-        locationType: "hut",
-        point: getRandom(),
-        address: {
-            city: "Turin",
-            province: "Turin",
-            cap: "10129",
-            street: "Test Street 1"
-        }
-    }
-]
-
 function DescribeHuts() {
 
     const [huts, setHuts] = useState([]);
@@ -126,8 +21,7 @@ function DescribeHuts() {
         setLoading(true);
         const fetchHikes = async () => {
             const huts = await getHuts({ ...filters })
-            //setHuts(huts);
-            setHuts(dummyData)
+            setHuts(huts);
             setLoading(false);
         };
         fetchHikes();
@@ -203,10 +97,6 @@ const HutCard = ({ hut }) => {
                             <MapHut hut={hut} />
                         </Row>
                     </div>
-                    <Row><Card.Text><strong>City:</strong> {hut.address.city}</Card.Text></Row>
-                    <Row><Card.Text><strong>Province:</strong> {hut.address.province}</Card.Text></Row>
-                    <Row><Card.Text><strong>Street:</strong> {hut.address.street}</Card.Text></Row>
-                    <Row><Card.Text><strong>Cap:</strong> {hut.address.cap}</Card.Text></Row>
                 </Card.Body>
             </Card>
         </Col>

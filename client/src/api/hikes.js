@@ -1,7 +1,5 @@
 /** API Hikes */
-
-const { ENDPOINTS } = require("./config");
-const { BACKEND_URL } = require("./config");
+const { ENDPOINTS, BACKEND_URL } = require("./config");
 const { addQueryParams } = require("./config");
 
 /**
@@ -20,7 +18,8 @@ async function getHikes(filters = {}) {
 		});
 		return await response.json();
 	} catch (err) {
-		console.error(err);
+		console.log(err);
+		return { error: err };
 	}
 }
 

@@ -15,3 +15,8 @@ export function displayExpectedTime(minutes) {
 export function capitalizeAndReplaceUnderscores(str) {
 	return str.replace(/_/g, " ").replace(/\w\S*/g, (w) => w.replace(/^\w/, (c) => c.toUpperCase()));
 }
+
+/** Convert meters to km and round to 2 values */
+export function displayLength(length) {
+	return (length / 1000).toFixed(2);
+}

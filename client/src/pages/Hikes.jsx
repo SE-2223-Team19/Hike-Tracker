@@ -8,10 +8,12 @@ import NoData from "../components/NoData";
 import { CgOptions } from "react-icons/cg";
 import HikeFilters from "../components/HikeFilters";
 import PositionFilterModal from "../components/PositionFilterModal";
+import Paginator from "../components/Paginator";
 
 const Hikes = () => {
 	// ** State
 	const [hikes, setHikes] = useState([]);
+	const [pagination, setPagination] = useState({currentPage: 1, totalPages: 1, pageSize: 25});
 	const [loading, setLoading] = useState(true);
 	const [openFilters, setOpenFilters] = useState(false);
 	const [filters, setFilters] = useState({});
@@ -22,13 +24,18 @@ const Hikes = () => {
 	useEffect(() => {
 		setLoading(true);
 		const fetchHikes = async () => {
-			const hikes = await getHikes({ ...filters });
-			setHikes(hikes);
+			const hikes = await getHikes({ ...filters, page: pagination.currentPage, pageSize: pagination.pageSize });
+			if (hikes.error) {
+				setHikes(-1);
+				setLoading(false);
+				return;
+			}
+			setHikes(hikes.data);
+			setPagination(old => hikes.metadata.find(m => m.type === "pagination") || { ...old, currentPage: 1, totalPages: 0 });
 			setLoading(false);
 		};
 		fetchHikes();
-	}, [filters]);
-
+	}, [filters, pagination.currentPage, pagination.pageSize]);
 
 	return (
 		<div className="w-100">
@@ -57,7 +64,10 @@ const Hikes = () => {
 				/>
 			)}
 			{loading && <Loading />}
-			{(!hikes || hikes.length <= 0) && !loading && <NoData message={"No hikes found."} />}
+			{hikes.length <= 0 && !loading && <NoData message={"No hikes found."} />}
+			{hikes === -1 && !loading && (
+				<NoData message={"Something went wrong during the request. Try again later."} />
+			)}
 			{hikes.length > 0 &&
 				!loading &&
 				hikes.map((hike) => <HikeCard key={hike._id} hike={hike} showDetails={setCurrentHike} />)}
@@ -74,8 +84,14 @@ const Hikes = () => {
 						locationRadius: radius * 1000,
 					});
 				}}
+				onRemoveFilter={() => {
+					setShowPositionFilter(false);
+					const {locationCoordinatesLat, locationCoordinatesLng, locationRadius, ...f} = filters;
+					setFilters(f);
+				}}
 			></PositionFilterModal>
-			<ModalMap handleClose={setCurrentHike} hike={currentHike}></ModalMap>
+			<ModalMap handleClose={() => () => setCurrentHike(null)(null)} hike={currentHike}></ModalMap>
+			<Paginator setPage={(page) => setPagination({...pagination, currentPage: page})} setPageSize={(pageSize) => setPagination({...pagination, pageSize: pageSize})} {...pagination}/>
 		</div>
 	);
 };

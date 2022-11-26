@@ -4,9 +4,11 @@ const locationDAL = require("../data/location-dal");
 const { LocationType } = require("../models/enums");
 
 /**
+ * GET /location
  * Get all locations.
- * @param {*} req
- * @param {*} res
+ * @param {Request} req
+ * @param {Response} res
+ * @returns {Promise<Response>}
  */
 async function getLocations(req, res) {
 	try {
@@ -53,7 +55,15 @@ async function getLocations(req, res) {
 	}
 }
 
+/**
+ * POST /location
+ * Creates a new location
+ * @param {Request} req 
+ * @param {Response} res 
+ * @returns {Promise<Response>}
+ */
 async function createLocation(req, res) {
+	
 	try {
 		// Validate request body
 		const { body } = req;
@@ -69,6 +79,7 @@ async function createLocation(req, res) {
 		});
 
 		// Validate request body against schema
+		console.log(body);
 		const { error, value } = schema.validate(body);
 
 		if (error) throw error; // Joi validation error, goes to catch block
@@ -81,8 +92,27 @@ async function createLocation(req, res) {
 	}
 }
 
+/**
+ * PUT /location/:id
+ * Updates a location's description
+ * @param {Request} req 
+ * @param {Response} res 
+ * @returns {Promise<Response>}
+ */
+async function updateLocationDescription(req, res){
+	const { params, body } = req;
+	const id = params.id;
+	const description = body.description;
+	try {
+		const result = await locationDAL.updateLocationDescription(id, description);
+		return res.status(StatusCodes.OK).json(result);
+	} catch (err) {
+		return res.status(StatusCodes.BAD_REQUEST).json({ err: err.message });
+	}
+}
 
 module.exports = {
 	getLocations,
-	createLocation
+	createLocation,
+	updateLocationDescription
 };

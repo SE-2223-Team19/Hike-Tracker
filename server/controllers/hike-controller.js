@@ -6,14 +6,18 @@ const { Difficulty, LocationType, UserType } = require("../models/enums");
 
 /**
  * GET /hike
- * Get all hikes.
- * @param {*} req
- * @param {*} res
+ * Get hikes with a pagination mechanism
+ * @param {Request} req
+ * @param {Response} res
+ * @returns {Promise<Response>}
  */
 async function getHikes(req, res) {
 	try {
 		const { query } = req;
 		
+
+		console.log(query);
+
 		const schema = joi.object().keys({
 			minLength: joi.number(),
 			maxLength: joi.number(),
@@ -25,21 +29,27 @@ async function getHikes(req, res) {
 			createdBy: joi.string(),
 			// Location validation
 			locationCoordinatesLat: joi.number().min(-90).max(90),
-			locationCoordinatesLng: joi.number().min(-180).max(180).when(joi.ref("locationCoordinatesLat"), {
-				is: joi.exist(),
-				then: joi.required(),
-				otherwise: joi.forbidden()
-			}),
+			locationCoordinatesLng: joi
+				.number()
+				.min(-180)
+				.max(180)
+				.when(joi.ref("locationCoordinatesLat"), {
+					is: joi.exist(),
+					then: joi.required(),
+					otherwise: joi.forbidden(),
+				}),
 			locationRadius: joi.number().greater(0).when(joi.ref("locationCoordinatesLat"), {
 				is: joi.exist(),
 				then: joi.required(),
-				otherwise: joi.forbidden()
+				otherwise: joi.forbidden(),
 			}),
-			page: joi.number().greater(0).default(1),
-			pageSize: joi.number().greater(0).default(100),
+			page: joi.number().greater(0),
+			pageSize: joi.number().greater(0),
 		});
 
 		const { error, value } = schema.validate(query);
+
+		console.log(value);
 
 		if (error) throw error;
 
@@ -68,6 +78,13 @@ async function getHikes(req, res) {
 	}
 }
 
+/**
+ * GET /hike/:id
+ * Gets a single Hike by its id
+ * @param {Request} req 
+ * @param {Response} res 
+ * @returns {Promise<Response>}
+ */
 async function getHikeById(req, res) {
 	try {
 		const { params } = req;
@@ -84,6 +101,13 @@ async function getHikeById(req, res) {
 	}
 }
 
+/**
+ * POST /hike
+ * Creates a new hike
+ * @param {Request} req 
+ * @param {Response} res 
+ * @returns {Promise<Response>}
+ */
 async function createHike(req, res) {
 	try {
 		// Validate request body
@@ -137,12 +161,19 @@ async function createHike(req, res) {
 	}
 }
 
+/**
+ * PATCH /hike/:id
+ * Updates an hike
+ * @param {Request} req 
+ * @param {Response} res 
+ * @returns {Promise<Response>}
+ */
 async function updateHike(req, res) {
 
 	try {
-		
 		// Validate request body
 		const { params, body } = req;
+
 		// Location validation schema
 		const locationSchema = joi.object().keys({
 			_id: joi.string(),
@@ -151,10 +182,13 @@ async function updateHike(req, res) {
 				.valid(...Object.values(LocationType))
 				.required(),
 			description: joi.string().allow(""),
-			point: joi.object().keys({
-				lat: joi.number().required(),
-				lng: joi.number().required(),
-			}).required(),
+			point: joi
+				.object()
+				.keys({
+					lat: joi.number().required(),
+					lng: joi.number().required(),
+				})
+				.required(),
 		});
 
 		// Hike validation schema
@@ -163,9 +197,7 @@ async function updateHike(req, res) {
 			length: joi.number(),
 			ascent: joi.number(),
 			expectedTime: joi.number(),
-			difficulty: joi
-				.string()
-				.valid(...Object.values(Difficulty)),
+			difficulty: joi.string().valid(...Object.values(Difficulty)),
 			description: joi.string(),
 			startPoint: [locationSchema, joi.string()],
 			endPoint: [locationSchema, joi.string()],
@@ -178,23 +210,20 @@ async function updateHike(req, res) {
 				salt: joi.string().required(),
 				hash: joi.string().required(),
 				uniqueString: joi.string().required(),
-				isValid: joi.boolean().required()
-			})
+				isValid: joi.boolean().required(),
+			}),
 		});
 
 		// Validate request body against schema
 		const { error, value } = schema.validate(body);
 
 		if (error) throw error; // Joi validation error, goes to catch block
-		
-		const hikeToUpdate = await hikeService.getHikeById(params.id)
-		console.log(body)
-		const hikeUpdated = await hikeService.updateHike(params.id, value, hikeToUpdate)
-		
-		return res.status(StatusCodes.OK).json(hikeUpdated)
 
-	} catch(err) {
-		console.log(err)
+		const hikeUpdated = await hikeService.updateHike(params.id, value);
+
+		return res.status(StatusCodes.OK).json(hikeUpdated);
+	} catch (err) {
+		console.log(err);
 		return res.status(StatusCodes.BAD_REQUEST).json({ err: err.message, stack: err.stack });
 	}
 	

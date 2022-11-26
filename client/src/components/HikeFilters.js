@@ -107,33 +107,24 @@ const HikeFilters = ({ filters, setFilters, openModal }) => {
 					</Form.Group>
 				</Col>
 				<Col>
-					<Form.Group>
-						<Form.Label>Starting point</Form.Label> <br/>
-						<Button onClick={openModal} variant={"success"}>Select area</Button>
-						<Stack direction="horizontal" gap={2}>
-							{/** TODO: Define how to pass lat and long */}
-							{/* <Form.Control
-								placeholder="Lat"
-								onChange={(event) => {
-									console.log(filters.location);
-									setFilters({
-										...filters,
-										location: [Number(event.target.value), filters.location[1] || 0],
-									});
-								}}
-							/>
-							<Form.Control
-								placeholder="Long"
-								onChange={(event) => {
-									console.log(filters.location);
-									setFilters({
-										...filters,
-										location: [filters.location[0] || 0, Number(event.target.value)],
-									});
-								}}
-							/> */}
-						</Stack>
-					</Form.Group>
+					<Row>
+						<Col>
+							<Form.Label>Starting point</Form.Label>
+							<Button onClick={openModal} variant={"success"} className="d-block">Select area</Button>
+						</Col>
+						<Col>
+							<Form.Label>Latitude</Form.Label>
+							<Form.Label className="d-block">{filters.locationCoordinatesLat}</Form.Label>
+						</Col>
+						<Col>
+							<Form.Label>Longitude</Form.Label>
+							<Form.Label className="d-block">{filters.locationCoordinatesLng}</Form.Label>
+						</Col>
+						<Col>
+							<Form.Label>Radius (m)</Form.Label>
+							<Form.Label className="d-block">{filters.locationRadius}</Form.Label>
+						</Col>
+					</Row>
 				</Col>
 			</Row>
 		</Form>

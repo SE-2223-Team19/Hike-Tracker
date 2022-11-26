@@ -1,7 +1,6 @@
 import { React, useEffect, useContext } from "react";
 import DefineReferenceForm from "../components/DefineReferenceForm";
-import Header from "../components/Header";
-import { Row, Container } from "react-bootstrap";
+import { Container } from "react-bootstrap";
 import { useParams, useNavigate } from "react-router-dom";
 import { getHikeById } from "../api/hikes";
 import { AuthContext } from "../context/AuthContext";

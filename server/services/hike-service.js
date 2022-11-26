@@ -3,10 +3,49 @@ const hikeDAL = require("../data/hike-dal");
 const { LocationType } = require("../models/enums");
 
 /**
+ * @typedef {Object} HikeModel
+ * @property {String} _id
+ * @property {String} title
+ * @property {Number} ascent
+ * @property {Number} expectedTime
+ * @property {String} difficulty
+ * @property {String} description
+ * @property {Number} length
+ * @property {[[Number, Number]]} trackPoints
+ * @property {String} startPoint
+ * @property {String} endPoint
+ * @property {[String]} referencePoints
+ * @property {String} createdBy
+ */
+
+/**
+ * @typedef {Object} Location
+ * @property {String} _id
+ * @property {String} description
+ * @property {[Number, Number]} point
+ */
+
+/**
+ * @typedef {Object} Hike
+ * @property {String} _id
+ * @property {String} title
+ * @property {Number} ascent
+ * @property {Number} expectedTime
+ * @property {String} difficulty
+ * @property {String} description
+ * @property {Number} length
+ * @property {[[Number, Number]]} trackPoints
+ * @property {Location} startPoint
+ * @property {Location} endPoint
+ * @property {[Location]} referencePoints
+ * @property {String} createdBy
+ */
+
+/**
  * Creates a new hike and new locations for the start point, end point and reference points.
- * @param {*} hike Hike to be created
+ * @param {Hike} hike Hike to be created
  * @param {*} referencePoints Reference points related to the hike, that will be created as entities in the database (Hut, Parking, etc.)
- * @returns
+ * @returns {Promise<HikeModel>}
  */
 async function createHike(hike) {
 	// Create new locations for the start point and end point if they don't exist
@@ -60,12 +99,34 @@ async function createHike(hike) {
 	return newHike;
 }
 
+/**
+ * Checks if the point is a location to be created
+ * @param {String|Location} point 
+ * @returns {Promise<Location>}
+ */
+async function checkPropertyLocation(point) {
+
+	if (point instanceof String) {
+		const pt = await Location.findById(point);
+		return pt
+	} else {
+		if (point) {
+			const pt = await locationDAL.createLocation({
+				locationType: point.locationType,
+				description: point.description,
+				point: [point.point.lng, point.point.lat],	
+			});
+			return pt
+		}
+	}
+
+}
 
 /**
  * Updates a hike with description.
- * @param {*} id Hike to be update
- * @param {*} changes changes to be applied
- * @returns
+ * @param {String} id Hike to be update
+ * @param {HikeModel} changes changes to be applied
+ * @returns {Promise<Hike>}
  */
 async function updateHike(id, changes){
 	changes.startPoint ? changes.startPoint = await checkPropertyLocation(changes.startPoint) : null;

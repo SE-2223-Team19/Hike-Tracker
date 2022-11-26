@@ -4,9 +4,11 @@ const locationDAL = require("../data/location-dal");
 const { LocationType } = require("../models/enums");
 
 /**
+ * GET /location
  * Get all locations.
- * @param {*} req
- * @param {*} res
+ * @param {Request} req
+ * @param {Response} res
+ * @returns {Promise<Response>}
  */
 async function getLocations(req, res) {
 	try {
@@ -53,6 +55,13 @@ async function getLocations(req, res) {
 	}
 }
 
+/**
+ * POST /location
+ * Creates a new location
+ * @param {Request} req 
+ * @param {Response} res 
+ * @returns {Promise<Response>}
+ */
 async function createLocation(req, res) {
 	
 	try {
@@ -83,7 +92,14 @@ async function createLocation(req, res) {
 	}
 }
 
-async function updateLocationDescription(req,res){
+/**
+ * PUT /location/:id
+ * Updates a location's description
+ * @param {Request} req 
+ * @param {Response} res 
+ * @returns {Promise<Response>}
+ */
+async function updateLocationDescription(req, res){
 	const { params, body } = req;
 	const id = params.id;
 	const description = body.description;

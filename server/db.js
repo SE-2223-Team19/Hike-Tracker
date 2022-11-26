@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 
-//dotenv.config();
+dotenv.config();
 
 // These variables are defined in .env, in case there is no .env file, we use the default values
 const MONGO_HOST = process.env.MONGO_HOST || "mongo";

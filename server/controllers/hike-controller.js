@@ -219,7 +219,8 @@ async function updateHike(req, res) {
 
 		if (error) throw error; // Joi validation error, goes to catch block
 
-		const hikeUpdated = await hikeService.updateHike(params.id, value);
+		const hike = await hikeService.getHikeById(params.id)
+		const hikeUpdated = await hikeService.updateHike(params.id, value, hike);
 
 		return res.status(StatusCodes.OK).json(hikeUpdated);
 	} catch (err) {

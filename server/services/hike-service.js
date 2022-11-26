@@ -128,7 +128,7 @@ async function checkPropertyLocation(point) {
  * @param {HikeModel} changes changes to be applied
  * @returns {Promise<Hike>}
  */
-async function updateHike(id, changes){
+async function updateHike(id, changes, hike){
 	changes.startPoint ? changes.startPoint = await checkPropertyLocation(changes.startPoint) : null;
 	changes.endPoint ? changes.endPoint = await checkPropertyLocation(changes.endPoint) : null;
 	
@@ -149,6 +149,9 @@ async function updateHike(id, changes){
 		);
 	}
 
+	hike.referencePoints.forEach(x => {
+		referencePoints.push(x)
+	})
 	changes.referencePoints = referencePoints
 
 	const updatedHike = await hikeDAL.updateHike(id, changes);
@@ -156,4 +159,11 @@ async function updateHike(id, changes){
 	return updatedHike
 }
 
-module.exports = { createHike, updateHike };
+async function getHikeById(id) {
+
+	const hike = await hikeDAL.getHikeById(id)
+	return hike
+
+}
+
+module.exports = { createHike, updateHike, getHikeById };

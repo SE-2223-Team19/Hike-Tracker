@@ -43,6 +43,28 @@ describe('createLocation', () => {
         expect(response.statusCode).toBe(StatusCodes.CREATED);
     });
 
+    
+    test('insert parking coordination', async () => {
+        const response = new ResponseHelper();
+        await locationController.createLocation({
+            body: {
+                locationType: LocationType.HUT,
+                point: [32.5, 18.1] 
+            }
+        }, response);
+        expect(response.statusCode).toBe(StatusCodes.CREATED);
+    });
+
+    test('insert parking coordination', async () => {
+        const response = new ResponseHelper();
+        await locationController.createLocation({
+            body: {
+                locationType: LocationType.HUT,
+                point: ['aaaaaa', 18.1] 
+            }
+        }, response);
+        expect(response.statusCode).toBe(StatusCodes.BAD_REQUEST);
+    });
     test('error in schema', async () => {
         const response = new ResponseHelper();
         await locationController.createLocation({

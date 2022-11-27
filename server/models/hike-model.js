@@ -11,9 +11,11 @@ const hikeSchema = new Schema(
 		expectedTime: Number, // in minutes
 		difficulty: { type: String, enum: Object.values(Difficulty) }, // matches all enum values
 		description: String,
-		startPoint: { type: Schema.Types.ObjectId, ref: "Location" },
-		endPoint: { type: Schema.Types.ObjectId, ref: "Location" },
-		referencePoints: { type: [Schema.Types.ObjectId], ref: "Location" },
+		startPoint: { type: Schema.Types.ObjectId, ref: "Location", required: true },
+		endPoint: { type: Schema.Types.ObjectId, ref: "Location", required: true },
+		referencePoints: { type: [Schema.Types.ObjectId], ref: "Location", required: true },
+		trackPoints: [[Number]],
+		createdBy: { type: Schema.Types.ObjectId, ref: "User", required: true }
 	},
 	{ timestamps: true }
 );

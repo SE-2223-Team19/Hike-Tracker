@@ -18,7 +18,7 @@ function DescribeHutForm() {
 		let data = {
 			locationType: LocationType.HUT,
 			description: descriptions,
-			point: [pointLat, pointLng],
+			point: [pointLng, pointLat],
 		};
 
 		console.log(data);
@@ -33,20 +33,6 @@ function DescribeHutForm() {
 		<Form onSubmit={handlesubmit}>
 			<Row>
 				<Col xs={12} md={6}>
-					<Form.Group controlId="lng" className="mt-3">
-						<Form.Label>Longitude Point</Form.Label>
-						<Form.Control
-							type="number"
-							name="Longitude"
-							value={pointLng}
-							onChange={(event) => {
-								SetPointLng(event.target.value);
-							}}
-						/>
-						<Form.Control.Feedback type="invalid">Invalid value</Form.Control.Feedback>
-					</Form.Group>
-				</Col>
-				<Col xs={12} md={6}>
 					<Form.Group controlId="lat" className="mt-3">
 						<Form.Label>Latitude Point</Form.Label>
 						<Form.Control
@@ -55,6 +41,20 @@ function DescribeHutForm() {
 							value={pointLat}
 							onChange={(event) => {
 								SetPointLat(event.target.value);
+							}}
+						/>
+						<Form.Control.Feedback type="invalid">Invalid value</Form.Control.Feedback>
+					</Form.Group>
+				</Col>
+				<Col xs={12} md={6}>
+					<Form.Group controlId="lng" className="mt-3">
+						<Form.Label>Longitude Point</Form.Label>
+						<Form.Control
+							type="number"
+							name="Longitude"
+							value={pointLng}
+							onChange={(event) => {
+								SetPointLng(event.target.value);
 							}}
 						/>
 						<Form.Control.Feedback type="invalid">Invalid value</Form.Control.Feedback>

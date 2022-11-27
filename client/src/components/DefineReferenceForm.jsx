@@ -61,6 +61,7 @@ function NewReferencePoint({ addReferencePoint }) {
 				<Form.Control
 					as="textarea"
 					rows={3}
+					required
 					placeholder="Describe Your status"
 					value={description}
 					onChange={(e) => setDescription(e.target.value)}

@@ -23,7 +23,7 @@ const PositionFilterModal = ({ onCancel, onOk, onRemoveFilter, show, setShow }) 
                 <Container>
                     <Row>
                         <Col>
-                            <MapContainer style={{ width: "100%", height: "60vh" }} center={[45.068370, 7.683070]} zoom={7} scrollWheelZoom={false}>
+                            <MapContainer style={{ width: "100%", height: "60vh" }} center={coordinates} zoom={7} scrollWheelZoom={false}>
                                 <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
                                 <Circle center={coordinates} 
                                         radius={radius * 1000}></Circle>

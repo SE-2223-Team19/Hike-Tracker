@@ -48,7 +48,8 @@ describe('createLocation', () => {
         const response = new ResponseHelper();
         await locationController.createLocation({
             body: {
-                locationType: LocationType.HUT,
+                locationType: LocationType.PARKING_LOT,
+                description: "A test parking lot",
                 point: [32.5, 18.1] 
             }
         }, response);
@@ -59,7 +60,8 @@ describe('createLocation', () => {
         const response = new ResponseHelper();
         await locationController.createLocation({
             body: {
-                locationType: LocationType.HUT,
+                locationType: LocationType.PARKING_LOT,
+                description: "A test parking lot",
                 point: ['aaaaaa', 18.1] 
             }
         }, response);

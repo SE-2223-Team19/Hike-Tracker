@@ -101,6 +101,7 @@ function FromList({ addReferencePoint }) {
 
 	const handleSubmit = async (event) => {
 		event.preventDefault();
+		console.log(locationToAdd);
 		const updatedHike = await addReferencePoint(locationToAdd);
 		if (updatedHike) {
 			navigate(`/profile`);

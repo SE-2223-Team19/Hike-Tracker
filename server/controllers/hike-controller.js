@@ -212,7 +212,7 @@ async function updateHike(req, res) {
 
 		return res.status(StatusCodes.OK).json(hikeUpdated);
 	} catch (err) {
-		console.log(err.message);
+		console.log(err);
 		return res.status(StatusCodes.BAD_REQUEST).json({ err: err.message, stack: err.stack });
 	}
 }

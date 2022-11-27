@@ -105,19 +105,25 @@ async function createHike(hike) {
  * @returns {Promise<Location>}
  */
 async function checkPropertyLocation(point) {
-	if (point instanceof String) {
-		const pt = await Location.findById(point);
-		return pt;
-	} else {
-		if (point) {
-			const pt = await locationDAL.createLocation({
-				locationType: point.locationType,
-				description: point.description,
-				point: [point.point.lng, point.point.lat],
-			});
-			return pt;
+	if (point !== null && point !== undefined) {
+		if (point instanceof String) { // ObjectId to check for existance
+			const pt = await Location.findById(point);
+			if (!pt) {
+				throw new Error(`Point doesn't exist: _id = ${point}`)
+			}
+			return pt._id;
 		}
+		const pt = await locationDAL.createLocation({
+			locationType: point.locationType,
+			description: point.description,
+			point: [point.point.lng, point.point.lat],
+		});
+		if (!pt) {
+			throw new Error(`Could't create point: ${point}`)
+		}
+		return pt._id;
 	}
+	throw new Error("A point must be passed");
 }
 
 /**
@@ -127,37 +133,21 @@ async function checkPropertyLocation(point) {
  * @returns {Promise<Hike>}
  */
 async function updateHike(id, changes, hike) {
-	changes.startPoint
-		? (changes.startPoint = await checkPropertyLocation(changes.startPoint))
-		: null;
-	changes.endPoint ? (changes.endPoint = await checkPropertyLocation(changes.endPoint)) : null;
+	if (changes.startPoint) {
+		changes.startPoint = await checkPropertyLocation(changes.startPoint);
+	}
 
-	let referencePoints = [];
+	if (changes.endPoint) {
+		changes.endPoint = await checkPropertyLocation(changes.endPoint);
+	}
+
 	if (changes.referencePoints) {
-		referencePoints = await Promise.all(
-			changes.referencePoints.map(async (referencePoint) => {
-				if (!referencePoint._id) {
-					return await locationDAL.createLocation({
-						locationType: referencePoint.locationType,
-						description: referencePoint.description,
-						point: [referencePoint.point.lng, referencePoint.point.lat],
-					});
-				} else {
-					return referencePoint;
-				}
-			})
+		changes.referencePoints = await Promise.all(
+			changes.referencePoints.map(checkPropertyLocation)
 		);
 	}
 
-	let tmp_list = [];
-	referencePoints.forEach((x1) => {
-		if (!hike.referencePoints.includes(x1._id)) tmp_list.push(x1);
-	});
-	hike.referencePoints.forEach((x) => {
-		tmp_list.push(x);
-	});
-
-	changes.referencePoints = tmp_list;
+	changes.referencePoints = [...new Set([...hike.referencePoints, ...changes.referencePoints])];
 
 	const updatedHike = await hikeDAL.updateHike(id, changes);
 

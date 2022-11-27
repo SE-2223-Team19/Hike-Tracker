@@ -85,6 +85,11 @@ function Huts() {
 						locationRadius: radius * 1000,
 					});
 				}}
+				onRemoveFilter={() => {
+					setShowPositionFilter(false);
+					const { locationLat, locationLon, locationRadius, ...f } = filters;
+					setFilters(f);
+				}}
 			></PositionFilterModal>
 		</div>
 	);

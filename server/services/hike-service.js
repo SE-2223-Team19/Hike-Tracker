@@ -145,9 +145,9 @@ async function updateHike(id, changes, hike) {
 		changes.referencePoints = await Promise.all(
 			changes.referencePoints.map(checkPropertyLocation)
 		);
+		changes.referencePoints = [...new Set([...hike.referencePoints, ...changes.referencePoints])];
 	}
 
-	changes.referencePoints = [...new Set([...hike.referencePoints, ...changes.referencePoints])];
 
 	const updatedHike = await hikeDAL.updateHike(id, changes);
 

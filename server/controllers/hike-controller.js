@@ -61,7 +61,7 @@ async function getHikes(req, res) {
 		if (value.difficulty) filter.difficulty = value.difficulty;
 		if (value.createdBy) filter.createdBy = value.createdBy;
 		if (value.locationCoordinatesLat && value.locationCoordinatesLng && value.locationRadius)
-			filter.startingPoint = {
+			filter.startPoint = {
 				coordinates: [value.locationCoordinatesLng, value.locationCoordinatesLat],
 				radius: value.locationRadius,
 			};

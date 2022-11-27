@@ -66,46 +66,7 @@ const User = require("../models/user-model");
  * @returns {Promise<{data: [Hike]; metadata: [{type: String;}|PaginationMetadata]}>} Hikes
  */
 async function getHikes(filterQuery = {}, page = 1, pageSize = 10) {
-	let pipeline = [];
-
-	// Need geospatial query
-	if (filterQuery.startPoint !== undefined && typeof filterQuery.startPoint !== "string") {
-		const coordinates = filterQuery.startPoint.coordinates;
-		const maxDistance = filterQuery.startPoint.radius;
-		delete filterQuery.startPoint;
-		pipeline = [
-			{
-				$geoNear: {
-					near: {
-						type: "Point",
-						coordinates: coordinates,
-					},
-					maxDistance: maxDistance,
-					distanceField: "distance",
-				},
-			},
-			{
-				$lookup: {
-					from: Hike.collection.name,
-					localField: "_id",
-					foreignField: "startPoint",
-					as: "hikes",
-				},
-			},
-			{
-				$unwind: {
-					path: "$hikes",
-				},
-			},
-			{
-				$replaceWith: "$hikes",
-			},
-		];
-	}
-	pipeline = [ ...pipeline,
-		{
-			$match: filterQuery,
-		},
+	const commonPipeline = [
 		{
 			$lookup: {
 				from: Location.collection.name,
@@ -192,7 +153,54 @@ async function getHikes(filterQuery = {}, page = 1, pageSize = 10) {
 		}
 	];
 
-	const hikes = await Hike.aggregate(pipeline);
+	// Need geospatial query
+	if (filterQuery.startPoint !== undefined && typeof filterQuery.startPoint !== "string") {
+		const coordinates = filterQuery.startPoint.coordinates;
+		const maxDistance = filterQuery.startPoint.radius;
+		delete filterQuery.startPoint;
+		const hikes = await Location.aggregate([
+			{
+				$geoNear: {
+					near: {
+						type: "Point",
+						coordinates: coordinates,
+					},
+					maxDistance: maxDistance,
+					distanceField: "distance",
+				},
+			},
+			{
+				$lookup: {
+					from: Hike.collection.name,
+					localField: "_id",
+					foreignField: "startPoint",
+					as: "hikes",
+				},
+			},
+			{
+				$unwind: {
+					path: "$hikes",
+				},
+			},
+			{
+				$replaceRoot: {
+					newRoot: "$hikes",
+				}
+			},
+			{
+				$match: filterQuery,
+			},
+			...commonPipeline
+		]);
+		return hikes[0];
+	}
+
+	const hikes = await Hike.aggregate([
+		{
+			$match: filterQuery,
+		},
+		...commonPipeline
+	]);
 
 	return hikes[0];
 }

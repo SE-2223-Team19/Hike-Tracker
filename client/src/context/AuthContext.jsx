@@ -27,8 +27,10 @@ const AuthProvider = ({ children }) => {
 				setUser(user);
 			}
 		};
-		checkAuth();
-	}, []);
+		if (!user) {
+			checkAuth();
+		}
+	}, [user]);
 
 	const handleLogin = async (credentials) => {
 		try {

@@ -4,9 +4,12 @@ import { updateHike } from "../api/hikes";
 import { LocationType } from "../helper/enums";
 import { getLocations } from "../api/locations";
 import PositionSelectorModal from "./PositionSelectorModal";
+import { useNavigate } from "react-router-dom";
 
 function NewReferencePoint({ addReferencePoint }) {
-	const [locationType, setLocationType] = useState("");
+	const navigate = useNavigate();
+
+	const [locationType, setLocationType] = useState("hut");
 	const [latitudePoint, setLatitudePoint] = useState(1);
 	const [longitudePoint, setLongitudePoint] = useState(1);
 	const [description, setDescription] = useState("");
@@ -19,7 +22,10 @@ function NewReferencePoint({ addReferencePoint }) {
 			description: description,
 			point: { lat: latitudePoint, lng: longitudePoint },
 		};
-		await addReferencePoint(location);
+		const updatedHike = await addReferencePoint(location);
+		if (updatedHike) {
+			navigate(`/profile`);
+		}
 	};
 
 	return (
@@ -87,12 +93,17 @@ function NewReferencePoint({ addReferencePoint }) {
 }
 
 function FromList({ addReferencePoint }) {
+	const navigate = useNavigate();
+
 	const [locations, setLocation] = useState([]);
 	const [locationToAdd, setLocationToAdd] = useState([]);
 
 	const handleSubmit = async (event) => {
 		event.preventDefault();
-		await addReferencePoint(locationToAdd);
+		const updatedHike = await addReferencePoint(locationToAdd);
+		if (updatedHike) {
+			navigate(`/profile`);
+		}
 	};
 
 	useEffect(() => {
@@ -126,12 +137,13 @@ function DefineReferenceForm({ hikeId }) {
 	const [reference, setReference] = useState(0);
 
 	const addReferencePoint = async (location) => {
-		await updateHike(hikeId, { referencePoints: [location] });
+		const updatedHike = await updateHike(hikeId, { referencePoints: [location] });
+		return updatedHike;
 	};
 
 	return (
 		<>
-			<ButtonGroup className="mb-3">
+			<ButtonGroup className="mb-3 w-100">
 				<Button
 					onClick={() => setReference(0)}
 					variant={reference === 0 ? "success" : "outline-success"}

@@ -51,9 +51,14 @@ const Profile = () => {
 				<Stack direction="horizontal" className="justify-content-between align-items-center">
 					<h2>My Hikes</h2>
 
-					<Button variant="success" onClick={() => navigate("/huts")}>
-						Huts
-					</Button>
+					<Stack direction="horizontal" gap={3}>
+						<Button variant="success" onClick={() => navigate("/huts")}>
+							Huts
+						</Button>
+						<Button variant="success" onClick={() => navigate("/parking-lots")}>
+							Parking Lots
+						</Button>
+					</Stack>
 				</Stack>
 			)}
 			{!hikes && <NoData />}

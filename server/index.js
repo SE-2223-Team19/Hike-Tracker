@@ -33,8 +33,9 @@ const getApp = () => {
 	app.use(
 		session({
 			secret: "shhhhh... it's a secret!",
-			resave: false,
-			saveUninitialized: false,
+			cookie: { maxAge: 6000000 },
+			resave: true,
+			saveUninitialized: false
 		})
 	);
 

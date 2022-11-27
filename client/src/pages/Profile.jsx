@@ -30,6 +30,8 @@ const Profile = () => {
 		};
 		if (user) {
 			fetchHikes();
+		} else {
+			navigate("/");
 		}
 	}, [user]);
 
@@ -37,8 +39,8 @@ const Profile = () => {
 		<>
 			<Stack direction="horizontal">
 				<Stack>
-					<h4 className="mb-2">{user.fullName}</h4>
-					<h5 className="mb-4">{capitalizeAndReplaceUnderscores(user.userType)}</h5>
+					<h4 className="mb-2">{user && user.fullName}</h4>
+					<h5 className="mb-4">{user && capitalizeAndReplaceUnderscores(user.userType)}</h5>
 				</Stack>
 				<Button variant="success" onClick={() => navigate("/describe-hike")}>
 					Create Hike
@@ -47,7 +49,7 @@ const Profile = () => {
 					Logout
 				</Button>
 			</Stack>
-			{user.userType === UserType.LOCAL_GUIDE && (
+			{user && user.userType === UserType.LOCAL_GUIDE && (
 				<Stack direction="horizontal" className="justify-content-between align-items-center">
 					<h2>My Hikes</h2>
 

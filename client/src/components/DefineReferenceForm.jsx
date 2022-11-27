@@ -97,7 +97,7 @@ function FromList({ addReferencePoint }) {
 	const navigate = useNavigate();
 
 	const [locations, setLocation] = useState([]);
-	const [locationToAdd, setLocationToAdd] = useState([]);
+	const [locationToAdd, setLocationToAdd] = useState(null);
 
 	const handleSubmit = async (event) => {
 		event.preventDefault();
@@ -120,7 +120,9 @@ function FromList({ addReferencePoint }) {
 		<Form onSubmit={handleSubmit}>
 			<Form.Group className="mb-3">
 				<Form.Label>Choose reference point</Form.Label>
-				<Form.Select onChange={(e) => setLocationToAdd(e.target.value)}>
+				<Form.Select 
+					value={locationToAdd}
+					onChange={(e) => setLocationToAdd(e.target.value)}>
 					{locations.map((l) => (
 						<option value={l._id} key={l._id}>
 							[{l.locationType}] {l.description}

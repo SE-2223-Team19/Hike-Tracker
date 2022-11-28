@@ -10,7 +10,7 @@ const Header = () => {
 	const { setMessage, loggedIn, user, handleLogout } = useContext(AuthContext);
 
 	return (
-		<Navbar>
+		<Navbar expand="md">
 			<Navbar.Brand href="/">
 				<img
 					src={"http://localhost:3000/snowed-mountains.png"}

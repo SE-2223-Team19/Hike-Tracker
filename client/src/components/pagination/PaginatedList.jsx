@@ -67,7 +67,7 @@ function PaginatedList({
             }
             {
                 data && data.length > 0 && !loading &&
-                data.map((d) => <DataElement {...d} />)
+                data.map(DataElement)
             }
             {
                 data && data.length > 0 && !loading &&

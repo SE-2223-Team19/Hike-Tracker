@@ -73,7 +73,7 @@ function ParkingLots() {
 				<Row className="g-4 row-cols-1 row-cols-sm-1 row-cols-md-3">
 					{parkingLots.length > 0 &&
 						!loading &&
-						parkingLots.map((hut, idx) => <ParkingLotCard key={idx} hut={hut} />)}
+						parkingLots.map(parkingLot => <ParkingLotCard key={parkingLot._id} hut={parkingLot} />)}
 				</Row>
 			</Container>
 			<PositionFilterModal

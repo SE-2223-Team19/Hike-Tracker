@@ -84,7 +84,6 @@ function DescribeHutForm() {
 				<Button variant="outline-success" onClick={() => setShowModal(true)}>
 					Select from map
 				</Button>
-				<Button variant="light">Cancel</Button>
 			</Stack>
 			<PositionSelectorModal
 				show={showModal}

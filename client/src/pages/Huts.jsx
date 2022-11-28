@@ -69,7 +69,7 @@ function Huts() {
 			{(!huts || huts.length <= 0) && !loading && <NoData message={"No huts found."} />}
 			<Container>
 				<Row className="g-4 row-cols-1 row-cols-sm-1 row-cols-md-3">
-					{huts.length > 0 && !loading && huts.map((hut, idx) => <HutCard key={idx} hut={hut} />)}
+					{huts.length > 0 && !loading && huts.map(hut => <HutCard key={hut._id} hut={hut} />)}
 				</Row>
 			</Container>
 			<PositionFilterModal

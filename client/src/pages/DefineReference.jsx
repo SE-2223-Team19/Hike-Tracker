@@ -1,6 +1,7 @@
 import { React, useEffect, useContext } from "react";
 import DefineReferenceForm from "../components/DefineReferenceForm";
-import { Container } from "react-bootstrap";
+import { CgArrowLeft } from "react-icons/cg";
+import { Row, Col, Container, Button } from "react-bootstrap";
 import { useParams, useNavigate } from "react-router-dom";
 import { getHikeById } from "../api/hikes";
 import { AuthContext } from "../context/AuthContext";
@@ -24,8 +25,22 @@ function DefineReferencepage() {
 
 	return (
 		<Container>
-			<h1 className="md-5">Add Reference Point</h1>
-			<DefineReferenceForm hikeId={hikeId} />
+			<Row>
+				<Col>
+					<Button variant="outline-dark" onClick={() => navigate("/profile")}>
+						<CgArrowLeft />
+						<span>Back</span>
+					</Button>
+				</Col>
+			</Row>
+			<Row>
+				<Col>
+					<h1 className="md-5">Add Reference Point</h1>
+				</Col>
+			</Row>
+			<Row>
+				<DefineReferenceForm hikeId={hikeId} />
+			</Row>
 		</Container>
 	);
 }

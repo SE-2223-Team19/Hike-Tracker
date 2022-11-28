@@ -1,4 +1,4 @@
-import { Form, Button, Row, Col, Stack } from "react-bootstrap";
+import { Form, Button, Row, Col, Stack, ListGroup, ListGroupItem, CloseButton } from "react-bootstrap";
 import { Difficulty } from "../helper/enums";
 import { capitalizeAndReplaceUnderscores } from "../helper/utils";
 import { Formik } from "formik";
@@ -18,6 +18,7 @@ function DescribeHikeForm() {
 		fileReader.onloadend = (e) => {
 			const gpx = new GpxParser();
 			gpx.parse(fileReader.result);
+			console.log(gpx);
 			setFieldValue("length", gpx.tracks[0].distance.total);
 			setFieldValue("title", gpx.tracks[0].name);
 			setFieldValue("ascent", gpx.tracks[0].elevation.max - gpx.tracks[0].elevation.min);
@@ -316,28 +317,36 @@ function DescribeHikeForm() {
 						<Col xs={12}>
 							<Form.Group controlId="referencePoints" className="mt-4">
 								<Form.Label>Reference Points</Form.Label>
-								<ol>
-									{values.referencePoints.map((point, index) => (
-										<li key={index}>{`Lat: ${point.point.lat} Long: ${point.point.lng}`}</li>
+								<ListGroup as="ol" className="mb-3">
+									{values.referencePoints.map(point => (
+										<ListGroupItem key={point._id} className="d-flex justify-content-between">
+											<span>{point.description} (Lat: {point.point.lat} Long: {point.point.lng})</span>
+											<CloseButton onClick={() => {
+												setFieldValue("referencePoints", values.referencePoints.filter(p => p._id !== point._id))
+											}}/>
+										</ListGroupItem>
 									))}
-								</ol>
+								</ListGroup>
 								<PointSelector
 									name="referencePoints"
-									value={values.referencePoints}
+									value={values.referencePoints.map(p => p._id)}
 									multiple
 									isInvalid={!!errors.referencePoints}
 									handleChange={(location) => {
-										setFieldValue("referencePoints", [
-											...values.referencePoints,
-											{
-												point: {
-													lat: location.point[1],
-													lng: location.point[0],
+										if (!values.referencePoints.some(p => p._id === location._id)) {
+											setFieldValue("referencePoints", [
+												...values.referencePoints,
+												{
+													point: {
+														lat: location.point[1],
+														lng: location.point[0],
+													},
+													locationType: location.locationType,
+													_id: location._id,
+													description: location.description
 												},
-												locationType: location.locationType,
-												_id: location._id,
-											},
-										]);
+											]);
+										}
 									}}
 								/>
 								<Form.Control.Feedback type="invalid">{errors.startPoint}</Form.Control.Feedback>

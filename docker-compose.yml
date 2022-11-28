@@ -1,6 +1,7 @@
 version: "2.1"
 services:
   client:
+    image: lorenzopant/se-2223-19-hiketracker:hiketracker-client
     build:
       context: ./client
     environment:
@@ -12,6 +13,7 @@ services:
       - "/client/node_modules"
 
   server:
+    image: lorenzopant/se-2223-19-hiketracker:hiketracker-server
     build:
       context: ./server
     env_file:
@@ -34,7 +36,8 @@ services:
       - "./mongo:/data/db"
 
   mongo_seed:
-    build:
+    build: 
       context: ./mongo_seed
+    image: lorenzopant/se-2223-19-hiketracker:hiketracker-mongoseed
     depends_on:
       - mongo

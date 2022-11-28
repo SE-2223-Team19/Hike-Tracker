@@ -67,13 +67,12 @@ function NewReferencePoint({ addReferencePoint }) {
 					onChange={(e) => setDescription(e.target.value)}
 				/>
 			</Form.Group>
-			<Button type="submit" size="lg" variant="success">
+			<Button type="submit" variant="success">
 				Create and add
 			</Button>
 			<Button
 				type="button"
-				size="lg"
-				variant="secondary"
+				variant="outline-success"
 				className="ms-3"
 				onClick={() => setShowModal(true)}
 			>
@@ -123,6 +122,7 @@ function FromList({ addReferencePoint }) {
 				<Form.Select 
 					value={locationToAdd}
 					onChange={(e) => setLocationToAdd(e.target.value)}>
+						<option value={null}></option>
 					{locations.map((l) => (
 						<option value={l._id} key={l._id}>
 							[{l.locationType}] {l.description}

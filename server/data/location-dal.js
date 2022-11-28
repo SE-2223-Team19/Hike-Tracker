@@ -22,6 +22,16 @@ async function getLocations(filterQuery = {}) {
 }
 
 /**
+ * Gets a location by its id
+ * @param {String} id 
+ * @returns {Promise<Location>}
+ */
+async function getLocationById(id) {
+	const location = await Location.findById(id);
+	return location;
+}
+
+/**
  * Create a new location.
  * @param {Location} location Location to create. Object must match Location model.
  * @returns {Promise<Location>}
@@ -45,6 +55,7 @@ async function updateLocationDescription(id, description){
 
 module.exports = {
 	getLocations,
+	getLocationById,
 	createLocation,
 	updateLocationDescription
 };

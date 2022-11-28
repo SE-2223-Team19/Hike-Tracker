@@ -102,12 +102,12 @@ async function createHike(hike) {
 /**
  * Checks if the point is a location to be created
  * @param {String|Location} point
- * @returns {Promise<Location>}
+ * @returns {Promise<String>}
  */
 async function checkPropertyLocation(point) {
 	if (point !== null && point !== undefined) {
-		if (point instanceof String) { // ObjectId to check for existance
-			const pt = await Location.findById(point);
+		if (typeof point === "string") { // ObjectId to check for existance
+			const pt = await locationDAL.getLocationById(point);
 			if (!pt) {
 				throw new Error(`Point doesn't exist: _id = ${point}`)
 			}

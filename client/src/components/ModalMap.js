@@ -1,21 +1,27 @@
+import { React } from "react";
 import { Button, Modal } from "react-bootstrap";
 import { MapContainer, Marker, Polyline, TileLayer, Popup } from "react-leaflet";
 import * as L from "leaflet";
 
 function ModalMap({ handleClose, hike }) {
-	let markerStartEndPoint = new L.icon({
+	const markerStartEndPoint = new L.icon({
 		iconUrl: require("../icons/marker_start_end_point.png"),
 		iconSize: [35, 45],
 		iconAnchor: [17, 46],
 		popupAnchor: [0, -46],
 	});
 
-	let markerLocation = new L.icon({
+	const markerLocation = new L.icon({
 		iconUrl: require("../icons/markerLocation.png"),
 		iconSize: [35, 45],
 		iconAnchor: [17, 46],
 		popupAnchor: [0, -46],
 	});
+
+	const bounds = [
+		hike && hike.trackPoints.reduce(([lat, lng], [maxLat, maxLng]) => [Math.max(lat, maxLat), Math.max(lng, maxLng)]),
+		hike && hike.trackPoints.reduce(([lat, lng], [minLat, minLng]) => [Math.min(lat, minLat), Math.min(lng, minLng)])
+	];
 
 	return (
 		<Modal show={hike} onHide={handleClose}>
@@ -26,11 +32,10 @@ function ModalMap({ handleClose, hike }) {
 				<MapContainer
 					style={{ width: "100%", height: "50vh" }}
 					center={(hike && hike.trackPoints[0]) || [0, 0]}
-					zoom={9}
 					scrollWheelZoom={false}
 					zoomControl={true}
 					dragging={true}
-					setView={(hike && hike.trackPoints[0]) || [0, 0]}
+					bounds={bounds}
 				>
 					<TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
 					<Marker

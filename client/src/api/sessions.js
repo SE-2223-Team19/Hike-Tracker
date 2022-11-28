@@ -4,13 +4,12 @@ async function getUserInfo() {
     const response = await fetch(new URL(ENDPOINTS.sessions.current, BACKEND_URL), {
         credentials: 'include',
     });
-    const user = await response.json();
     if (response.ok) {
-        return user;
+        return await response.json();
     } else if (response.status === 401) {
         return null;
     } else {
-        throw user;
+        throw await response.json();
     }
 }
 

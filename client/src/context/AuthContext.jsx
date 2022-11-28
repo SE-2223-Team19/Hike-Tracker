@@ -15,6 +15,7 @@ const AuthContext = createContext({
 const AuthProvider = ({ children }) => {
 	const navigate = useNavigate();
 
+	const [loadingInitial, setLoadingInitial] = useState(true);
 	const [loggedIn, setLoggedIn] = useState(false);
 	const [message, setMessage] = useState("");
 	const [user, setUser] = useState(null);
@@ -27,10 +28,9 @@ const AuthProvider = ({ children }) => {
 				setUser(user);
 			}
 		};
-		if (!user) {
-			checkAuth();
-		}
-	}, [user]);
+		checkAuth()
+		.then(() => setLoadingInitial(false));
+	}, []);
 
 	const handleLogin = async (credentials) => {
 		try {
@@ -56,7 +56,7 @@ const AuthProvider = ({ children }) => {
 		<AuthContext.Provider
 			value={{ handleLogin, handleLogout, loggedIn, message, setMessage, user }}
 		>
-			{children}
+			{!loadingInitial && children}
 		</AuthContext.Provider>
 	);
 };

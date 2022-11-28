@@ -6,7 +6,7 @@ const PAGE_TILES = 5;
 
 /**
  * 
- * @param {currentPage: Number; totalPages: Number; pageSize: Number; setPage: (arg0: Number) => void; setPageSize(arg0: Number) => void}} arg0 
+ * @param {{currentPage: Number; totalPages: Number; pageSize: Number; setPage: (arg0: Number) => void; setPageSize(arg0: Number) => void}} arg0 
  * @returns 
  */
 function Paginator({currentPage, totalPages, pageSize, setPage, setPageSize}) {

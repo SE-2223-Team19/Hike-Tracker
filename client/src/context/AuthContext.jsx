@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { createContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { getUserInfo, logIn, logOut } from "../api/sessions";
@@ -52,9 +52,18 @@ const AuthProvider = ({ children }) => {
 		setMessage({ msg: `Logout successful!`, type: "secondary" });
 	};
 
+	const memoValue = useMemo(() => ({
+		handleLogin, 
+		handleLogout, 
+		loggedIn, 
+		message, 
+		setMessage, 
+		user 
+	}), [loggedIn, message, user]);
+
 	return (
 		<AuthContext.Provider
-			value={{ handleLogin, handleLogout, loggedIn, message, setMessage, user }}
+			value={memoValue}
 		>
 			{!loadingInitial && children}
 		</AuthContext.Provider>

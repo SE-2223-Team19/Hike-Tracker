@@ -11,25 +11,26 @@ import Huts from "./Huts";
 import ParkingLots from "./ParkingLots";
 import Profile from "./Profile";
 import { AuthContext } from "../context/AuthContext";
+import HikeDetail from "./HikeDetail";
 
 const Home = () => {
-
 	const { message, setMessage } = useContext(AuthContext);
 
 	return (
 		<div>
 			<Header />
 			{message && (
-					<Alert variant={message.type} onClose={() => setMessage("")} dismissible>
-						{message.msg}
-					</Alert>
-				)}
+				<Alert variant={message.type} onClose={() => setMessage("")} dismissible>
+					{message.msg}
+				</Alert>
+			)}
 			<div className="mt-4">
 				<Routes>
 					<Route path="/" element={<Hikes />} />
 					<Route path="/profile" element={<Profile />} />
 					<Route path="/describe-hike" element={<DescribeHike />} />
-					<Route path="/reference-point/:hikeId" element={<DefineReferencepage />} />
+					<Route path="/hike" element={<HikeDetail />} />
+					<Route path="/reference-point" element={<DefineReferencepage />} />
 					<Route path="/huts" element={<Huts />} />
 					<Route path="/describe-hut" element={<DescribeHut />} />
 					<Route path="/parking-lots" element={<ParkingLots />} />

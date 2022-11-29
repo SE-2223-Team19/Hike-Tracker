@@ -69,7 +69,10 @@ const HikeDetail = () => {
 						>
 							Add Reference Point
 						</Button>
-						<Button variant="success" onClick={() => navigate(-1)}>
+						<Button
+							variant="success"
+							onClick={() => navigate("/describe-hike", { state: { hike } })}
+						>
 							Update
 						</Button>
 					</div>

@@ -18,7 +18,7 @@ import { createHike } from "../../api/hikes";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
 
-function DescribeHikeForm() {
+function DescribeHikeForm({ hike }) {
 	const navigate = useNavigate();
 
 	const onGpxFileUpload = (file, setFieldValue, extract) => {
@@ -98,19 +98,31 @@ function DescribeHikeForm() {
 			.required("Required"),
 	});
 
+	const formatPoint = (pointFromMongo) => {
+		const { _id, locationType, point } = pointFromMongo;
+		return {
+			_id,
+			locationType,
+			point: {
+				lat: point[1],
+				lng: point[0],
+			},
+		};
+	};
+
 	// ** Render
 	return (
 		<Formik
 			initialValues={{
-				title: "",
-				length: "",
-				ascent: "",
-				expectedTime: "",
-				difficulty: "",
-				description: "",
-				startPoint: "null",
-				endPoint: "null",
-				referencePoints: [],
+				title: (hike && hike.title) || "",
+				length: (hike && hike.length) || "",
+				ascent: (hike && hike.ascent) || "",
+				expectedTime: (hike && hike.expectedTime) || "",
+				difficulty: (hike && hike.difficulty) || "",
+				description: (hike && hike.description) || "",
+				startPoint: (hike && formatPoint(hike.startPoint)) || "null",
+				endPoint: (hike && formatPoint(hike.endPoint)) || "null",
+				referencePoints: (hike && hike.referencePoints.map((rp) => formatPoint(rp))) || [],
 				gpxFile: null,
 				extractPoints: false,
 				trackPoints: [],

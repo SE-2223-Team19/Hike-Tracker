@@ -10,7 +10,7 @@ import {
 } from "../../helper/utils";
 import { AuthContext } from "../../context/AuthContext";
 
-const HikeCard = ({ hike, showDetails, from }) => {
+const HikeCard = ({ hike, showDetails }) => {
 	const navigate = useNavigate();
 	// ** User (if user is not logged in cannot see hike details)
 	const { loggedIn } = useContext(AuthContext);

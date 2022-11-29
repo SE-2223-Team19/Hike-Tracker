@@ -35,3 +35,10 @@ export const difficultyToColor = (difficulty) => {
 			return "secondary";
 	}
 };
+
+export const removeMongoKeys = (obj) => {
+	const newObj = { ...obj };
+	delete newObj._id;
+	delete newObj.__v;
+	return newObj;
+};

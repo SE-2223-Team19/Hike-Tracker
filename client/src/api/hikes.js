@@ -16,7 +16,9 @@ async function getHikes(filters = {}) {
 		const response = await fetch(url, {
 			credentials: "include",
 		});
-		return response.json();
+		if (response.ok)
+			return await response.json();
+		throw await response.json();
 	} catch (err) {
 		console.log(err);
 		return { error: err };
@@ -56,7 +58,9 @@ async function createHike(hike) {
 			},
 			body: JSON.stringify(hike),
 		});
-		return await response.json();
+		if (response.ok)
+			return await response.json();
+		throw await response.json();
 	} catch (err) {
 		console.error(err);
 	}

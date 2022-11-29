@@ -17,7 +17,7 @@ const PointSelector = ({ name, handleChange, value, isInvalid, multiple }) => {
 	return (
 		<Form.Select
 			name={name}
-			value={value}
+			value={value || ""}
 			multiple={multiple}
 			isInvalid={isInvalid}
 			onChange={(e) => {

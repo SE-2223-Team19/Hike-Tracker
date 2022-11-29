@@ -2,6 +2,18 @@ const mongoose = require("mongoose");
 const { Schema } = mongoose;
 const { Difficulty } = require("./enums");
 
+const trackSchema = new Schema({
+	type: {
+		type: String,
+		enum: ["LineString"],
+		required: true
+	},
+	coordinates: {
+		type: [[Number]],
+		required: true
+	}
+});
+
 // Hike Schema
 const hikeSchema = new Schema(
 	{
@@ -15,7 +27,10 @@ const hikeSchema = new Schema(
 		endPoint: { type: Schema.Types.ObjectId, ref: "Location", required: false },
 		linkedHuts: [{ type: Schema.Types.ObjectId, ref: "Location", required: false }],
 		referencePoints: [[Number]], // Array of positions on the track
-		trackPoints: [[Number]], 
+		trackPoints: {
+			type: trackSchema,
+			index: "2dsphere"
+		},
 		createdBy: { type: Schema.Types.ObjectId, ref: "User", required: true }
 	},
 	{ timestamps: true }

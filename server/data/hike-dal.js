@@ -97,11 +97,13 @@ const commonLookups = [
 	{
 		$unwind: {
 			path: "$startPoint",
+			preserveNullAndEmptyArrays: true
 		},
 	},
 	{
 		$unwind: {
 			path: "$endPoint",
+			preserveNullAndEmptyArrays: true
 		},
 	},
 	{
@@ -110,13 +112,27 @@ const commonLookups = [
 		},
 	},
 	{
+		$addFields: {
+			"trackPoints": {
+				$map: {
+					input: "$trackPoints.coordinates",
+					as: "t",
+					in: {
+						$reverseArray: "$$t"
+					}
+				}
+			}
+		}
+	},
+	{
 		$project: {
 			"createdBy.hash": 0,
 			"createdBy.salt": 0,
 			"createdBy.uniqueString": 0,
 			"createdBy.isValid": 0,
 		}
-	}];
+	}
+];
 
 /**
  * Get all hikes.
@@ -126,7 +142,17 @@ const commonLookups = [
  * @returns {Promise<{data: [Hike]; metadata: [{type: String;}|PaginationMetadata]}>} Hikes
  */
 async function getHikes(filterQuery = {}, page = 1, pageSize = 10) {
-	const commonPipeline = [ ...commonLookups,
+	let p = [];
+	if (filterQuery.trackPoints) {
+		p = [filterQuery.trackPoints];
+		delete filterQuery.trackPoints;
+	}
+	p = [...p, {
+		$match: filterQuery,
+	}];
+	const hikes = await Hike.aggregate([
+		...p,
+		...commonLookups,
 		{
 			$facet: {
 				data: [
@@ -156,55 +182,6 @@ async function getHikes(filterQuery = {}, page = 1, pageSize = 10) {
 				]
 			}
 		}
-	];
-
-	// Need geospatial query
-	if (filterQuery.startPoint !== undefined && typeof filterQuery.startPoint !== "string") {
-		const coordinates = filterQuery.startPoint.coordinates;
-		const maxDistance = filterQuery.startPoint.radius;
-		delete filterQuery.startPoint;
-		const hikes = await Location.aggregate([
-			{
-				$geoNear: {
-					near: {
-						type: "Point",
-						coordinates: coordinates,
-					},
-					maxDistance: maxDistance,
-					distanceField: "distance",
-				},
-			},
-			{
-				$lookup: {
-					from: Hike.collection.name,
-					localField: "_id",
-					foreignField: "startPoint",
-					as: "hikes",
-				},
-			},
-			{
-				$unwind: {
-					path: "$hikes",
-				},
-			},
-			{
-				$replaceRoot: {
-					newRoot: "$hikes",
-				}
-			},
-			{
-				$match: filterQuery,
-			},
-			...commonPipeline
-		]);
-		return hikes[0];
-	}
-
-	const hikes = await Hike.aggregate([
-		{
-			$match: filterQuery,
-		},
-		...commonPipeline
 	]);
 
 	return hikes[0];
@@ -216,7 +193,13 @@ async function getHikes(filterQuery = {}, page = 1, pageSize = 10) {
  * @returns {HikeModel}
  */
 async function createHike(hike) {
-	const newHike = new Hike(hike);
+	const newHike = new Hike({
+		...hike,
+		trackPoints: {
+			type: "LineString",
+			coordinates: hike.trackPoints.map(p => [p[1], p[0]])
+		}
+	});
 	const savedHike = await newHike.save();
 	return savedHike;
 }

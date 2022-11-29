@@ -1,9 +1,11 @@
-import { React } from "react";
+import { React, useState, useEffect } from "react";
 import { MapContainer, Marker, Polyline, TileLayer, Popup } from "react-leaflet";
 import * as L from "leaflet";
 import { Button, Row, Col } from "react-bootstrap";
 
 function SelectReferencePointsMap({ trackPoints, referencePoints, setReferencePoints }) {
+    const [map, setMap] = useState(null);
+
 	const markerStartEndPoint = new L.icon({
 		iconUrl: require("../icons/marker_start_end_point.png"),
 		iconSize: [35, 45],
@@ -11,19 +13,24 @@ function SelectReferencePointsMap({ trackPoints, referencePoints, setReferencePo
 		popupAnchor: [0, -46],
 	});
 
-	const bounds = [
-		trackPoints && trackPoints.length > 0 && trackPoints.reduce(([lat, lng], [maxLat, maxLng]) => [Math.max(lat, maxLat), Math.max(lng, maxLng)]),
-		trackPoints && trackPoints.length > 0 && trackPoints.reduce(([lat, lng], [minLat, minLng]) => [Math.min(lat, minLat), Math.min(lng, minLng)])
-	];
+    useEffect(() => {
+        const bounds = [
+            trackPoints && trackPoints.length > 0 && trackPoints.reduce(([lat, lng], [maxLat, maxLng]) => [Math.max(lat, maxLat), Math.max(lng, maxLng)]),
+            trackPoints && trackPoints.length > 0 && trackPoints.reduce(([lat, lng], [minLat, minLng]) => [Math.min(lat, minLat), Math.min(lng, minLng)])
+        ];
+        if (map !== null)
+            map.fitBounds(bounds);
+    }, [map, trackPoints])
+
 
 	return (
         trackPoints && trackPoints.length > 0 && 
             <MapContainer
+                ref={setMap}
                 style={{ width: "100%", height: "100%" }}
                 scrollWheelZoom={false}
                 zoomControl={true}
                 dragging={true}
-                bounds={bounds}
             >
                 <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
                 <Marker

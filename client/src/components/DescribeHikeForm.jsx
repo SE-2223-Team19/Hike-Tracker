@@ -1,3 +1,4 @@
+import { React, useContext, useEffect } from "react";
 import { Form, Button, Row, Col, Container } from "react-bootstrap";
 import { Difficulty } from "../helper/enums";
 import { capitalizeAndReplaceUnderscores } from "../helper/utils";
@@ -7,11 +8,20 @@ import GpxParser from "gpxparser";
 import PointSelector from "./PointSelector";
 import { createHike } from "../api/hikes";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-hot-toast";
 import SelectReferencePointsMap from "./SelectReferencePointsMap";
+import { AuthContext } from "../context/AuthContext";
+import { UserType } from "../helper/enums"
 
 function DescribeHikeForm() {
 	const navigate = useNavigate();
+
+	const { user, setMessage } = useContext(AuthContext);
+
+	useEffect(() => {
+		if (user === null || user.userType !== UserType.LOCAL_GUIDE) {
+			navigate("/");
+		}
+	}, [user, navigate]);
 
 	const onGpxFileUpload = (file, setFieldValue) => {
 		setFieldValue("gpxFile", file);
@@ -19,7 +29,6 @@ function DescribeHikeForm() {
 		fileReader.onloadend = (e) => {
 			const gpx = new GpxParser();
 			gpx.parse(fileReader.result);
-			console.log(gpx);
 			setFieldValue("length", gpx.tracks[0].distance.total);
 			setFieldValue("title", gpx.tracks[0].name);
 			setFieldValue("ascent", gpx.tracks[0].elevation.max - gpx.tracks[0].elevation.min);
@@ -28,6 +37,20 @@ function DescribeHikeForm() {
 				"trackPoints",
 				gpx.tracks[0].points.map((p) => [p.lat, p.lon])
 			);
+			setFieldValue(
+				"expectedTime", 
+				Math.floor((gpx.tracks[0].points[gpx.tracks[0].points.length - 1].time - gpx.tracks[0].points[0].time) / 60000)
+			);
+			setFieldValue(
+				"ascent",
+				Math.round(gpx.tracks[0].points.map(p => p.ele).reduce((p, c) => ({
+					ascent: p.ascent + (c - p.lastElevation),
+					lastElevation: c
+				}), {
+					ascent: 0,
+					lastElevation: gpx.tracks[0].points[0].ele
+				}).ascent * 100) / 100
+			);
 		};
 		fileReader.readAsText(file);
 	};
@@ -35,12 +58,21 @@ function DescribeHikeForm() {
 	// ** On submit
 	const handleSubmit = async (values) => {
 		// Format points for backend
-		delete values.extractPoints;
 		delete values.gpxFile;
+		if (values.startPoint === "") {
+			values.startPoint = null;
+		}
+		if (values.endPoint === "") {
+			values.endPoint = null;
+		}
 		const createdHike = await createHike({ ...values });
-		if (createdHike) toast.success("Hike created successfully");
-		else toast.error("Error creating hike " + createdHike);
-		navigate("/");
+		if (createdHike) {
+			return navigate("/profile");
+		}
+		setMessage({
+			type: "danger",
+			msg: "Error creating hike"
+		});
 	};
 
 	// ** Form validation

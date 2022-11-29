@@ -50,14 +50,14 @@ const { LocationType } = require("../models/enums");
  */
 async function createHike(hike) {
 	// Create new locations for the start point and end point if they don't exist
-	if (!hike.startPoint._id) {
+	if (hike.startPoint && !hike.startPoint._id) {
 		hike.startPoint = await locationDAL.createLocation({
 			locationType: LocationType.DEFAULT,
 			description: `Starting point of '${hike.title}'`,
 			point: [hike.startPoint.point.lng, hike.startPoint.point.lat],
 		});
 	}
-	if (!hike.endPoint._id) {
+	if (hike.endPoint && !hike.endPoint._id) {
 		hike.endPoint = await locationDAL.createLocation({
 			locationType: LocationType.DEFAULT,
 			description: `End point of '${hike.title}'`,
@@ -90,8 +90,8 @@ async function createHike(hike) {
 		expectedTime: hike.expectedTime,
 		difficulty: hike.difficulty,
 		description: hike.description,
-		startPoint: hike.startPoint._id,
-		endPoint: hike.endPoint._id,
+		startPoint: hike.startPoint === null ? null : hike.startPoint._id,
+		endPoint: hike.endPoint === null ? null : hike.endPoint._id,
 		linkedHuts: hike.linkedHuts,
 		trackPoints: hike.trackPoints,
 		referencePoints: hike.referencePoints,

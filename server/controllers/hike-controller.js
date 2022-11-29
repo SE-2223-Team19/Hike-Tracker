@@ -62,9 +62,16 @@ async function getHikes(req, res) {
 		if (value.difficulty) filter.difficulty = value.difficulty;
 		if (value.createdBy) filter.createdBy = new ObjectId(value.createdBy);
 		if (value.locationCoordinatesLat && value.locationCoordinatesLng && value.locationRadius)
-			filter.startPoint = {
-				coordinates: [value.locationCoordinatesLng, value.locationCoordinatesLat],
-				radius: value.locationRadius,
+			filter.trackPoints = {
+				$geoNear: {
+					near: {
+						type: "Point", 
+						coordinates: [value.locationCoordinatesLng, value.locationCoordinatesLat]
+					},
+					maxDistance: value.locationRadius,
+					distanceField: "distance",
+					spherical: true
+				}
 			};
 
 		const hikes = await hikeDAL.getHikes(filter, value.page, value.pageSize);

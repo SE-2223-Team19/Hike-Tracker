@@ -48,6 +48,10 @@ function PaginatedList({
 			);
 			setLoading(false);
             setError(null);
+        })
+        .catch(err => {
+            setLoading(false);
+            setError(err);
         });
 	}, [fetchCall, pagination.currentPage, pagination.pageSize]);
 

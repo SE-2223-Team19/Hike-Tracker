@@ -1,11 +1,10 @@
 import React from "react";
-import DescribeHikeForm from "../components/DescribeHikeForm";
+import DescribeHikeForm from "../components/Hike/DescribeHikeForm";
 import { CgArrowLeft } from "react-icons/cg";
 import { Row, Col, Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 
 function DescribeHike() {
-
 	const navigate = useNavigate();
 
 	return (

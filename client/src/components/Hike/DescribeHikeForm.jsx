@@ -1,11 +1,20 @@
-import { Form, Button, Row, Col, Stack, ListGroup, ListGroupItem, CloseButton } from "react-bootstrap";
-import { Difficulty } from "../helper/enums";
-import { capitalizeAndReplaceUnderscores } from "../helper/utils";
+import {
+	Form,
+	Button,
+	Row,
+	Col,
+	Stack,
+	ListGroup,
+	ListGroupItem,
+	CloseButton,
+} from "react-bootstrap";
+import { Difficulty } from "../../helper/enums";
+import { capitalizeAndReplaceUnderscores } from "../../helper/utils";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import GpxParser from "gpxparser";
-import PointSelector from "./PointSelector";
-import { createHike } from "../api/hikes";
+import PointSelector from "../PointSelector";
+import { createHike } from "../../api/hikes";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
 
@@ -318,22 +327,29 @@ function DescribeHikeForm() {
 							<Form.Group controlId="referencePoints" className="mt-4">
 								<Form.Label>Reference Points</Form.Label>
 								<ListGroup as="ol" className="mb-3">
-									{values.referencePoints.map(point => (
+									{values.referencePoints.map((point) => (
 										<ListGroupItem key={point._id} className="d-flex justify-content-between">
-											<span>{point.description} (Lat: {point.point.lat} Long: {point.point.lng})</span>
-											<CloseButton onClick={() => {
-												setFieldValue("referencePoints", values.referencePoints.filter(p => p._id !== point._id))
-											}}/>
+											<span>
+												{point.description} (Lat: {point.point.lat} Long: {point.point.lng})
+											</span>
+											<CloseButton
+												onClick={() => {
+													setFieldValue(
+														"referencePoints",
+														values.referencePoints.filter((p) => p._id !== point._id)
+													);
+												}}
+											/>
 										</ListGroupItem>
 									))}
 								</ListGroup>
 								<PointSelector
 									name="referencePoints"
-									value={values.referencePoints.map(p => p._id)}
+									value={values.referencePoints.map((p) => p._id)}
 									multiple
 									isInvalid={!!errors.referencePoints}
 									handleChange={(location) => {
-										if (!values.referencePoints.some(p => p._id === location._id)) {
+										if (!values.referencePoints.some((p) => p._id === location._id)) {
 											setFieldValue("referencePoints", [
 												...values.referencePoints,
 												{
@@ -343,7 +359,7 @@ function DescribeHikeForm() {
 													},
 													locationType: location.locationType,
 													_id: location._id,
-													description: location.description
+													description: location.description,
 												},
 											]);
 										}

@@ -1,35 +1,22 @@
 import React, { useContext } from "react";
 import { Badge, Button, Card, Stack } from "react-bootstrap";
 import { BiRuler, BiTrendingUp, BiTime } from "react-icons/bi";
-import { AuthContext } from "../context/AuthContext";
-import { Difficulty } from "../helper/enums";
+import { useNavigate } from "react-router-dom";
 import {
 	capitalizeAndReplaceUnderscores,
+	difficultyToColor,
 	displayExpectedTime,
 	displayLength,
-} from "../helper/utils";
-import { useNavigate } from "react-router-dom";
+} from "../../helper/utils";
+import { AuthContext } from "../../context/AuthContext";
 
 const HikeCard = ({ hike, showDetails, from }) => {
 	const navigate = useNavigate();
 	// ** User (if user is not logged in cannot see hike details)
 	const { loggedIn } = useContext(AuthContext);
 
-	const difficultyToColor = (difficulty) => {
-		switch (difficulty) {
-			case Difficulty.TOURIST:
-				return "info";
-			case Difficulty.HIKER:
-				return "warning";
-			case Difficulty.PROFESSIONAL_HIKER:
-				return "danger";
-			default:
-				return "secondary";
-		}
-	};
-
 	return (
-		<Card className="flex-row p-3 mt-4">
+		<Card className="flex-row p-3 mt-4" onClick={() => navigate("/hike", { state: { hike } })}>
 			<Card.Body>
 				<Card.Title>
 					<Stack direction="horizontal" className="justify-content-between align-items-center">
@@ -60,17 +47,26 @@ const HikeCard = ({ hike, showDetails, from }) => {
 								</Button>
 							)}
 						</div>
-						{from === "profile" ? (
-							<div>
-								<Button onClick={() => navigate("/reference-point/" + hike._id)}>
-									Add reference points
-								</Button>
-							</div>
-						) : (
-							<></>
-						)}
 					</Stack>
-					<div className="mt-4">{hike.description}</div>
+					<Stack direction="horizontal" className="align-items-center mt-4">
+						<div className="mt-4">{hike.description}</div>
+						<div className="ms-auto">
+							{from === "profile" ? (
+								<div>
+									<Button onClick={() => navigate("/reference-point/" + hike._id)}>
+										Add reference points
+									</Button>
+								</div>
+							) : null}
+						</div>
+						<div className="ms-3">
+							{from === "profile" ? (
+								<Button variant="success" onClick={() => showDetails(hike)}>
+									Update
+								</Button>
+							) : null}
+						</div>
+					</Stack>
 				</>
 			</Card.Body>
 		</Card>

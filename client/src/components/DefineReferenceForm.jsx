@@ -119,10 +119,8 @@ function FromList({ addReferencePoint }) {
 		<Form onSubmit={handleSubmit}>
 			<Form.Group className="mb-3">
 				<Form.Label>Choose reference point</Form.Label>
-				<Form.Select 
-					value={locationToAdd}
-					onChange={(e) => setLocationToAdd(e.target.value)}>
-						<option value={null}></option>
+				<Form.Select value={locationToAdd} onChange={(e) => setLocationToAdd(e.target.value)}>
+					<option value={null}></option>
 					{locations.map((l) => (
 						<option value={l._id} key={l._id}>
 							[{l.locationType}] {l.description}
@@ -137,11 +135,11 @@ function FromList({ addReferencePoint }) {
 	);
 }
 
-function DefineReferenceForm({ hikeId }) {
+function DefineReferenceForm({ hike }) {
 	const [reference, setReference] = useState(0);
 
 	const addReferencePoint = async (location) => {
-		const updatedHike = await updateHike(hikeId, { referencePoints: [location] });
+		const updatedHike = await updateHike(hike._id, { referencePoints: [location] });
 		return updatedHike;
 	};
 

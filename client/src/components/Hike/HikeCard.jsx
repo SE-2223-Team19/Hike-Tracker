@@ -16,7 +16,7 @@ const HikeCard = ({ hike, showDetails, from }) => {
 	const { loggedIn } = useContext(AuthContext);
 
 	return (
-		<Card className="flex-row p-3 mt-4" onClick={() => navigate("/hike", { state: { hike } })}>
+		<Card className="flex-row p-3 mt-4">
 			<Card.Body>
 				<Card.Title>
 					<Stack direction="horizontal" className="justify-content-between align-items-center">
@@ -42,31 +42,18 @@ const HikeCard = ({ hike, showDetails, from }) => {
 						</div>
 						<div className="ms-auto">
 							{loggedIn && (
-								<Button onClick={() => showDetails(hike)} variant={"success"}>
-									See on Map
-								</Button>
+								<Stack direction="horizontal" gap={3}>
+									<Button onClick={() => showDetails(hike)} variant={"success"}>
+										See on Map
+									</Button>
+									<Button variant="dark" onClick={() => navigate("/hike", { state: { hike } })}>
+										Details
+									</Button>
+								</Stack>
 							)}
 						</div>
 					</Stack>
-					<Stack direction="horizontal" className="align-items-center mt-4">
-						<div className="mt-4">{hike.description}</div>
-						<div className="ms-auto">
-							{from === "profile" ? (
-								<div>
-									<Button onClick={() => navigate("/reference-point/" + hike._id)}>
-										Add reference points
-									</Button>
-								</div>
-							) : null}
-						</div>
-						<div className="ms-3">
-							{from === "profile" ? (
-								<Button variant="success" onClick={() => showDetails(hike)}>
-									Update
-								</Button>
-							) : null}
-						</div>
-					</Stack>
+					<div className="mt-4">{hike.description}</div>
 				</>
 			</Card.Body>
 		</Card>

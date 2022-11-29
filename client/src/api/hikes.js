@@ -25,15 +25,17 @@ async function getHikes(filters = {}) {
 
 /**
  * Get a single hike by id
- * @param {*} id - Id of the hike to get
+ * @param {string} id - Id of the hike to get
  * @returns Hike
  */
 async function getHikeById(id) {
 	try {
-		const response = await fetch(ENDPOINTS.hikes.byId.replace(":id", id), {
+		const response = await fetch(new URL(ENDPOINTS.hikes.byId.replace(":id", id), BACKEND_URL), {
 			credentials: "include",
 		});
-		return response.json();
+		if (response.ok)
+			return await response.json();
+		throw await response.json();
 	} catch (err) {
 		console.error(err);
 	}

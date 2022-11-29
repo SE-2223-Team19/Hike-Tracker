@@ -60,15 +60,12 @@ const HikeCard = ({ hike, showDetails, from }) => {
 								</Button>
 							)}
 						</div>
-						{from === "profile" ? (
-							<div>
-								<Button onClick={() => navigate("/reference-point/" + hike._id)}>
-									Add reference points
-								</Button>
-							</div>
-						) : (
-							<></>
-						)}
+						{
+							from === "profile" &&
+							<Button onClick={() => navigate("/reference-point/" + hike._id)}>
+								Add reference points
+							</Button>
+						}
 					</Stack>
 					<div className="mt-4">{hike.description}</div>
 				</>

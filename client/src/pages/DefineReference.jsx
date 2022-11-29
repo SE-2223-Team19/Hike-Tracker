@@ -5,25 +5,29 @@ import { Row, Col, Container, Button } from "react-bootstrap";
 import { useParams, useNavigate } from "react-router-dom";
 import { getHikeById } from "../api/hikes";
 import { AuthContext } from "../context/AuthContext";
+import { useState } from "react";
 
 function DefineReferencepage() {
 	const { hikeId } = useParams();
 	const { user } = useContext(AuthContext);
 	const navigate = useNavigate();
+	const [hike, setHike] = useState(null)
 
 	useEffect(() => {
 		async function CheckId() {
 			const hike = await getHikeById(hikeId);
-			if (user === undefined) {
+			if (user === null) {
 				navigate("/");
 			} else if (hike.createdBy._id !== user._id) {
 				navigate("/profile");
+			} else {
+				setHike(hike);
 			}
 		}
 		CheckId();
 	}, [hikeId, navigate, user]);
 
-	return (
+	return ( hike &&
 		<Container>
 			<Row>
 				<Col>
@@ -39,7 +43,7 @@ function DefineReferencepage() {
 				</Col>
 			</Row>
 			<Row>
-				<DefineReferenceForm hikeId={hikeId} />
+				<DefineReferenceForm hike={hike} />
 			</Row>
 		</Container>
 	);

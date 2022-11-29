@@ -134,10 +134,11 @@ async function createHike(req, res) {
 				.required()
 				.valid(...Object.values(Difficulty)),
 			description: joi.string().required(),
-			startPoint: locationSchema.required(),
-			endPoint: locationSchema.required(),
-			referencePoints: joi.array().items(locationSchema),
+			startPoint: locationSchema.allow(null),
+			endPoint: locationSchema.allow(null),
+			linkedHuts: joi.array().items(locationSchema).default([]),
 			trackPoints: joi.array().items(joi.array().items(joi.number()).length(2)),
+			referencePoints: joi.array().items(joi.array().items(joi.number()).length(2))
 		});
 
 		// Validate request body against schema
@@ -169,8 +170,6 @@ async function updateHike(req, res) {
 		// Validate request body
 		const { params, body } = req;
 
-		console.log("body", body);
-
 		// Location validation schema
 		const locationSchema = joi.object().keys({
 			_id: joi.string(),
@@ -198,8 +197,9 @@ async function updateHike(req, res) {
 			description: joi.string(),
 			startPoint: [locationSchema, joi.string()],
 			endPoint: [locationSchema, joi.string()],
-			referencePoints: joi.array().items(locationSchema, joi.string()),
+			linkedHuts: joi.array().items(locationSchema, joi.string()),
 			trackPoints: joi.array().items(joi.array().items(joi.number()).length(2)),
+			referencePoints: joi.array().items(joi.array().items(joi.number()).length(2)),
 		});
 
 		// Validate request body against schema
@@ -207,9 +207,7 @@ async function updateHike(req, res) {
 
 		if (error) throw error; // Joi validation error, goes to catch block
 
-		const hike = await hikeService.getHikeById(params.id);
-
-		const hikeUpdated = await hikeService.updateHike(params.id, value, hike);
+		const hikeUpdated = await hikeService.updateHike(params.id, value);
 
 		return res.status(StatusCodes.OK).json(hikeUpdated);
 	} catch (err) {

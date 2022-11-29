@@ -1,3 +1,4 @@
+const ObjectId = require("mongoose").Types.ObjectId;
 const Hike = require("../models/hike-model");
 const Location = require("../models/location-model");
 const User = require("../models/user-model");
@@ -12,9 +13,10 @@ const User = require("../models/user-model");
  * @property {String} description
  * @property {Number} length
  * @property {[[Number, Number]]} trackPoints
+ * @property {[[Number, Number]]} referencePoints
  * @property {String} startPoint
  * @property {String} endPoint
- * @property {[String]} referencePoints
+ * @property {[String]} linkedHuts
  * @property {String} createdBy
  */
 
@@ -43,9 +45,10 @@ const User = require("../models/user-model");
  * @property {String} description
  * @property {Number} length
  * @property {[[Number, Number]]} trackPoints
+ * @property {[[Number, Number]]} referencePoints
  * @property {Location} startPoint
  * @property {Location} endPoint
- * @property {[Location]} referencePoints
+ * @property {[Location]} linkedHuts
  * @property {User} createdBy
  */
 
@@ -58,6 +61,63 @@ const User = require("../models/user-model");
  * @property {Number} totalPages
  */
 
+const commonLookups = [
+	{
+		$lookup: {
+			from: Location.collection.name,
+			localField: "startPoint",
+			foreignField: "_id",
+			as: "startPoint",
+		},
+	},
+	{
+		$lookup: {
+			from: Location.collection.name,
+			localField: "endPoint",
+			foreignField: "_id",
+			as: "endPoint",
+		},
+	},
+	{
+		$lookup: {
+			from: Location.collection.name,
+			localField: "linkedHuts",
+			foreignField: "_id",
+			as: "linkedHuts",
+		},
+	},
+	{
+		$lookup: {
+			from: User.collection.name,
+			localField: "createdBy",
+			foreignField: "_id",
+			as: "createdBy",
+		},
+	},
+	{
+		$unwind: {
+			path: "$startPoint",
+		},
+	},
+	{
+		$unwind: {
+			path: "$endPoint",
+		},
+	},
+	{
+		$unwind: {
+			path: "$createdBy",
+		},
+	},
+	{
+		$project: {
+			"createdBy.hash": 0,
+			"createdBy.salt": 0,
+			"createdBy.uniqueString": 0,
+			"createdBy.isValid": 0,
+		}
+	}];
+
 /**
  * Get all hikes.
  * @param {*} filterQuery Filter object for MongoDB query
@@ -66,62 +126,7 @@ const User = require("../models/user-model");
  * @returns {Promise<{data: [Hike]; metadata: [{type: String;}|PaginationMetadata]}>} Hikes
  */
 async function getHikes(filterQuery = {}, page = 1, pageSize = 10) {
-	const commonPipeline = [
-		{
-			$lookup: {
-				from: Location.collection.name,
-				localField: "startPoint",
-				foreignField: "_id",
-				as: "startPoint",
-			},
-		},
-		{
-			$lookup: {
-				from: Location.collection.name,
-				localField: "endPoint",
-				foreignField: "_id",
-				as: "endPoint",
-			},
-		},
-		{
-			$lookup: {
-				from: Location.collection.name,
-				localField: "referencePoints",
-				foreignField: "_id",
-				as: "referencePoints",
-			},
-		},
-		{
-			$lookup: {
-				from: User.collection.name,
-				localField: "createdBy",
-				foreignField: "_id",
-				as: "createdBy",
-			},
-		},
-		{
-			$unwind: {
-				path: "$startPoint",
-			},
-		},
-		{
-			$unwind: {
-				path: "$endPoint",
-			},
-		},
-		{
-			$unwind: {
-				path: "$createdBy",
-			},
-		},
-		{
-			$project: {
-				"createdBy.hash": 0,
-				"createdBy.salt": 0,
-				"createdBy.uniqueString": 0,
-				"createdBy.isValid": 0,
-			}
-		},
+	const commonPipeline = [ ...commonLookups,
 		{
 			$facet: {
 				data: [
@@ -222,9 +227,16 @@ async function createHike(hike) {
  * @returns {Hike}
  */
 async function getHikeById(id) {
-	const hike = await Hike.findById(id)
+	const hikes = await Hike.aggregate([
+		{
+			$match: {
+				_id: new ObjectId(id)
+			}
+		},
+		...commonLookups
+	]);
 		
-	return hike;
+	return hikes[0];
 }
 
 /**

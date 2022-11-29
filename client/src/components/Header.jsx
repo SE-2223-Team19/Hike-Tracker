@@ -31,7 +31,7 @@ const Header = () => {
 						<Dropdown as={Nav.Item}>
 							<Dropdown.Toggle as={Nav.Link} className="d-flex flex-row align-items-center">
 								<div className="d-inline-block">
-									<div class="d-flex flex-column">
+									<div className="d-flex flex-column">
 										<p className="m-0">{user.fullName}</p>
 										<p className="m-0">{capitalizeAndReplaceUnderscores(user.userType)}</p>
 									</div>

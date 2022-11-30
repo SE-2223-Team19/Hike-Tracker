@@ -1,31 +1,22 @@
-import { React, useEffect, useContext } from "react";
+import { React } from "react";
 import DefineReferenceForm from "../components/DefineReferenceForm";
 import { CgArrowLeft } from "react-icons/cg";
 import { Row, Col, Container, Button } from "react-bootstrap";
-import { useParams, useNavigate } from "react-router-dom";
-import { getHikeById } from "../api/hikes";
-import { AuthContext } from "../context/AuthContext";
-import { useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+import GenericError from "./errors/GenericError";
 
 function DefineReferencepage() {
-	const { hikeId } = useParams();
-	const { user } = useContext(AuthContext);
 	const navigate = useNavigate();
-	const [hike, setHike] = useState(null)
+	const location = useLocation();
 
-	useEffect(() => {
-		async function CheckId() {
-			const hike = await getHikeById(hikeId);
-			if (user === null) {
-				navigate("/");
-			} else if (hike.createdBy._id !== user._id) {
-				navigate("/profile");
-			} else {
-				setHike(hike);
-			}
-		}
-		CheckId();
-	}, [hikeId, navigate, user]);
+	if (!location.state) {
+		return <GenericError />;
+	}
+
+	const { hike } = location.state;
+	if (!hike) {
+		return <GenericError />;
+	}
 
 	return ( hike &&
 		<Container>

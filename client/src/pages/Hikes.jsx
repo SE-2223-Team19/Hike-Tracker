@@ -1,12 +1,12 @@
 import { React, useState } from "react";
 import { Button, Stack } from "react-bootstrap";
 import { getHikes } from "../api/hikes";
-import HikeCard from "../components/HikeCard";
+import HikeCard from "../components/Hike/HikeCard";
 import ModalMap from "../components/ModalMap";
 import Loading from "../components/Loading";
 import NoData from "../components/NoData";
 import { CgOptions } from "react-icons/cg";
-import HikeFilters from "../components/HikeFilters";
+import HikeFilters from "../components/Hike/HikeFilters";
 import PositionFilterModal from "../components/PositionFilterModal";
 import PaginatedList from "../components/pagination/PaginatedList";
 

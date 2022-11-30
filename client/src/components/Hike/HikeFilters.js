@@ -1,7 +1,7 @@
 import React from "react";
 import { Button, Col, Form, Row, Stack } from "react-bootstrap";
-import { Difficulty } from "../helper/enums";
-import { capitalizeAndReplaceUnderscores } from "../helper/utils";
+import { Difficulty } from "../../helper/enums";
+import { capitalizeAndReplaceUnderscores } from "../../helper/utils";
 
 const HikeFilters = ({ filters, setFilters, openModal }) => {
 	/**
@@ -110,7 +110,9 @@ const HikeFilters = ({ filters, setFilters, openModal }) => {
 					<Row>
 						<Col>
 							<Form.Label>Area</Form.Label>
-							<Button onClick={openModal} variant={"success"} className="d-block">Select area</Button>
+							<Button onClick={openModal} variant={"success"} className="d-block">
+								Select area
+							</Button>
 						</Col>
 						<Col>
 							<Form.Label>Latitude</Form.Label>

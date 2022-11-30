@@ -1,18 +1,18 @@
 import { React, useContext, useEffect } from "react";
 import { Form, Button, Row, Col, Container } from "react-bootstrap";
-import { Difficulty } from "../helper/enums";
-import { capitalizeAndReplaceUnderscores } from "../helper/utils";
+import { Difficulty } from "../../helper/enums";
+import { capitalizeAndReplaceUnderscores } from "../../helper/utils";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import GpxParser from "gpxparser";
-import PointSelector from "./PointSelector";
-import { createHike } from "../api/hikes";
+import PointSelector from "../PointSelector";
+import { createHike } from "../../api/hikes";
 import { useNavigate } from "react-router-dom";
-import SelectReferencePointsMap from "./SelectReferencePointsMap";
-import { AuthContext } from "../context/AuthContext";
-import { UserType } from "../helper/enums"
+import SelectReferencePointsMap from "../SelectReferencePointsMap";
+import { AuthContext } from "../../context/AuthContext";
+import { UserType } from "../../helper/enums"
 
-function DescribeHikeForm() {
+function DescribeHikeForm({ hike }) {
 	const navigate = useNavigate();
 
 	const { user, setMessage } = useContext(AuthContext);
@@ -106,19 +106,31 @@ function DescribeHikeForm() {
 			.required("Required"),
 	});
 
+	const formatPoint = (pointFromMongo) => {
+		const { _id, locationType, point } = pointFromMongo;
+		return {
+			_id,
+			locationType,
+			point: {
+				lat: point[1],
+				lng: point[0],
+			},
+		};
+	};
+
 	// ** Render
 	return (
 		<Formik
 			initialValues={{
-				title: "",
-				length: "",
-				ascent: "",
-				expectedTime: "",
-				difficulty: "",
-				description: "",
-				startPoint: null,
-				endPoint: null,
-				referencePoints: [],
+				title: (hike && hike.title) || "",
+				length: (hike && hike.length) || "",
+				ascent: (hike && hike.ascent) || "",
+				expectedTime: (hike && hike.expectedTime) || "",
+				difficulty: (hike && hike.difficulty) || "",
+				description: (hike && hike.description) || "",
+				startPoint: (hike && formatPoint(hike.startPoint)) || "null",
+				endPoint: (hike && formatPoint(hike.endPoint)) || "null",
+				referencePoints: (hike && hike.referencePoints.map((rp) => formatPoint(rp))) || [],
 				gpxFile: null,
 				trackPoints: [],
 				linkedHuts: []

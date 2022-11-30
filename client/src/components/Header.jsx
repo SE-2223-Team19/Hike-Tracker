@@ -23,9 +23,19 @@ const Header = () => {
 			<Navbar.Toggle aria-controls="navbar-nav" />
 			<Navbar.Collapse id="navbar-nav">
 				<Nav>
-					<NavLink to="/" className="nav-link">Hikes</NavLink>
-					{loggedIn && <NavLink to="/huts" className="nav-link">Huts</NavLink> }
-					{loggedIn && <NavLink to="/parking-lots" className="nav-link">Parking lots</NavLink>}
+					<NavLink to="/" className="nav-link">
+						Hikes
+					</NavLink>
+					{loggedIn && (
+						<NavLink to="/huts" className="nav-link">
+							Huts
+						</NavLink>
+					)}
+					{loggedIn && (
+						<NavLink to="/parking-lots" className="nav-link">
+							Parking lots
+						</NavLink>
+					)}
 				</Nav>
 				<Nav className="ms-auto">
 					{loggedIn ? (
@@ -39,9 +49,13 @@ const Header = () => {
 								</div>
 							</Dropdown.Toggle>
 							<Dropdown.Menu>
-								<Dropdown.Item onClick={() => navigate("/profile")} className="dropdown-item">Profile</Dropdown.Item>
+								<Dropdown.Item onClick={() => navigate("/profile")} className="dropdown-item">
+									Profile
+								</Dropdown.Item>
 								<Dropdown.Divider></Dropdown.Divider>
-								<Dropdown.Item onClick={handleLogout} className="text-danger">Logout</Dropdown.Item>
+								<Dropdown.Item onClick={handleLogout} className="text-danger">
+									Logout
+								</Dropdown.Item>
 							</Dropdown.Menu>
 						</Dropdown>
 					) : (

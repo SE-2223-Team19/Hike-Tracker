@@ -109,7 +109,7 @@ const HikeFilters = ({ filters, setFilters, openModal }) => {
 				<Col>
 					<Row>
 						<Col>
-							<Form.Label>Starting point</Form.Label>
+							<Form.Label>Area</Form.Label>
 							<Button onClick={openModal} variant={"success"} className="d-block">Select area</Button>
 						</Col>
 						<Col>

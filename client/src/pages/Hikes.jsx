@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { React, useState } from "react";
 import { Button, Stack } from "react-bootstrap";
 import { getHikes } from "../api/hikes";
 import HikeCard from "../components/HikeCard";
@@ -44,14 +44,16 @@ const Hikes = () => {
 				/>
 			)}
 			<PaginatedList 
-				dataElement={(hike) => <HikeCard key={hike._id} hike={hike} showDetails={setCurrentHike} />}
+				dataElement={(hike) => <HikeCard 
+											key={hike._id} 
+											hike={hike} 
+											showDetails={setCurrentHike}
+										/>}
 				errorElement={(error) => <NoData message={"Something went wrong during the request. Try again later."} />}
 				noDataElement={() => <NoData message={"No hikes found."} />}
 				loadingElement={() => <Loading />}
-				fetchCall={(paginationFilters) => getHikes({
-					...filters,
-					...paginationFilters
-				})}
+				fetchCall={getHikes}
+				filters={filters}
 			/>
 			<PositionFilterModal
 				show={showPositionFilter}

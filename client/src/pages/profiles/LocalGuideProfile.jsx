@@ -30,10 +30,10 @@ const LocalGuideProfile = ({ user }) => {
 				errorElement={(error) => <NoData message={error} />}
 				noDataElement={() => <NoData message={"You have not created any hikes yet."} />}
 				loadingElement={() => <Loading />}
-				fetchCall={(paginationFilters) => getHikes({
-					createdBy: user._id,
-					...paginationFilters
-				})}
+				fetchCall={getHikes}
+				filters={{
+					createdBy: user._id
+				}}
 			/>
 			<ModalMap handleClose={() => setCurrentHike(null)} hike={currentHike}></ModalMap>
 		</>

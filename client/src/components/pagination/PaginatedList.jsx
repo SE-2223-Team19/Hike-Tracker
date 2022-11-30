@@ -4,12 +4,12 @@ import Paginator from "./Paginator"
 /**
  * 
  * @param {{
- *  fetchCall: (arg0: {page: Number; pageSize: Number}) => Promise<{data: [any]; metadata: [any]}>; 
+ *  fetchCall: (arg0: Object) => Promise<{data: [any]; metadata: [any]}>; 
  *  dataElement: (any) => JSX.Element;
  *  loadingElement: (any) => JSX.Element;
  *  noDataElement: (any) => JSX.Element;
  *  errorElement: (any) => JSX.Element;
- * 
+ *  filters: Object
  * }} param0 
  * @returns 
  */
@@ -18,7 +18,9 @@ function PaginatedList({
     dataElement: DataElement, 
     loadingElement: LoadingElement, 
     noDataElement: NoDataElement, 
-    errorElement: ErrorElement }) {
+    errorElement: ErrorElement,
+    filters
+}) {
     
     const [data, setData] = useState(null);
 	const [pagination, setPagination] = useState({ currentPage: 1, totalPages: 1, pageSize: 25 });
@@ -28,6 +30,7 @@ function PaginatedList({
     useEffect(() => {
 		setLoading(true);
         fetchCall({
+            ...filters,
             page: pagination.currentPage,
             pageSize: pagination.pageSize,
         }).then(data => {
@@ -53,7 +56,7 @@ function PaginatedList({
             setLoading(false);
             setError(err);
         });
-	}, [fetchCall, pagination.currentPage, pagination.pageSize]);
+	}, [fetchCall, filters, pagination.currentPage, pagination.pageSize]);
 
     return (
         <>

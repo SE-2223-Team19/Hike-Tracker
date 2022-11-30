@@ -207,7 +207,7 @@ async function createHike(hike) {
 /**
  * Gets a hike by id
  * @param {String} id
- * @returns {Hike}
+ * @returns {Promise<Hike>}
  */
 async function getHikeById(id) {
 	const hikes = await Hike.aggregate([
@@ -225,12 +225,18 @@ async function getHikeById(id) {
 /**
  * Updates one hike
  * @param {String} id
- * @param {HikeModel} newData
+ * @param {HikeModel} hikeUpdate
  * @returns
  */
-async function updateHike(id, hikeUpdated) {
-	const hikeUpdate = await Hike.findByIdAndUpdate(id, hikeUpdated, { new: true });
-	return hikeUpdate;
+async function updateHike(id, hikeUpdate) {
+	if (hikeUpdate.trackPoints) {
+		hikeUpdate.trackPoints = {
+			type: "LineString",
+			coordinates: hikeUpdate.trackPoints.map(p => [p[1], p[0]])
+		};
+	}
+	const hikeUpdated = await Hike.findByIdAndUpdate(id, hikeUpdate);
+	return await getHikeById(hikeUpdated._id);
 }
 
 module.exports = {

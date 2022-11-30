@@ -135,6 +135,7 @@ async function checkPropertyLocation(point) {
  * @returns {Promise<Hike>}
  */
 async function updateHike(id, changes) {
+	const hike = await getHikeById(id);
 
 	if (changes.startPoint) {
 		changes.startPoint = await checkPropertyLocation(changes.startPoint);
@@ -145,11 +146,14 @@ async function updateHike(id, changes) {
 	}
 
 	if (changes.linkedHuts) {
-		const hike = await getHikeById(id);
 		changes.linkedHuts = await Promise.all(
 			changes.linkedHuts.map(checkPropertyLocation)
 		);
 		changes.linkedHuts = [...new Set([...hike.linkedHuts._id, ...changes.linkedHuts])];
+	}
+
+	if (changes.trackPoints) {
+		changes.trackPoints = [...new Set([...hike.trackPoints, ...changes.trackPoints])];
 	}
 
 	//TODO: Sorting of reference points.

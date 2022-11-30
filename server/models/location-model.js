@@ -19,6 +19,8 @@ const locationSchema = new Schema({
 		index: "2dsphere", 
 		required: true 
 	}
+}, {
+	discriminatorKey: "locationType"
 });
 
 // Location Model

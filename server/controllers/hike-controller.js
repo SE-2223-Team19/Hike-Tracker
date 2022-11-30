@@ -94,7 +94,7 @@ async function getHikeById(req, res) {
 
 		const hike = await hikeDAL.getHikeById(params.id);
 
-		if (hike === null) {
+		if (hike === undefined) {
 			return res.status(StatusCodes.NOT_FOUND);
 		}
 

@@ -18,8 +18,7 @@ const Profile = () => {
 	}, [loggedIn, navigate]);
 
 	return (
-		user && 
-			<ProfileSwitch user={user} />
+		<ProfileSwitch user={user} />
 	);
 };
 

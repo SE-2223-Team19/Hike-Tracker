@@ -139,52 +139,62 @@ const commonLookups = [
  * @param {*} filterQuery Filter object for MongoDB query
  * @param {Number} page The number of the page
  * @param {Number} pageSize The size of the page
- * @returns {Promise<{data: [Hike]; metadata: [{type: String;}|PaginationMetadata]}>} Hikes
+ * @returns {Promise<{data: [Hike]; metadata: [{type: String;}|PaginationMetadata]}|[Hike]>} Hikes
  */
-async function getHikes(filterQuery = {}, page = 1, pageSize = 10) {
+async function getHikes(filterQuery = {}, page, pageSize) {
+	const paginationActive = page !== undefined && pageSize !== undefined;
+
 	let p = [];
 	if (filterQuery.trackPoints) {
 		p = [filterQuery.trackPoints];
 		delete filterQuery.trackPoints;
 	}
-	p = [...p, {
-		$match: filterQuery,
-	}];
-	const hikes = await Hike.aggregate([
-		...p,
-		...commonLookups,
+	p = [
+		...p, 
 		{
-			$facet: {
-				data: [
-					{
-						$skip: (page - 1) * pageSize
-					},
-					{
-						$limit: pageSize
-					}
-				],
-				metadata: [
-					{
-						$count: "totalElements"
-					},
-					{
-						$addFields: {
-							type: "pagination",
-							currentPage: page,
-							pageSize: pageSize,
-							totalPages: {
-								$ceil: {
-									$divide: [ "$totalElements", pageSize ]
+			$match: filterQuery,
+		},
+		...commonLookups
+	];
+	// If pagination is not used return all
+	if (paginationActive) {
+		p = [
+			...p,
+			{
+				$facet: {
+					data: [
+						{
+							$skip: (page - 1) * pageSize
+						},
+						{
+							$limit: pageSize
+						}
+					],
+					metadata: [
+						{
+							$count: "totalElements"
+						},
+						{
+							$addFields: {
+								type: "pagination",
+								currentPage: page,
+								pageSize: pageSize,
+								totalPages: {
+									$ceil: {
+										$divide: [ "$totalElements", pageSize ]
+									}
 								}
 							}
 						}
-					}
-				]
+					]
+				}
 			}
-		}
-	]);
-
-	return hikes[0];
+		];
+	}
+	const hikes = await Hike.aggregate(p);
+	if (paginationActive)
+		return hikes[0];
+	return hikes;
 }
 
 /**

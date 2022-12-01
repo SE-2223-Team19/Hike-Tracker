@@ -9,6 +9,7 @@ import Paginator from "./Paginator"
  *  loadingElement: (any) => JSX.Element;
  *  noDataElement: (any) => JSX.Element;
  *  errorElement: (any) => JSX.Element;
+ *  dataContainer: ({children: any}) => JSX.Element;
  *  filters: Object
  * }} param0 
  * @returns 
@@ -19,6 +20,7 @@ function PaginatedList({
     loadingElement: LoadingElement, 
     noDataElement: NoDataElement, 
     errorElement: ErrorElement,
+    dataContainer: DataContainer = ({children}) => <>{children}</>,
     filters
 }) {
     
@@ -74,7 +76,11 @@ function PaginatedList({
             }
             {
                 data && data.length > 0 && !loading &&
-                data.map(DataElement)
+                <DataContainer>
+                    {
+                        data.map(DataElement)
+                    }
+                </DataContainer>
             }
             {
                 data && data.length > 0 && !loading &&

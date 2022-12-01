@@ -1,32 +1,19 @@
 import React, { useContext } from "react";
 import { Badge, Button, Card, Stack } from "react-bootstrap";
 import { BiRuler, BiTrendingUp, BiTime } from "react-icons/bi";
-import { AuthContext } from "../context/AuthContext";
-import { Difficulty } from "../helper/enums";
+import { useNavigate } from "react-router-dom";
 import {
 	capitalizeAndReplaceUnderscores,
+	difficultyToColor,
 	displayExpectedTime,
 	displayLength,
-} from "../helper/utils";
-import { useNavigate } from "react-router-dom";
+} from "../../helper/utils";
+import { AuthContext } from "../../context/AuthContext";
 
-const HikeCard = ({ hike, showDetails, from }) => {
+const HikeCard = ({ hike, showDetails }) => {
 	const navigate = useNavigate();
 	// ** User (if user is not logged in cannot see hike details)
 	const { loggedIn } = useContext(AuthContext);
-
-	const difficultyToColor = (difficulty) => {
-		switch (difficulty) {
-			case Difficulty.TOURIST:
-				return "info";
-			case Difficulty.HIKER:
-				return "warning";
-			case Difficulty.PROFESSIONAL_HIKER:
-				return "danger";
-			default:
-				return "secondary";
-		}
-	};
 
 	return (
 		<Card className="flex-row p-3 mt-4">
@@ -55,20 +42,16 @@ const HikeCard = ({ hike, showDetails, from }) => {
 						</div>
 						<div className="ms-auto">
 							{loggedIn && (
-								<Button onClick={() => showDetails(hike)} variant={"success"}>
-									See on Map
-								</Button>
+								<Stack direction="horizontal" gap={3}>
+									<Button onClick={() => showDetails(hike)} variant={"success"}>
+										See on Map
+									</Button>
+									<Button variant="dark" onClick={() => navigate("/hike", { state: { hike } })}>
+										Details
+									</Button>
+								</Stack>
 							)}
 						</div>
-						{from === "profile" ? (
-							<div>
-								<Button onClick={() => navigate("/reference-point/" + hike._id)}>
-									Add reference points
-								</Button>
-							</div>
-						) : (
-							<></>
-						)}
 					</Stack>
 					<div className="mt-4">{hike.description}</div>
 				</>

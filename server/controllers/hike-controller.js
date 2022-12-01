@@ -1,4 +1,5 @@
 const joi = require("joi");
+const ObjectId = require("mongoose").Types.ObjectId;
 const { StatusCodes } = require("http-status-codes");
 const hikeDAL = require("../data/hike-dal");
 const hikeService = require("../services/hike-service");
@@ -59,7 +60,7 @@ async function getHikes(req, res) {
 		if (value.maxExpectedTime)
 			filter.expectedTime = { ...filter.expectedTime, $lt: value.maxExpectedTime };
 		if (value.difficulty) filter.difficulty = value.difficulty;
-		if (value.createdBy) filter.createdBy = value.createdBy;
+		if (value.createdBy) filter.createdBy = new ObjectId(value.createdBy);
 		if (value.locationCoordinatesLat && value.locationCoordinatesLng && value.locationRadius)
 			filter.startPoint = {
 				coordinates: [value.locationCoordinatesLng, value.locationCoordinatesLat],

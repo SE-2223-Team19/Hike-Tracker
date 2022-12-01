@@ -1,47 +1,32 @@
-import { React, useEffect, useContext } from "react";
+import { React } from "react";
 import DefineReferenceForm from "../components/DefineReferenceForm";
 import { CgArrowLeft } from "react-icons/cg";
-import { Row, Col, Container, Button } from "react-bootstrap";
-import { useParams, useNavigate } from "react-router-dom";
-import { getHikeById } from "../api/hikes";
-import { AuthContext } from "../context/AuthContext";
+import { Button } from "react-bootstrap";
+import { useNavigate, useLocation } from "react-router-dom";
+import GenericError from "./errors/GenericError";
 
 function DefineReferencepage() {
-	const { hikeId } = useParams();
-	const { user } = useContext(AuthContext);
 	const navigate = useNavigate();
+	const location = useLocation();
 
-	useEffect(() => {
-		async function CheckId() {
-			const hike = await getHikeById(hikeId);
-			if (user === undefined) {
-				navigate("/");
-			} else if (hike.createdBy._id !== user._id) {
-				navigate("/profile");
-			}
-		}
-		CheckId();
-	}, [hikeId, navigate, user]);
+	if (!location.state) {
+		return <GenericError />;
+	}
+
+	const { hike } = location.state;
+	if (!hike) {
+		return <GenericError />;
+	}
 
 	return (
-		<Container>
-			<Row>
-				<Col>
-					<Button variant="outline-dark" onClick={() => navigate("/profile")}>
-						<CgArrowLeft />
-						<span>Back</span>
-					</Button>
-				</Col>
-			</Row>
-			<Row>
-				<Col>
-					<h1 className="md-5">Add Reference Point</h1>
-				</Col>
-			</Row>
-			<Row>
-				<DefineReferenceForm hikeId={hikeId} />
-			</Row>
-		</Container>
+		<>
+			<Button variant="outline-dark" onClick={() => navigate(-1)}>
+				<CgArrowLeft className="me-2" />
+				<span>Back</span>
+			</Button>
+			<h1 className="my-4">Add Reference Point to {hike.title}</h1>
+			<DefineReferenceForm hike={hike} />
+		</>
 	);
 }
 

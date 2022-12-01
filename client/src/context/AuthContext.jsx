@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { createContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { getUserInfo, logIn, logOut } from "../api/sessions";
@@ -15,6 +15,7 @@ const AuthContext = createContext({
 const AuthProvider = ({ children }) => {
 	const navigate = useNavigate();
 
+	const [loadingInitial, setLoadingInitial] = useState(true);
 	const [loggedIn, setLoggedIn] = useState(false);
 	const [message, setMessage] = useState("");
 	const [user, setUser] = useState(null);
@@ -27,10 +28,9 @@ const AuthProvider = ({ children }) => {
 				setUser(user);
 			}
 		};
-		if (!user) {
-			checkAuth();
-		}
-	}, [user]);
+		checkAuth()
+		.then(() => setLoadingInitial(false));
+	}, []);
 
 	const handleLogin = async (credentials) => {
 		try {
@@ -52,11 +52,20 @@ const AuthProvider = ({ children }) => {
 		setMessage({ msg: `Logout successful!`, type: "secondary" });
 	};
 
+	const memoValue = useMemo(() => ({
+		handleLogin, 
+		handleLogout, 
+		loggedIn, 
+		message, 
+		setMessage, 
+		user 
+	}), [loggedIn, message, user]);
+
 	return (
 		<AuthContext.Provider
-			value={{ handleLogin, handleLogout, loggedIn, message, setMessage, user }}
+			value={memoValue}
 		>
-			{children}
+			{!loadingInitial && children}
 		</AuthContext.Provider>
 	);
 };

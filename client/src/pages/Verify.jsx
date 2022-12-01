@@ -38,7 +38,7 @@ const Verify = () => {
 			) : (
 				<p>
 					<h1 style={{ fontSize: "100px", color: "#ff3d3d" }}>
-						<i class="bi bi-envelope-x"></i>
+						<i className="bi bi-envelope-x"></i>
 					</h1>
 					<h2 style={{ fontWeight: "bold" }}>{message}</h2>
 					<h4>The verification link is not valid.</h4>

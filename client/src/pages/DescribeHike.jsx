@@ -1,31 +1,21 @@
 import React from "react";
-import DescribeHikeForm from "../components/DescribeHikeForm";
+import DescribeHikeForm from "../components/Hike/DescribeHikeForm";
 import { CgArrowLeft } from "react-icons/cg";
-import { Row, Col, Container, Button } from "react-bootstrap";
-import { useNavigate } from "react-router-dom";
+import { Button } from "react-bootstrap";
+import { useLocation, useNavigate } from "react-router-dom";
 
 function DescribeHike() {
-
 	const navigate = useNavigate();
+	const { hike } = useLocation().state || { hike: null };
 
 	return (
 		<>
-			<Row>
-				<Col>
-					<Button variant="outline-dark" onClick={() => navigate("/profile")}>
-						<CgArrowLeft />
-						<span>Back</span>
-					</Button>
-				</Col>
-			</Row>
-			<Row>
-				<Col>
-					<h1 className="md-5">Describe Hike</h1>
-				</Col>
-			</Row>
-			<Row>
-				<DescribeHikeForm />
-			</Row>
+			<Button variant="outline-dark" onClick={() => navigate(-1)}>
+				<CgArrowLeft className="me-2" />
+				<span>Back</span>
+			</Button>
+			<h1 className="my-4">{hike ? "Update" : "Describe"} Hike</h1>
+			<DescribeHikeForm hike={hike} />
 		</>
 	);
 }

@@ -39,9 +39,9 @@ const Header = () => {
 				<Nav className="ms-auto">
 					{loggedIn ? (
 						<Dropdown as={Nav.Item}>
-							<Dropdown.Toggle as={Nav.Link} className="d-flex flex-row align-items-center">
+							<Dropdown.Toggle as={Nav.Link} className="d-flex flex-row align-items-center gap-3">
 								<div className="d-inline-block">
-									<div className="d-flex flex-column">
+									<div className="d-flex flex-column align-items-end">
 										<p className="m-0">{user.fullName}</p>
 										<p className="m-0">{capitalizeAndReplaceUnderscores(user.userType)}</p>
 									</div>

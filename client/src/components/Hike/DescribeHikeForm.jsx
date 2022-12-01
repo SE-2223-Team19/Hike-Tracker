@@ -255,6 +255,7 @@ function DescribeHikeForm({ hike }) {
 								>
 									<Form.Label>Load GPX File</Form.Label>
 									<Form.Check
+										data-test-id="extract-points-from-gpx"
 										type="checkbox"
 										defaultChecked={false}
 										name="extractPoints"
@@ -266,6 +267,7 @@ function DescribeHikeForm({ hike }) {
 								<Form.Control
 									type="file"
 									name="gpxFile"
+									data-test-id="gpx-file-uploader"
 									onChange={(e) =>
 										onGpxFileUpload(e.target.files[0], setFieldValue, values.extractPoints)
 									}
@@ -385,10 +387,10 @@ function DescribeHikeForm({ hike }) {
 						type="submit"
 						onClick={handleSubmit}
 						variant="success"
-						className="mt-4"
+						className="mt-4 justify-self-end"
 						disabled={isSubmitting}
 					>
-						Create
+						{hike ? "Update" : "Create"}
 					</Button>
 				</Form>
 			)}

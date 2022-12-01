@@ -15,20 +15,15 @@ const Profile = () => {
 		if (!user) {
 			navigate("/");
 		}
-	}, [user]);
+	}, [user, navigate]);
 
-	return (
-		user && 
-			<ProfileSwitch user={user} />
-	);
+	return user && <ProfileSwitch user={user} />;
 };
 
 const ProfileSwitch = ({ user }) => {
 	switch (user.userType) {
 		case UserType.LOCAL_GUIDE:
-			return (
-				<LocalGuideProfile user={user} />
-			);
+			return <LocalGuideProfile user={user} />;
 		default:
 			break;
 	}

@@ -20,7 +20,11 @@ const LocalGuideProfile = ({ user }) => {
 				<h2>My Hikes</h2>
 
 				<Stack direction="horizontal" gap={3}>
-					<Button variant="success" onClick={() => navigate("/describe-hike")}>
+					<Button
+						data-test-id="create-hike-btn"
+						variant="success"
+						onClick={() => navigate("/describe-hike")}
+					>
 						Create Hike
 					</Button>
 				</Stack>

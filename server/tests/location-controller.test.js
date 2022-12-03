@@ -1,5 +1,6 @@
 'use strict';
 const locationController = require("../controllers/location-controller");
+const locationService = require("")
 const { StatusCodes } = require("http-status-codes");
 const { LocationType } = require("../models/enums");
 const { setupDB, ResponseHelper } = require("./setup");
@@ -35,8 +36,8 @@ describe('createLocation', () => {
         const response = new ResponseHelper();
         await locationController.createLocation({
             body: {
-                locationType: LocationType.HUT,
-                description: "A test hut",
+                locationType: LocationType.DEFAULT,
+                description: "A test default location",
                 point: [7.683070, 45.068370] // Wants a <longitude>, <latitude> array
             }
         }, response);
@@ -48,8 +49,10 @@ describe('createLocation', () => {
         const response = new ResponseHelper();
         await locationController.createLocation({
             body: {
+                name: "A parking lot",
                 locationType: LocationType.PARKING_LOT,
                 description: "A test parking lot",
+                capacity: 20,
                 point: [32.5, 18.1] 
             }
         }, response);
@@ -86,7 +89,7 @@ describe('updateLocationDescription', () => {
         const response = new ResponseHelper();
         await locationController.createLocation({
             body: {
-                locationType: LocationType.HUT,
+                locationType: LocationType.DEFAULT,
                 description: "A test hut",
                 point: [7.683070, 45.068370] // Wants a <longitude>, <latitude> array
             }
@@ -107,7 +110,7 @@ describe('updateLocationDescription', () => {
         const response = new ResponseHelper();
         await locationController.createLocation({
             body: {
-                locationType: LocationType.HUT,
+                locationType: LocationType.DEFAULT,
                 description: "A test hut",
                 point: [7.683070, 45.068370]
             }
@@ -124,3 +127,19 @@ describe('updateLocationDescription', () => {
         expect(response.statusCode).toBe(StatusCodes.BAD_REQUEST);
     });
 });
+
+describe('update Hut Informations', () => {
+
+    // test('Try to update a field of hut', async () => {
+        
+    //     const responseCreateLocation = new ResponseHelper()
+    //     await locationController.createLocation({
+    //         body: {
+    //             locationType: LocationType.HUT,
+    //             description: "A test hut",
+    //             point: [7.683070, 45.068370]
+    //         }
+    //     }, responseCreateLocation);
+    //     expect(responseCreateLocation.statusCode).toBe(StatusCodes.CREATED);
+    // })
+})

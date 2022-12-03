@@ -78,8 +78,12 @@ async function createLocation(req, res) {
 			description: joi.string().required(),
 			point: joi.array().items(joi.number()).length(2).required(),
 			name: joi.alternatives().conditional("locationType", { 
-				is: LocationType.HUT, 
+				is: [LocationType.HUT, LocationType.PARKING_LOT], 
 				then: joi.string().required() 
+			}),
+			capacity: joi.alternatives().conditional("locationType", { 
+				is: LocationType.PARKING_LOT, 
+				then: joi.number().required() 
 			}),
 			altitude: joi.alternatives().conditional("locationType", { 
 				is: LocationType.HUT, 
@@ -136,8 +140,37 @@ async function updateLocationDescription(req, res) {
 	}
 }
 
+async function updateHutInformations(req, res) {
+	
+	try {
+		const { params, body } = req
+		const id = params.id
+		const schema = joi.object.keys({
+			name: joi.string(),
+			altitude: joi.number(),
+			numberOfBeds: joi.number(),
+			phone: joi.string(),
+			email: joi.string(),
+			webSite: joi.string(),
+			description: joi.string()
+		});
+
+		const { value, error } = schema.validate(body)
+
+		if(error) throw error
+
+		const hutUpdate = value.hut
+		const result = await locationDAL.updateHutInformation(id, hutUpdate)
+		return res.status(StatusCodes.UPDATED).json(result)
+
+	} catch(err) {
+		return res.status(StatusCodes.BAD_REQUEST).json({err: err.message})
+	}
+}
+
 module.exports = {
 	getLocations,
 	createLocation,
 	updateLocationDescription,
+	updateHutInformations
 };

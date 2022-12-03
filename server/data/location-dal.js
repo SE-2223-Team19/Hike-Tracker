@@ -1,4 +1,5 @@
 const { LocationType } = require("../models/enums");
+// const locationService = require("../services/location-service")
 const Hut = require("../models/hut-model");
 const Location = require("../models/location-model");
 const ParkingLot = require("../models/parking-lot-model");
@@ -107,9 +108,28 @@ async function updateLocationDescription(id, description){
 	return result; 
 }
 
+/**
+ * 
+ * @param {String} id 
+ * @param {Hut} hutUpdate New values to pass for updating Hut. The fields, of the object to pass, should be the same
+ * of Hut Model (You can pass only the fields that you want to update)
+ * Before to pass the hut, ensure that the Hut is defined in Location Document
+ * @returns 
+ */
+async function updateHutInformation(id, hutUpdate) {
+	
+	// const checkHut = await locationService.checkAndUpdateDescriptionHut(id, hutUpdate);
+	// if(!checkHut) {
+	// 	throw Error({msg: "Hut does not exist in Location"})
+	// }
+	const hutUpdated = await Location.findByIdAndUpdate(id, hutUpdate);
+	return await getLocationById(hutUpdated._id);
+}
+
 module.exports = {
 	getLocations,
 	getLocationById,
 	createLocation,
-	updateLocationDescription
+	updateLocationDescription,
+	updateHutInformation
 };

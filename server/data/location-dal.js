@@ -107,18 +107,6 @@ async function updateLocationDescription(id, description) {
 	return result;
 }
 
-async function hutUpdate(id, locationUpdate) {
-	
-	const hutCheck = await Location.find({ _id: id, locationType: LocationType.HUT })
-	if (locationUpdate.description)
-		await updateLocationDescription(id, locationUpdate.description)
-	if (!hutCheck) throw Error("Not find Hut inside Locations")
-
-	await Hut.findByIdAndUpdate(id, locationUpdate)
-
-	return await Location.findOne({ _id: id, locationType: LocationType.HUT })
-}
-
 /**
  * 
  * @param {String} id 
@@ -128,11 +116,13 @@ async function hutUpdate(id, locationUpdate) {
  */
 async function updateLocation(id, locationUpdate) {
 
-	if (locationUpdate.locationType == LocationType.HUT) {
-		return await hutUpdate(id, locationUpdate)
+	if (locationUpdate.locationType === LocationType.HUT) {
+		await Hut.findOneAndUpdate({ _id: id, locationType: LocationType.HUT }, locationUpdate, { new: true }).lean();
 	}
-
-	
+	if (locationUpdate.locationType === LocationType.PARKING_LOT) {
+		await ParkingLot.findOneAndUpdate({ _id: id, locationType: LocationType.PARKING_LOT }, locationUpdate, { new: true }).lean();
+	}
+	return await getLocationById(id);
 }
 
 module.exports = {

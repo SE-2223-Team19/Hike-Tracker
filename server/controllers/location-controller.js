@@ -58,6 +58,24 @@ async function getLocations(req, res) {
 }
 
 /**
+ * 
+ * @param {Request} req 
+ * @param {Response} res 
+ * @returns {Promise<Response>}
+ */
+async function getLocationById(req, res) {
+	try {
+		const { id } = req.params;
+
+		const location = await locationDAL.getLocationById(id);
+
+		return res.status(StatusCodes.OK).json(location);
+	} catch (err) {
+		return res.status(StatusCodes.BAD_REQUEST).json({ err: err.message });
+	}
+}
+
+/**
  * POST /location
  * Creates a new location
  * @param {Request} req
@@ -155,6 +173,10 @@ async function updateLocation(req, res) {
 				is: [LocationType.HUT, LocationType.PARKING_LOT],
 				then: joi.string()
 			}),
+			capacity: joi.alternatives().conditional("locationType", { 
+				is: LocationType.PARKING_LOT, 
+				then: joi.number()
+			}),
 			altitude: joi.alternatives().conditional('locationType',{
 				is: LocationType.HUT,
 				then: joi.number()
@@ -194,6 +216,7 @@ async function updateLocation(req, res) {
 
 module.exports = {
 	getLocations,
+	getLocationById,
 	createLocation,
 	updateLocationDescription,
 	updateLocation

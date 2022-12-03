@@ -130,16 +130,112 @@ describe('updateLocationDescription', () => {
 
 describe('update Hut Informations', () => {
 
-    // test('Try to update a field of hut', async () => {
+    test('Try to update fields of hut', async () => {
         
-    //     const responseCreateLocation = new ResponseHelper()
-    //     await locationController.createLocation({
-    //         body: {
-    //             locationType: LocationType.HUT,
-    //             description: "A test hut",
-    //             point: [7.683070, 45.068370]
-    //         }
-    //     }, responseCreateLocation);
-    //     expect(responseCreateLocation.statusCode).toBe(StatusCodes.CREATED);
-    // })
+        const responseCreateLocation = new ResponseHelper()
+        const hut_test = await locationController.createLocation({
+            body: {
+                name: "A test hut",
+                locationType: LocationType.HUT,
+                description: "A test hut",
+                point: [7.683070, 45.068370],
+                phone: "332344435",
+                email: "test@polito.it",
+                webSite: "",
+                altitude: 10,
+                numberOfBeds: 15
+            }
+        }, responseCreateLocation);
+        expect(responseCreateLocation.statusCode).toBe(StatusCodes.CREATED);
+
+        const responseHutUpdate = new ResponseHelper()
+        const hut_updated = await locationController.updateLocation({
+            params: {
+                id: hut_test.responseBody._id
+            },
+            body: {
+                locationType: LocationType.HUT,
+                description: "A test hut for updating",
+                email: "test@polito1.it",
+                altitude: 15,
+                numberOfBeds: 2000
+            }
+        }, responseHutUpdate)
+
+        console.log(responseHutUpdate)
+
+        expect(hut_updated.responseBody.description).toBe("A test hut for updating")
+        expect(hut_updated.responseBody.numberOfBeds).toBe(2000)
+        expect(hut_updated.responseBody.email).toBe("test@polito1.it")
+        expect(hut_updated.responseBody.altitude).toBe(15)
+        expect(responseHutUpdate.statusCode).toBe(StatusCodes.OK);
+    })
+
+    test('Try to update fields of hut with error field capacity of Parking Lot', async () => {
+        
+        const responseCreateLocation = new ResponseHelper()
+        const hut_test = await locationController.createLocation({
+            body: {
+                name: "A test hut",
+                locationType: LocationType.HUT,
+                description: "A test hut",
+                point: [7.683070, 45.068370],
+                phone: "332344435",
+                email: "test@polito.it",
+                webSite: "",
+                altitude: 10,
+                numberOfBeds: 15
+            }
+        }, responseCreateLocation);
+        expect(responseCreateLocation.statusCode).toBe(StatusCodes.CREATED);
+
+        const responseHutUpdate = new ResponseHelper()
+        await locationController.updateLocation({
+            params: {
+                id: hut_test.responseBody._id
+            },
+            body: {
+                locationType: LocationType.HUT,
+                capacity: 20
+            }
+        }, responseHutUpdate)
+        
+        
+        expect(responseHutUpdate.statusCode).toBe(StatusCodes.BAD_REQUEST);
+    })
+
+    test('Try to update hut with empty fields', async () => {
+        
+        const responseCreateLocation = new ResponseHelper()
+        const hut_test = await locationController.createLocation({
+            body: {
+                name: "A test hut",
+                locationType: LocationType.HUT,
+                description: "A test hut",
+                point: [7.683070, 45.068370],
+                phone: "332344435",
+                email: "test@polito.it",
+                webSite: "",
+                altitude: 10,
+                numberOfBeds: 15
+            }
+        }, responseCreateLocation);
+        expect(responseCreateLocation.statusCode).toBe(StatusCodes.CREATED);
+
+        const responseHutUpdate = new ResponseHelper()
+        const hut_updated = await locationController.updateLocation({
+            params: {
+                id: hut_test.responseBody._id
+            },
+            body: {
+                locationType: LocationType.HUT
+            }
+        }, responseHutUpdate)
+        
+        expect(hut_updated.responseBody.description).toBe("A test hut")
+        expect(hut_updated.responseBody.numberOfBeds).toBe(15)
+        expect(hut_updated.responseBody.email).toBe("test@polito.it")
+        expect(hut_updated.responseBody.altitude).toBe(10)
+        expect(responseHutUpdate.statusCode).toBe(StatusCodes.OK);
+    })
 })

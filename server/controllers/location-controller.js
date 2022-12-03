@@ -140,18 +140,41 @@ async function updateLocationDescription(req, res) {
 	}
 }
 
-async function updateHutInformations(req, res) {
+async function updateLocation(req, res) {
 	
 	try {
 		const { params, body } = req
 		const id = params.id
-		const schema = joi.object.keys({
-			name: joi.string(),
-			altitude: joi.number(),
-			numberOfBeds: joi.number(),
-			phone: joi.string(),
-			email: joi.string(),
-			webSite: joi.string(),
+
+		const schema = joi.object().keys({
+			locationType: joi
+				.string()
+				.valid(...Object.values(LocationType))
+				.required(),
+			name: joi.alternatives().conditional('name',{
+				is: [LocationType.HUT, LocationType.PARKING_LOT],
+				then: joi.string()
+			}),
+			altitude: joi.alternatives().conditional('locationType',{
+				is: LocationType.HUT,
+				then: joi.number()
+			}),
+			numberOfBeds: joi.alternatives().conditional('locationType',{
+				is: LocationType.HUT,
+				then: joi.number()
+			}),
+			phone: joi.alternatives().conditional('locationType',{
+				is: LocationType.HUT,
+				then: joi.number()
+			}),
+			email: joi.alternatives().conditional('locationType',{
+				is: LocationType.HUT,
+				then: joi.string()
+			}),
+			webSite: joi.alternatives().conditional('locationType',{
+				is: LocationType.HUT,
+				then: joi.string().uri().allow("") 
+			}),
 			description: joi.string()
 		});
 
@@ -159,11 +182,12 @@ async function updateHutInformations(req, res) {
 
 		if(error) throw error
 
-		const hutUpdate = value.hut
-		const result = await locationDAL.updateHutInformation(id, hutUpdate)
-		return res.status(StatusCodes.UPDATED).json(result)
+		const locationUpdate = value
+		const result = await locationDAL.updateLocation(id, locationUpdate)
+		return res.status(StatusCodes.OK).json(result)
 
 	} catch(err) {
+		console.log(err)
 		return res.status(StatusCodes.BAD_REQUEST).json({err: err.message})
 	}
 }
@@ -172,5 +196,5 @@ module.exports = {
 	getLocations,
 	createLocation,
 	updateLocationDescription,
-	updateHutInformations
+	updateLocation
 };

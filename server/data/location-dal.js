@@ -1,5 +1,4 @@
 const { LocationType } = require("../models/enums");
-// const locationService = require("../services/location-service")
 const Hut = require("../models/hut-model");
 const Location = require("../models/location-model");
 const ParkingLot = require("../models/parking-lot-model");
@@ -51,7 +50,7 @@ async function getLocations(filterQuery = {}, page, pageSize) {
 								pageSize: pageSize,
 								totalPages: {
 									$ceil: {
-										$divide: [ "$totalElements", pageSize ]
+										$divide: ["$totalElements", pageSize]
 									}
 								}
 							}
@@ -63,7 +62,7 @@ async function getLocations(filterQuery = {}, page, pageSize) {
 	}
 
 	const locations = await Location.aggregate(p);
-	
+
 	if (paginationActive)
 		return locations[0];
 	return locations;
@@ -103,27 +102,37 @@ async function createLocation(location) {
  * @param {String} description 
  * @returns {Promise<Location>}
  */
-async function updateLocationDescription(id, description){
-	const result = await Location.updateOne({id: id},{description: description});
-	return result; 
+async function updateLocationDescription(id, description) {
+	const result = await Location.updateOne({ id: id }, { description: description }, { new: true });
+	return result;
+}
+
+async function hutUpdate(id, locationUpdate) {
+	
+	const hutCheck = await Location.find({ _id: id, locationType: LocationType.HUT })
+	if (locationUpdate.description)
+		await updateLocationDescription(id, locationUpdate.description)
+	if (!hutCheck) throw Error("Not find Hut inside Locations")
+
+	await Hut.findByIdAndUpdate(id, locationUpdate)
+
+	return await Location.findOne({ _id: id, locationType: LocationType.HUT })
 }
 
 /**
  * 
  * @param {String} id 
- * @param {Hut} hutUpdate New values to pass for updating Hut. The fields, of the object to pass, should be the same
- * of Hut Model (You can pass only the fields that you want to update)
- * Before to pass the hut, ensure that the Hut is defined in Location Document
+ * @param {Location || Hut || Parking_Lot} locationUpdate This function takes a location and then it calls the right update for a given
+ * Location (The locationType should be passed to function in the updated object)
  * @returns 
  */
-async function updateHutInformation(id, hutUpdate) {
+async function updateLocation(id, locationUpdate) {
+
+	if (locationUpdate.locationType == LocationType.HUT) {
+		return await hutUpdate(id, locationUpdate)
+	}
+
 	
-	// const checkHut = await locationService.checkAndUpdateDescriptionHut(id, hutUpdate);
-	// if(!checkHut) {
-	// 	throw Error({msg: "Hut does not exist in Location"})
-	// }
-	const hutUpdated = await Location.findByIdAndUpdate(id, hutUpdate);
-	return await getLocationById(hutUpdated._id);
 }
 
 module.exports = {
@@ -131,5 +140,5 @@ module.exports = {
 	getLocationById,
 	createLocation,
 	updateLocationDescription,
-	updateHutInformation
+	updateLocation
 };

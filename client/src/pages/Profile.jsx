@@ -9,15 +9,15 @@ import LocalGuideProfile from "./profiles/LocalGuideProfile";
 
 const Profile = () => {
 	const navigate = useNavigate();
-	const { user } = useContext(AuthContext);
+	const { user, loggedIn } = useContext(AuthContext);
 
 	useEffect(() => {
-		if (!user) {
+		if (!loggedIn) {
 			navigate("/");
 		}
-	}, [user, navigate]);
+	}, [loggedIn, navigate]);
 
-	return user && <ProfileSwitch user={user} />;
+	return <ProfileSwitch user={user} />;
 };
 
 const ProfileSwitch = ({ user }) => {

@@ -42,9 +42,8 @@ function LoginForm() {
 				</Form.Group>
 				<Row style={{ textAlign: "center" }}>
 					<Col>
-						<Button style={{ backgroundColor: "green" }} type="submit">
-							{" "}
-							Login{" "}
+						<Button variant="success" type="submit">
+							Login
 						</Button>
 					</Col>
 				</Row>

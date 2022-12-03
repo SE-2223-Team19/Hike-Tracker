@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { React, useState } from "react";
 import { Button, Stack } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
@@ -13,6 +14,10 @@ import PaginatedList from "../../components/pagination/PaginatedList.jsx";
 const LocalGuideProfile = ({ user }) => {
 	const navigate = useNavigate();
 	const [currentHike, setCurrentHike] = useState(null);
+
+	const filter = useMemo(() => ({
+		createdBy: user._id
+	}), [user]);
 
 	return (
 		<>
@@ -31,17 +36,13 @@ const LocalGuideProfile = ({ user }) => {
 			</Stack>
 			<PaginatedList
 				dataElement={(hike) => (
-					<HikeCard key={hike._id} hike={hike} showDetails={setCurrentHike} from="profile" />
+					<HikeCard key={hike._id} hike={hike} showDetails={setCurrentHike} />
 				)}
 				errorElement={(error) => <NoData message={error} />}
 				noDataElement={() => <NoData message={"You have not created any hikes yet."} />}
 				loadingElement={() => <Loading />}
-				fetchCall={(paginationFilters) =>
-					getHikes({
-						createdBy: user._id,
-						...paginationFilters,
-					})
-				}
+				fetchCall={getHikes}
+				filters={filter}
 			/>
 			<ModalMap handleClose={() => setCurrentHike(null)} hike={currentHike}></ModalMap>
 		</>

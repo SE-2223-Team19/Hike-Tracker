@@ -1,4 +1,7 @@
+const { LocationType } = require("../models/enums");
+const Hut = require("../models/hut-model");
 const Location = require("../models/location-model");
+const ParkingLot = require("../models/parking-lot-model");
 
 /**
  * @typedef {Object} Location
@@ -14,10 +17,54 @@ const Location = require("../models/location-model");
  * @param {Number} pageSize The size of the page
  * @returns {Promise<Location>}
  */
-async function getLocations(filterQuery = {}) {
+async function getLocations(filterQuery = {}, page, pageSize) {
+	const paginationActive = page !== undefined && pageSize !== undefined;
 
-	const locations = await Location.find(filterQuery)
-	.lean();
+	let p = [
+		{
+			$match: filterQuery
+		}
+	];
+
+	if (paginationActive) {
+		p = [
+			...p,
+			{
+				$facet: {
+					data: [
+						{
+							$skip: (page - 1) * pageSize
+						},
+						{
+							$limit: pageSize
+						}
+					],
+					metadata: [
+						{
+							$count: "totalElements"
+						},
+						{
+							$addFields: {
+								type: "pagination",
+								currentPage: page,
+								pageSize: pageSize,
+								totalPages: {
+									$ceil: {
+										$divide: [ "$totalElements", pageSize ]
+									}
+								}
+							}
+						}
+					]
+				}
+			}
+		];
+	}
+
+	const locations = await Location.aggregate(p);
+	
+	if (paginationActive)
+		return locations[0];
 	return locations;
 }
 
@@ -37,7 +84,14 @@ async function getLocationById(id) {
  * @returns {Promise<Location>}
  */
 async function createLocation(location) {
-	const newLocation = new Location(location);
+	let newLocation = null;
+	if (location.locationType === LocationType.HUT) {
+		newLocation = new Hut(location);
+	} else if (location.locationType === LocationType.PARKING_LOT) {
+		newLocation = new ParkingLot(location);
+	} else {
+		newLocation = new Location(location);
+	}
 	const savedLocation = await newLocation.save();
 	return savedLocation;
 }

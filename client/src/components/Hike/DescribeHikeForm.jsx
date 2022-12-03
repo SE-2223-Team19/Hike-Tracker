@@ -1,13 +1,5 @@
-import {
-	Form,
-	Button,
-	Row,
-	Col,
-	Stack,
-	ListGroup,
-	ListGroupItem,
-	CloseButton,
-} from "react-bootstrap";
+import { React, useContext, useEffect } from "react";
+import { Form, Button, Row, Col, Container, Stack } from "react-bootstrap";
 import { Difficulty } from "../../helper/enums";
 import { capitalizeAndReplaceUnderscores } from "../../helper/utils";
 import { Formik } from "formik";
@@ -16,18 +8,27 @@ import GpxParser from "gpxparser";
 import PointSelector from "../PointSelector";
 import { createHike } from "../../api/hikes";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-hot-toast";
+import SelectReferencePointsMap from "../SelectReferencePointsMap";
+import { AuthContext } from "../../context/AuthContext";
+import { UserType } from "../../helper/enums";
 
 function DescribeHikeForm({ hike }) {
 	const navigate = useNavigate();
 
-	const onGpxFileUpload = (file, setFieldValue, extract) => {
+	const { user, setMessage } = useContext(AuthContext);
+
+	useEffect(() => {
+		if (user === null || user.userType !== UserType.LOCAL_GUIDE) {
+			navigate("/");
+		}
+	}, [user, navigate]);
+
+	const onGpxFileUpload = (file, setFieldValue) => {
 		setFieldValue("gpxFile", file);
 		const fileReader = new FileReader();
 		fileReader.onloadend = (e) => {
 			const gpx = new GpxParser();
 			gpx.parse(fileReader.result);
-			console.log(gpx);
 			setFieldValue("length", gpx.tracks[0].distance.total);
 			setFieldValue("title", gpx.tracks[0].name);
 			setFieldValue("ascent", gpx.tracks[0].elevation.max - gpx.tracks[0].elevation.min);
@@ -36,22 +37,31 @@ function DescribeHikeForm({ hike }) {
 				"trackPoints",
 				gpx.tracks[0].points.map((p) => [p.lat, p.lon])
 			);
-			if (extract) {
-				setFieldValue("startPoint", {
-					point: {
-						lat: gpx.tracks[0].points[0].lat,
-						lng: gpx.tracks[0].points[0].lon,
-					},
-					locationType: "default",
-				});
-				setFieldValue("endPoint", {
-					point: {
-						lat: gpx.tracks[0].points[gpx.tracks[0].points.length - 1].lat,
-						lng: gpx.tracks[0].points[gpx.tracks[0].points.length - 1].lon,
-					},
-					locationType: "default",
-				});
-			}
+			setFieldValue(
+				"expectedTime",
+				Math.floor(
+					(gpx.tracks[0].points[gpx.tracks[0].points.length - 1].time -
+						gpx.tracks[0].points[0].time) /
+						60000
+				)
+			);
+			setFieldValue(
+				"ascent",
+				Math.round(
+					gpx.tracks[0].points
+						.map((p) => p.ele)
+						.reduce(
+							(p, c) => ({
+								ascent: p.ascent + (c - p.lastElevation),
+								lastElevation: c,
+							}),
+							{
+								ascent: 0,
+								lastElevation: gpx.tracks[0].points[0].ele,
+							}
+						).ascent * 100
+				) / 100
+			);
 		};
 		fileReader.readAsText(file);
 	};
@@ -59,12 +69,21 @@ function DescribeHikeForm({ hike }) {
 	// ** On submit
 	const handleSubmit = async (values) => {
 		// Format points for backend
-		delete values.extractPoints;
 		delete values.gpxFile;
+		if (values.startPoint === "") {
+			values.startPoint = null;
+		}
+		if (values.endPoint === "") {
+			values.endPoint = null;
+		}
 		const createdHike = await createHike({ ...values });
-		if (createdHike) toast.success("Hike created successfully");
-		else toast.error("Error creating hike " + createdHike);
-		navigate("/");
+		if (createdHike) {
+			return navigate("/profile");
+		}
+		setMessage({
+			type: "danger",
+			msg: "Error creating hike",
+		});
 	};
 
 	// ** Form validation
@@ -87,11 +106,11 @@ function DescribeHikeForm({ hike }) {
 		difficulty: Yup.string().required("Required"),
 		description: Yup.string("Required").typeError("Required").required("Required"),
 		gpxFile: Yup.mixed().required("Required"),
-		extractPoints: Yup.boolean(),
-		startPoint: locationSchema.typeError("Type Error").required("Required"),
-		endPoint: locationSchema.typeError("Type Error").required("Required"),
+		startPoint: locationSchema.nullable(true).typeError("Type Error"),
+		endPoint: locationSchema.nullable(true).typeError("Type Error"),
+		linkedHuts: Yup.array().of(locationSchema).required("Required"),
 		referencePoints: Yup.array()
-			.of(locationSchema.typeError("Type error").required("Required"))
+			.of(Yup.array().of(Yup.number()).required("Required"))
 			.required("Required"),
 		trackPoints: Yup.array()
 			.of(Yup.array().of(Yup.number()).required("Required"))
@@ -124,8 +143,8 @@ function DescribeHikeForm({ hike }) {
 				endPoint: (hike && formatPoint(hike.endPoint)) || "null",
 				referencePoints: (hike && hike.referencePoints.map((rp) => formatPoint(rp))) || [],
 				gpxFile: null,
-				extractPoints: false,
 				trackPoints: [],
+				linkedHuts: [],
 			}}
 			onSubmit={async (values, { setSubmitting }) => {
 				setSubmitting(true);
@@ -268,9 +287,7 @@ function DescribeHikeForm({ hike }) {
 									type="file"
 									name="gpxFile"
 									data-test-id="gpx-file-uploader"
-									onChange={(e) =>
-										onGpxFileUpload(e.target.files[0], setFieldValue, values.extractPoints)
-									}
+									onChange={(e) => onGpxFileUpload(e.target.files[0], setFieldValue)}
 									onBlur={handleBlur}
 									isInvalid={!!errors.gpxFile}
 									accept={".gpx,application/gpx+xml"}
@@ -291,7 +308,7 @@ function DescribeHikeForm({ hike }) {
 								</Form.Label>
 								<PointSelector
 									name="startPoint"
-									value={values.startPoint || ""}
+									value={values.startPoint && values.startPoint._id}
 									isInvalid={!!errors.startPoint}
 									handleChange={(location) => {
 										setFieldValue("startPoint", {
@@ -318,7 +335,7 @@ function DescribeHikeForm({ hike }) {
 								</Form.Label>
 								<PointSelector
 									name="endPoint"
-									value={values.endPoint}
+									value={values.endPoint && values.endPoint._id}
 									isInvalid={!!errors.endPoint}
 									handleChange={(location) => {
 										setFieldValue("endPoint", {
@@ -331,7 +348,7 @@ function DescribeHikeForm({ hike }) {
 										});
 									}}
 								/>
-								<Form.Control.Feedback type="invalid">{errors.startPoint}</Form.Control.Feedback>
+								<Form.Control.Feedback type="invalid">{errors.endPoint}</Form.Control.Feedback>
 							</Form.Group>
 						</Col>
 					</Row>
@@ -340,46 +357,22 @@ function DescribeHikeForm({ hike }) {
 						<Col xs={12}>
 							<Form.Group controlId="referencePoints" className="mt-4">
 								<Form.Label>Reference Points</Form.Label>
-								<ListGroup as="ol" className="mb-3">
-									{values.referencePoints.map((point) => (
-										<ListGroupItem key={point._id} className="d-flex justify-content-between">
-											<span>
-												{point.description} (Lat: {point.point.lat} Long: {point.point.lng})
-											</span>
-											<CloseButton
-												onClick={() => {
-													setFieldValue(
-														"referencePoints",
-														values.referencePoints.filter((p) => p._id !== point._id)
-													);
+								<Container>
+									<Row>
+										<Col style={{ height: "50vh" }}>
+											<SelectReferencePointsMap
+												referencePoints={values.referencePoints}
+												setReferencePoints={(r) => {
+													setFieldValue("referencePoints", r);
 												}}
+												trackPoints={values.trackPoints}
 											/>
-										</ListGroupItem>
-									))}
-								</ListGroup>
-								<PointSelector
-									name="referencePoints"
-									value={values.referencePoints.map((p) => p._id)}
-									multiple
-									isInvalid={!!errors.referencePoints}
-									handleChange={(location) => {
-										if (!values.referencePoints.some((p) => p._id === location._id)) {
-											setFieldValue("referencePoints", [
-												...values.referencePoints,
-												{
-													point: {
-														lat: location.point[1],
-														lng: location.point[0],
-													},
-													locationType: location.locationType,
-													_id: location._id,
-													description: location.description,
-												},
-											]);
-										}
-									}}
-								/>
-								<Form.Control.Feedback type="invalid">{errors.startPoint}</Form.Control.Feedback>
+										</Col>
+									</Row>
+								</Container>
+								<Form.Control.Feedback type="invalid">
+									{errors.referencePoints}
+								</Form.Control.Feedback>
 							</Form.Group>
 						</Col>
 					</Row>

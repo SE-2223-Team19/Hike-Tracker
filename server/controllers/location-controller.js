@@ -13,7 +13,6 @@ const { LocationType } = require("../models/enums");
 async function getLocations(req, res) {
 	try {
 		const { query } = req;
-		console.log(query);
 		const schema = joi.object().keys({
 			locationType: joi.string().valid(...Object.values(LocationType)),
 			description: joi.string(),
@@ -28,6 +27,8 @@ async function getLocations(req, res) {
 				then: joi.required(),
 				otherwise: joi.forbidden(),
 			}),
+			page: joi.number().greater(0),
+			pageSize: joi.number().greater(0),
 		});
 
 		const { error, value } = schema.validate(query);
@@ -49,7 +50,7 @@ async function getLocations(req, res) {
 				},
 			};
 
-		const locations = await locationDAL.getLocations(filter);
+		const locations = await locationDAL.getLocations(filter, value.page, value.pageSize);
 		return res.status(StatusCodes.OK).json(locations);
 	} catch (err) {
 		return res.status(StatusCodes.BAD_REQUEST).json({ err: err.message });
@@ -76,6 +77,30 @@ async function createLocation(req, res) {
 				.required(),
 			description: joi.string().required(),
 			point: joi.array().items(joi.number()).length(2).required(),
+			name: joi.alternatives().conditional("locationType", { 
+				is: LocationType.HUT, 
+				then: joi.string().required() 
+			}),
+			altitude: joi.alternatives().conditional("locationType", { 
+				is: LocationType.HUT, 
+				then: joi.number().required() 
+			}),
+			phone: joi.alternatives().conditional("locationType", { 
+				is: LocationType.HUT, 
+				then: joi.string().required() 
+			}),
+			email: joi.alternatives().conditional("locationType", { 
+				is: LocationType.HUT, 
+				then: joi.string().email().required() 
+			}),
+			numberOfBeds: joi.alternatives().conditional("locationType", { 
+				is: LocationType.HUT, 
+				then: joi.number().required() 
+			}),
+			webSite: joi.alternatives().conditional("locationType", { 
+				is: LocationType.HUT, 
+				then: joi.string().uri().allow("") 
+			})
 		});
 
 		// Validate request body against schema

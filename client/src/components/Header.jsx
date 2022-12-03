@@ -4,13 +4,14 @@ import { Nav, Navbar, Stack, Dropdown } from "react-bootstrap";
 import { NavLink, useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import { capitalizeAndReplaceUnderscores } from "../helper/utils";
+import "./Header.css";
 
 const Header = () => {
 	const navigate = useNavigate();
 	const { setMessage, loggedIn, user, handleLogout } = useContext(AuthContext);
 
 	return (
-		<Navbar>
+		<Navbar expand="md">
 			<Navbar.Brand href="/">
 				<img
 					src={"http://localhost:3000/snowed-mountains.png"}

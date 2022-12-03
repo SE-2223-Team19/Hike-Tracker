@@ -26,8 +26,6 @@ const isHiker = (req, res, next) => {
 };
 
 const isLocalGuide = (req, res, next) => {
-	console.log(req.user);
-	console.log(req.isAuthenticated());
 	if (
 		req.isAuthenticated() &&
 		(req.user.userType === UserType.LOCAL_GUIDE || req.user.userType === UserType.PLATFORM_MANAGER)
@@ -49,7 +47,6 @@ const isEmergencyOperator = (req, res, next) => {
 };
 
 const isHutWorker = (req, res, next) => {
-	console.log(req.user);
 	if (
 		req.isAuthenticated() &&
 		(req.user.userType === UserType.HUT_WORKER || req.user.userType === UserType.PLATFORM_MANAGER)

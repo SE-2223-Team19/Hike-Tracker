@@ -1,4 +1,7 @@
+const { LocationType } = require("../models/enums");
+const Hut = require("../models/hut-model");
 const Location = require("../models/location-model");
+const ParkingLot = require("../models/parking-lot-model");
 
 /**
  * @typedef {Object} Location
@@ -14,10 +17,54 @@ const Location = require("../models/location-model");
  * @param {Number} pageSize The size of the page
  * @returns {Promise<Location>}
  */
-async function getLocations(filterQuery = {}) {
+async function getLocations(filterQuery = {}, page, pageSize) {
+	const paginationActive = page !== undefined && pageSize !== undefined;
 
-	const locations = await Location.find(filterQuery)
-	.lean();
+	let p = [
+		{
+			$match: filterQuery
+		}
+	];
+
+	if (paginationActive) {
+		p = [
+			...p,
+			{
+				$facet: {
+					data: [
+						{
+							$skip: (page - 1) * pageSize
+						},
+						{
+							$limit: pageSize
+						}
+					],
+					metadata: [
+						{
+							$count: "totalElements"
+						},
+						{
+							$addFields: {
+								type: "pagination",
+								currentPage: page,
+								pageSize: pageSize,
+								totalPages: {
+									$ceil: {
+										$divide: ["$totalElements", pageSize]
+									}
+								}
+							}
+						}
+					]
+				}
+			}
+		];
+	}
+
+	const locations = await Location.aggregate(p);
+
+	if (paginationActive)
+		return locations[0];
 	return locations;
 }
 
@@ -37,7 +84,14 @@ async function getLocationById(id) {
  * @returns {Promise<Location>}
  */
 async function createLocation(location) {
-	const newLocation = new Location(location);
+	let newLocation = null;
+	if (location.locationType === LocationType.HUT) {
+		newLocation = new Hut(location);
+	} else if (location.locationType === LocationType.PARKING_LOT) {
+		newLocation = new ParkingLot(location);
+	} else {
+		newLocation = new Location(location);
+	}
 	const savedLocation = await newLocation.save();
 	return savedLocation;
 }
@@ -48,14 +102,33 @@ async function createLocation(location) {
  * @param {String} description 
  * @returns {Promise<Location>}
  */
-async function updateLocationDescription(id, description){
-	const result = await Location.updateOne({id: id},{description: description});
-	return result; 
+async function updateLocationDescription(id, description) {
+	const result = await Location.updateOne({ id: id }, { description: description }, { new: true });
+	return result;
+}
+
+/**
+ * 
+ * @param {String} id 
+ * @param {Location || Hut || Parking_Lot} locationUpdate This function takes a location and then it calls the right update for a given
+ * Location (The locationType should be passed to function in the updated object)
+ * @returns 
+ */
+async function updateLocation(id, locationUpdate) {
+
+	if (locationUpdate.locationType === LocationType.HUT) {
+		await Hut.findOneAndUpdate({ _id: id, locationType: LocationType.HUT }, locationUpdate, { new: true }).lean();
+	}
+	if (locationUpdate.locationType === LocationType.PARKING_LOT) {
+		await ParkingLot.findOneAndUpdate({ _id: id, locationType: LocationType.PARKING_LOT }, locationUpdate, { new: true }).lean();
+	}
+	return await getLocationById(id);
 }
 
 module.exports = {
 	getLocations,
 	getLocationById,
 	createLocation,
-	updateLocationDescription
+	updateLocationDescription,
+	updateLocation
 };

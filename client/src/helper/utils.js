@@ -42,3 +42,21 @@ export const removeMongoKeys = (obj) => {
 	delete newObj.__v;
 	return newObj;
 };
+
+
+/**
+ *
+ * @param {String} city 
+ * @returns A json Object that describe the place and its coordinates in terms of latitude and longitude
+ */
+export async function getLatLongFromCity(city) {
+	console.log(city)
+	const url = "https://nominatim.openstreetmap.org/search?city=" + city + "&zoom=10&format=jsonv2&limit=1"
+	try {
+		const response = await fetch(url)
+		return await response.json()
+	} catch(err) {
+		return err
+	}
+
+}

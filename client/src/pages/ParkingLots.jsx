@@ -9,32 +9,23 @@ import PositionFilterModal from "../components/PositionFilterModal";
 import * as L from "leaflet";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
+import PaginatedList from "../components/pagination/PaginatedList";
 
 function ParkingLots() {
 	const navigate = useNavigate();
 	const { user, setMessage } = useContext(AuthContext);
 
-	const [parkingLots, setParkingLots] = useState([]);
-	const [loading, setLoading] = useState(true);
 	const [openFilters, setOpenFilters] = useState(false);
 	const [filters, setFilters] = useState({});
 	const [showPositionFilter, setShowPositionFilter] = useState(false);
 
 	// ** Fetch hikes from API
 	useEffect(() => {
-		setLoading(true);
-		const fetchParkingLots = async () => {
-			const parkingLots = await getParkingLots({ ...filters });
-			setParkingLots(parkingLots);
-			setLoading(false);
-		};
-		if (user) {
-			fetchParkingLots();
-		} else {
+		if (!user) {
 			navigate("/");
 			setMessage({ type: "danger", msg: "You must be logged in to access this page" });
 		}
-	}, [filters, user, navigate, setMessage]);
+	}, [user, navigate, setMessage]);
 
 	return (
 		<div className="w-100">
@@ -65,16 +56,16 @@ function ParkingLots() {
 					openModal={() => setShowPositionFilter(true)}
 				/>
 			)}
-			{loading && <Loading />}
-			{(!parkingLots || parkingLots.length <= 0) && !loading && (
-				<NoData message={"No parking lots found."} />
-			)}
 			<Container>
-				<Row className="g-4 row-cols-1 row-cols-sm-1 row-cols-md-3">
-					{parkingLots.length > 0 &&
-						!loading &&
-						parkingLots.map(parkingLot => <ParkingLotCard key={parkingLot._id} hut={parkingLot} />)}
-				</Row>
+				<PaginatedList
+					dataElement={(parkingLot) => <ParkingLotCard key={parkingLot._id} hut={parkingLot} />}
+					dataContainer={({children}) => <Row className="g-4 row-cols-1 row-cols-sm-1 row-cols-md-3">{children}</Row>}
+					errorElement={(error) => <NoData message={error} />}
+					noDataElement={() => <NoData message={"No parking lots found."} />}
+					loadingElement={() => <Loading />}
+					fetchCall={getParkingLots}
+					filters={filters}
+				/>
 			</Container>
 			<PositionFilterModal
 				show={showPositionFilter}

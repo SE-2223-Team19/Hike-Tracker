@@ -26,6 +26,7 @@ const HikeFilters = ({ filters, setFilters, openModal }) => {
 						<Stack direction="horizontal" gap={2}>
 							<Form.Control
 								type="number"
+								min="0"
 								placeholder="Min"
 								onChange={(event) => {
 									setFilters({ ...filters, minLength: Number(event.target.value) });
@@ -34,6 +35,7 @@ const HikeFilters = ({ filters, setFilters, openModal }) => {
 							<Form.Control
 								type="number"
 								placeholder="Max"
+								min="0"
 								onChange={(event) => {
 									setFilters({ ...filters, maxLength: Number(event.target.value) });
 								}}
@@ -47,6 +49,7 @@ const HikeFilters = ({ filters, setFilters, openModal }) => {
 						<Stack direction="horizontal" gap={2}>
 							<Form.Control
 								type="number"
+								min="0"
 								placeholder="Min"
 								onChange={(event) => {
 									setFilters({ ...filters, minAscent: Number(event.target.value) });
@@ -54,6 +57,7 @@ const HikeFilters = ({ filters, setFilters, openModal }) => {
 							/>
 							<Form.Control
 								type="number"
+								min="0"
 								placeholder="Max"
 								onChange={(event) => {
 									setFilters({ ...filters, maxAscent: Number(event.target.value) });
@@ -68,6 +72,7 @@ const HikeFilters = ({ filters, setFilters, openModal }) => {
 						<Stack direction="horizontal" gap={2}>
 							<Form.Control
 								type="number"
+								min="0"
 								placeholder="Min"
 								onChange={(event) => {
 									setFilters({ ...filters, minExpectedTime: Number(event.target.value) });
@@ -75,6 +80,7 @@ const HikeFilters = ({ filters, setFilters, openModal }) => {
 							/>
 							<Form.Control
 								type="number"
+								min="0"
 								placeholder="Max"
 								onChange={(event) => {
 									setFilters({ ...filters, maxExpectedTime: Number(event.target.value) });

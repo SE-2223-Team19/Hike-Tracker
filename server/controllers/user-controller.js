@@ -6,6 +6,49 @@ const { UserType } = require("../models/enums");
 const { randString } = require("../mail_verification/utility");
 const { sendEmail } = require("../mail_verification/verification");
 
+async function getUsers(req, res) {
+	try {
+		const { query } = req;
+
+		const schema = joi.object().keys({
+			email: joi
+				.string()
+				.email({ tlds: { allow: false } }),
+			fullName: joi.string(),
+			userType: joi
+				.string()
+				.valid(...Object.values(UserType)),
+			page: joi.number().greater(0),
+			pageSize: joi.number().greater(0),
+		});
+
+		const { error, value } = schema.validate(query);
+
+		if (error) throw error;
+
+		const {page, pageSize, ...filter} = value;
+
+		const users = await userDAL.getUsers(filter, page, pageSize);
+		if (Array.isArray(users)) {
+			return res.status(StatusCodes.OK).json(users.map(u => {
+				const { salt, hash, uniqueString, ...user} = u;
+				return user;
+			}));
+		}
+		return res.status(StatusCodes.OK).json({
+			...users,
+			data: users.data.map(u => {
+				const { salt, hash, uniqueString, ...user} = u;
+				return user;
+			})
+		});
+	} catch (err) {
+		return res
+		.status(StatusCodes.BAD_REQUEST)
+		.json({ err: err.message });
+	}
+}
+
 /**
  * POST /user
  * Creates a new user and sends the verification email
@@ -83,11 +126,16 @@ async function createUser(req, res) {
  */
 async function verifyUser(req, res) {
 	const uniqueString = req.params.uniqueString;
-	console.log(req.params);
 	const users = await userDAL.getUsers({ uniqueString: uniqueString });
 	const user = users[0];
 	if (user) {
-		user.isValid = true;
+		user.isEmailValidated = true;
+
+		// For all users except hikers the validation is handled by the platform manager
+		if (user.userType === UserType.HIKER) {
+			user.isValid = true;
+		}
+
 		await userDAL.updateUser(user);
 		return res
 			.status(StatusCodes.OK)
@@ -99,7 +147,54 @@ async function verifyUser(req, res) {
 	}
 }
 
+async function updateUser(req, res) {
+	try {
+
+		const { id } = req.params;
+		const { body } = req;
+
+		const schema = joi.object().keys({
+			userType: joi
+				.string()
+				.valid(...Object.values(UserType)),
+			password: joi.string(),
+			confirmPassword: joi.string().allow(joi.ref("password")).when(joi.ref("password"), {
+				is: joi.exist(),
+				then: joi.required(),
+				otherwise: joi.forbidden()
+			}),
+			isValid: joi.boolean()
+		});
+
+		const { error, value } = schema.validate(body);
+
+		if (error) throw error;
+
+		let user = {};
+
+		if (value.userType) user.userType = value.userType;
+		if (value.password && value.confirmPassword) {
+			const salt = crypto.randomBytes(16).toString("hex");
+			const hash = crypto.scryptSync(value.password, salt, 32).toString("hex");
+
+			user.hash = hash;
+			user.salt = salt;
+		}
+		if (value.isValid) user.isValid = value.isValid;
+
+		const updatedUser = await userDAL.updateUser(id, user);
+
+		return res.status(StatusCodes.OK).end();
+	} catch (err) {
+		return res
+			.status(StatusCodes.BAD_REQUEST)
+			.json({ err: err.message });
+	}
+}
+
 module.exports = {
+	getUsers,
 	createUser,
 	verifyUser,
+	updateUser
 };

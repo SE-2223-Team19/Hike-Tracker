@@ -11,6 +11,8 @@ import Paginator from "./Paginator"
  *  errorElement: (any) => JSX.Element;
  *  dataContainer: ({children: any}) => JSX.Element;
  *  filters: Object
+ *  dirty: Boolean,
+ *  setDirty: (arg0: Boolean) => void
  * }} param0 
  * @returns 
  */
@@ -21,7 +23,9 @@ function PaginatedList({
     noDataElement: NoDataElement, 
     errorElement: ErrorElement,
     dataContainer: DataContainer = ({children}) => <>{children}</>,
-    filters
+    filters,
+    dirty = null,
+    setDirty = null
 }) {
     
     const [data, setData] = useState(null);
@@ -36,6 +40,7 @@ function PaginatedList({
             page: pagination.currentPage,
             pageSize: pagination.pageSize,
         }).then(data => {
+            if (setDirty) setDirty(false);
             if (data.error) {
 				setData(null);
 				setLoading(false);
@@ -55,10 +60,11 @@ function PaginatedList({
             setError(null);
         })
         .catch(err => {
+            if (setDirty) setDirty(false);
             setLoading(false);
             setError(err);
         });
-	}, [fetchCall, filters, pagination.currentPage, pagination.pageSize]);
+	}, [fetchCall, filters, pagination.currentPage, pagination.pageSize, dirty, setDirty]);
 
     return (
         <>

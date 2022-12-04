@@ -12,6 +12,7 @@ const userSchema = new Schema({
 	hash: String,
 	// verification fields:
 	uniqueString: { type: String, unique: true },
+	isEmailValidated: Boolean,
 	isValid: Boolean,
 });
 

@@ -32,7 +32,7 @@ const AuthProvider = ({ children }) => {
 		.then(() => setLoadingInitial(false));
 	}, []);
 
-	const handleLogin = async (credentials) => {
+	const handleLogin = useMemo(() => async (credentials) => {
 		try {
 			const user = await logIn(credentials);
 			setUser(user);
@@ -42,15 +42,15 @@ const AuthProvider = ({ children }) => {
 		} catch (err) {
 			setMessage({ msg: `Incorrect username or password`, type: "danger" });
 		}
-	};
+	}, [navigate]);
 
-	const handleLogout = async () => {
+	const handleLogout = useMemo(() => async () => {
 		await logOut();
 		navigate("/");
 		setLoggedIn(false);
 		setUser(null);
 		setMessage({ msg: `Logout successful!`, type: "secondary" });
-	};
+	}, [navigate]);
 
 	const memoValue = useMemo(() => ({
 		handleLogin, 
@@ -59,7 +59,7 @@ const AuthProvider = ({ children }) => {
 		message, 
 		setMessage, 
 		user 
-	}), [loggedIn, message, user]);
+	}), [loggedIn, message, user, handleLogin, handleLogout]);
 
 	return (
 		<AuthContext.Provider

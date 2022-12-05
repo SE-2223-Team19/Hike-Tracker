@@ -1,6 +1,6 @@
 import { React, useContext, useEffect } from "react";
 import { Form, Button, Row, Col, Container } from "react-bootstrap";
-import { Difficulty } from "../../helper/enums";
+import { Difficulty, UserType } from "../../helper/enums";
 import { capitalizeAndReplaceUnderscores } from "../../helper/utils";
 import { Formik } from "formik";
 import * as Yup from "yup";
@@ -10,7 +10,6 @@ import { createHike } from "../../api/hikes";
 import { useNavigate } from "react-router-dom";
 import SelectReferencePointsMap from "../SelectReferencePointsMap";
 import { AuthContext } from "../../context/AuthContext";
-import { UserType } from "../../helper/enums";
 
 function DescribeHikeForm({ hike }) {
 	const navigate = useNavigate();

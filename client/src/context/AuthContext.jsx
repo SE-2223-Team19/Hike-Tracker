@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo, createContext } from "react";
+import React, { useEffect, useState, useMemo, createContext, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { getUserInfo, logIn, logOut } from "../api/sessions";
 
@@ -30,25 +30,28 @@ const AuthProvider = ({ children }) => {
 		checkAuth().then(() => setLoadingInitial(false));
 	}, []);
 
-	const handleLogin = async (credentials) => {
-		try {
-			const user = await logIn(credentials);
-			setUser(user);
-			setLoggedIn(true);
-			navigate("/");
-			setMessage({ msg: `Welcome, ${user.fullName}!`, type: "success" });
-		} catch (err) {
-			setMessage({ msg: `Incorrect username or password`, type: "danger" });
-		}
-	};
+	const handleLogin = useCallback(
+		async (credentials) => {
+			try {
+				const user = await logIn(credentials);
+				setUser(user);
+				setLoggedIn(true);
+				navigate("/");
+				setMessage({ msg: `Welcome, ${user.fullName}!`, type: "success" });
+			} catch (err) {
+				setMessage({ msg: `Incorrect username or password`, type: "danger" });
+			}
+		},
+		[navigate]
+	);
 
-	const handleLogout = async () => {
+	const handleLogout = useCallback(async () => {
 		await logOut();
 		navigate("/");
 		setLoggedIn(false);
 		setUser(null);
 		setMessage({ msg: `Logout successful!`, type: "secondary" });
-	};
+	}, [navigate]);
 
 	const memoValue = useMemo(
 		() => ({
@@ -59,7 +62,7 @@ const AuthProvider = ({ children }) => {
 			setMessage,
 			user,
 		}),
-		[loggedIn, message, user]
+		[handleLogin, handleLogout, loggedIn, message, user]
 	);
 
 	return (

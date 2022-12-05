@@ -50,7 +50,7 @@ async function getLocations(req, res) {
 				},
 			};
 
-		const locations = await locationDAL.getLocations(filter, value.page, value.pageSize);
+		const locations = await locationDAL.getLocations(value.page, value.pageSize, filter);
 		return res.status(StatusCodes.OK).json(locations);
 	} catch (err) {
 		return res.status(StatusCodes.BAD_REQUEST).json({ err: err.message });
@@ -58,9 +58,9 @@ async function getLocations(req, res) {
 }
 
 /**
- * 
- * @param {Request} req 
- * @param {Response} res 
+ *
+ * @param {Request} req
+ * @param {Response} res
  * @returns {Promise<Response>}
  */
 async function getLocationById(req, res) {
@@ -95,34 +95,34 @@ async function createLocation(req, res) {
 				.required(),
 			description: joi.string().required(),
 			point: joi.array().items(joi.number()).length(2).required(),
-			name: joi.alternatives().conditional("locationType", { 
-				is: [LocationType.HUT, LocationType.PARKING_LOT], 
-				then: joi.string().required() 
+			name: joi.alternatives().conditional("locationType", {
+				is: [LocationType.HUT, LocationType.PARKING_LOT],
+				then: joi.string().required(),
 			}),
-			capacity: joi.alternatives().conditional("locationType", { 
-				is: LocationType.PARKING_LOT, 
-				then: joi.number().required() 
+			capacity: joi.alternatives().conditional("locationType", {
+				is: LocationType.PARKING_LOT,
+				then: joi.number().required(),
 			}),
-			altitude: joi.alternatives().conditional("locationType", { 
-				is: LocationType.HUT, 
-				then: joi.number().required() 
+			altitude: joi.alternatives().conditional("locationType", {
+				is: LocationType.HUT,
+				then: joi.number().required(),
 			}),
-			phone: joi.alternatives().conditional("locationType", { 
-				is: LocationType.HUT, 
-				then: joi.string().required() 
+			phone: joi.alternatives().conditional("locationType", {
+				is: LocationType.HUT,
+				then: joi.string().required(),
 			}),
-			email: joi.alternatives().conditional("locationType", { 
-				is: LocationType.HUT, 
-				then: joi.string().email().required() 
+			email: joi.alternatives().conditional("locationType", {
+				is: LocationType.HUT,
+				then: joi.string().email().required(),
 			}),
-			numberOfBeds: joi.alternatives().conditional("locationType", { 
-				is: LocationType.HUT, 
-				then: joi.number().required() 
+			numberOfBeds: joi.alternatives().conditional("locationType", {
+				is: LocationType.HUT,
+				then: joi.number().required(),
 			}),
-			webSite: joi.alternatives().conditional("locationType", { 
-				is: LocationType.HUT, 
-				then: joi.string().uri().allow("") 
-			})
+			webSite: joi.alternatives().conditional("locationType", {
+				is: LocationType.HUT,
+				then: joi.string().uri().allow(""),
+			}),
 		});
 
 		// Validate request body against schema
@@ -159,58 +159,56 @@ async function updateLocationDescription(req, res) {
 }
 
 async function updateLocation(req, res) {
-	
 	try {
-		const { params, body } = req
-		const id = params.id
+		const { params, body } = req;
+		const id = params.id;
 
 		const schema = joi.object().keys({
 			locationType: joi
 				.string()
 				.valid(...Object.values(LocationType))
 				.required(),
-			name: joi.alternatives().conditional('name',{
+			name: joi.alternatives().conditional("name", {
 				is: [LocationType.HUT, LocationType.PARKING_LOT],
-				then: joi.string()
+				then: joi.string(),
 			}),
-			capacity: joi.alternatives().conditional("locationType", { 
-				is: LocationType.PARKING_LOT, 
-				then: joi.number()
+			capacity: joi.alternatives().conditional("locationType", {
+				is: LocationType.PARKING_LOT,
+				then: joi.number(),
 			}),
-			altitude: joi.alternatives().conditional('locationType',{
+			altitude: joi.alternatives().conditional("locationType", {
 				is: LocationType.HUT,
-				then: joi.number()
+				then: joi.number(),
 			}),
-			numberOfBeds: joi.alternatives().conditional('locationType',{
+			numberOfBeds: joi.alternatives().conditional("locationType", {
 				is: LocationType.HUT,
-				then: joi.number()
+				then: joi.number(),
 			}),
-			phone: joi.alternatives().conditional('locationType',{
+			phone: joi.alternatives().conditional("locationType", {
 				is: LocationType.HUT,
-				then: joi.number()
+				then: joi.number(),
 			}),
-			email: joi.alternatives().conditional('locationType',{
+			email: joi.alternatives().conditional("locationType", {
 				is: LocationType.HUT,
-				then: joi.string()
+				then: joi.string(),
 			}),
-			webSite: joi.alternatives().conditional('locationType',{
+			webSite: joi.alternatives().conditional("locationType", {
 				is: LocationType.HUT,
-				then: joi.string().uri().allow("") 
+				then: joi.string().uri().allow(""),
 			}),
-			description: joi.string()
+			description: joi.string(),
 		});
 
-		const { value, error } = schema.validate(body)
+		const { value, error } = schema.validate(body);
 
-		if(error) throw error
+		if (error) throw error;
 
-		const locationUpdate = value
-		const result = await locationDAL.updateLocation(id, locationUpdate)
-		return res.status(StatusCodes.OK).json(result)
-
-	} catch(err) {
-		console.log(err)
-		return res.status(StatusCodes.BAD_REQUEST).json({err: err.message})
+		const locationUpdate = value;
+		const result = await locationDAL.updateLocation(id, locationUpdate);
+		return res.status(StatusCodes.OK).json(result);
+	} catch (err) {
+		console.log(err);
+		return res.status(StatusCodes.BAD_REQUEST).json({ err: err.message });
 	}
 }
 
@@ -219,5 +217,5 @@ module.exports = {
 	getLocationById,
 	createLocation,
 	updateLocationDescription,
-	updateLocation
+	updateLocation,
 };

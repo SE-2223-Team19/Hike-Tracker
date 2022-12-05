@@ -28,6 +28,7 @@ const HikeFilters = ({ filters, setFilters, openModal }) => {
 								type="number"
 								min="0"
 								placeholder="Min"
+								value={filters.minLength}
 								onChange={(event) => {
 									setFilters({ ...filters, minLength: Number(event.target.value) });
 								}}
@@ -36,6 +37,7 @@ const HikeFilters = ({ filters, setFilters, openModal }) => {
 								type="number"
 								placeholder="Max"
 								min="0"
+								value={filters.maxLength}
 								onChange={(event) => {
 									setFilters({ ...filters, maxLength: Number(event.target.value) });
 								}}
@@ -49,16 +51,16 @@ const HikeFilters = ({ filters, setFilters, openModal }) => {
 						<Stack direction="horizontal" gap={2}>
 							<Form.Control
 								type="number"
-								min="0"
 								placeholder="Min"
+								value={filters.minAscent}
 								onChange={(event) => {
 									setFilters({ ...filters, minAscent: Number(event.target.value) });
 								}}
 							/>
 							<Form.Control
 								type="number"
-								min="0"
 								placeholder="Max"
+								value={filters.maxAscent}
 								onChange={(event) => {
 									setFilters({ ...filters, maxAscent: Number(event.target.value) });
 								}}
@@ -74,6 +76,7 @@ const HikeFilters = ({ filters, setFilters, openModal }) => {
 								type="number"
 								min="0"
 								placeholder="Min"
+								value={filters.minExpectedTime}
 								onChange={(event) => {
 									setFilters({ ...filters, minExpectedTime: Number(event.target.value) });
 								}}
@@ -82,6 +85,7 @@ const HikeFilters = ({ filters, setFilters, openModal }) => {
 								type="number"
 								min="0"
 								placeholder="Max"
+								value={filters.maxExpectedTime}
 								onChange={(event) => {
 									setFilters({ ...filters, maxExpectedTime: Number(event.target.value) });
 								}}
@@ -95,6 +99,7 @@ const HikeFilters = ({ filters, setFilters, openModal }) => {
 					<Form.Group>
 						<Form.Label>Difficulty</Form.Label>
 						<Form.Select
+							value={filters.difficulty}
 							onChange={(event) => {
 								setFilters({ ...filters, difficulty: event.target.value });
 								if (event.target.value === "all") {

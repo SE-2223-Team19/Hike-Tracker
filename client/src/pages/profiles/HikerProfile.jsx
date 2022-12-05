@@ -8,6 +8,8 @@ import HikeFilters from "../../components/Hike/HikeFilters";
 import { useNavigate } from "react-router-dom";
 import PositionFilterModal from "../../components/PositionFilterModal";
 import PositionPreferenceModal from "../../components/PositionPreferenceModal";
+import { capitalizeAndReplaceUnderscores } from "../../helper/utils";
+import { getPreferences, deletePreferences, updatePreferences } from "../../api/users";
 
 const HikerProfile = ({ user }) => {
     const navigate = useNavigate();
@@ -21,8 +23,8 @@ const HikerProfile = ({ user }) => {
     useEffect(() => {
         setLoading(true);
         const fetchPreferences = async () => {
-            /*const preferences = await getPreferences({ userId: user._id });
-            setSavedPreferences(preferences);*/
+            const preferences = await getPreferences({ userId: user._id });
+            setSavedPreferences(preferences);
             setLoading(false);
         };
         if (user) {
@@ -32,16 +34,14 @@ const HikerProfile = ({ user }) => {
         }
     }, [user, navigate]);
     const removePreferences = async () => {
-        /*await deletePreferences({ userId: user._id });*/
+        await deletePreferences({ userId: user._id });
         setSavedPreferences({});
         setCurrentPreferences({});
         setOpenPreferences(false);
     };
     const savePreferences = async () => {
-        /*await updatePreferences({ userId: user._id, preferences: currentPreferences });*/
+        await updatePreferences({ userId: user._id, preferences: currentPreferences });
         setSavedPreferences(currentPreferences);
-        setCurrentPreferences({});
-        setOpenPreferences(false);
     };
 
     return (
@@ -124,8 +124,8 @@ const Preferences = ({ savedPreferences, setShowPositionPreference }) => {
                             </Card.Title>
                             <div>
                                 <Row >
-                                    <span className="ms-1"><b>Min: </b> {savedPreferences.minLength}</span>
-                                    <span className="ms-1"> <b>Max: </b> {savedPreferences.maxLength}</span>
+                                    <span className="ms-1"><b>Min: </b> {savedPreferences.minLength ? savedPreferences.minLength : 0}</span>
+                                    <span className="ms-1"> <b>Max: </b> {savedPreferences.maxLength ? savedPreferences.maxLength : 0}</span>
                                 </Row>
                             </div>
                         </Card.Body>
@@ -158,8 +158,8 @@ const Preferences = ({ savedPreferences, setShowPositionPreference }) => {
                             </Card.Title>
                             <div>
                                 <Row className="justify-content-md-center ">
-                                    <span className="ms-1"><b>Min: </b> {savedPreferences.minExpectedTime}</span>
-                                    <span className="ms-1"><b>Max: </b> {savedPreferences.maxExpectedTime}</span>
+                                    <span className="ms-1"><b>Min: </b> {savedPreferences.minExpectedTime ? savedPreferences.minExpectedTime : 0}</span>
+                                    <span className="ms-1"><b>Max: </b> {savedPreferences.maxExpectedTime ? savedPreferences.maxExpectedTime : 0}</span>
                                 </Row>
                             </div>
                         </Card.Body>
@@ -175,7 +175,7 @@ const Preferences = ({ savedPreferences, setShowPositionPreference }) => {
                             </Card.Title>
                             <div>
                                 <Row >
-                                    <span className="ms-1"> {savedPreferences.difficulty}</span>
+                                    <span className="ms-1"> {capitalizeAndReplaceUnderscores(savedPreferences.difficulty)}</span>
                                 </Row>
                             </div>
                         </Card.Body>

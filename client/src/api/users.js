@@ -60,7 +60,8 @@ async function updateUser(id, changes) {
 			},
 			body: JSON.stringify(changes),
 		});
-		return await response.json();
+        if (!response.ok)
+            throw await response.json();
 	} catch (err) {
 		console.error(err);
 	}

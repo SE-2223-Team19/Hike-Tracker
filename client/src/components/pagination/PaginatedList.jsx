@@ -40,6 +40,7 @@ function PaginatedList({
             page: pagination.currentPage,
             pageSize: pagination.pageSize,
         }).then(data => {
+            console.log(data);
             if (setDirty) setDirty(false);
             if (data.error) {
 				setData(null);

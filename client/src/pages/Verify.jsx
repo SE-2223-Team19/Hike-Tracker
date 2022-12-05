@@ -28,21 +28,21 @@ const Verify = () => {
 			}}
 		>
 			{verified ? (
-				<p>
+				<div>
 					<h1 style={{ fontSize: "100px", color: "#69df6f" }}>
 						<i className="bi bi-envelope-check"></i>
 					</h1>
 					<h2 style={{ fontWeight: "bold" }}>{message}</h2>
 					<h4>You can continue using our application!</h4>
-				</p>
+				</div>
 			) : (
-				<p>
+				<div>
 					<h1 style={{ fontSize: "100px", color: "#ff3d3d" }}>
 						<i className="bi bi-envelope-x"></i>
 					</h1>
 					<h2 style={{ fontWeight: "bold" }}>{message}</h2>
 					<h4>The verification link is not valid.</h4>
-				</p>
+				</div>
 			)}
 		</div>
 	);

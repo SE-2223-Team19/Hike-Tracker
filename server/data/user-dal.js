@@ -87,7 +87,7 @@ async function createUser(user) {
  * @param {User} user 
  */
 async function updateUser(id, user) {
-	return await User.findByIdAndUpdate(id, { $set: user }, { new: true });
+	return await User.findByIdAndUpdate(id, { $set: user }, { new: true }).lean();
 }
 
 module.exports = {

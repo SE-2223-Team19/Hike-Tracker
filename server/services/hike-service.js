@@ -67,7 +67,7 @@ async function createHike(hike) {
 
 	// Create new locations for the reference points if they don't exist
 	if (hike.linkedHuts) {
-		hikelinkedHuts = await Promise.all(
+		await Promise.all(
 			hike.linkedHuts.map(async (linkedHut) => {
 				if (!linkedHut._id) {
 					return await locationDAL.createLocation({
@@ -108,10 +108,11 @@ async function createHike(hike) {
  */
 async function checkPropertyLocation(point) {
 	if (point !== null && point !== undefined) {
-		if (typeof point === "string") { // ObjectId to check for existance
+		if (typeof point === "string") {
+			// ObjectId to check for existance
 			const pt = await locationDAL.getLocationById(point);
 			if (!pt) {
-				throw new Error(`Point doesn't exist: _id = ${point}`)
+				throw new Error(`Point doesn't exist: _id = ${point}`);
 			}
 			return pt._id;
 		}
@@ -121,7 +122,7 @@ async function checkPropertyLocation(point) {
 			point: [point.point.lng, point.point.lat],
 		});
 		if (!pt) {
-			throw new Error(`Could't create point: ${point}`)
+			throw new Error(`Could't create point: ${point}`);
 		}
 		return pt._id;
 	}
@@ -146,9 +147,7 @@ async function updateHike(id, changes) {
 	}
 
 	if (changes.linkedHuts) {
-		changes.linkedHuts = await Promise.all(
-			changes.linkedHuts.map(checkPropertyLocation)
-		);
+		changes.linkedHuts = await Promise.all(changes.linkedHuts.map(checkPropertyLocation));
 		changes.linkedHuts = [...new Set([...hike.linkedHuts._id, ...changes.linkedHuts])];
 	}
 
@@ -157,7 +156,7 @@ async function updateHike(id, changes) {
 	}
 
 	//TODO: Sorting of reference points.
-	//IDEA: Using a shortest path first algorithm should be fine 
+	//IDEA: Using a shortest path first algorithm should be fine
 
 	const updatedHike = await hikeDAL.updateHike(id, changes);
 

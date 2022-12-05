@@ -2281,7 +2281,7 @@ describe("update Hike", () => {
 		const responseHikeUpdate = new ResponseHelper();
 
 		const startPoint = {
-			locationType: LocationType.HUT,
+			locationType: LocationType.DEFAULT,
 			description: "Example starting point",
 			point: {
 				lat: 45.177786,

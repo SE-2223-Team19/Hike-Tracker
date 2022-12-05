@@ -1,6 +1,6 @@
 import { React, useContext, useEffect } from "react";
 import { Form, Button, Row, Col, Container, Stack } from "react-bootstrap";
-import { Difficulty } from "../../helper/enums";
+import { Difficulty, UserType } from "../../helper/enums";
 import { capitalizeAndReplaceUnderscores } from "../../helper/utils";
 import { Formik } from "formik";
 import * as Yup from "yup";
@@ -10,7 +10,6 @@ import { createHike } from "../../api/hikes";
 import { useNavigate } from "react-router-dom";
 import SelectReferencePointsMap from "../SelectReferencePointsMap";
 import { AuthContext } from "../../context/AuthContext";
-import { UserType } from "../../helper/enums";
 
 function DescribeHikeForm({ hike }) {
 	const navigate = useNavigate();
@@ -129,19 +128,31 @@ function DescribeHikeForm({ hike }) {
 		};
 	};
 
+	/** Initial Values */
+	const getInitialTitle = () => (hike ? hike.title : "");
+	const getInitialLength = () => (hike ? hike.length : "");
+	const getInitialAscent = () => (hike ? hike.ascent : "");
+	const getInitialExpectedTime = () => (hike ? hike.expectedTime : "");
+	const getInitialDifficulty = () => (hike ? hike.difficulty : "");
+	const getInitialDescription = () => (hike ? hike.description : "");
+	const getInitialStartPoint = () => (hike ? formatPoint(hike.startPoint) : "null");
+	const getInitialEndPoint = () => (hike ? formatPoint(hike.endPoint) : "");
+	const getInitialReferencePoints = () => (hike ? hike.referencePoints : []);
+	// const getInitialLinkedHuts = () => (hike ? hike.linkedHuts.map(formatPoint) : []);
+
 	// ** Render
 	return (
 		<Formik
 			initialValues={{
-				title: (hike && hike.title) || "",
-				length: (hike && hike.length) || "",
-				ascent: (hike && hike.ascent) || "",
-				expectedTime: (hike && hike.expectedTime) || "",
-				difficulty: (hike && hike.difficulty) || "",
-				description: (hike && hike.description) || "",
-				startPoint: (hike && formatPoint(hike.startPoint)) || "null",
-				endPoint: (hike && formatPoint(hike.endPoint)) || "null",
-				referencePoints: (hike && hike.referencePoints.map((rp) => formatPoint(rp))) || [],
+				title: getInitialTitle(),
+				length: getInitialLength(),
+				ascent: getInitialAscent(),
+				expectedTime: getInitialExpectedTime(),
+				difficulty: getInitialDifficulty(),
+				description: getInitialDescription(),
+				startPoint: getInitialStartPoint(),
+				endPoint: getInitialEndPoint(),
+				referencePoints: getInitialReferencePoints(),
 				gpxFile: null,
 				trackPoints: [],
 				linkedHuts: [],

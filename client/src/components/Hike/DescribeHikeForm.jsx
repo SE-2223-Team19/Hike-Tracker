@@ -10,7 +10,7 @@ import { createHike } from "../../api/hikes";
 import { useNavigate } from "react-router-dom";
 import SelectReferencePointsMap from "../SelectReferencePointsMap";
 import { AuthContext } from "../../context/AuthContext";
-import { UserType } from "../../helper/enums"
+import { UserType } from "../../helper/enums";
 
 function DescribeHikeForm({ hike }) {
 	const navigate = useNavigate();
@@ -38,18 +38,29 @@ function DescribeHikeForm({ hike }) {
 				gpx.tracks[0].points.map((p) => [p.lat, p.lon])
 			);
 			setFieldValue(
-				"expectedTime", 
-				Math.floor((gpx.tracks[0].points[gpx.tracks[0].points.length - 1].time - gpx.tracks[0].points[0].time) / 60000)
+				"expectedTime",
+				Math.floor(
+					(gpx.tracks[0].points[gpx.tracks[0].points.length - 1].time -
+						gpx.tracks[0].points[0].time) /
+						60000
+				)
 			);
 			setFieldValue(
 				"ascent",
-				Math.round(gpx.tracks[0].points.map(p => p.ele).reduce((p, c) => ({
-					ascent: p.ascent + (c - p.lastElevation),
-					lastElevation: c
-				}), {
-					ascent: 0,
-					lastElevation: gpx.tracks[0].points[0].ele
-				}).ascent * 100) / 100
+				Math.round(
+					gpx.tracks[0].points
+						.map((p) => p.ele)
+						.reduce(
+							(p, c) => ({
+								ascent: p.ascent + (c - p.lastElevation),
+								lastElevation: c,
+							}),
+							{
+								ascent: 0,
+								lastElevation: gpx.tracks[0].points[0].ele,
+							}
+						).ascent * 100
+				) / 100
 			);
 		};
 		fileReader.readAsText(file);
@@ -71,7 +82,7 @@ function DescribeHikeForm({ hike }) {
 		}
 		setMessage({
 			type: "danger",
-			msg: "Error creating hike"
+			msg: "Error creating hike",
 		});
 	};
 
@@ -118,22 +129,34 @@ function DescribeHikeForm({ hike }) {
 		};
 	};
 
+	/** Initial Values */
+	const getInitialTitle = () => (hike ? hike.title : "");
+	const getInitialLength = () => (hike ? hike.length : "");
+	const getInitialAscent = () => (hike ? hike.ascent : "");
+	const getInitialExpectedTime = () => (hike ? hike.expectedTime : "");
+	const getInitialDifficulty = () => (hike ? hike.difficulty : "");
+	const getInitialDescription = () => (hike ? hike.description : "");
+	const getInitialStartPoint = () => (hike ? formatPoint(hike.startPoint) : "null");
+	const getInitialEndPoint = () => (hike ? formatPoint(hike.endPoint) : "");
+	const getInitialReferencePoints = () => (hike ? hike.referencePoints : []);
+	// const getInitialLinkedHuts = () => (hike ? hike.linkedHuts.map(formatPoint) : []);
+
 	// ** Render
 	return (
 		<Formik
 			initialValues={{
-				title: (hike && hike.title) || "",
-				length: (hike && hike.length) || "",
-				ascent: (hike && hike.ascent) || "",
-				expectedTime: (hike && hike.expectedTime) || "",
-				difficulty: (hike && hike.difficulty) || "",
-				description: (hike && hike.description) || "",
-				startPoint: (hike && formatPoint(hike.startPoint)) || "null",
-				endPoint: (hike && formatPoint(hike.endPoint)) || "null",
-				referencePoints: (hike && hike.referencePoints.map((rp) => formatPoint(rp))) || [],
+				title: getInitialTitle(),
+				length: getInitialLength(),
+				ascent: getInitialAscent(),
+				expectedTime: getInitialExpectedTime(),
+				difficulty: getInitialDifficulty(),
+				description: getInitialDescription(),
+				startPoint: getInitialStartPoint(),
+				endPoint: getInitialEndPoint(),
+				referencePoints: getInitialReferencePoints(),
 				gpxFile: null,
 				trackPoints: [],
-				linkedHuts: []
+				linkedHuts: [],
 			}}
 			onSubmit={async (values, { setSubmitting }) => {
 				setSubmitting(true);
@@ -261,9 +284,7 @@ function DescribeHikeForm({ hike }) {
 									type="file"
 									name="gpxFile"
 									data-test-id="gpx-file-uploader"
-									onChange={(e) =>
-										onGpxFileUpload(e.target.files[0], setFieldValue)
-									}
+									onChange={(e) => onGpxFileUpload(e.target.files[0], setFieldValue)}
 									onBlur={handleBlur}
 									isInvalid={!!errors.gpxFile}
 									accept={".gpx,application/gpx+xml"}
@@ -335,10 +356,10 @@ function DescribeHikeForm({ hike }) {
 								<Form.Label>Reference Points</Form.Label>
 								<Container>
 									<Row>
-										<Col style={{"height": "50vh"}}>
-											<SelectReferencePointsMap 
+										<Col style={{ height: "50vh" }}>
+											<SelectReferencePointsMap
 												referencePoints={values.referencePoints}
-												setReferencePoints={r => {
+												setReferencePoints={(r) => {
 													setFieldValue("referencePoints", r);
 												}}
 												trackPoints={values.trackPoints}
@@ -346,7 +367,9 @@ function DescribeHikeForm({ hike }) {
 										</Col>
 									</Row>
 								</Container>
-								<Form.Control.Feedback type="invalid">{errors.referencePoints}</Form.Control.Feedback>
+								<Form.Control.Feedback type="invalid">
+									{errors.referencePoints}
+								</Form.Control.Feedback>
 							</Form.Group>
 						</Col>
 					</Row>

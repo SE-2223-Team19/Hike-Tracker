@@ -1,25 +1,12 @@
 import { useState } from "react";
 import { MapContainer, TileLayer, Popup, Marker } from "react-leaflet";
 
-function Map(props) {
+function Map() {
 	// Coordinates of Turin
 	const [position, setPosition] = useState([45.06837, 7.68307]);
 	navigator.geolocation.getCurrentPosition((e) =>
 		setPosition([e.coords.latitude, e.coords.longitude])
 	);
-
-	// const MapEvents = () => {
-	//   useMapEvents({
-	//     click(e) {
-	//       console.log(e.latlng.lat);
-	//       console.log(e.latlng.lng);
-	//       setPosition(() => [e.latlng.lat, e.latlng.lng])
-	//     },
-	//   });
-	//   return false;
-	// }
-
-	//let p = navigator.geolocation.getCurrentPosition((e) => console.log(e.coords))
 
 	return (
 		<MapContainer

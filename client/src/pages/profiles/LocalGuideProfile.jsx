@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { React, useState } from "react";
 import { Button, Stack } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
@@ -14,30 +15,34 @@ const LocalGuideProfile = ({ user }) => {
 	const navigate = useNavigate();
 	const [currentHike, setCurrentHike] = useState(null);
 
+	const filter = useMemo(() => ({
+		createdBy: user._id
+	}), [user]);
+
 	return (
 		<>
 			<Stack direction="horizontal" className="justify-content-between align-items-center">
 				<h2>My Hikes</h2>
 
 				<Stack direction="horizontal" gap={3}>
-					<Button variant="success" onClick={() => navigate("/describe-hike")}>
+					<Button
+						data-test-id="create-hike-btn"
+						variant="success"
+						onClick={() => navigate("/describe-hike")}
+					>
 						Create Hike
 					</Button>
 				</Stack>
 			</Stack>
 			<PaginatedList
 				dataElement={(hike) => (
-					<HikeCard key={hike._id} hike={hike} showDetails={setCurrentHike} from="profile" />
+					<HikeCard key={hike._id} hike={hike} showDetails={setCurrentHike} />
 				)}
 				errorElement={(error) => <NoData message={error} />}
 				noDataElement={() => <NoData message={"You have not created any hikes yet."} />}
 				loadingElement={() => <Loading />}
-				fetchCall={(paginationFilters) =>
-					getHikes({
-						createdBy: user._id,
-						...paginationFilters,
-					})
-				}
+				fetchCall={getHikes}
+				filters={filter}
 			/>
 			<ModalMap handleClose={() => setCurrentHike(null)} hike={currentHike}></ModalMap>
 		</>

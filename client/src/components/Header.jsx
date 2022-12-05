@@ -4,13 +4,14 @@ import { Nav, Navbar, Stack, Dropdown } from "react-bootstrap";
 import { NavLink, useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import { capitalizeAndReplaceUnderscores } from "../helper/utils";
+import "./Header.css";
 
 const Header = () => {
 	const navigate = useNavigate();
 	const { setMessage, loggedIn, user, handleLogout } = useContext(AuthContext);
 
 	return (
-		<Navbar>
+		<Navbar expand="md">
 			<Navbar.Brand href="/">
 				<img
 					src={"http://localhost:3000/snowed-mountains.png"}
@@ -39,9 +40,9 @@ const Header = () => {
 				<Nav className="ms-auto">
 					{loggedIn ? (
 						<Dropdown as={Nav.Item}>
-							<Dropdown.Toggle as={Nav.Link} className="d-flex flex-row align-items-center">
+							<Dropdown.Toggle as={Nav.Link} className="d-flex flex-row align-items-center gap-3">
 								<div className="d-inline-block">
-									<div className="d-flex flex-column">
+									<div className="d-flex flex-column align-items-end">
 										<p className="m-0">{user.fullName}</p>
 										<p className="m-0">{capitalizeAndReplaceUnderscores(user.userType)}</p>
 									</div>

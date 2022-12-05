@@ -40,33 +40,49 @@ const HikeTrackMap = ({ hike }) => {
 			bounds={bounds}
 		>
 			<TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-			<Marker
-				key={"start"}
-				position={(hike && [...hike.startPoint.point].reverse()) || [0, 0]}
-				icon={markerStartEndPoint}
-			>
-				<Popup>Start Point</Popup>
-			</Marker>
-			<Marker
-				key={"end"}
-				position={(hike && [...hike.endPoint.point].reverse()) || [0, 0]}
-				icon={markerStartEndPoint}
-			>
-				<Popup>End Point</Popup>
-			</Marker>
-			{hike ? (
-				hike.referencePoints.map((point) => (
-					<Marker key={point._id} position={[...point.point].reverse()} icon={markerLocation}>
-						<Popup>{point.description || "Reference Point"}</Popup>
+			{
+				hike &&
+				<Marker
+					key={"start"}
+					position={(hike.startPoint && [...hike.startPoint.point].reverse()) || hike.trackPoints[0]}
+					icon={markerStartEndPoint}
+				>
+					<Popup>Start Point</Popup>
+				</Marker>
+			}
+			{
+				hike &&
+				<Marker
+					key={"end"}
+					position={(hike.endPoint && [...hike.endPoint.point].reverse()) || hike.trackPoints[hike.trackPoints.length - 1]}
+					icon={markerStartEndPoint}
+				>
+					<Popup>End Point</Popup>
+				</Marker>
+			}
+			{
+				hike && 
+				hike.referencePoints.map((point, index) => (
+					<Marker key={`ref-point-${index}`} position={point}>
+						<Popup>Reference Point N°. {index + 1}</Popup>
 					</Marker>
 				))
-			) : (
-				<></>
-			)}
-			<Polyline
-				pathOptions={{ fillColor: "red", color: "blue" }}
-				positions={(hike && hike.trackPoints) || []}
-			/>
+			}
+			{
+				hike && 
+				hike.linkedHuts.map((point) => (
+					<Marker key={point._id} position={[...point.point].reverse()} icon={markerLocation}>
+						<Popup>{point.description}</Popup>
+					</Marker>
+				))
+			}
+			{
+				hike &&
+				<Polyline
+					pathOptions={{ fillColor: "red", color: "blue" }}
+					positions={hike.trackPoints}
+				/>
+			}
 		</MapContainer>
 	);
 };

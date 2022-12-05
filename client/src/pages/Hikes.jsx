@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { React, useState } from "react";
 import { Button, Stack } from "react-bootstrap";
 import { getHikes } from "../api/hikes";
 import HikeCard from "../components/Hike/HikeCard";
@@ -20,8 +20,9 @@ const Hikes = () => {
 	return (
 		<div className="w-100">
 			<Stack direction="horizontal" className="justify-content-between align-items-center">
-				<h1>Hikes</h1>
+				<h1 className="#tests-title">Hikes</h1>
 				<Button
+					className="#tests-filter-button"
 					variant={openFilters ? "success" : "outline-success"}
 					style={{ borderRadius: 20 }}
 					onClick={() => {
@@ -43,19 +44,17 @@ const Hikes = () => {
 					openModal={() => setShowPositionFilter(true)}
 				/>
 			)}
-			<PaginatedList
-				dataElement={(hike) => <HikeCard key={hike._id} hike={hike} showDetails={setCurrentHike} />}
-				errorElement={(error) => (
-					<NoData message={"Something went wrong during the request. Try again later."} />
-				)}
+			<PaginatedList 
+				dataElement={(hike) => <HikeCard 
+											key={hike._id} 
+											hike={hike} 
+											showDetails={setCurrentHike}
+										/>}
+				errorElement={(error) => <NoData message={"Something went wrong during the request. Try again later."} />}
 				noDataElement={() => <NoData message={"No hikes found."} />}
 				loadingElement={() => <Loading />}
-				fetchCall={(paginationFilters) =>
-					getHikes({
-						...filters,
-						...paginationFilters,
-					})
-				}
+				fetchCall={getHikes}
+				filters={filters}
 			/>
 			<PositionFilterModal
 				show={showPositionFilter}

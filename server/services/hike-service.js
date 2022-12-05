@@ -12,9 +12,10 @@ const { LocationType } = require("../models/enums");
  * @property {String} description
  * @property {Number} length
  * @property {[[Number, Number]]} trackPoints
+ * @property {[[Number, Number]]} referencePoints
  * @property {String} startPoint
  * @property {String} endPoint
- * @property {[String]} referencePoints
+ * @property {[String]} linkedHuts
  * @property {String} createdBy
  */
 
@@ -35,51 +36,51 @@ const { LocationType } = require("../models/enums");
  * @property {String} description
  * @property {Number} length
  * @property {[[Number, Number]]} trackPoints
+ * @property {[[Number, Number]]} referencePoints
  * @property {Location} startPoint
  * @property {Location} endPoint
- * @property {[Location]} referencePoints
+ * @property {[Location]} linkedHuts
  * @property {String} createdBy
  */
 
 /**
  * Creates a new hike and new locations for the start point, end point and reference points.
  * @param {Hike} hike Hike to be created
- * @param {*} referencePoints Reference points related to the hike, that will be created as entities in the database (Hut, Parking, etc.)
  * @returns {Promise<HikeModel>}
  */
 async function createHike(hike) {
 	// Create new locations for the start point and end point if they don't exist
-	if (!hike.startPoint._id) {
-		const startPoint = await locationDAL.createLocation({
+	if (hike.startPoint && !hike.startPoint._id) {
+		hike.startPoint = await locationDAL.createLocation({
 			locationType: LocationType.DEFAULT,
 			description: `Starting point of '${hike.title}'`,
 			point: [hike.startPoint.point.lng, hike.startPoint.point.lat],
 		});
-		hike.startPointId = startPoint._id;
 	}
-	if (!hike.endPoint._id) {
-		const endPoint = await locationDAL.createLocation({
+	if (hike.endPoint && !hike.endPoint._id) {
+		hike.endPoint = await locationDAL.createLocation({
 			locationType: LocationType.DEFAULT,
 			description: `End point of '${hike.title}'`,
 			point: [hike.endPoint.point.lng, hike.endPoint.point.lat],
 		});
-		hike.endPointId = endPoint._id;
 	}
 
 	// Create new locations for the reference points if they don't exist
-	const referencePoints = await Promise.all(
-		hike.referencePoints.map(async (referencePoint) => {
-			if (!referencePoint._id) {
-				return await locationDAL.createLocation({
-					locationType: referencePoint.locationType,
-					description: referencePoint.description,
-					point: [referencePoint.point.lng, referencePoint.point.lat],
-				});
-			} else {
-				return referencePoint;
-			}
-		})
-	);
+	if (hike.linkedHuts) {
+		hikelinkedHuts = await Promise.all(
+			hike.linkedHuts.map(async (linkedHut) => {
+				if (!linkedHut._id) {
+					return await locationDAL.createLocation({
+						locationType: linkedHut.locationType,
+						description: linkedHut.description,
+						point: [linkedHut.point.lng, linkedHut.point.lat],
+					});
+				} else {
+					return linkedHut;
+				}
+			})
+		);
+	}
 
 	// Create new hike
 	const newHike = hikeDAL.createHike({
@@ -89,10 +90,11 @@ async function createHike(hike) {
 		expectedTime: hike.expectedTime,
 		difficulty: hike.difficulty,
 		description: hike.description,
-		startPoint: hike.startPoint._id || hike.startPointId,
-		endPoint: hike.endPoint._id || hike.endPointId,
-		referencePoints: referencePoints.map((referencePoint) => referencePoint._id),
+		startPoint: hike.startPoint === null ? null : hike.startPoint._id,
+		endPoint: hike.endPoint === null ? null : hike.endPoint._id,
+		linkedHuts: hike.linkedHuts,
 		trackPoints: hike.trackPoints,
+		referencePoints: hike.referencePoints,
 		createdBy: hike.createdBy,
 	});
 
@@ -132,7 +134,9 @@ async function checkPropertyLocation(point) {
  * @param {HikeModel} changes changes to be applied
  * @returns {Promise<Hike>}
  */
-async function updateHike(id, changes, hike) {
+async function updateHike(id, changes) {
+	const hike = await getHikeById(id);
+
 	if (changes.startPoint) {
 		changes.startPoint = await checkPropertyLocation(changes.startPoint);
 	}
@@ -141,13 +145,19 @@ async function updateHike(id, changes, hike) {
 		changes.endPoint = await checkPropertyLocation(changes.endPoint);
 	}
 
-	if (changes.referencePoints) {
-		changes.referencePoints = await Promise.all(
-			changes.referencePoints.map(checkPropertyLocation)
+	if (changes.linkedHuts) {
+		changes.linkedHuts = await Promise.all(
+			changes.linkedHuts.map(checkPropertyLocation)
 		);
-		changes.referencePoints = [...new Set([...hike.referencePoints, ...changes.referencePoints])];
+		changes.linkedHuts = [...new Set([...hike.linkedHuts._id, ...changes.linkedHuts])];
 	}
 
+	if (changes.trackPoints) {
+		changes.trackPoints = [...new Set([...hike.trackPoints, ...changes.trackPoints])];
+	}
+
+	//TODO: Sorting of reference points.
+	//IDEA: Using a shortest path first algorithm should be fine 
 
 	const updatedHike = await hikeDAL.updateHike(id, changes);
 

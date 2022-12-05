@@ -1,4 +1,22 @@
 const { BACKEND_URL, ENDPOINTS } = require("./config");
+const { addQueryParams } = require("./config");
+
+async function getUsers(filters = {}) {
+    try {
+		const url = new URL(ENDPOINTS.users.all, BACKEND_URL);
+
+		addQueryParams(url, filters);
+
+		const response = await fetch(url, {
+			credentials: "include",
+		});
+		if (response.ok)
+			return await response.json();
+		throw await response.json();
+	} catch (err) {
+		return { error: err };
+	}
+}
 
 async function createUser({ email, fullName, userType, password, confirmPassword }) {
     const response = await fetch(new URL(ENDPOINTS.users.insert, BACKEND_URL), {
@@ -32,7 +50,25 @@ async function verifyUser(uniqueString) {
     }
 }
 
+async function updateUser(id, changes) {
+    try {
+		const response = await fetch(new URL(ENDPOINTS.users.update.replace(":id", id), BACKEND_URL), {
+			method: "PATCH",
+			credentials: "include",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify(changes),
+		});
+		return await response.json();
+	} catch (err) {
+		console.error(err);
+	}
+}
+
 module.exports = {
+    getUsers,
     createUser,
     verifyUser,
+    updateUser
 };

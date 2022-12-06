@@ -3,7 +3,7 @@ const ObjectId = require("mongoose").Types.ObjectId;
 const { StatusCodes } = require("http-status-codes");
 const hikeDAL = require("../data/hike-dal");
 const hikeService = require("../services/hike-service");
-const { Difficulty, LocationType, UserType } = require("../models/enums");
+const { Difficulty, LocationType, UserType, Hut_Condition } = require("../models/enums");
 
 /**
  * GET /hike
@@ -105,6 +105,7 @@ async function getHikeById(req, res) {
  * @returns {Promise<Response>}
  */
 async function createHike(req, res) {
+	
 	try {
 		// Validate request body
 		const { body } = req;
@@ -168,7 +169,7 @@ async function updateHike(req, res) {
 	try {
 		// Validate request body
 		const { params, body } = req;
-
+         
 		console.log("body", body);
 
 		// Location validation schema
@@ -179,7 +180,7 @@ async function updateHike(req, res) {
 				.valid(...Object.values(LocationType))
 				.required(),
 			description: joi.string().allow(""),
-			point: joi
+			point: joi	
 				.object()
 				.keys({
 					lat: joi.number().required(),
@@ -200,17 +201,19 @@ async function updateHike(req, res) {
 			endPoint: [locationSchema, joi.string()],
 			referencePoints: joi.array().items(locationSchema, joi.string()),
 			trackPoints: joi.array().items(joi.array().items(joi.number()).length(2)),
+			hikeCondition:joi.string().valid(...Object.values(Hut_Condition)),
 		});
 
 		// Validate request body against schema
 		const { error, value } = schema.validate(body);
+		
 
 		if (error) throw error; // Joi validation error, goes to catch block
 
-		const hike = await hikeService.getHikeById(params.id);
+		const 	hike = await hikeService.getHikeById(params.id);
 
 		const hikeUpdated = await hikeService.updateHike(params.id, value, hike);
-
+     
 		return res.status(StatusCodes.OK).json(hikeUpdated);
 	} catch (err) {
 		console.log(err);

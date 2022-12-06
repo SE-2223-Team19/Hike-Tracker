@@ -43,6 +43,11 @@ const HikeCard = ({ hike, showDetails }) => {
 						<div className="ms-auto">
 							{loggedIn && (
 								<Stack direction="horizontal" gap={3}>
+
+									<Button onClick={()=>{}} variant={"warning"}>
+										Hike Condition
+									</Button>
+									
 									<Button onClick={() => showDetails(hike)} variant={"success"}>
 										See on Map
 									</Button>

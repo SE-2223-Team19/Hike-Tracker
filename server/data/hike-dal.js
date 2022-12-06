@@ -234,6 +234,7 @@ async function getHikeById(id) {
  * @returns
  */
 async function updateHike(id, hikeUpdated) {
+	
 	const hikeUpdate = await Hike.findByIdAndUpdate(id, hikeUpdated, { new: true });
 	return hikeUpdate;
 }

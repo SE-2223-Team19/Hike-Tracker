@@ -16,6 +16,7 @@ const { LocationType } = require("../models/enums");
  * @property {String} endPoint
  * @property {[String]} referencePoints
  * @property {String} createdBy
+ * @property {String} hikeCondition
  */
 
 /**
@@ -39,6 +40,7 @@ const { LocationType } = require("../models/enums");
  * @property {Location} endPoint
  * @property {[Location]} referencePoints
  * @property {String} createdBy
+ * @property {String} hikeCondition
  */
 
 /**
@@ -126,6 +128,29 @@ async function checkPropertyLocation(point) {
 	throw new Error("A point must be passed");
 }
 
+async function checkhikeCondition(condition){
+	if(condition !== null && condition !== undefined){
+		if(typeof condition === 'string'){
+			const status = await hikeDAL.getHikeById(condition);
+			if(!status){
+				throw new Error(`Hike doesn't exist:_id= ${condition}`)
+			}
+			return status
+		}
+		 const status = await hikeDAL.createHike({
+			hikeCondition: condition.hikeCondition
+		 });
+		 if(!status){
+			throw new Error(`Couldn't update hikeCondition:${condition}`)
+		 }
+		 return status
+
+
+	}
+}
+
+
+
 /**
  * Updates a hike with description.
  * @param {String} id Hike to be update
@@ -133,6 +158,8 @@ async function checkPropertyLocation(point) {
  * @returns {Promise<Hike>}
  */
 async function updateHike(id, changes, hike) {
+	
+	
 	if (changes.startPoint) {
 		changes.startPoint = await checkPropertyLocation(changes.startPoint);
 	}
@@ -147,6 +174,11 @@ async function updateHike(id, changes, hike) {
 		);
 		changes.referencePoints = [...new Set([...hike.referencePoints, ...changes.referencePoints])];
 	}
+	if (changes.hikeCondition){
+		changes.hikeCondition= await checkhikeCondition(changes.hikeCondition)
+	}
+
+	
 
 
 	const updatedHike = await hikeDAL.updateHike(id, changes);

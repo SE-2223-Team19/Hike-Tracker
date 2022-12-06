@@ -1,5 +1,5 @@
 import { React, useState, useEffect } from "react";
-import { Button, Stack, Card, Container, Row, Col } from "react-bootstrap";
+import { Button, Stack, Card, Container, Row, Col, Modal } from "react-bootstrap";
 import { BiRuler, BiTrendingUp, BiTime, BiWalk, BiMap } from "react-icons/bi";
 import Loading from "../../components/Loading";
 import NoData from "../../components/NoData";
@@ -19,6 +19,8 @@ const HikerProfile = ({ user }) => {
     const [loading, setLoading] = useState(true);
     const [showPositionFilter, setShowPositionFilter] = useState(false);
     const [showPositionPreference, setShowPositionPreference] = useState(false);
+    const [showConfirmationModal, setShowConfirmationModal] = useState(false);
+    const [modalType, setModalType] = useState("");
 
     useEffect(() => {
         setLoading(true);
@@ -70,19 +72,32 @@ const HikerProfile = ({ user }) => {
                         />
                         <Stack direction="horizontal" gap={3} style={{ marginTop: "10px" }}>
                             <Button variant={"danger"} onClick={() => {
-                                removePreferences();
+                                setShowConfirmationModal(true);
+                                setModalType("delete");
                             }}>Remove</Button>
                             <Button variant={"secondary"} onClick={() => {
                                 setCurrentPreferences({});
                                 setOpenPreferences(false);
                             }}>Cancel</Button>
                             <Button variant={"success"} onClick={() => {
-                                savePreferences();
+                                setShowConfirmationModal(true);
+                                setModalType("save");
                             }}>Ok</Button>
                         </Stack>
                     </div>
                 )}
                 {loading && <Loading />}
+                <Modal show={showConfirmationModal} onHide={() => setShowConfirmationModal(false)} backdrop={"static"}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>{modalType === "delete" ? "Delete preferences" : "Save preferences"} </Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <p>Are you sure you want to {modalType} your preferences?</p>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        {modalType === "delete" ? <Button className="btn btn-danger" onClick={() => { setShowConfirmationModal(false); removePreferences(); }}>Delete</Button> : <Button className="btn btn-success" onClick={() => { setShowConfirmationModal(false); savePreferences(); }}>Save</Button>}
+                    </Modal.Footer>
+                </Modal>
                 <PositionFilterModal
                     show={showPositionFilter}
                     setShow={setShowPositionFilter}

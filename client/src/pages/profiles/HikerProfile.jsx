@@ -23,7 +23,7 @@ const HikerProfile = ({ user }) => {
     useEffect(() => {
         setLoading(true);
         const fetchPreferences = async () => {
-            const preferences = await getPreferences({ userId: user._id });
+            const preferences = await getPreferences();
             setSavedPreferences(preferences);
             setLoading(false);
         };
@@ -34,13 +34,13 @@ const HikerProfile = ({ user }) => {
         }
     }, [user, navigate]);
     const removePreferences = async () => {
-        await deletePreferences({ userId: user._id });
+        await deletePreferences();
         setSavedPreferences({});
         setCurrentPreferences({});
         setOpenPreferences(false);
     };
     const savePreferences = async () => {
-        await updatePreferences({ userId: user._id, preferences: currentPreferences });
+        await updatePreferences(currentPreferences);
         setSavedPreferences(currentPreferences);
     };
 

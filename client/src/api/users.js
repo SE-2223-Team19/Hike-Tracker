@@ -32,8 +32,8 @@ async function verifyUser(uniqueString) {
     }
 }
 
-async function getPreferences(userId) {
-    const response = await fetch(new URL(ENDPOINTS.users.preferences.replace(":userId", userId), BACKEND_URL), {
+async function getPreferences() {
+    const response = await fetch(new URL(ENDPOINTS.users.preferences, BACKEND_URL), {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
@@ -50,9 +50,9 @@ async function getPreferences(userId) {
     }
 }
 
-async function updatePreferences(userId, preferences) {
-    const response = await fetch(new URL(ENDPOINTS.users.preferences.replace(":userId", userId), BACKEND_URL), {
-        method: 'PUT',
+async function updatePreferences(preferences) {
+    const response = await fetch(new URL(ENDPOINTS.users.preferences, BACKEND_URL), {
+        method: 'PATCH',
         headers: {
             'Content-Type': 'application/json',
         },
@@ -64,13 +64,13 @@ async function updatePreferences(userId, preferences) {
         return preferences;
     }
     else {
-        const errDetails = await response.text();
+        const errDetails = await response.json();
         throw errDetails;
     }
 }
 
-async function deletePreferences(userId) {
-    const response = await fetch(new URL(ENDPOINTS.users.preferences.replace(":userId", userId), BACKEND_URL), {
+async function deletePreferences() {
+    const response = await fetch(new URL(ENDPOINTS.users.preferences, BACKEND_URL), {
         method: 'DELETE',
         headers: {
             'Content-Type': 'application/json',

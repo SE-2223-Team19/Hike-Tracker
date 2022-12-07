@@ -17,13 +17,13 @@ const ParkingLot = require("../models/parking-lot-model");
  * @param {Number} pageSize The size of the page
  * @returns {Promise<Location>}
  */
-async function getLocations(filterQuery = {}, page, pageSize) {
+async function getLocations(page, pageSize, filterQuery = {}) {
 	const paginationActive = page !== undefined && pageSize !== undefined;
 
 	let p = [
 		{
-			$match: filterQuery
-		}
+			$match: filterQuery,
+		},
 	];
 
 	if (paginationActive) {
@@ -33,15 +33,15 @@ async function getLocations(filterQuery = {}, page, pageSize) {
 				$facet: {
 					data: [
 						{
-							$skip: (page - 1) * pageSize
+							$skip: (page - 1) * pageSize,
 						},
 						{
-							$limit: pageSize
-						}
+							$limit: pageSize,
+						},
 					],
 					metadata: [
 						{
-							$count: "totalElements"
+							$count: "totalElements",
 						},
 						{
 							$addFields: {
@@ -50,27 +50,26 @@ async function getLocations(filterQuery = {}, page, pageSize) {
 								pageSize: pageSize,
 								totalPages: {
 									$ceil: {
-										$divide: ["$totalElements", pageSize]
-									}
-								}
-							}
-						}
-					]
-				}
-			}
+										$divide: ["$totalElements", pageSize],
+									},
+								},
+							},
+						},
+					],
+				},
+			},
 		];
 	}
 
 	const locations = await Location.aggregate(p);
 
-	if (paginationActive)
-		return locations[0];
+	if (paginationActive) return locations[0];
 	return locations;
 }
 
 /**
  * Gets a location by its id
- * @param {String} id 
+ * @param {String} id
  * @returns {Promise<Location>}
  */
 async function getLocationById(id) {
@@ -98,8 +97,8 @@ async function createLocation(location) {
 
 /**
  * Updates the location's description
- * @param {String} id 
- * @param {String} description 
+ * @param {String} id
+ * @param {String} description
  * @returns {Promise<Location>}
  */
 async function updateLocationDescription(id, description) {
@@ -107,32 +106,27 @@ async function updateLocationDescription(id, description) {
 	return result;
 }
 
-async function hutUpdate(id, locationUpdate) {
-	
-	const hutCheck = await Location.find({ _id: id, locationType: LocationType.HUT })
-	if (locationUpdate.description)
-		await updateLocationDescription(id, locationUpdate.description)
-	if (!hutCheck) throw Error("Not find Hut inside Locations")
-
-	await Hut.findByIdAndUpdate(id, locationUpdate)
-
-	return await Location.findOne({ _id: id, locationType: LocationType.HUT })
-}
-
 /**
- * 
- * @param {String} id 
+ *
+ * @param {String} id
  * @param {Location || Hut || Parking_Lot} locationUpdate This function takes a location and then it calls the right update for a given
  * Location (The locationType should be passed to function in the updated object)
- * @returns 
+ * @returns
  */
 async function updateLocation(id, locationUpdate) {
-
-	if (locationUpdate.locationType == LocationType.HUT) {
-		return await hutUpdate(id, locationUpdate)
+	if (locationUpdate.locationType === LocationType.HUT) {
+		await Hut.findOneAndUpdate({ _id: id, locationType: LocationType.HUT }, locationUpdate, {
+			new: true,
+		}).lean();
 	}
-
-	
+	if (locationUpdate.locationType === LocationType.PARKING_LOT) {
+		await ParkingLot.findOneAndUpdate(
+			{ _id: id, locationType: LocationType.PARKING_LOT },
+			locationUpdate,
+			{ new: true }
+		).lean();
+	}
+	return await getLocationById(id);
 }
 
 module.exports = {
@@ -140,5 +134,5 @@ module.exports = {
 	getLocationById,
 	createLocation,
 	updateLocationDescription,
-	updateLocation
+	updateLocation,
 };

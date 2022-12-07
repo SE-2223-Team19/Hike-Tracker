@@ -97,13 +97,13 @@ const commonLookups = [
 	{
 		$unwind: {
 			path: "$startPoint",
-			preserveNullAndEmptyArrays: true
+			preserveNullAndEmptyArrays: true,
 		},
 	},
 	{
 		$unwind: {
 			path: "$endPoint",
-			preserveNullAndEmptyArrays: true
+			preserveNullAndEmptyArrays: true,
 		},
 	},
 	{
@@ -113,16 +113,16 @@ const commonLookups = [
 	},
 	{
 		$addFields: {
-			"trackPoints": {
+			trackPoints: {
 				$map: {
 					input: "$trackPoints.coordinates",
 					as: "t",
 					in: {
-						$reverseArray: "$$t"
-					}
-				}
-			}
-		}
+						$reverseArray: "$$t",
+					},
+				},
+			},
+		},
 	},
 	{
 		$project: {
@@ -130,8 +130,8 @@ const commonLookups = [
 			"createdBy.salt": 0,
 			"createdBy.uniqueString": 0,
 			"createdBy.isValid": 0,
-		}
-	}
+		},
+	},
 ];
 
 /**
@@ -141,7 +141,7 @@ const commonLookups = [
  * @param {Number} pageSize The size of the page
  * @returns {Promise<{data: [Hike]; metadata: [{type: String;}|PaginationMetadata]}|[Hike]>} Hikes
  */
-async function getHikes(filterQuery = {}, page, pageSize) {
+async function getHikes(page, pageSize, filterQuery = {}) {
 	const paginationActive = page !== undefined && pageSize !== undefined;
 
 	let p = [];
@@ -150,11 +150,11 @@ async function getHikes(filterQuery = {}, page, pageSize) {
 		delete filterQuery.trackPoints;
 	}
 	p = [
-		...p, 
+		...p,
 		{
 			$match: filterQuery,
 		},
-		...commonLookups
+		...commonLookups,
 	];
 	// If pagination is not used return all
 	if (paginationActive) {
@@ -164,15 +164,15 @@ async function getHikes(filterQuery = {}, page, pageSize) {
 				$facet: {
 					data: [
 						{
-							$skip: (page - 1) * pageSize
+							$skip: (page - 1) * pageSize,
 						},
 						{
-							$limit: pageSize
-						}
+							$limit: pageSize,
+						},
 					],
 					metadata: [
 						{
-							$count: "totalElements"
+							$count: "totalElements",
 						},
 						{
 							$addFields: {
@@ -181,19 +181,18 @@ async function getHikes(filterQuery = {}, page, pageSize) {
 								pageSize: pageSize,
 								totalPages: {
 									$ceil: {
-										$divide: [ "$totalElements", pageSize ]
-									}
-								}
-							}
-						}
-					]
-				}
-			}
+										$divide: ["$totalElements", pageSize],
+									},
+								},
+							},
+						},
+					],
+				},
+			},
 		];
 	}
 	const hikes = await Hike.aggregate(p);
-	if (paginationActive)
-		return hikes[0];
+	if (paginationActive) return hikes[0];
 	return hikes;
 }
 
@@ -207,8 +206,8 @@ async function createHike(hike) {
 		...hike,
 		trackPoints: {
 			type: "LineString",
-			coordinates: hike.trackPoints.map(p => [p[1], p[0]])
-		}
+			coordinates: hike.trackPoints.map((p) => [p[1], p[0]]),
+		},
 	});
 	const savedHike = await newHike.save();
 	return savedHike;
@@ -223,12 +222,12 @@ async function getHikeById(id) {
 	const hikes = await Hike.aggregate([
 		{
 			$match: {
-				_id: new ObjectId(id)
-			}
+				_id: new ObjectId(id),
+			},
 		},
-		...commonLookups
+		...commonLookups,
 	]);
-		
+
 	return hikes[0];
 }
 
@@ -242,7 +241,7 @@ async function updateHike(id, hikeUpdate) {
 	if (hikeUpdate.trackPoints) {
 		hikeUpdate.trackPoints = {
 			type: "LineString",
-			coordinates: hikeUpdate.trackPoints.map(p => [p[1], p[0]])
+			coordinates: hikeUpdate.trackPoints.map((p) => [p[1], p[0]]),
 		};
 	}
 	const hikeUpdated = await Hike.findByIdAndUpdate(id, hikeUpdate);

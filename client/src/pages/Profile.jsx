@@ -1,5 +1,4 @@
-import React, { useEffect } from "react";
-import { useContext } from "react";
+import React, { useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import { UserType } from "../helper/enums";
@@ -17,17 +16,13 @@ const Profile = () => {
 		}
 	}, [loggedIn, navigate]);
 
-	return (
-		<ProfileSwitch user={user} />
-	);
+	return <ProfileSwitch user={user} />;
 };
 
 const ProfileSwitch = ({ user }) => {
 	switch (user.userType) {
 		case UserType.LOCAL_GUIDE:
-			return (
-				<LocalGuideProfile user={user} />
-			);
+			return <LocalGuideProfile user={user} />;
 		default:
 			break;
 	}

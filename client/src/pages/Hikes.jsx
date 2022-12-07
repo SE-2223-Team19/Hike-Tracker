@@ -20,8 +20,9 @@ const Hikes = () => {
 	return (
 		<div className="w-100">
 			<Stack direction="horizontal" className="justify-content-between align-items-center">
-				<h1>Hikes</h1>
+				<h1 className="#tests-title">Hikes</h1>
 				<Button
+					className="#tests-filter-button"
 					variant={openFilters ? "success" : "outline-success"}
 					style={{ borderRadius: 20 }}
 					onClick={() => {

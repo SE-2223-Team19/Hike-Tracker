@@ -7,6 +7,5 @@ hikeRouter.get("/", hikeController.getHikes);
 hikeRouter.get("/:id", hikeController.getHikeById);
 hikeRouter.post("/", isLocalGuide, hikeController.createHike);
 hikeRouter.patch("/:id", isLocalGuide, hikeController.updateHike);
-// hikeRouter.delete("/:id", hikeController.deleteHike);
 
 module.exports = hikeRouter;

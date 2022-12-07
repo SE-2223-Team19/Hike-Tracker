@@ -1,8 +1,8 @@
 'use strict';
 const locationController = require("../controllers/location-controller");
-const locationService = require("")
+const userController = require("../controllers/user-controller")
 const { StatusCodes } = require("http-status-codes");
-const { LocationType } = require("../models/enums");
+const { LocationType, UserType } = require("../models/enums");
 const { setupDB, ResponseHelper } = require("./setup");
 
 setupDB("location-controller");
@@ -16,6 +16,59 @@ describe('getLocations', () => {
         }, response);
         expect(response.statusCode).toBe(StatusCodes.OK);
     });
+
+    test('Get Huts for the hut worker', async () => {
+        
+        const responseUserCreation = new ResponseHelper()
+        
+        const user = await userController.createUser(
+			{
+				body: {
+					email: "hiker@test.com",
+					fullName: "John Doe",
+					userType: UserType.HIKER,
+					password: "password",
+					confirmPassword: "password",
+				},
+			},
+			responseUserCreation
+		);
+
+		expect(responseUserCreation.statusCode).toBe(StatusCodes.CREATED);
+
+        const response = new ResponseHelper();
+        await locationController.createLocation({
+            user: {
+                _id: responseUserCreation.responseBody._id,
+                userType: UserType.HUT_WORKER,
+                email: "hut_worker@test.com",
+                fullName: "John Doe",
+            },
+            body: {
+                name: "A test hut",
+                locationType: LocationType.HUT,
+                description: "A test hut",
+                point: [7.683070, 45.068370],
+                phone: "332344435",
+                email: "test@polito.it",
+                webSite: "",
+                altitude: 10,
+                numberOfBeds: 15
+            }
+        }, response);
+        expect(response.statusCode).toBe(StatusCodes.CREATED);
+
+        const responseHuts = new ResponseHelper();
+        await locationController.getLocations({
+            query: {
+                createdBy: String(responseUserCreation.responseBody._id)
+            }
+        }, responseHuts);
+
+        expect(responseHuts.statusCode).toBe(StatusCodes.OK);
+        expect(responseHuts.responseBody.length).toBe(1)
+
+    })
 
     test('error in schema', async () => {
         const response = new ResponseHelper();
@@ -43,6 +96,48 @@ describe('createLocation', () => {
         }, response);
         expect(response.statusCode).toBe(StatusCodes.CREATED);
     });
+
+    test('insert new Hut', async () => {
+        
+        const responseUserCreation = new ResponseHelper()
+        
+        const user = await userController.createUser(
+			{
+				body: {
+					email: "hiker@test.com",
+					fullName: "John Doe",
+					userType: UserType.HIKER,
+					password: "password",
+					confirmPassword: "password",
+				},
+			},
+			responseUserCreation
+		);
+
+		expect(responseUserCreation.statusCode).toBe(StatusCodes.CREATED);
+
+        const response = new ResponseHelper();
+        await locationController.createLocation({
+            user: {
+                _id: responseUserCreation.responseBody._id,
+                userType: UserType.HUT_WORKER,
+                email: "hut_worker@test.com",
+                fullName: "John Doe",
+            },
+            body: {
+                name: "A test hut",
+                locationType: LocationType.HUT,
+                description: "A test hut",
+                point: [7.683070, 45.068370],
+                phone: "332344435",
+                email: "test@polito.it",
+                webSite: "",
+                altitude: 10,
+                numberOfBeds: 15
+            }
+        }, response);
+        expect(response.statusCode).toBe(StatusCodes.CREATED);
+    })
 
     
     test('insert parking coordination', async () => {
@@ -132,8 +227,31 @@ describe('update Hut Informations', () => {
 
     test('Try to update fields of hut', async () => {
         
+        const responseUserCreation = new ResponseHelper()
+        
+        const user = await userController.createUser(
+			{
+				body: {
+					email: "hiker@test.com",
+					fullName: "John Doe",
+					userType: UserType.HIKER,
+					password: "password",
+					confirmPassword: "password",
+				},
+			},
+			responseUserCreation
+		);
+
+		expect(responseUserCreation.statusCode).toBe(StatusCodes.CREATED);
+
         const responseCreateLocation = new ResponseHelper()
         const hut_test = await locationController.createLocation({
+            user: {
+                _id: responseUserCreation.responseBody._id,
+                userType: UserType.HUT_WORKER,
+                email: "hut_worker@test.com",
+                fullName: "John Doe"
+            },
             body: {
                 name: "A test hut",
                 locationType: LocationType.HUT,
@@ -173,8 +291,31 @@ describe('update Hut Informations', () => {
 
     test('Try to update fields of hut with error field capacity of Parking Lot', async () => {
         
+        const responseUserCreation = new ResponseHelper()
+        
+        const user = await userController.createUser(
+			{
+				body: {
+					email: "hiker@test.com",
+					fullName: "John Doe",
+					userType: UserType.HIKER,
+					password: "password",
+					confirmPassword: "password",
+				},
+			},
+			responseUserCreation
+		);
+
+		expect(responseUserCreation.statusCode).toBe(StatusCodes.CREATED);
+
         const responseCreateLocation = new ResponseHelper()
         const hut_test = await locationController.createLocation({
+            user: {
+                _id: responseUserCreation.responseBody._id,
+                userType: UserType.HUT_WORKER,
+                email: "hut_worker@test.com",
+                fullName: "John Doe"
+            },
             body: {
                 name: "A test hut",
                 locationType: LocationType.HUT,
@@ -205,9 +346,32 @@ describe('update Hut Informations', () => {
     })
 
     test('Try to update hut with empty fields', async () => {
+
+        const responseUserCreation = new ResponseHelper()
         
+        const user = await userController.createUser(
+			{
+				body: {
+					email: "hiker@test.com",
+					fullName: "John Doe",
+					userType: UserType.HIKER,
+					password: "password",
+					confirmPassword: "password",
+				},
+			},
+			responseUserCreation
+		);
+
+		expect(responseUserCreation.statusCode).toBe(StatusCodes.CREATED);
+
         const responseCreateLocation = new ResponseHelper()
         const hut_test = await locationController.createLocation({
+            user: {
+                _id: responseUserCreation.responseBody._id,
+                userType: UserType.HUT_WORKER,
+                email: "hut_worker@test.com",
+                fullName: "John Doe"
+            },
             body: {
                 name: "A test hut",
                 locationType: LocationType.HUT,

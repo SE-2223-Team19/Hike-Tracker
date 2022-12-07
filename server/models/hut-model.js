@@ -29,7 +29,11 @@ const Hut = Location.discriminator(LocationType.HUT, new Schema({
         type: String,
         required: false
     },
-    createdBy: { type: Schema.Types.ObjectId, ref: "User", required: true }
+    peopleWorks: { 
+        type: [Schema.Types.ObjectId], 
+        ref: "User", 
+        required: true 
+    }
 }));
 
 module.exports = Hut;

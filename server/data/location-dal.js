@@ -85,6 +85,7 @@ async function getLocationById(id) {
 async function createLocation(location) {
 	let newLocation = null;
 	if (location.locationType === LocationType.HUT) {
+		location.peopleWorks = []
 		newLocation = new Hut(location);
 	} else if (location.locationType === LocationType.PARKING_LOT) {
 		newLocation = new ParkingLot(location);

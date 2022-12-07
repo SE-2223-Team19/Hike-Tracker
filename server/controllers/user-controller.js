@@ -5,6 +5,7 @@ const userDAL = require("../data/user-dal");
 const { UserType } = require("../models/enums");
 const { randString } = require("../mail_verification/utility");
 const { sendEmail } = require("../mail_verification/verification");
+const locationDAL = require("../data/location-dal")
 
 /**
  * POST /user
@@ -31,6 +32,10 @@ async function createUser(req, res) {
 				.valid(...Object.values(UserType)),
 			password: joi.string().required(),
 			confirmPassword: joi.string().required().allow(joi.ref("password")),
+			hutsSelected: joi.alternatives().conditional("userType", {
+				is: UserType.HUT_WORKER,
+				then: joi.array().items(joi.string()).required()
+			})
 		});
 
 		// Validate request body against schema
@@ -58,11 +63,21 @@ async function createUser(req, res) {
 			isValid: isValid,
 		});
 
+		
+		if(UserType.HUT_WORKER == value.userType) {
+			value.hutsSelected.forEach(async(e) => {
+				let loc = await locationDAL.getLocationById(e)
+				loc.peopleWorks = loc.peopleWorks.push(createdUser._id)
+				await locationDAL.updateLocation(e, loc)
+			})
+		}
+
 		await sendEmail(value.email, uniqueString);
 		return res
 			.status(StatusCodes.CREATED)
 			.json({ _id: createdUser._id, uniqueString: uniqueString });
-	} catch (err) {
+		
+		} catch (err) {
 		if (err.name === "MongoServerError" && err.code === 11000) {
 			return res
 				.status(StatusCodes.UNPROCESSABLE_ENTITY)

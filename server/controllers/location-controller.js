@@ -30,18 +30,17 @@ async function getLocations(req, res) {
 			}),
 			page: joi.number().greater(0),
 			pageSize: joi.number().greater(0),
-			createdBy: joi.string()
+			workedPeopleId: joi.string()
 		});
 
 		const { error, value } = schema.validate(query);
-
 		if (error) throw error;
 
 		let filter = {};
 
 		if (value.locationType) filter.locationType = value.locationType;
 		if (value.description) filter.description = { $regex: value.description };
-		if (value.createdBy) filter.createdBy = new ObjectId(value.createdBy);
+		if (value.workedPeopleId) filter.peopleWorks = ObjectId(value.workedPeopleId)
 		if (value.locationLat && value.locationLon && value.locationRadius)
 			filter.point = {
 				$near: {
@@ -135,9 +134,6 @@ async function createLocation(req, res) {
 		if (error) throw error; // Joi validation error, goes to catch block
 
 		// Create new location
-		if(value.locationType == LocationType.HUT) {
-			value.createdBy = req.user._id;
-		}
 		const createdLocation = await locationDAL.createLocation(value);
 		return res.status(StatusCodes.CREATED).json(createdLocation);
 	} catch (err) {

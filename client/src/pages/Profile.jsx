@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import { UserType } from "../helper/enums";
 import LocalGuideProfile from "./profiles/LocalGuideProfile";
+import HutWorkerProfile from "./profiles/HutWorkerProfile";
 
 // TODO: Modify the Profile page based on the user type (for now only local_guide)
 
@@ -23,6 +24,8 @@ const ProfileSwitch = ({ user }) => {
 	switch (user.userType) {
 		case UserType.LOCAL_GUIDE:
 			return <LocalGuideProfile user={user} />;
+		case UserType.HUT_WORKER:
+			return <HutWorkerProfile user = {user} />;
 		default:
 			break;
 	}

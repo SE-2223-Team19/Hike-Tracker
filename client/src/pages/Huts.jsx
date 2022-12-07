@@ -90,14 +90,14 @@ function Huts() {
 	);
 }
 
-const HutCard = ({ hut }) => {
+export const HutCard = ({ hut }) => {
 	return (
 		<Col>
 			<Card className="flex-col p-3 mt-4">
 				<Card.Body>
 					<Card.Title>
 						<Stack direction="horizontal" className="justify-content-between align-items-center">
-							<h5>Description: {hut.description}</h5>
+							<h6>{hut.name}</h6>
 						</Stack>
 					</Card.Title>
 					<div>
@@ -152,8 +152,12 @@ function MapHut({ hut }) {
 		popupAnchor: [0, -46],
 	});
 
+	let points = [...hut.point].reverse().reduce((e1, e2) => {
+		return "Lat: " + e1.toFixed(2) + ", Lon: " + e2.toFixed(2) 
+	})
+
 	return (
-		<Col xs={10} className="p-4">
+		<Col xs={10} className="p-2">
 			<MapContainer
 				style={{ width: "100%", height: "30vh" }}
 				center={hut ? [...hut.point].reverse() : [0, 0]}
@@ -161,12 +165,18 @@ function MapHut({ hut }) {
 				scrollWheelZoom={false}
 				zoomControl={false}
 				dragging={false}
+				doubleClickZoom={false}
 			>
 				<Marker position={[...hut.point].reverse()} icon={markerLocation}>
-					<Popup>Reference point</Popup>
+					<Popup>{points}</Popup>
 				</Marker>
 				<TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
 			</MapContainer>
+			<Row className="mt-3">Number of Beds: {hut.numberOfBeds}</Row>
+			<Row className="mt-2">Phone: {hut.phone}</Row>
+			<Row className="mt-2">Email: {hut.email}</Row>
+			<Row className="mt-2">Description: {hut.description}</Row>
+			<Row className="mt-2">Web Site: {hut.webSite ? hut.webSite : "Unknown"}</Row>
 		</Col>
 	);
 }

@@ -1,9 +1,11 @@
-import { React, useState } from "react";
+import { React, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Form, Row, Col, Button, Modal, Alert } from "react-bootstrap";
+import { Form, Row, Col, Button, Modal, Alert, ListGroup, ListGroupItem } from "react-bootstrap";
 import { UserType } from "../helper/enums";
 import { capitalizeAndReplaceUnderscores } from "../helper/utils";
 import { createUser } from "../api/users";
+import { getHuts } from "../api/locations"
+import HutSelection from "./HutSelection";
 
 function SignInForm() {
 	const [email, setEmail] = useState("");
@@ -12,7 +14,10 @@ function SignInForm() {
 	const [confirmPassword, setConfirmPassword] = useState("");
 	const [userType, setUserType] = useState("");
 	const [isSubmitting, setIsSubmitting] = useState(false);
+	const [huts, setHuts] = useState([])
+	const [hutsSelected, setHutsSelected] = useState([])
 	const [showModal, setShowModal] = useState(false);
+	const [showModalHutWorker, setShowModalHutWorker] = useState(false);
 	const [errors, setErrors] = useState({
 		email: "",
 		fullName: "",
@@ -21,6 +26,22 @@ function SignInForm() {
 		userType: "",
 		form: "",
 	});
+
+	const addHutToList = (hut) => {
+		setHutsSelected(olderList => [...olderList, hut])
+	}
+
+	const removeHutToList = (hut) => {
+		setHutsSelected(hutsSelected.filter(item => item.latitude != hut.latitude && item.longitude != hut.longitude))
+	}
+
+	useEffect(() => {
+		const fetchHuts = async () => {
+			const huts = await getHuts()
+			setHuts(huts)
+		}
+		fetchHuts()
+	}, [])
 
 	const emailValidation = () => {
 		const test = /\S+@\S+\.\S+/.test(email);
@@ -52,6 +73,7 @@ function SignInForm() {
 					userType,
 					password,
 					confirmPassword,
+					hutsSelected
 				});
 				setShowModal(true);
 			} catch (err) {
@@ -138,6 +160,7 @@ function SignInForm() {
 								))}
 							</Form.Select>
 							<Form.Control.Feedback type="invalid">{errors.userType}</Form.Control.Feedback>
+							{userType == UserType.HUT_WORKER && <Button variant="success" className="mt-2" onClick={() => setShowModalHutWorker(true)}>Select the hut</Button>}
 						</Form.Group>
 					</Col>
 				</Row>
@@ -148,7 +171,27 @@ function SignInForm() {
 						</Button>
 					</Col>
 				</Row>
+
 			</Form>
+			<Modal show={showModalHutWorker} onHide={() => {
+				setShowModalHutWorker(false)
+				setHutsSelected([])
+			}} backdrop={"static"} >
+				<Modal.Header closeButton>
+					<Modal.Title>Select the huts where you work</Modal.Title>
+				</Modal.Header>
+				<Modal.Body>
+					<ListGroup>
+						{
+							huts.map((hut) => <HutSelection key={hut._id} hutsSelected={hutsSelected} hut={hut} addHutToList={addHutToList}
+								removeHutToList={removeHutToList} />)
+						}
+					</ListGroup>
+				</Modal.Body>
+				<Modal.Footer>
+					<Button variant="success" onClick={() => { setShowModalHutWorker(false) }}>Save</Button>
+				</Modal.Footer>
+			</Modal>
 			<Modal show={showModal} onHide={() => setShowModal(false)} backdrop={"static"}>
 				<Modal.Header>
 					<Modal.Title>Registration completed</Modal.Title>

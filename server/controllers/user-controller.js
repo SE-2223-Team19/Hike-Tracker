@@ -176,8 +176,6 @@ async function updateUser(req, res) {
 
 		if (error) throw error;
 
-		console.log(value);
-
 		let user = {};
 
 		if (value.userType) user.userType = value.userType;
@@ -194,10 +192,10 @@ async function updateUser(req, res) {
 
 		if (value.isValid !== undefined) {
 			if (value.isValid) {
-				sendAccountValidatedEmail(updatedUser.email, req.user.fullName);
+				await sendAccountValidatedEmail(updatedUser.email, req.user.fullName);
 			}
 			else {
-				sendAccountBlockedEmail(updatedUser.email, req.user.fullName);
+				await sendAccountBlockedEmail(updatedUser.email, req.user.fullName);
 			}
 		}
 

@@ -11,6 +11,7 @@ const ENDPOINTS = {
 		all: "location",
 		byId: "location/:id",
 		insert: "location",
+		update: "location/:id"
 	},
 	sessions: {
 		insert: "session",

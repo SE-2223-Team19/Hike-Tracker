@@ -1,8 +1,8 @@
 const joi = require("joi");
 const { StatusCodes } = require("http-status-codes");
-const ObjectId = require("mongoose").Types.ObjectId;
 const locationDAL = require("../data/location-dal");
 const { LocationType } = require("../models/enums");
+const ObjectId = require('mongoose').Types.ObjectId
 
 /**
  * GET /location
@@ -126,6 +126,10 @@ async function createLocation(req, res) {
 				is: LocationType.HUT,
 				then: joi.string().uri().allow(""),
 			}),
+			peopleWorks: joi.alternatives().conditional("locationType", {
+				is: LocationType.HUT,
+				then: joi.array().items(joi.string())
+			})
 		});
 
 		// Validate request body against schema
@@ -171,9 +175,9 @@ async function updateLocation(req, res) {
 				.string()
 				.valid(...Object.values(LocationType))
 				.required(),
-			name: joi.alternatives().conditional("name", {
+			name: joi.alternatives().conditional("locationType", {
 				is: [LocationType.HUT, LocationType.PARKING_LOT],
-				then: joi.string(),
+				then: joi.string()
 			}),
 			capacity: joi.alternatives().conditional("locationType", {
 				is: LocationType.PARKING_LOT,
@@ -189,7 +193,7 @@ async function updateLocation(req, res) {
 			}),
 			phone: joi.alternatives().conditional("locationType", {
 				is: LocationType.HUT,
-				then: joi.number(),
+				then: joi.string(),
 			}),
 			email: joi.alternatives().conditional("locationType", {
 				is: LocationType.HUT,
@@ -199,7 +203,7 @@ async function updateLocation(req, res) {
 				is: LocationType.HUT,
 				then: joi.string().uri().allow(""),
 			}),
-			description: joi.string(),
+			description: joi.string()
 		});
 
 		const { value, error } = schema.validate(body);

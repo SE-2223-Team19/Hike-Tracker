@@ -17,59 +17,6 @@ describe('getLocations', () => {
         expect(response.statusCode).toBe(StatusCodes.OK);
     });
 
-    test('Get Huts for the hut worker', async () => {
-        
-        const responseUserCreation = new ResponseHelper()
-        
-        const user = await userController.createUser(
-			{
-				body: {
-					email: "hiker@test.com",
-					fullName: "John Doe",
-					userType: UserType.HIKER,
-					password: "password",
-					confirmPassword: "password",
-				},
-			},
-			responseUserCreation
-		);
-
-		expect(responseUserCreation.statusCode).toBe(StatusCodes.CREATED);
-
-        const response = new ResponseHelper();
-        await locationController.createLocation({
-            user: {
-                _id: responseUserCreation.responseBody._id,
-                userType: UserType.HUT_WORKER,
-                email: "hut_worker@test.com",
-                fullName: "John Doe",
-            },
-            body: {
-                name: "A test hut",
-                locationType: LocationType.HUT,
-                description: "A test hut",
-                point: [7.683070, 45.068370],
-                phone: "332344435",
-                email: "test@polito.it",
-                webSite: "",
-                altitude: 10,
-                numberOfBeds: 15
-            }
-        }, response);
-        expect(response.statusCode).toBe(StatusCodes.CREATED);
-
-        const responseHuts = new ResponseHelper();
-        await locationController.getLocations({
-            query: {
-                createdBy: String(responseUserCreation.responseBody._id)
-            }
-        }, responseHuts);
-
-        expect(responseHuts.statusCode).toBe(StatusCodes.OK);
-        expect(responseHuts.responseBody.length).toBe(1)
-
-    })
-
     test('error in schema', async () => {
         const response = new ResponseHelper();
         await locationController.getLocations({

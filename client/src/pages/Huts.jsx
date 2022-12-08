@@ -90,7 +90,7 @@ function Huts() {
 	);
 }
 
-export const HutCard = ({ hut }) => {
+export const HutCard = ({ hut, user, setCurrentHut, setShow }) => {
 	return (
 		<Col>
 			<Card className="flex-col p-3 mt-4">
@@ -106,6 +106,10 @@ export const HutCard = ({ hut }) => {
 						</Row>
 					</div>
 				</Card.Body>
+				{user && <Button onClick = {() => {
+					setCurrentHut(hut)
+					setShow(true)
+					}}>Update</Button>}
 			</Card>
 		</Col>
 	);

@@ -61,6 +61,18 @@ function DescribeHikeForm({ hike }) {
 						).ascent * 100
 				) / 100
 			);
+			setFieldValue("startPoint", {
+				point: {
+					lat: gpx.tracks[0].points[0].lat,
+					lng: gpx.tracks[0].points[0].lon,
+				},
+			});
+			setFieldValue("endPoint", {
+				point: {
+					lat: gpx.tracks[0].points[gpx.tracks[0].points.length - 1].lat,
+					lng: gpx.tracks[0].points[gpx.tracks[0].points.length - 1].lon,
+				},
+			});
 		};
 		fileReader.readAsText(file);
 	};
@@ -75,6 +87,7 @@ function DescribeHikeForm({ hike }) {
 		if (values.endPoint === "") {
 			values.endPoint = null;
 		}
+		console.log(values);
 		const createdHike = await createHike({ ...values });
 		if (createdHike) {
 			return navigate("/profile");
@@ -135,8 +148,8 @@ function DescribeHikeForm({ hike }) {
 	const getInitialExpectedTime = () => (hike ? hike.expectedTime : "");
 	const getInitialDifficulty = () => (hike ? hike.difficulty : "");
 	const getInitialDescription = () => (hike ? hike.description : "");
-	const getInitialStartPoint = () => (hike ? formatPoint(hike.startPoint) : "null");
-	const getInitialEndPoint = () => (hike ? formatPoint(hike.endPoint) : "");
+	const getInitialStartPoint = () => (hike ? formatPoint(hike.startPoint) : null);
+	const getInitialEndPoint = () => (hike ? formatPoint(hike.endPoint) : null);
 	const getInitialReferencePoints = () => (hike ? hike.referencePoints : []);
 	// const getInitialLinkedHuts = () => (hike ? hike.linkedHuts.map(formatPoint) : []);
 

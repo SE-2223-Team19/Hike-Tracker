@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { verifyUser } from "../api/users";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 
 const Verify = () => {
 	const { uniqueString } = useParams();

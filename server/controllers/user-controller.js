@@ -3,8 +3,8 @@ const crypto = require("crypto");
 const { StatusCodes } = require("http-status-codes");
 const userDAL = require("../data/user-dal");
 const { UserType } = require("../models/enums");
-const { randString } = require("../mail_verification/utility");
-const { sendEmail } = require("../mail_verification/verification");
+const { randString } = require("../helper/utility");
+const { sendVerificationEmail, sendAccountBlockedEmail, sendAccountValidatedEmail } = require("../email/account");
 
 async function getUsers(req, res) {
 	try {
@@ -97,7 +97,7 @@ async function createUser(req, res) {
 			isValid: isValid,
 		});
 
-		await sendEmail(value.email, uniqueString);
+		await sendVerificationEmail(value.email, uniqueString);
 		return res
 			.status(StatusCodes.CREATED)
 			.json({ _id: createdUser._id, uniqueString: uniqueString });
@@ -121,25 +121,31 @@ async function createUser(req, res) {
  * @returns {Promise<Response>}
  */
 async function verifyUser(req, res) {
-	const uniqueString = req.params.uniqueString;
-	const users = await userDAL.getUsers({ uniqueString: uniqueString });
-	const user = users[0];
-	if (user) {
-		user.isEmailValidated = true;
+	try {
 
-		// For all users except hikers the validation is handled by the platform manager
-		if (user.userType === UserType.HIKER) {
-			user.isValid = true;
+		const uniqueString = req.params.uniqueString;
+		const users = await userDAL.getUsers({ uniqueString: uniqueString });
+		const user = users[0];
+		if (user) {
+			user.isEmailValidated = true;
+	
+			// For all users except hikers the validation is handled by the platform manager
+			if (user.userType === UserType.HIKER) {
+				user.isValid = true;
+			}
+	
+			await userDAL.updateUser(user._id, user);
+			return res
+				.status(StatusCodes.OK)
+				.json({ message: "Your email address has been verified.", verified: true });
+		} else {
+			return res
+				.status(StatusCodes.NOT_FOUND)
+				.json({ message: "Your email address hasn't been verified.", verified: false });
 		}
-
-		await userDAL.updateUser(user);
-		return res
-			.status(StatusCodes.OK)
-			.json({ message: "Your email address has been verified.", verified: true });
-	} else {
-		return res
-			.status(StatusCodes.NOT_FOUND)
-			.json({ message: "Your email address hasn't been verified.", verified: false });
+	} catch (err) {
+		console.log(err);
+		return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ err: err });
 	}
 }
 
@@ -173,9 +179,18 @@ async function updateUser(req, res) {
 			user.hash = hash;
 			user.salt = salt;
 		}
-		if (value.isValid) user.isValid = value.isValid;
+		if (value.isValid !== undefined) user.isValid = value.isValid;
 
 		const updatedUser = await userDAL.updateUser(id, user);
+
+		if (value.isValid !== undefined) {
+			if (value.isValid) {
+				await sendAccountValidatedEmail(updatedUser.email, req.user.fullName);
+			}
+			else {
+				await sendAccountBlockedEmail(updatedUser.email, req.user.fullName);
+			}
+		}
 
 		return res.status(StatusCodes.OK).end();
 	} catch (err) {

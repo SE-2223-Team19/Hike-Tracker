@@ -27,7 +27,7 @@ const Verify = () => {
 			}}
 		>
 			{verified ? (
-				<p>
+				<div>
 					<h1 style={{ fontSize: "100px", color: "#69df6f" }}>
 						<i className="bi bi-envelope-check"></i>
 					</h1>
@@ -37,9 +37,9 @@ const Verify = () => {
 					<Link to="/" className="btn btn-success">
 						Go to homepage
 					</Link>
-				</p>
+				</div>
 			) : (
-				<p>
+				<div>
 					<h1 style={{ fontSize: "100px", color: "#ff3d3d" }}>
 						<i className="bi bi-envelope-x"></i>
 					</h1>
@@ -49,7 +49,7 @@ const Verify = () => {
 					<Link to="/" className="btn btn-success">
 						Go to homepage
 					</Link>
-				</p>
+				</div>
 			)}
 		</div>
 	);

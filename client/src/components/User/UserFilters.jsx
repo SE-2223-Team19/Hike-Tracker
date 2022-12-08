@@ -7,11 +7,15 @@ const UserFilters = ({ filters, setFilters }) => {
 
 	const [localFilters, setLocalFilters] = useState({});
 
+	const submit = () => setFilters(localFilters);
+
 	useEffect(() => {
 		setLocalFilters(filters);
 	}, [filters]);
 
-	const submit = () => setFilters(localFilters);
+	useEffect(() => {
+		submit();
+	}, [localFilters.userType]);
 
 	return (
 		<Row className="mt-4">
@@ -61,7 +65,6 @@ const UserFilters = ({ filters, setFilters }) => {
 								setLocalFilters({ ...localFilters, userType: e.target.value });
 							}
 						}}
-						onBlur={submit}
 					>
 						<option value="">Select a user type</option>
 						{

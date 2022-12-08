@@ -1,5 +1,15 @@
 import { React, useContext, useEffect } from "react";
-import { Form, Button, Row, Col, Container, Stack } from "react-bootstrap";
+import {
+	Form,
+	Button,
+	Row,
+	Col,
+	Container,
+	ListGroup,
+	ListGroupItem,
+	CloseButton,
+	Stack,
+} from "react-bootstrap";
 import { Difficulty, UserType } from "../../helper/enums";
 import { capitalizeAndReplaceUnderscores } from "../../helper/utils";
 import { Formik } from "formik";
@@ -397,6 +407,52 @@ function DescribeHikeForm({ hike }) {
 								<Form.Control.Feedback type="invalid">
 									{errors.referencePoints}
 								</Form.Control.Feedback>
+							</Form.Group>
+						</Col>
+					</Row>
+					<Row>
+						<Col>
+							<Form.Group>
+								<Form.Label>Linked Huts</Form.Label>
+								<ListGroup as="ol" className="mb-3">
+									{values.linkedHuts.map((point) => (
+										<ListGroupItem key={point._id} className="d-flex justify-content-between">
+											<span>
+												{point.description} (Lat: {point.point.lat} Long: {point.point.lng})
+											</span>
+											<CloseButton
+												onClick={() => {
+													setFieldValue(
+														"referencePoints",
+														values.referencePoints.filter((p) => p._id !== point._id)
+													);
+												}}
+											/>
+										</ListGroupItem>
+									))}
+								</ListGroup>
+								<PointSelector
+									name="linkedHuts"
+									value={values.linkedHuts.map((p) => p._id)}
+									multiple
+									isInvalid={!!errors.linkedHuts}
+									handleChange={(location) => {
+										if (!values.linkedHuts.some((p) => p._id === location._id)) {
+											setFieldValue("linkedHuts", [
+												...values.linkedHuts,
+												{
+													point: {
+														lat: location.point[1],
+														lng: location.point[0],
+													},
+													locationType: location.locationType,
+													_id: location._id,
+													description: location.description,
+												},
+											]);
+										}
+									}}
+								/>
 							</Form.Group>
 						</Col>
 					</Row>

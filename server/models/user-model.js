@@ -14,6 +14,7 @@ const userSchema = new Schema({
 	uniqueString: { type: String, unique: true },
 	isEmailValidated: Boolean,
 	isValid: Boolean,
+	preferences: { minLength: Number, maxLength: Number, minAscent: Number, maxAscent: Number, minExpectedTime: Number, maxExpectedTime: Number, difficulty: String, locationCoordinatesLat: Number, locationCoordinatesLng: Number, locationRadius: Number }
 });
 
 // User Model

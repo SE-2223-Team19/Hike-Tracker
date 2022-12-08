@@ -21,6 +21,7 @@ const ENDPOINTS = {
 		insert: "user",
 		update: "user/:id",
 		verify: "user/verify/:uniqueString",
+		preferences: "user/preferences",
 	},
 };
 

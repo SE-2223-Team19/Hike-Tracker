@@ -11,13 +11,9 @@ async function getUsers(req, res) {
 		const { query } = req;
 
 		const schema = joi.object().keys({
-			email: joi
-				.string()
-				.email({ tlds: { allow: false } }),
+			email: joi.string().email({ tlds: { allow: false } }),
 			fullName: joi.string(),
-			userType: joi
-				.string()
-				.valid(...Object.values(UserType)),
+			userType: joi.string().valid(...Object.values(UserType)),
 			page: joi.number().greater(0),
 			pageSize: joi.number().greater(0),
 		});
@@ -26,26 +22,26 @@ async function getUsers(req, res) {
 
 		if (error) throw error;
 
-		const {page, pageSize, ...filter} = value;
+		const { page, pageSize, ...filter } = value;
 
 		const users = await userDAL.getUsers(filter, page, pageSize);
 		if (Array.isArray(users)) {
-			return res.status(StatusCodes.OK).json(users.map(u => {
-				const { salt, hash, uniqueString, ...user} = u;
-				return user;
-			}));
+			return res.status(StatusCodes.OK).json(
+				users.map((u) => {
+					const { salt, hash, uniqueString, ...user } = u;
+					return user;
+				})
+			);
 		}
 		return res.status(StatusCodes.OK).json({
 			...users,
-			data: users.data.map(u => {
-				const { salt, hash, uniqueString, ...user} = u;
+			data: users.data.map((u) => {
+				const { salt, hash, uniqueString, ...user } = u;
 				return user;
-			})
+			}),
 		});
 	} catch (err) {
-		return res
-		.status(StatusCodes.BAD_REQUEST)
-		.json({ err: err.message });
+		return res.status(StatusCodes.BAD_REQUEST).json({ err: err.message });
 	}
 }
 
@@ -149,21 +145,18 @@ async function verifyUser(req, res) {
 
 async function updateUser(req, res) {
 	try {
-
 		const { id } = req.params;
 		const { body } = req;
 
 		const schema = joi.object().keys({
-			userType: joi
-				.string()
-				.valid(...Object.values(UserType)),
+			userType: joi.string().valid(...Object.values(UserType)),
 			password: joi.string(),
 			confirmPassword: joi.string().allow(joi.ref("password")).when(joi.ref("password"), {
 				is: joi.exist(),
 				then: joi.required(),
-				otherwise: joi.forbidden()
+				otherwise: joi.forbidden(),
 			}),
-			isValid: joi.boolean()
+			isValid: joi.boolean(),
 		});
 
 		const { error, value } = schema.validate(body);
@@ -186,9 +179,50 @@ async function updateUser(req, res) {
 
 		return res.status(StatusCodes.OK).end();
 	} catch (err) {
-		return res
-			.status(StatusCodes.BAD_REQUEST)
-			.json({ err: err.message });
+		return res.status(StatusCodes.BAD_REQUEST).json({ err: err.message });
+	}
+}
+
+async function getPreferences(req, res) {
+	const userId = req.user._id;
+	const users = await userDAL.getUsers({ _id: userId });
+	const user = users[0];
+	console.log(user);
+	if (user) {
+		if (user.preferences) {
+			return res.status(StatusCodes.OK).json(user.preferences);
+		} else {
+			return res.status(StatusCodes.OK).json({});
+		}
+	} else {
+		return res.status(StatusCodes.NOT_FOUND).json({ message: "User not found" });
+	}
+}
+
+async function updatePreferences(req, res) {
+	const userId = req.user._id;
+	const users = await userDAL.getUsers({ _id: userId });
+	const user = users[0];
+	console.log(user);
+	if (user) {
+		user.preferences = req.body;
+		await userDAL.updateUser(user);
+		return res.status(StatusCodes.OK).json(user.preferences);
+	} else {
+		return res.status(StatusCodes.NOT_FOUND).json({ message: "User not found" });
+	}
+}
+
+async function deletePreferences(req, res) {
+	const userId = req.user._id;
+	const users = await userDAL.getUsers({ _id: userId });
+	const user = users[0];
+	if (user) {
+		user.preferences = {};
+		await userDAL.updateUser(user);
+		return res.status(StatusCodes.OK).json(user.preferences);
+	} else {
+		return res.status(StatusCodes.NOT_FOUND).json({ message: "User not found" });
 	}
 }
 
@@ -196,5 +230,8 @@ module.exports = {
 	getUsers,
 	createUser,
 	verifyUser,
-	updateUser
+	updateUser,
+	getPreferences,
+	updatePreferences,
+	deletePreferences,
 };

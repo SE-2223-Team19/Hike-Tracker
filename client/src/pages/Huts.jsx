@@ -65,7 +65,7 @@ function Huts({setCurrentHut, setShow, dirty, setDirty}) {
 			)}
 			<Container>
 				<PaginatedList
-					dataElement={(hut) => <HutCard key={hut._id} hut={hut} setCurrentHut={setCurrentHut} user={user} setShow={setShow} />}
+					dataElement={(hut) => <HutCard data-test-id = "descriptionHutForm" key={hut._id} hut={hut} setCurrentHut={setCurrentHut} user={user} setShow={setShow} />}
 					dataContainer={({ children }) => <Row className="g-4 row-cols-1 row-cols-sm-1 row-cols-md-3">{children}</Row>}
 					errorElement={(error) => <NoData message={error} />}
 					noDataElement={() => <NoData message={"No huts found."} />}

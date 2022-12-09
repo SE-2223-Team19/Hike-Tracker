@@ -77,7 +77,7 @@ async function createUser(req, res) {
 			confirmPassword: joi.string().required().allow(joi.ref("password")),
 			hutsSelected: joi.alternatives().conditional("userType", {
 				is: UserType.HUT_WORKER,
-				then: joi.array().items(joi.string()).required()
+				then: joi.array().items(joi.string()).min(1).required()
 			})
 		});
 

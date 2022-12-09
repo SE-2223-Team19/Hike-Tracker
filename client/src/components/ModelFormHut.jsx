@@ -69,6 +69,7 @@ function ModelFormHut({ currentHut, show, setShow, setDirty }) {
 						<Form.Group>
 							<Form.Label>Description</Form.Label>
 							<Form.Control
+								data-test-id = "descriptionHut"
 								value={values.description}
 								onChange={handleChange}
 								onBlur={handleBlur}

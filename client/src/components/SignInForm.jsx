@@ -61,13 +61,20 @@ function SignInForm() {
 		return test;
 	};
 
+	const hutsSelectedValidation = () => {
+		const test = hutsSelected.length !== 0
+		setErrors({ ...errors, form: "You have to select at least 1 hut where you work" })
+		return test
+	}
+
 	const onSubmit = async (e) => {
 		e.preventDefault();
 		setIsSubmitting(true);
 		if ([emailValidation(), confirmPasswordValidation(), userTypeValidation()].every((a) => a)) {
 			try {
 				setErrors({ ...errors, form: "" });
-				if (userType === UserType.HUT_WORKER)
+				if (userType === UserType.HUT_WORKER && hutsSelectedValidation.apply()) {
+					setErrors({ ...errors, form: "" });
 					await createUser({
 						email,
 						fullName,
@@ -76,7 +83,8 @@ function SignInForm() {
 						confirmPassword,
 						hutsSelected
 					});
-				else
+				}
+				if (userType !== UserType.HUT_WORKER)
 					await createUser({
 						email,
 						fullName,
@@ -104,6 +112,7 @@ function SignInForm() {
 						<Form.Group>
 							<Form.Label>Email</Form.Label>
 							<Form.Control
+								data-test-id="email"
 								type={"email"}
 								value={email}
 								onChange={(e) => setEmail(e.target.value)}
@@ -117,6 +126,7 @@ function SignInForm() {
 						<Form.Group>
 							<Form.Label>Full name</Form.Label>
 							<Form.Control
+								data-test-id="fullName"
 								type={"text"}
 								value={fullName}
 								onChange={(e) => setFullName(e.target.value)}
@@ -131,6 +141,7 @@ function SignInForm() {
 						<Form.Group className="mt-4">
 							<Form.Label>Password</Form.Label>
 							<Form.Control
+								data-test-id="password"
 								type={"password"}
 								value={password}
 								onChange={(e) => setPassword(e.target.value)}
@@ -143,6 +154,7 @@ function SignInForm() {
 						<Form.Group>
 							<Form.Label className="mt-4">Confirm password</Form.Label>
 							<Form.Control
+								data-test-id="confirmPass"
 								type={"password"}
 								value={confirmPassword}
 								onChange={(e) => setConfirmPassword(e.target.value)}
@@ -158,6 +170,7 @@ function SignInForm() {
 						<Form.Group className="mt-4">
 							<Form.Label>User type</Form.Label>
 							<Form.Select
+								data-test-id="userType"
 								value={userType}
 								onChange={(e) => setUserType(e.target.value)}
 								isInvalid={!!errors.userType}
@@ -176,7 +189,7 @@ function SignInForm() {
 				</Row>
 				<Row>
 					<Col>
-						<Button type="submit" className="mt-4" variant="success" disabled={isSubmitting}>
+						<Button data-test-id="sign-in" type="submit" className="mt-4" variant="success" disabled={isSubmitting}>
 							Sign in
 						</Button>
 					</Col>

@@ -44,7 +44,7 @@ const HikeCard = ({ hike, showDetails }) => {
 						<div className="ms-auto">
 							{(loggedIn && user.userType !== UserType.HUT_WORKER ) && (
 								<Stack direction="horizontal" gap={3}>
-									<Button onClick={() => showDetails(hike)} variant={"success"}>
+									<Button data-test-id = "seeOnMap" onClick={() => showDetails(hike)} variant={"success"}>
 										See on Map
 									</Button>
 									<Button variant="dark" onClick={() => navigate("/hike", { state: { hike } })}>

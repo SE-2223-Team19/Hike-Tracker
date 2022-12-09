@@ -30,6 +30,7 @@ const AuthProvider = ({ children }) => {
 		checkAuth().then(() => setLoadingInitial(false));
 	}, []);
 
+<<<<<<< HEAD
 	const handleLogin = useCallback(
 		async (credentials) => {
 			try {
@@ -46,6 +47,21 @@ const AuthProvider = ({ children }) => {
 	);
 
 	const handleLogout = useCallback(async () => {
+=======
+	const handleLogin = useMemo(() => async (credentials) => {
+		try {
+			const user = await logIn(credentials);
+			setUser(user);
+			setLoggedIn(true);
+			navigate("/");
+			setMessage({ msg: `Welcome, ${user.fullName}!`, type: "success" });
+		} catch (err) {
+			setMessage({ msg: `Incorrect username or password`, type: "danger" });
+		}
+	}, [navigate]);
+
+	const handleLogout = useMemo(() => async () => {
+>>>>>>> origin/development
 		await logOut();
 		navigate("/");
 		setLoggedIn(false);
@@ -53,6 +69,7 @@ const AuthProvider = ({ children }) => {
 		setMessage({ msg: `Logout successful!`, type: "secondary" });
 	}, [navigate]);
 
+<<<<<<< HEAD
 	const memoValue = useMemo(
 		() => ({
 			handleLogin,
@@ -64,6 +81,16 @@ const AuthProvider = ({ children }) => {
 		}),
 		[handleLogin, handleLogout, loggedIn, message, user]
 	);
+=======
+	const memoValue = useMemo(() => ({
+		handleLogin, 
+		handleLogout, 
+		loggedIn, 
+		message, 
+		setMessage, 
+		user 
+	}), [loggedIn, message, user, handleLogin, handleLogout]);
+>>>>>>> origin/development
 
 	return (
 		<AuthContext.Provider value={memoValue}>{!loadingInitial && children}</AuthContext.Provider>

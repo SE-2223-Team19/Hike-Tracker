@@ -1,6 +1,6 @@
 /** Utility functions */
 
-import { Difficulty } from "./enums";
+import { Difficulty, UserType } from "./enums";
 
 /**
  * Convert minutes to hours and minutes display format
@@ -33,6 +33,23 @@ export const difficultyToColor = (difficulty) => {
 			return "danger";
 		default:
 			return "secondary";
+	}
+};
+
+export const userTypeToColour = (userType) => {
+	switch (userType) {
+		case UserType.HIKER:
+			return "success";
+		case UserType.EMERGENCY_OPERATOR:
+			return "danger";
+		case UserType.HUT_WORKER:
+			return "warning";
+		case UserType.LOCAL_GUIDE:
+			return "info";
+		case UserType.PLATFORM_MANAGER:
+			return "dark";
+		default:
+			return "light";
 	}
 };
 

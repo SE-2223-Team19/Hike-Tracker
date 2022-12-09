@@ -72,8 +72,7 @@ function SignInForm() {
 					fullName,
 					userType,
 					password,
-					confirmPassword,
-					hutsSelected
+					confirmPassword
 				});
 				setShowModal(true);
 			} catch (err) {

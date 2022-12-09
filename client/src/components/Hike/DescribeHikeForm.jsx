@@ -1,11 +1,6 @@
 import { React, useContext, useEffect } from "react";
-<<<<<<< HEAD
-import { Form, Button, Row, Col, Container } from "react-bootstrap";
-import { Difficulty, UserType } from "../../helper/enums";
-=======
 import { Form, Button, Row, Col, Container, ListGroup, ListGroupItem, CloseButton } from "react-bootstrap";
-import { Difficulty } from "../../helper/enums";
->>>>>>> origin/development
+import { Difficulty, UserType } from "../../helper/enums";
 import { capitalizeAndReplaceUnderscores } from "../../helper/utils";
 import { Formik } from "formik";
 import * as Yup from "yup";

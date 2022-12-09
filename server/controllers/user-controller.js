@@ -3,11 +3,6 @@ const crypto = require("crypto");
 const { StatusCodes } = require("http-status-codes");
 const userDAL = require("../data/user-dal");
 const { UserType } = require("../models/enums");
-<<<<<<< HEAD
-const { randString } = require("../mail_verification/utility");
-const { sendEmail } = require("../mail_verification/verification");
-const locationDAL = require("../data/location-dal")
-=======
 const { randString } = require("../helper/utility");
 const { sendVerificationEmail, sendAccountBlockedEmail, sendAccountValidatedEmail } = require("../email/account");
 
@@ -53,7 +48,6 @@ async function getUsers(req, res) {
 		.json({ err: err.message });
 	}
 }
->>>>>>> origin/development
 
 /**
  * POST /user
@@ -111,20 +105,7 @@ async function createUser(req, res) {
 			isValid: isValid,
 		});
 
-<<<<<<< HEAD
-		
-		if(UserType.HUT_WORKER == value.userType) {
-			value.hutsSelected.forEach(async(e) => {
-				let loc = await locationDAL.getLocationById(e)
-				loc.peopleWorks = loc.peopleWorks.push(createdUser._id)
-				await locationDAL.updateLocation(e, loc)
-			})
-		}
-
-		await sendEmail(value.email, uniqueString);
-=======
 		await sendVerificationEmail(value.email, uniqueString);
->>>>>>> origin/development
 		return res
 			.status(StatusCodes.CREATED)
 			.json({ _id: createdUser._id, uniqueString: uniqueString });

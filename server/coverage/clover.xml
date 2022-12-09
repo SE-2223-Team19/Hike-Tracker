@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1670620230764" clover="3.2.0">
-  <project timestamp="1670620230764" name="All files">
-    <metrics statements="353" coveredstatements="295" conditionals="125" coveredconditionals="72" methods="47" coveredmethods="41" elements="525" coveredelements="408" complexity="0" loc="353" ncloc="353" packages="6" files="16" classes="16"/>
+<coverage generated="1670622343315" clover="3.2.0">
+  <project timestamp="1670622343316" name="All files">
+    <metrics statements="353" coveredstatements="296" conditionals="125" coveredconditionals="73" methods="47" coveredmethods="41" elements="525" coveredelements="410" complexity="0" loc="353" ncloc="353" packages="6" files="16" classes="16"/>
     <package name="controllers">
-      <metrics statements="167" coveredstatements="129" conditionals="62" coveredconditionals="36" methods="15" coveredmethods="11"/>
+      <metrics statements="167" coveredstatements="130" conditionals="62" coveredconditionals="37" methods="15" coveredmethods="11"/>
       <file name="hike-controller.js" path="C:\Users\marta\OneDrive\Documenti\PoliTo Magistrale Software\SOFTWARE ENGINEERING II\Project\Hike-Tracker\server\controllers\hike-controller.js">
-        <metrics statements="55" coveredstatements="49" conditionals="29" coveredconditionals="16" methods="4" coveredmethods="4"/>
+        <metrics statements="55" coveredstatements="50" conditionals="29" coveredconditionals="17" methods="4" coveredmethods="4"/>
         <line num="1" count="1" type="stmt"/>
         <line num="2" count="1" type="stmt"/>
         <line num="3" count="1" type="stmt"/>
@@ -36,9 +36,9 @@
         <line num="92" count="3" type="stmt"/>
         <line num="93" count="3" type="stmt"/>
         <line num="95" count="3" type="stmt"/>
-        <line num="97" count="2" type="cond" truecount="1" falsecount="1"/>
-        <line num="98" count="2" type="stmt"/>
-        <line num="101" count="0" type="stmt"/>
+        <line num="97" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="98" count="1" type="stmt"/>
+        <line num="101" count="1" type="stmt"/>
         <line num="103" count="1" type="stmt"/>
         <line num="115" count="8" type="stmt"/>
         <line num="117" count="8" type="stmt"/>
@@ -408,8 +408,8 @@
         <line num="30" count="48" type="stmt"/>
         <line num="31" count="48" type="stmt"/>
         <line num="33" count="44" type="stmt"/>
-        <line num="34" count="46" type="stmt"/>
-        <line num="35" count="46" type="stmt"/>
+        <line num="34" count="47" type="stmt"/>
+        <line num="35" count="47" type="stmt"/>
         <line num="39" count="3" type="stmt"/>
         <line num="42" count="3" type="stmt"/>
         <line num="43" count="3" type="stmt"/>

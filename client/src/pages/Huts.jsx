@@ -19,6 +19,7 @@ function Huts({setCurrentHut, setShow, show}) {
 	const [openFilters, setOpenFilters] = useState(false);
 	const [filters, setFilters] = useState((user && user.userType === UserType.HUT_WORKER) ? { workedPeopleId: user._id } : {})
 	const [showPositionFilter, setShowPositionFilter] = useState(false);
+	let userType = user ? user.userType : undefined
 
 	// ** Fetch huts from API
 	useEffect(() => {
@@ -32,16 +33,16 @@ function Huts({setCurrentHut, setShow, show}) {
 	return (
 		<div className="w-100">
 			<Stack direction="horizontal" className="justify-content-between align-items-center">
-				<h1>{user.userType === UserType.HUT_WORKER ? "My Huts" : "Huts"}</h1>
+				<h1>{(userType === UserType.HUT_WORKER) ? "My Huts" : "Huts"}</h1>
 				<Button
 					variant={openFilters ? "success" : "outline-success"}
 					style={{ borderRadius: 20 }}
 					onClick={() => {
 						setOpenFilters(!openFilters);
-						if (openFilters && user.userType !== UserType.HUT_WORKER) {
+						if (openFilters && userType !== UserType.HUT_WORKER) {
 							setFilters({}); // Clear filters
 						}
-						if (openFilters && user.userType === UserType.HUT_WORKER) {
+						if (openFilters && userType === UserType.HUT_WORKER) {
 							setFilters(user ? { workedPeopleId: user._id } : {})
 						}
 					}}
@@ -49,7 +50,7 @@ function Huts({setCurrentHut, setShow, show}) {
 					<CgOptions style={{ marginRight: ".4rem" }} />
 					Filters
 				</Button>
-				{user.userType === UserType.HUT_WORKER ? <></> : <Button variant="success" onClick={() => navigate("/describe-hut")}>
+				{userType === UserType.HUT_WORKER ? <></> : <Button variant="success" onClick={() => navigate("/describe-hut")}>
 					Create Hut
 				</Button>}
 			</Stack>

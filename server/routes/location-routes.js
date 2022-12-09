@@ -7,6 +7,6 @@ locationRouter.get("/", locationController.getLocations);
 locationRouter.get("/:id", locationController.getLocationById);
 locationRouter.put("/:id", locationController.updateLocationDescription);
 locationRouter.post("/", isLocalGuide, locationController.createLocation);
-locationRouter.patch("/:id", locationController.updateLocation);
+locationRouter.patch("/:id", isHutWorker, locationController.updateLocation);
 
 module.exports = locationRouter;

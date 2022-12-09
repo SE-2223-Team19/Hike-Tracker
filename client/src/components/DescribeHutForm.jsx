@@ -39,11 +39,11 @@ function DescribeHutForm() {
 		<Formik
 			initialValues={{
 				description: "",
-				pointLat: null,
-				pointLng: null,
+				pointLat: undefined,
+				pointLng: undefined,
 				name: "",
-				altitude: null,
-				numberOfBeds: null,
+				altitude: undefined,
+				numberOfBeds: undefined,
 				email: "",
 				phone: "",
 				webSite: ""

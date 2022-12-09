@@ -97,9 +97,9 @@ async function updateLocation(id, location) {
 			new URL(ENDPOINTS.locations.update.replace(":id", id), BACKEND_URL),
 			{
 				method: "PATCH",
+				credentials: "include",
 				headers: {
-					"Content-Type": "application/json",
-					credentials: "includes"
+					"Content-Type": "application/json"
 				},
 				body: JSON.stringify(location)
 			}

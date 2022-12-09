@@ -3,7 +3,7 @@ const ObjectId = require("mongoose").Types.ObjectId;
 const { StatusCodes } = require("http-status-codes");
 const hikeDAL = require("../data/hike-dal");
 const hikeService = require("../services/hike-service");
-const { Difficulty, LocationType, UserType } = require("../models/enums");
+const { Difficulty, LocationType } = require("../models/enums");
 
 /**
  * GET /hike

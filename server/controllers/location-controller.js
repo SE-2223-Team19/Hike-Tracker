@@ -129,7 +129,9 @@ async function createLocation(req, res) {
 			peopleWorks: joi.alternatives().conditional("locationType", {
 				is: LocationType.HUT,
 				then: joi.array().items(joi.string())
-			})
+			}),
+			latitude: joi.number(),
+			longitude: joi.number()
 		});
 
 		// Validate request body against schema
@@ -166,6 +168,7 @@ async function updateLocationDescription(req, res) {
 }
 
 async function updateLocation(req, res) {
+	
 	try {
 		const { params, body } = req;
 		const id = params.id;

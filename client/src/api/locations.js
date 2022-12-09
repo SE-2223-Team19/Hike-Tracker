@@ -69,18 +69,6 @@ async function getParkingLots(filters = {}) {
 	}
 }
 
-// async function getAddresses(latitude, longitude) {
-// 	try {
-
-// 		const url = "https://nominatim.openstreetmap.org/reverse?lat=" + latitude + "&lon=" + longitude + "&format=jsonv2"
-
-// 		const response = await fetch(url);
-// 		return await response.json();
-// 	} catch (err) {
-// 		return err;
-// 	}
-// }
-
 async function updateLocationDescription(id, description) {
 	try {
 		const response = await fetch(
@@ -99,7 +87,30 @@ async function updateLocationDescription(id, description) {
 			return response.json();
 		}
 	} catch (err) {
-		console.error(err);
+		console.log(err)
+	}
+}
+
+async function updateLocation(id, location) {
+	try {
+		const response = await fetch(
+			new URL(ENDPOINTS.locations.update.replace(":id", id), BACKEND_URL),
+			{
+				method: "PATCH",
+				headers: {
+					"Content-Type": "application/json",
+					credentials: "includes"
+				},
+				body: JSON.stringify(location)
+			}
+		)
+		if(response.ok) {
+			return id;
+		} else {
+			return await response.json()
+		}
+	} catch(err) {
+		console.log(err)
 	}
 }
 
@@ -109,4 +120,5 @@ module.exports = {
 	createLocation,
 	getHuts,
 	getParkingLots,
+	updateLocation
 };

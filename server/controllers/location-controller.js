@@ -2,6 +2,7 @@ const joi = require("joi");
 const { StatusCodes } = require("http-status-codes");
 const locationDAL = require("../data/location-dal");
 const { LocationType } = require("../models/enums");
+const ObjectId = require('mongoose').Types.ObjectId
 
 /**
  * GET /location
@@ -29,16 +30,17 @@ async function getLocations(req, res) {
 			}),
 			page: joi.number().greater(0),
 			pageSize: joi.number().greater(0),
+			workedPeopleId: joi.string()
 		});
 
 		const { error, value } = schema.validate(query);
-
 		if (error) throw error;
 
 		let filter = {};
 
 		if (value.locationType) filter.locationType = value.locationType;
 		if (value.description) filter.description = { $regex: value.description };
+		if (value.workedPeopleId) filter.peopleWorks = ObjectId(value.workedPeopleId)
 		if (value.locationLat && value.locationLon && value.locationRadius)
 			filter.point = {
 				$near: {
@@ -53,6 +55,7 @@ async function getLocations(req, res) {
 		const locations = await locationDAL.getLocations(value.page, value.pageSize, filter);
 		return res.status(StatusCodes.OK).json(locations);
 	} catch (err) {
+		console.log(err)
 		return res.status(StatusCodes.BAD_REQUEST).json({ err: err.message });
 	}
 }
@@ -123,6 +126,10 @@ async function createLocation(req, res) {
 				is: LocationType.HUT,
 				then: joi.string().uri().allow(""),
 			}),
+			peopleWorks: joi.alternatives().conditional("locationType", {
+				is: LocationType.HUT,
+				then: joi.array().items(joi.string())
+			})
 		});
 
 		// Validate request body against schema
@@ -168,9 +175,9 @@ async function updateLocation(req, res) {
 				.string()
 				.valid(...Object.values(LocationType))
 				.required(),
-			name: joi.alternatives().conditional("name", {
+			name: joi.alternatives().conditional("locationType", {
 				is: [LocationType.HUT, LocationType.PARKING_LOT],
-				then: joi.string(),
+				then: joi.string()
 			}),
 			capacity: joi.alternatives().conditional("locationType", {
 				is: LocationType.PARKING_LOT,
@@ -186,7 +193,7 @@ async function updateLocation(req, res) {
 			}),
 			phone: joi.alternatives().conditional("locationType", {
 				is: LocationType.HUT,
-				then: joi.number(),
+				then: joi.string(),
 			}),
 			email: joi.alternatives().conditional("locationType", {
 				is: LocationType.HUT,
@@ -196,7 +203,7 @@ async function updateLocation(req, res) {
 				is: LocationType.HUT,
 				then: joi.string().uri().allow(""),
 			}),
-			description: joi.string(),
+			description: joi.string()
 		});
 
 		const { value, error } = schema.validate(body);

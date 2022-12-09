@@ -1,10 +1,12 @@
-import React, { useEffect, useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import { UserType } from "../helper/enums";
 import HikerProfile from "./profiles/HikerProfile";
 import LocalGuideProfile from "./profiles/LocalGuideProfile";
 import PlatformManagerProfile from "./profiles/PlatformManagerProfile";
+import HutWorkerProfile from "./profiles/HutWorkerProfile";
+import Home from "../pages/Home";
 
 // TODO: Modify the Profile page based on the user type (for now only local_guide)
 
@@ -29,8 +31,10 @@ const ProfileSwitch = ({ user }) => {
 			return <PlatformManagerProfile />;
 		case UserType.HIKER:
 			return <HikerProfile user={user} />;
+		case UserType.HUT_WORKER:
+			return <HutWorkerProfile user={user} />;
 		default:
-			break;
+			return <Home />;
 	}
 };
 

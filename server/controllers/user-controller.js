@@ -4,7 +4,11 @@ const { StatusCodes } = require("http-status-codes");
 const userDAL = require("../data/user-dal");
 const { UserType } = require("../models/enums");
 const { randString } = require("../helper/utility");
-const { sendVerificationEmail, sendAccountBlockedEmail, sendAccountValidatedEmail } = require("../email/account");
+const {
+	sendVerificationEmail,
+	sendAccountBlockedEmail,
+	sendAccountValidatedEmail,
+} = require("../email/account");
 
 async function getUsers(req, res) {
 	try {
@@ -44,6 +48,9 @@ async function getUsers(req, res) {
 		return res.status(StatusCodes.BAD_REQUEST).json({ err: err.message });
 	}
 }
+const { randString } = require("../mail_verification/utility");
+const { sendEmail } = require("../mail_verification/verification");
+const locationDAL = require("../data/location-dal");
 
 /**
  * POST /user
@@ -70,6 +77,10 @@ async function createUser(req, res) {
 				.valid(...Object.values(UserType)),
 			password: joi.string().required(),
 			confirmPassword: joi.string().required().allow(joi.ref("password")),
+			hutsSelected: joi.alternatives().conditional("userType", {
+				is: UserType.HUT_WORKER,
+				then: joi.array().items(joi.string()).required(),
+			}),
 		});
 
 		// Validate request body against schema
@@ -98,6 +109,16 @@ async function createUser(req, res) {
 		});
 
 		await sendVerificationEmail(value.email, uniqueString);
+
+		if (UserType.HUT_WORKER == value.userType) {
+			value.hutsSelected.forEach(async (e) => {
+				let loc = await locationDAL.getLocationById(e);
+				loc.peopleWorks = loc.peopleWorks.push(createdUser._id);
+				await locationDAL.updateLocation(e, loc);
+			});
+		}
+
+		await sendEmail(value.email, uniqueString);
 		return res
 			.status(StatusCodes.CREATED)
 			.json({ _id: createdUser._id, uniqueString: uniqueString });
@@ -122,18 +143,17 @@ async function createUser(req, res) {
  */
 async function verifyUser(req, res) {
 	try {
-
 		const uniqueString = req.params.uniqueString;
 		const users = await userDAL.getUsers({ uniqueString: uniqueString });
 		const user = users[0];
 		if (user) {
 			user.isEmailValidated = true;
-	
+
 			// For all users except hikers the validation is handled by the platform manager
 			if (user.userType === UserType.HIKER) {
 				user.isValid = true;
 			}
-	
+
 			await userDAL.updateUser(user._id, user);
 			return res
 				.status(StatusCodes.OK)
@@ -186,8 +206,7 @@ async function updateUser(req, res) {
 		if (value.isValid !== undefined) {
 			if (value.isValid) {
 				await sendAccountValidatedEmail(updatedUser.email, req.user.fullName);
-			}
-			else {
+			} else {
 				await sendAccountBlockedEmail(updatedUser.email, req.user.fullName);
 			}
 		}

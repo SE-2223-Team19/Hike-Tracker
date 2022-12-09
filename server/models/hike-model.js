@@ -1,7 +1,7 @@
 const { object } = require("joi");
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
-const { Difficulty,Hut_Condition } = require("./enums");
+const { Difficulty,Hut_Condition,Hut_Number } = require("./enums");
 
 
 // Hike Schema
@@ -18,7 +18,8 @@ const hikeSchema = new Schema(
 		referencePoints: { type: [Schema.Types.ObjectId], ref: "Location", required: true },
 		trackPoints: [[Number]],
 		createdBy: { type: Schema.Types.ObjectId, ref: "User", required: true },
-		hikeCondition:{type: String, enum: Object.values(Hut_Condition)}
+		hikeCondition:{type: String, enum: Object.values(Hut_Condition)},
+		hutNumber:{type: String, enum: Object.values(Hut_Number)}
 	},
 	{ timestamps: true }
 );

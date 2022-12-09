@@ -29,9 +29,19 @@ const Hut_Condition={
 
 }
 
+const Hut_Number={
+	One : "one",
+	Two: "two",
+	Three: "three",
+	Four: "Four",
+	Five: "Five"
+
+}
+
 module.exports = {
 	Difficulty,
 	LocationType,
 	UserType,
-	Hut_Condition
+	Hut_Condition,
+	Hut_Number
 };

@@ -10,6 +10,9 @@ import PositionFilterModal from "../../components/PositionFilterModal";
 import PositionPreferenceModal from "../../components/PositionPreferenceModal";
 import { capitalizeAndReplaceUnderscores } from "../../helper/utils";
 import { getPreferences, deletePreferences, updatePreferences } from "../../api/users";
+import { getHikes } from "../../api/hikes";
+import HikeCard from "../../components/Hike/HikeCard";
+import ModalMap from "../../components/ModalMap";
 
 const HikerProfile = ({ user }) => {
     const navigate = useNavigate();
@@ -118,7 +121,7 @@ const HikerProfile = ({ user }) => {
                     }}
                 ></PositionFilterModal>
                 {(JSON.stringify(savedPreferences) === '{}') && !loading && <NoData message={"No preferences found."} />}
-                {!(JSON.stringify(savedPreferences) === '{}') && !loading && <Preferences key={user._id} savedPreferences={savedPreferences} setShowPositionPreference={setShowPositionPreference} />}
+                {!(JSON.stringify(savedPreferences) === '{}') && !loading && <Preferences key={user._id} savedPreferences={savedPreferences} setShowPositionPreference={setShowPositionPreference} /> && <Hikes savedPreferences={savedPreferences} />}
                 <PositionPreferenceModal show={showPositionPreference}
                     setShow={setShowPositionPreference} coordinates={[savedPreferences.locationCoordinatesLat, savedPreferences.locationCoordinatesLng]} radius={savedPreferences.locationRadius} />
             </div>
@@ -222,4 +225,22 @@ const Preferences = ({ savedPreferences, setShowPositionPreference }) => {
         </Container>
     );
 };
+
+const Hikes = ({ savedPreferences }) => {
+    const [currentHike, setCurrentHike] = useState(null);
+    const [hikes, setHikes] = useState([]);
+    useEffect(() => {
+        const fetchCall = async () => {
+            const tmp = await getHikes(savedPreferences);
+            setHikes(tmp);
+        }
+        fetchCall();
+    }, [savedPreferences]);
+    return <>
+        <h1>Filtered hikes: {hikes.length}</h1>
+        {hikes.map(h => <HikeCard hike={h} key={h._id} showDetails={setCurrentHike} />)}
+        <ModalMap handleClose={() => setCurrentHike(null)} hike={currentHike}></ModalMap>
+    </>
+};
+
 export default HikerProfile;

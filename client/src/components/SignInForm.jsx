@@ -32,7 +32,7 @@ function SignInForm() {
 	}
 
 	const removeHutToList = (hut) => {
-		setHutsSelected(hutsSelected.filter(item => item !== hut))	
+		setHutsSelected(hutsSelected.filter(item => item !== hut))
 	}
 
 	useEffect(() => {
@@ -67,13 +67,24 @@ function SignInForm() {
 		if ([emailValidation(), confirmPasswordValidation(), userTypeValidation()].every((a) => a)) {
 			try {
 				setErrors({ ...errors, form: "" });
-				await createUser({
-					email,
-					fullName,
-					userType,
-					password,
-					confirmPassword
-				});
+				if (userType === UserType.HUT_WORKER)
+					await createUser({
+						email,
+						fullName,
+						userType,
+						password,
+						confirmPassword,
+						hutsSelected
+					});
+				else
+					await createUser({
+						email,
+						fullName,
+						userType,
+						password,
+						confirmPassword
+					});
+
 				setShowModal(true);
 			} catch (err) {
 				setErrors({ ...errors, form: err.err });
@@ -175,7 +186,6 @@ function SignInForm() {
 			<Modal show={showModalHutWorker} onHide={() => {
 				setShowModalHutWorker(false)
 				setHutsSelected([])
-				
 			}} backdrop={"static"} scrollable={true} style={{ maxHeight: "70vh" }}>
 				<Modal.Header closeButton>
 					<Modal.Title>Select the huts where you work</Modal.Title>

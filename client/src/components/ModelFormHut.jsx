@@ -5,7 +5,7 @@ import { LocationType } from "../helper/enums";
 import { Formik } from "formik";
 import * as Yup from "yup";
 
-function ModelFormHut({ currentHut, show, setShow }) {
+function ModelFormHut({ currentHut, show, setShow, setDirty }) {
 
 	
 	const onSaveModifiedHut = async (values) => {
@@ -20,6 +20,7 @@ function ModelFormHut({ currentHut, show, setShow }) {
 		});
 		
 		setShow(false);
+		setDirty(true)
 	}
 
 	const validationSchema = Yup.object().shape({

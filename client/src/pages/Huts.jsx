@@ -12,7 +12,7 @@ import { AuthContext } from "../context/AuthContext";
 import PaginatedList from "../components/pagination/PaginatedList";
 import { UserType } from "../helper/enums";
 
-function Huts({setCurrentHut, setShow, show}) {
+function Huts({setCurrentHut, setShow, dirty, setDirty}) {
 
 	const navigate = useNavigate();
 	const { user, setMessage } = useContext(AuthContext);
@@ -72,7 +72,8 @@ function Huts({setCurrentHut, setShow, show}) {
 					loadingElement={() => <Loading />}
 					fetchCall={getHuts}
 					filters={filters}
-					show = {show}
+					dirty = {dirty}
+					setDirty = {setDirty}
 				/>
 			</Container>
 			{!user ? <PositionFilterModal

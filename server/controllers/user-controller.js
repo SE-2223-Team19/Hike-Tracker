@@ -5,6 +5,7 @@ const userDAL = require("../data/user-dal");
 const { UserType } = require("../models/enums");
 const { randString } = require("../helper/utility");
 const { sendVerificationEmail, sendAccountBlockedEmail, sendAccountValidatedEmail } = require("../email/account");
+const locationDAL = require("../data/location-dal")
 
 async function getUsers(req, res) {
 	try {
@@ -26,26 +27,26 @@ async function getUsers(req, res) {
 
 		if (error) throw error;
 
-		const {page, pageSize, ...filter} = value;
+		const { page, pageSize, ...filter } = value;
 
 		const users = await userDAL.getUsers(filter, page, pageSize);
 		if (Array.isArray(users)) {
 			return res.status(StatusCodes.OK).json(users.map(u => {
-				const { salt, hash, uniqueString, ...user} = u;
+				const { salt, hash, uniqueString, ...user } = u;
 				return user;
 			}));
 		}
 		return res.status(StatusCodes.OK).json({
 			...users,
 			data: users.data.map(u => {
-				const { salt, hash, uniqueString, ...user} = u;
+				const { salt, hash, uniqueString, ...user } = u;
 				return user;
 			})
 		});
 	} catch (err) {
 		return res
-		.status(StatusCodes.BAD_REQUEST)
-		.json({ err: err.message });
+			.status(StatusCodes.BAD_REQUEST)
+			.json({ err: err.message });
 	}
 }
 
@@ -105,12 +106,20 @@ async function createUser(req, res) {
 			isValid: isValid,
 		});
 
+		if (UserType.HUT_WORKER === value.userType) {
+			value.hutsSelected.forEach(async (e) => {
+				let loc = await locationDAL.getLocationById(e)
+				loc.peopleWorks = loc.peopleWorks.push(createdUser._id)
+				await locationDAL.updateLocation(e, loc)
+			})
+		}
+
 		await sendVerificationEmail(value.email, uniqueString);
 		return res
 			.status(StatusCodes.CREATED)
 			.json({ _id: createdUser._id, uniqueString: uniqueString });
-		
-		} catch (err) {
+
+	} catch (err) {
 		if (err.name === "MongoServerError" && err.code === 11000) {
 			return res
 				.status(StatusCodes.UNPROCESSABLE_ENTITY)
@@ -137,12 +146,12 @@ async function verifyUser(req, res) {
 		const user = users[0];
 		if (user) {
 			user.isEmailValidated = true;
-	
+
 			// For all users except hikers the validation is handled by the platform manager
 			if (user.userType === UserType.HIKER) {
 				user.isValid = true;
 			}
-	
+
 			await userDAL.updateUser(user._id, user);
 			return res
 				.status(StatusCodes.OK)

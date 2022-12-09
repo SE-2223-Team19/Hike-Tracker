@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { Badge, Button, Card, Stack } from "react-bootstrap";
 import { BiRuler, BiTrendingUp, BiTime } from "react-icons/bi";
-import {HikeCondition} from "../ModalHikeCondition"
+import {HikeCondition, NewHikeCondition} from "../ModalHikeCondition"
 import { useNavigate } from "react-router-dom";
 import {
 	capitalizeAndReplaceUnderscores,
@@ -46,7 +46,7 @@ const HikeCard = ({ hike, showDetails }) => {
 								<Stack direction="horizontal" gap={3}>
 
 									
-									<HikeCondition/>
+									<NewHikeCondition hike={hike}/>
 									<Button onClick={() => showDetails(hike)} variant={"success"}>
 										See on Map
 									</Button>

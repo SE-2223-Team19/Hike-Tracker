@@ -21,8 +21,16 @@ const UserType = {
 	HUT_WORKER: "hut_worker",
 };
 
+const Hut_Condition={
+	Open : "open",
+	Overloaded: "overloaded",
+	Close_BadWeather: "close_BadWeather",
+	Close_maintenance: "close_maintenance"
+}
+
 module.exports = {
 	Difficulty,
 	LocationType,
 	UserType,
+	Hut_Condition
 };

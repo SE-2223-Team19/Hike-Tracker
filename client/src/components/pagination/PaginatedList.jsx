@@ -21,13 +21,15 @@ function PaginatedList({
     noDataElement: NoDataElement, 
     errorElement: ErrorElement,
     dataContainer: DataContainer = ({children}) => <>{children}</>,
-    filters
+    filters,
+    show
 }) {
     
     const [data, setData] = useState(null);
 	const [pagination, setPagination] = useState({ currentPage: 1, totalPages: 1, pageSize: 25 });
 	const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    let showInstance = show ? "" :  undefined
 
     useEffect(() => {
 		setLoading(true);
@@ -58,7 +60,7 @@ function PaginatedList({
             setLoading(false);
             setError(err);
         });
-	}, [fetchCall, filters, pagination.currentPage, pagination.pageSize]);
+	}, [fetchCall, filters, pagination.currentPage, pagination.pageSize, showInstance]);
 
     return (
         <>

@@ -10,47 +10,53 @@ import * as L from "leaflet";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import PaginatedList from "../components/pagination/PaginatedList";
+import { UserType } from "../helper/enums";
 
-function Huts() {
+function Huts({setCurrentHut, setShow, show}) {
+
 	const navigate = useNavigate();
 	const { user, setMessage } = useContext(AuthContext);
-
 	const [openFilters, setOpenFilters] = useState(false);
-	const [filters, setFilters] = useState({});
+	const [filters, setFilters] = useState((user && user.userType === UserType.HUT_WORKER) ? { workedPeopleId: user._id } : {})
 	const [showPositionFilter, setShowPositionFilter] = useState(false);
 
-	// ** Fetch hikes from API
+	// ** Fetch huts from API
 	useEffect(() => {
 		if (!user) {
 			navigate("/");
 			setMessage({ type: "danger", msg: "You must be logged in to access this page" });
+
 		}
 	}, [user, navigate, setMessage]);
 
 	return (
 		<div className="w-100">
 			<Stack direction="horizontal" className="justify-content-between align-items-center">
-				<h1>Huts</h1>
+				<h1>{user.userType === UserType.HUT_WORKER ? "My Huts" : "Huts"}</h1>
 				<Button
 					variant={openFilters ? "success" : "outline-success"}
 					style={{ borderRadius: 20 }}
 					onClick={() => {
 						setOpenFilters(!openFilters);
-						if (openFilters) {
+						if (openFilters && user.userType !== UserType.HUT_WORKER) {
 							setFilters({}); // Clear filters
+						}
+						if (openFilters && user.userType === UserType.HUT_WORKER) {
+							setFilters(user ? { workedPeopleId: user._id } : {})
 						}
 					}}
 				>
 					<CgOptions style={{ marginRight: ".4rem" }} />
 					Filters
 				</Button>
-				<Button variant="success" onClick={() => navigate("/describe-hut")}>
+				{user.userType === UserType.HUT_WORKER ? <></> : <Button variant="success" onClick={() => navigate("/describe-hut")}>
 					Create Hut
-				</Button>
+				</Button>}
 			</Stack>
 			{/* Filters */}
 			{openFilters && (
 				<HutFilters
+					user = {user}
 					filters={filters}
 					setFilters={setFilters}
 					openModal={() => setShowPositionFilter(true)}
@@ -58,16 +64,17 @@ function Huts() {
 			)}
 			<Container>
 				<PaginatedList
-					dataElement={(hut) => <HutCard key={hut._id} hut={hut} />}
-					dataContainer={({children}) => <Row className="g-4 row-cols-1 row-cols-sm-1 row-cols-md-3">{children}</Row>}
+					dataElement={(hut) => <HutCard key={hut._id} hut={hut} setCurrentHut={setCurrentHut} user={user} setShow={setShow} />}
+					dataContainer={({ children }) => <Row className="g-4 row-cols-1 row-cols-sm-1 row-cols-md-3">{children}</Row>}
 					errorElement={(error) => <NoData message={error} />}
 					noDataElement={() => <NoData message={"No huts found."} />}
 					loadingElement={() => <Loading />}
 					fetchCall={getHuts}
 					filters={filters}
+					show = {show}
 				/>
 			</Container>
-			<PositionFilterModal
+			{!user ? <PositionFilterModal
 				show={showPositionFilter}
 				setShow={setShowPositionFilter}
 				onCancel={() => setShowPositionFilter(false)}
@@ -85,12 +92,12 @@ function Huts() {
 					const { locationLat, locationLon, locationRadius, ...f } = filters;
 					setFilters(f);
 				}}
-			></PositionFilterModal>
+			></PositionFilterModal> : <></>}
 		</div>
 	);
 }
 
-export const HutCard = ({ hut, user, setCurrentHut, setShow }) => {
+const HutCard = ({ hut, user, setCurrentHut, setShow }) => {
 	return (
 		<Col>
 			<Card className="flex-col p-3 mt-4">
@@ -106,22 +113,22 @@ export const HutCard = ({ hut, user, setCurrentHut, setShow }) => {
 						</Row>
 					</div>
 				</Card.Body>
-				{user && <Button onClick = {() => {
-					setCurrentHut(hut)
-					setShow(true)
-					}}>Update</Button>}
+				{user.userType === UserType.HUT_WORKER && <Button variant = "success" onClick={() => {
+					setCurrentHut(hut) 
+					setShow(true) 
+				}}>Update</Button>}
 			</Card>
 		</Col>
 	);
 };
 
-const HutFilters = ({ filters, setFilters, openModal }) => {
+const HutFilters = ({ filters, setFilters, openModal, user }) => {
 	return (
 		<Form>
 			<Row className="mt-4">
 				<Col xs={12} md={5}>
 					<Form.Group>
-						<Form.Label>Description</Form.Label>
+						<Form.Label><strong>Description</strong></Form.Label>
 						<Stack direction="horizontal" gap={2}>
 							<Form.Control
 								type="string"
@@ -134,14 +141,14 @@ const HutFilters = ({ filters, setFilters, openModal }) => {
 					</Form.Group>
 				</Col>
 				<Col>
-					<Form.Group>
+					{!user ? <Form.Group>
 						<Form.Label>Location</Form.Label> <br />
 						<Stack direction="horizontal" gap={2}>
 							<Button onClick={openModal} variant={"success"}>
 								Select area
 							</Button>
 						</Stack>
-					</Form.Group>
+					</Form.Group> : <></>}
 				</Col>
 			</Row>
 		</Form>
@@ -157,7 +164,7 @@ function MapHut({ hut }) {
 	});
 
 	let points = [...hut.point].reverse().reduce((e1, e2) => {
-		return "Lat: " + e1.toFixed(2) + ", Lon: " + e2.toFixed(2) 
+		return "Lat: " + e1.toFixed(2) + ", Lon: " + e2.toFixed(2)
 	})
 
 	return (

@@ -1,6 +1,6 @@
 import { React, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Form, Row, Col, Button, Modal, Alert, ListGroup, ListGroupItem } from "react-bootstrap";
+import { Form, Row, Col, Button, Modal, Alert, ListGroup, Container } from "react-bootstrap";
 import { UserType } from "../helper/enums";
 import { capitalizeAndReplaceUnderscores } from "../helper/utils";
 import { createUser } from "../api/users";
@@ -32,7 +32,7 @@ function SignInForm() {
 	}
 
 	const removeHutToList = (hut) => {
-		setHutsSelected(hutsSelected.filter(item => item.latitude != hut.latitude && item.longitude != hut.longitude))
+		setHutsSelected(hutsSelected.filter(item => item !== hut))	
 	}
 
 	useEffect(() => {
@@ -176,12 +176,13 @@ function SignInForm() {
 			<Modal show={showModalHutWorker} onHide={() => {
 				setShowModalHutWorker(false)
 				setHutsSelected([])
-			}} backdrop={"static"} >
+				
+			}} backdrop={"static"} scrollable={true} style={{ maxHeight: "70vh" }}>
 				<Modal.Header closeButton>
 					<Modal.Title>Select the huts where you work</Modal.Title>
 				</Modal.Header>
 				<Modal.Body>
-					<ListGroup>
+					<ListGroup style={{ overflow: "scroll" }}>
 						{
 							huts.map((hut) => <HutSelection key={hut._id} hutsSelected={hutsSelected} hut={hut} addHutToList={addHutToList}
 								removeHutToList={removeHutToList} />)

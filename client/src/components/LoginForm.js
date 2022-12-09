@@ -20,6 +20,7 @@ function LoginForm() {
 				<Form.Group className="mb-3" controlId="formBasicEmail">
 					<Form.Label>Email</Form.Label>
 					<Form.Control
+						data-test-id="email"
 						type="email"
 						placeholder="Enter email"
 						value={username}
@@ -31,6 +32,7 @@ function LoginForm() {
 				<Form.Group className="mb-3" controlId="formBasicPassword">
 					<Form.Label>Password</Form.Label>
 					<Form.Control
+						data-test-id="password"
 						type="password"
 						placeholder="Password"
 						value={password}
@@ -40,9 +42,8 @@ function LoginForm() {
 				</Form.Group>
 				<Row style={{ textAlign: "center" }}>
 					<Col>
-						<Button style={{ backgroundColor: "green" }} type="submit">
-							{" "}
-							Login{" "}
+						<Button variant="success" type="submit">
+							Login
 						</Button>
 					</Col>
 				</Row>

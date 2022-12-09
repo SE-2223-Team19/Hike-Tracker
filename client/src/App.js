@@ -5,7 +5,6 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import SignIn from "./pages/SignIn";
 import { AuthProvider } from "./context/AuthContext";
-import Profile from "./pages/Profile";
 import Verify from "./pages/Verify";
 
 function App() {

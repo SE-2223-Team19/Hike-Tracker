@@ -1,3 +1,4 @@
+const ObjectId = require("mongoose").Types.ObjectId;
 const Hike = require("../models/hike-model");
 const Location = require("../models/location-model");
 const User = require("../models/user-model");
@@ -12,9 +13,10 @@ const User = require("../models/user-model");
  * @property {String} description
  * @property {Number} length
  * @property {[[Number, Number]]} trackPoints
+ * @property {[[Number, Number]]} referencePoints
  * @property {String} startPoint
  * @property {String} endPoint
- * @property {[String]} referencePoints
+ * @property {[String]} linkedHuts
  * @property {String} createdBy
  */
 
@@ -43,9 +45,10 @@ const User = require("../models/user-model");
  * @property {String} description
  * @property {Number} length
  * @property {[[Number, Number]]} trackPoints
+ * @property {[[Number, Number]]} referencePoints
  * @property {Location} startPoint
  * @property {Location} endPoint
- * @property {[Location]} referencePoints
+ * @property {[Location]} linkedHuts
  * @property {User} createdBy
  */
 
@@ -58,151 +61,139 @@ const User = require("../models/user-model");
  * @property {Number} totalPages
  */
 
+const commonLookups = [
+	{
+		$lookup: {
+			from: Location.collection.name,
+			localField: "startPoint",
+			foreignField: "_id",
+			as: "startPoint",
+		},
+	},
+	{
+		$lookup: {
+			from: Location.collection.name,
+			localField: "endPoint",
+			foreignField: "_id",
+			as: "endPoint",
+		},
+	},
+	{
+		$lookup: {
+			from: Location.collection.name,
+			localField: "linkedHuts",
+			foreignField: "_id",
+			as: "linkedHuts",
+		},
+	},
+	{
+		$lookup: {
+			from: User.collection.name,
+			localField: "createdBy",
+			foreignField: "_id",
+			as: "createdBy",
+		},
+	},
+	{
+		$unwind: {
+			path: "$startPoint",
+			preserveNullAndEmptyArrays: true,
+		},
+	},
+	{
+		$unwind: {
+			path: "$endPoint",
+			preserveNullAndEmptyArrays: true,
+		},
+	},
+	{
+		$unwind: {
+			path: "$createdBy",
+		},
+	},
+	{
+		$addFields: {
+			trackPoints: {
+				$map: {
+					input: "$trackPoints.coordinates",
+					as: "t",
+					in: {
+						$reverseArray: "$$t",
+					},
+				},
+			},
+		},
+	},
+	{
+		$project: {
+			"createdBy.hash": 0,
+			"createdBy.salt": 0,
+			"createdBy.uniqueString": 0,
+			"createdBy.isValid": 0,
+		},
+	},
+];
+
 /**
  * Get all hikes.
  * @param {*} filterQuery Filter object for MongoDB query
  * @param {Number} page The number of the page
  * @param {Number} pageSize The size of the page
- * @returns {Promise<{data: [Hike]; metadata: [{type: String;}|PaginationMetadata]}>} Hikes
+ * @returns {Promise<{data: [Hike]; metadata: [{type: String;}|PaginationMetadata]}|[Hike]>} Hikes
  */
-async function getHikes(filterQuery = {}, page = 1, pageSize = 10) {
-	const commonPipeline = [
-		{
-			$lookup: {
-				from: Location.collection.name,
-				localField: "startPoint",
-				foreignField: "_id",
-				as: "startPoint",
-			},
-		},
-		{
-			$lookup: {
-				from: Location.collection.name,
-				localField: "endPoint",
-				foreignField: "_id",
-				as: "endPoint",
-			},
-		},
-		{
-			$lookup: {
-				from: Location.collection.name,
-				localField: "referencePoints",
-				foreignField: "_id",
-				as: "referencePoints",
-			},
-		},
-		{
-			$lookup: {
-				from: User.collection.name,
-				localField: "createdBy",
-				foreignField: "_id",
-				as: "createdBy",
-			},
-		},
-		{
-			$unwind: {
-				path: "$startPoint",
-			},
-		},
-		{
-			$unwind: {
-				path: "$endPoint",
-			},
-		},
-		{
-			$unwind: {
-				path: "$createdBy",
-			},
-		},
-		{
-			$project: {
-				"createdBy.hash": 0,
-				"createdBy.salt": 0,
-				"createdBy.uniqueString": 0,
-				"createdBy.isValid": 0,
-			}
-		},
-		{
-			$facet: {
-				data: [
-					{
-						$skip: (page - 1) * pageSize
-					},
-					{
-						$limit: pageSize
-					}
-				],
-				metadata: [
-					{
-						$count: "totalElements"
-					},
-					{
-						$addFields: {
-							type: "pagination",
-							currentPage: page,
-							pageSize: pageSize,
-							totalPages: {
-								$ceil: {
-									$divide: [ "$totalElements", pageSize ]
-								}
-							}
-						}
-					}
-				]
-			}
-		}
-	];
+async function getHikes(page, pageSize, filterQuery = {}) {
+	const paginationActive = page !== undefined && pageSize !== undefined;
 
-	// Need geospatial query
-	if (filterQuery.startPoint !== undefined && typeof filterQuery.startPoint !== "string") {
-		const coordinates = filterQuery.startPoint.coordinates;
-		const maxDistance = filterQuery.startPoint.radius;
-		delete filterQuery.startPoint;
-		const hikes = await Location.aggregate([
-			{
-				$geoNear: {
-					near: {
-						type: "Point",
-						coordinates: coordinates,
-					},
-					maxDistance: maxDistance,
-					distanceField: "distance",
-				},
-			},
-			{
-				$lookup: {
-					from: Hike.collection.name,
-					localField: "_id",
-					foreignField: "startPoint",
-					as: "hikes",
-				},
-			},
-			{
-				$unwind: {
-					path: "$hikes",
-				},
-			},
-			{
-				$replaceRoot: {
-					newRoot: "$hikes",
-				}
-			},
-			{
-				$match: filterQuery,
-			},
-			...commonPipeline
-		]);
-		return hikes[0];
+	let p = [];
+	if (filterQuery.trackPoints) {
+		p = [filterQuery.trackPoints];
+		delete filterQuery.trackPoints;
 	}
-
-	const hikes = await Hike.aggregate([
+	p = [
+		...p,
 		{
 			$match: filterQuery,
 		},
-		...commonPipeline
-	]);
-
-	return hikes[0];
+		...commonLookups,
+	];
+	// If pagination is not used return all
+	if (paginationActive) {
+		p = [
+			...p,
+			{
+				$facet: {
+					data: [
+						{
+							$skip: (page - 1) * pageSize,
+						},
+						{
+							$limit: pageSize,
+						},
+					],
+					metadata: [
+						{
+							$count: "totalElements",
+						},
+						{
+							$addFields: {
+								type: "pagination",
+								currentPage: page,
+								pageSize: pageSize,
+								totalPages: {
+									$ceil: {
+										$divide: ["$totalElements", pageSize],
+									},
+								},
+							},
+						},
+					],
+				},
+			},
+		];
+	}
+	const hikes = await Hike.aggregate(p);
+	if (paginationActive) return hikes[0];
+	return hikes;
 }
 
 /**
@@ -211,7 +202,13 @@ async function getHikes(filterQuery = {}, page = 1, pageSize = 10) {
  * @returns {HikeModel}
  */
 async function createHike(hike) {
-	const newHike = new Hike(hike);
+	const newHike = new Hike({
+		...hike,
+		trackPoints: {
+			type: "LineString",
+			coordinates: hike.trackPoints.map((p) => [p[1], p[0]]),
+		},
+	});
 	const savedHike = await newHike.save();
 	return savedHike;
 }
@@ -219,23 +216,36 @@ async function createHike(hike) {
 /**
  * Gets a hike by id
  * @param {String} id
- * @returns {Hike}
+ * @returns {Promise<Hike>}
  */
 async function getHikeById(id) {
-	const hike = await Hike.findById(id)
-		
-	return hike;
+	const hikes = await Hike.aggregate([
+		{
+			$match: {
+				_id: new ObjectId(id),
+			},
+		},
+		...commonLookups,
+	]);
+
+	return hikes[0];
 }
 
 /**
  * Updates one hike
  * @param {String} id
- * @param {HikeModel} newData
+ * @param {HikeModel} hikeUpdate
  * @returns
  */
-async function updateHike(id, hikeUpdated) {
-	const hikeUpdate = await Hike.findByIdAndUpdate(id, hikeUpdated, { new: true });
-	return hikeUpdate;
+async function updateHike(id, hikeUpdate) {
+	if (hikeUpdate.trackPoints) {
+		hikeUpdate.trackPoints = {
+			type: "LineString",
+			coordinates: hikeUpdate.trackPoints.map((p) => [p[1], p[0]]),
+		};
+	}
+	const hikeUpdated = await Hike.findByIdAndUpdate(id, hikeUpdate);
+	return await getHikeById(hikeUpdated._id);
 }
 
 module.exports = {

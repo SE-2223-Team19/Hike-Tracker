@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Badge, Button, Stack } from "react-bootstrap";
 import { useLocation, useNavigate } from "react-router-dom";
 import GenericError from "./errors/GenericError";
@@ -11,7 +11,6 @@ import {
 	displayExpectedTime,
 	displayLength,
 } from "../helper/utils";
-import { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 
 const HikeDetail = () => {

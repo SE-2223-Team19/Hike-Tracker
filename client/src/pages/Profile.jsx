@@ -1,5 +1,4 @@
-import React, { useEffect } from "react";
-import { useContext } from "react";
+import React, { useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import { UserType } from "../helper/enums";
@@ -10,15 +9,15 @@ import LocalGuideProfile from "./profiles/LocalGuideProfile";
 
 const Profile = () => {
 	const navigate = useNavigate();
-	const { user } = useContext(AuthContext);
+	const { user, loggedIn } = useContext(AuthContext);
 
 	useEffect(() => {
-		if (!user) {
+		if (!loggedIn) {
 			navigate("/");
 		}
-	}, [navigate, user]);
+	}, [loggedIn, navigate]);
 
-	return user && <ProfileSwitch user={user} />;
+	return <ProfileSwitch user={user} />;
 };
 
 const ProfileSwitch = ({ user }) => {

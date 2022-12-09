@@ -1,12 +1,12 @@
 import { React, useContext, useEffect } from "react";
 import { Form, Button, Row, Col, Container, ListGroup, ListGroupItem, CloseButton } from "react-bootstrap";
-import { Difficulty } from "../../helper/enums";
+import { Difficulty, LocationType } from "../../helper/enums";
 import { capitalizeAndReplaceUnderscores } from "../../helper/utils";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import GpxParser from "gpxparser";
 import PointSelector from "../PointSelector";
-import { createHike } from "../../api/hikes";
+import { createHike, updateHike } from "../../api/hikes";
 import { useNavigate } from "react-router-dom";
 import SelectReferencePointsMap from "../SelectReferencePointsMap";
 import { AuthContext } from "../../context/AuthContext";
@@ -57,22 +57,37 @@ function DescribeHikeForm({ hike }) {
 
 	// ** On submit
 	const handleSubmit = async (values) => {
+		console.log(values);
 		// Format points for backend
 		delete values.gpxFile;
-		if (values.startPoint === "") {
-			values.startPoint = null;
+		if (values.startPoint) {
+			values.startPoint = values.startPoint._id;
 		}
-		if (values.endPoint === "") {
-			values.endPoint = null;
+		if (values.endPoint) {
+			values.endPoint = values.endPoint._id;
 		}
-		const createdHike = await createHike({ ...values });
-		if (createdHike) {
-			return navigate("/profile");
+		if (values.linkedHuts && values.linkedHuts.length > 0) {
+			values.linkedHuts = values.linkedHuts.map(hut => hut._id);
 		}
-		setMessage({
-			type: "danger",
-			msg: "Error creating hike"
-		});
+		if (hike) {
+			const updatedHike = await updateHike(hike._id, values);
+			if (updatedHike) {
+				return navigate("/profile");
+			}
+			setMessage({
+				type: "danger",
+				msg: "Error updating hike"
+			});
+		} else {
+			const createdHike = await createHike({ ...values });
+			if (createdHike) {
+				return navigate("/profile");
+			}
+			setMessage({
+				type: "danger",
+				msg: "Error creating hike"
+			});
+		}
 	};
 
 	// ** Form validation
@@ -94,7 +109,7 @@ function DescribeHikeForm({ hike }) {
 		expectedTime: Yup.number().required("Required"),
 		difficulty: Yup.string().required("Required"),
 		description: Yup.string("Required").typeError("Required").required("Required"),
-		gpxFile: Yup.mixed().required("Required"),
+		gpxFile: Yup.mixed(),
 		startPoint: locationSchema.nullable(true).typeError("Type Error"),
 		endPoint: locationSchema.nullable(true).typeError("Type Error"),
 		linkedHuts: Yup.array().of(locationSchema).required("Required"),
@@ -107,14 +122,12 @@ function DescribeHikeForm({ hike }) {
 	});
 
 	const formatPoint = (pointFromMongo) => {
-		const { _id, locationType, point } = pointFromMongo;
 		return {
-			_id,
-			locationType,
+			...pointFromMongo,
 			point: {
-				lat: point[1],
-				lng: point[0],
-			},
+				lat: pointFromMongo.point[1],
+				lng: pointFromMongo.point[0]
+			}
 		};
 	};
 
@@ -128,16 +141,16 @@ function DescribeHikeForm({ hike }) {
 				expectedTime: (hike && hike.expectedTime) || "",
 				difficulty: (hike && hike.difficulty) || "",
 				description: (hike && hike.description) || "",
-				startPoint: (hike && formatPoint(hike.startPoint)) || "null",
-				endPoint: (hike && formatPoint(hike.endPoint)) || "null",
-				referencePoints: (hike && hike.referencePoints.map((rp) => formatPoint(rp))) || [],
+				startPoint: (hike && hike.startPoint && formatPoint(hike.startPoint)) || null,
+				endPoint: (hike && hike.endPoint && formatPoint(hike.endPoint)) || null,
+				referencePoints: (hike && hike.referencePoints) || [],
 				gpxFile: null,
-				trackPoints: [],
-				linkedHuts: []
+				trackPoints: (hike && hike.trackPoints) || [],
+				linkedHuts: (hike && hike.linkedHuts && hike.linkedHuts.map(point => formatPoint(point))) || []
 			}}
 			onSubmit={async (values, { setSubmitting }) => {
 				setSubmitting(true);
-				await handleSubmit(values);
+				await handleSubmit({ ...values });
 				setSubmitting(false);
 			}}
 			validationSchema={validationSchema}
@@ -155,8 +168,7 @@ function DescribeHikeForm({ hike }) {
 				touched,
 				setFieldValue,
 				validateField,
-			}) => (
-				<Form noValidate onSubmit={handleSubmit}>
+			}) => (<Form noValidate onSubmit={handleSubmit}>
 					<Row>
 						<Col xs={12} md={4}>
 							<Form.Group controlId="title" className="mt-3">
@@ -287,14 +299,7 @@ function DescribeHikeForm({ hike }) {
 									value={values.startPoint && values.startPoint._id}
 									isInvalid={!!errors.startPoint}
 									handleChange={(location) => {
-										setFieldValue("startPoint", {
-											point: {
-												lat: location.point[1],
-												lng: location.point[0],
-											},
-											locationType: location.locationType,
-											_id: location._id,
-										});
+										setFieldValue("startPoint", formatPoint(location));
 									}}
 								/>
 								<Form.Control.Feedback type="invalid">{errors.startPoint}</Form.Control.Feedback>
@@ -314,14 +319,7 @@ function DescribeHikeForm({ hike }) {
 									value={values.endPoint && values.endPoint._id}
 									isInvalid={!!errors.endPoint}
 									handleChange={(location) => {
-										setFieldValue("endPoint", {
-											point: {
-												lat: location.point[1],
-												lng: location.point[0],
-											},
-											locationType: location.locationType,
-											_id: location._id,
-										});
+										setFieldValue("endPoint", formatPoint(location));
 									}}
 								/>
 								<Form.Control.Feedback type="invalid">{errors.endPoint}</Form.Control.Feedback>
@@ -359,13 +357,16 @@ function DescribeHikeForm({ hike }) {
 										<ListGroupItem key={point._id} className="d-flex justify-content-between">
 											<span>{point.description} (Lat: {point.point.lat} Long: {point.point.lng})</span>
 											<CloseButton onClick={() => {
-												setFieldValue("referencePoints", values.referencePoints.filter(p => p._id !== point._id))
+												setFieldValue("linkedHuts", values.linkedHuts.filter(p => p._id !== point._id))
 											}}/>
 										</ListGroupItem>
 									))}
 								</ListGroup>
 								<PointSelector
 										name="linkedHuts"
+										filter={{
+											locationType: LocationType.HUT
+										}}
 										value={values.linkedHuts.map(p => p._id)}
 										multiple
 										isInvalid={!!errors.linkedHuts}
@@ -373,19 +374,12 @@ function DescribeHikeForm({ hike }) {
 											if (!values.linkedHuts.some(p => p._id === location._id)) {
 												setFieldValue("linkedHuts", [
 													...values.linkedHuts,
-													{
-														point: {
-															lat: location.point[1],
-															lng: location.point[0],
-														},
-														locationType: location.locationType,
-														_id: location._id,
-														description: location.description
-													},
+													formatPoint(location)
 												]);
 											}
 										}}
 									/>
+									<Form.Control.Feedback type="invalid">{errors.linkedHuts}</Form.Control.Feedback>
 							</Form.Group>
 						</Col>
 					</Row>

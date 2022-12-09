@@ -6,9 +6,12 @@ import PositionSelectorModal from "./PositionSelectorModal";
 import { useNavigate } from "react-router-dom";
 import { Formik } from "formik";
 import * as Yup from "yup";
+import { useContext } from "react";
+import { AuthContext } from "../context/AuthContext";
 
 function DescribeHutForm() {
 	const navigate = useNavigate();
+	const { setMessage } = useContext(AuthContext);
 
 	const [showModal, setShowModal] = useState(false);
 
@@ -18,8 +21,14 @@ function DescribeHutForm() {
 		delete values.pointLat;
 		delete values.pointLng;
 		const hut = await createLocation(values);
-		if (hut) {
+		if (hut && !hut.err) {
+			setMessage(false);
 			navigate("/huts");
+		} else {
+			setMessage({
+				type: "danger",
+				msg: hut.err
+			});
 		}
 	}
 
@@ -39,18 +48,18 @@ function DescribeHutForm() {
 		<Formik
 			initialValues={{
 				description: "",
-				pointLat: null,
-				pointLng: null,
+				pointLat: "",
+				pointLng: "",
 				name: "",
-				altitude: null,
-				numberOfBeds: null,
+				altitude: "",
+				numberOfBeds: "",
 				email: "",
 				phone: "",
 				webSite: ""
 			}}
 			onSubmit={async (values, { setSubmitting }) => {
 				setSubmitting(true);
-				await handleSubmit(values);
+				await handleSubmit({ ...values});
 				setSubmitting(false);
 			}}
 			validationSchema={validationSchema}
@@ -73,13 +82,15 @@ function DescribeHutForm() {
 
 					useEffect(() => {
 						async function getAltitude() {
-							const url = new URL("https://api.open-elevation.com/api/v1/lookup");
-							url.searchParams.append("locations", `${values.pointLat},${values.pointLng}`);
-							const res = await fetch(url);
-							if (res.ok) {
-								const body = await res.json();
-								if (body.results && body.results.length === 1) {
-									setFieldValue("altitude", body.results[0].elevation);
+							if (values && values.pointLat !== "" && values.pointLng !== "" && values.pointLat !== undefined && values.pointLng !== undefined) {
+								const url = new URL("https://api.open-elevation.com/api/v1/lookup");
+								url.searchParams.append("locations", `${values.pointLat},${values.pointLng}`);
+								const res = await fetch(url);
+								if (res.ok) {
+									const body = await res.json();
+									if (body.results && body.results.length === 1) {
+										setFieldValue("altitude", body.results[0].elevation);
+									}
 								}
 							}
 						}

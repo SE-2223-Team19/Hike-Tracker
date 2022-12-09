@@ -200,7 +200,7 @@ async function getHikes(filterQuery = {}, page, pageSize) {
 /**
  * Create a new hike.
  * @param {Object} hike Hike to create. Object must match Hike model.
- * @returns {HikeModel}
+ * @returns {Primise<HikeModel>}
  */
 async function createHike(hike) {
 	const newHike = new Hike({

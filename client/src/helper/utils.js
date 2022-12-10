@@ -1,6 +1,6 @@
 /** Utility functions */
 
-import { Difficulty } from "./enums";
+import { Difficulty,Hut_Condition } from "./enums";
 
 /**
  * Convert minutes to hours and minutes display format
@@ -31,6 +31,21 @@ export const difficultyToColor = (difficulty) => {
 			return "warning";
 		case Difficulty.PROFESSIONAL_HIKER:
 			return "danger";
+		default:
+			return "secondary";
+	}
+};
+
+export const ConditionColor = (condition) => {
+	switch (condition) {
+		case Hut_Condition.Open:
+			return "info";
+		case Hut_Condition.Overloaded:
+			return "warning";
+		case Hut_Condition.Close_BadWeather:
+			return "danger";
+		case Hut_Condition.Close_maintenance:
+			return "danger"	
 		default:
 			return "secondary";
 	}

@@ -5,6 +5,7 @@ import {HikeCondition, NewHikeCondition} from "../ModalHikeCondition"
 import { useNavigate } from "react-router-dom";
 import {
 	capitalizeAndReplaceUnderscores,
+	ConditionColor,
 	difficultyToColor,
 	displayExpectedTime,
 	displayLength,
@@ -25,6 +26,9 @@ const HikeCard = ({ hike, showDetails }) => {
 						<Badge bg={difficultyToColor(hike.difficulty)}>
 							{capitalizeAndReplaceUnderscores(hike.difficulty)}
 						</Badge>
+						<Badge bg={ConditionColor(hike.hikeCondition)}>
+                        {hike.hikeCondition}
+                        </Badge>{' '}
 					</Stack>
 				</Card.Title>
 				<>
@@ -38,9 +42,11 @@ const HikeCard = ({ hike, showDetails }) => {
 							<span className="ms-1">{hike.ascent.toFixed(2)} m</span>
 						</div>
 						<div className="d-flex flex-row">
-							<BiTime size={24} />
+						
 							<span className="ms-1">{displayExpectedTime(hike.expectedTime)}</span>
+							
 						</div>
+						
 						<div className="ms-auto">
 							{loggedIn && (
 								<Stack direction="horizontal" gap={3}>

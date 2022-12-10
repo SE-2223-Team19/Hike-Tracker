@@ -59,11 +59,13 @@ const isHutWorker = (req, res, next) => {
 	return res.status(StatusCodes.UNAUTHORIZED).end();
 };
 
+
+
 module.exports = {
 	isLoggedIn,
 	isPlatformManager,
 	isHiker,
 	isLocalGuide,
 	isEmergencyOperator,
-	isHutWorker,
+	isHutWorker
 };

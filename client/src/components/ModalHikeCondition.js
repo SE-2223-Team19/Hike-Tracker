@@ -3,23 +3,37 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
 import { Hut_Condition } from '../helper/enums';
-
+import {updateHike} from '../api/hikes'
 function NewHikeCondition(props) {
   const [show, setShow] = useState(false);
 
   const [DescriptionBox, setDescriptionBox] = useState();
   const [Hutconidtion, setHutcondition] = useState();
+  const [HutNumber, setHutNumber] = useState();
 
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
 
-  const handlesubmit=()=>{
-console.log(props.hike._id);
-handleClose();
+  const handlesubmit=async (event)=>{
+    event.preventDefault();
+
+   const changes ={
+    description: DescriptionBox,
+    hikeCondition: Hutconidtion
+   }
+   console.log(props.hike._id);
+   await updateHike(props.hike._id,{...changes})
+   
+   console.log(DescriptionBox);
+   setDescriptionBox("")
+   handleClose();
+
     
   }
+
+ 
 
   return (
     <>
@@ -69,7 +83,7 @@ handleClose();
               controlId="exampleForm.ControlTextarea1"
             >
               <Form.Label>Description</Form.Label>
-              <Form.Control as="textarea" rows={3} onChange={(ev)=>{setDescriptionBox(ev.target.value)}}/>
+              <Form.Control as="textarea" value={DescriptionBox} rows={3} onChange={(ev)=>{setDescriptionBox(ev.target.value)}}/>
             </Form.Group>
           </Form>
         </Modal.Body>
@@ -84,7 +98,10 @@ handleClose();
       </Modal>
     </>
   );
+
+  
 }
+
 
 export {NewHikeCondition} 
 // render(<HikeCondition />);

@@ -9,6 +9,7 @@ const {
 	sendAccountBlockedEmail,
 	sendAccountValidatedEmail,
 } = require("../email/account");
+const locationDAL = require("../data/location-dal");
 
 async function getUsers(req, res) {
 	try {
@@ -48,9 +49,6 @@ async function getUsers(req, res) {
 		return res.status(StatusCodes.BAD_REQUEST).json({ err: err.message });
 	}
 }
-const { randString } = require("../mail_verification/utility");
-const { sendEmail } = require("../mail_verification/verification");
-const locationDAL = require("../data/location-dal");
 
 /**
  * POST /user

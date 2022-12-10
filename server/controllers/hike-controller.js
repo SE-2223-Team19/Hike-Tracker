@@ -177,6 +177,8 @@ async function updateHike(req, res) {
 		// Validate request body
 		const { params, body } = req;
 
+		console.log("body", body);
+
 		// Location validation schema
 		const locationSchema = joi.object().keys({
 			_id: joi.string(),

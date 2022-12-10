@@ -148,7 +148,7 @@ async function updateHike(id, changes) {
 
 	if (changes.linkedHuts) {
 		changes.linkedHuts = await Promise.all(changes.linkedHuts.map(checkPropertyLocation));
-		changes.linkedHuts = [...new Set([...hike.linkedHuts._id, ...changes.linkedHuts])];
+		changes.linkedHuts = [...new Set([...(hike.linkedHuts._id || []), ...changes.linkedHuts])]; // If hike.linkedHuts is empty, _id is undefined
 	}
 
 	if (changes.trackPoints) {

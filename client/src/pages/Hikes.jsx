@@ -19,37 +19,10 @@ const Hikes = () => {
 	const [showPositionFilter, setShowPositionFilter] = useState(false);
 	const [currentHike, setCurrentHike] = useState(null);
 
-//  async	function test(){
-// 		const url = 'http://localhost:8080/api/hike/638085c5ee2abea8b5e58c8c';
-
-// 		const response = await fetch(url, {
-// 			credentials: "include",
-// 		});
-// 		console.log(await response.json());
-// 	}
-
-	async function test(id,values) {
-		    
-		const url='http://localhost:8080/api/hike/638085c5ee2abea8b5e58c8c'
-		
-			const response = await fetch(url, {
-				method: "PATCH",
-				credentials: "include",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body:JSON.stringify({
-					hikeCondition: "open"
-				}),
-			})
-			console.log(await response.json());
-	}	
-	
-			
 
 	return (
 		<div className="w-100">
-			<Button onClick={()=>test()} >test</Button>
+			
 			<Stack direction="horizontal" className="justify-content-between align-items-center">
 				<h1>Hikes</h1>
 				<Button

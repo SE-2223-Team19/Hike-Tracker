@@ -23,12 +23,14 @@ const HikeCard = ({ hike, showDetails }) => {
 				<Card.Title>
 					<Stack direction="horizontal" className="justify-content-between align-items-center">
 						<h5>{hike.title}</h5>
-						<Badge bg={difficultyToColor(hike.difficulty)}>
-							{capitalizeAndReplaceUnderscores(hike.difficulty)}
-						</Badge>
+
 						<Badge bg={ConditionColor(hike.hikeCondition)}>
                         {hike.hikeCondition}
                         </Badge>{' '}
+						<Badge bg={difficultyToColor(hike.difficulty)}>
+							{capitalizeAndReplaceUnderscores(hike.difficulty)}
+						</Badge>
+						
 					</Stack>
 				</Card.Title>
 				<>
@@ -64,6 +66,7 @@ const HikeCard = ({ hike, showDetails }) => {
 						</div>
 					</Stack>
 					<div className="mt-4">{hike.description}</div>
+					
 				</>
 			</Card.Body>
 		</Card>

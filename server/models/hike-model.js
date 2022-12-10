@@ -19,7 +19,7 @@ const hikeSchema = new Schema(
 		trackPoints: [[Number]],
 		createdBy: { type: Schema.Types.ObjectId, ref: "User", required: true },
 		hikeCondition:{type: String, enum: Object.values(Hut_Condition)},
-		hutNumber:{type: String, enum: Object.values(Hut_Number)}
+		
 	},
 	{ timestamps: true }
 );

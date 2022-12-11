@@ -283,19 +283,7 @@
 <a name='L218'></a><a href='#L218'>218</a>
 <a name='L219'></a><a href='#L219'>219</a>
 <a name='L220'></a><a href='#L220'>220</a>
-<a name='L221'></a><a href='#L221'>221</a>
-<a name='L222'></a><a href='#L222'>222</a>
-<a name='L223'></a><a href='#L223'>223</a>
-<a name='L224'></a><a href='#L224'>224</a>
-<a name='L225'></a><a href='#L225'>225</a>
-<a name='L226'></a><a href='#L226'>226</a>
-<a name='L227'></a><a href='#L227'>227</a>
-<a name='L228'></a><a href='#L228'>228</a>
-<a name='L229'></a><a href='#L229'>229</a>
-<a name='L230'></a><a href='#L230'>230</a>
-<a name='L231'></a><a href='#L231'>231</a>
-<a name='L232'></a><a href='#L232'>232</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<a name='L221'></a><a href='#L221'>221</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -408,23 +396,10 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">8x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">8x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">8x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">8x</span>
@@ -452,7 +427,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">7x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-yes">7x</span>
@@ -472,6 +446,8 @@
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">5x</span>
@@ -506,7 +482,9 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -529,8 +507,7 @@
 const ObjectId = require("mongoose").Types.ObjectId;
 const { StatusCodes } = require("http-status-codes");
 const hikeDAL = require("../data/hike-dal");
-const hikeService = require("../services/hike-service");
-const { Difficulty, LocationType, UserType } = require("../models/enums");
+const { Difficulty, LocationType, UserType, HikeCondition } = require("../models/enums");
 &nbsp;
 /**
  * GET /hike
@@ -639,23 +616,10 @@ async function getHikeById(req, res) {
  * @returns {Promise&lt;Response&gt;}
  */
 async function createHike(req, res) {
+	
 	try {
 		// Validate request body
 		const { body } = req;
-&nbsp;
-		// Location validation schema
-		const locationSchema = joi.object().keys({
-			_id: joi.string(),
-			locationType: joi
-				.string()
-				.valid(...Object.values(LocationType))
-				.required(),
-			description: joi.string().allow(""),
-			point: joi.object().keys({
-				lat: joi.number().required(),
-				lng: joi.number().required(),
-			}),
-		});
 &nbsp;
 		// Hike validation schema
 		const schema = joi.object().keys({
@@ -668,9 +632,9 @@ async function createHike(req, res) {
 				.required()
 				.valid(...Object.values(Difficulty)),
 			description: joi.string().required(),
-			startPoint: locationSchema.allow(null),
-			endPoint: locationSchema.allow(null),
-			linkedHuts: joi.array().items(locationSchema).default([]),
+			startPoint: joi.string().allow(null),
+			endPoint: joi.string().allow(null),
+			linkedHuts: joi.array().items(joi.string()),
 			trackPoints: joi.array().items(joi.array().items(joi.number()).length(2)),
 			referencePoints: joi.array().items(joi.array().items(joi.number()).length(2)),
 		});
@@ -684,8 +648,7 @@ async function createHike(req, res) {
 		// Adding currently logged in user
 		value.createdBy = req.user._id;
 &nbsp;
-		// Create new hike
-		const createdHike = await hikeService.createHike(value);
+		const createdHike = await hikeDAL.createHike(value);
 		return res.status(StatusCodes.CREATED).json(createdHike);
 	} catch (err) {
 		return res.status(StatusCodes.BAD_REQUEST).json({ err: err.message, stack: err.stack });
@@ -703,6 +666,8 @@ async function updateHike(req, res) {
 	try {
 		// Validate request body
 		const { params, body } = req;
+	console.log(params,"params");
+	console.log(body,"body");
 &nbsp;
 		// Location validation schema
 		const locationSchema = joi.object().keys({
@@ -729,19 +694,21 @@ async function updateHike(req, res) {
 			expectedTime: joi.number(),
 			difficulty: joi.string().valid(...Object.values(Difficulty)),
 			description: joi.string(),
-			startPoint: [locationSchema, joi.string()],
-			endPoint: [locationSchema, joi.string()],
-			linkedHuts: joi.array().items(locationSchema, joi.string()),
+			startPoint: joi.string().allow(null),
+			endPoint: joi.string().allow(null),
+			linkedHuts: joi.array().items(joi.string()),
 			trackPoints: joi.array().items(joi.array().items(joi.number()).length(2)),
 			referencePoints: joi.array().items(joi.array().items(joi.number()).length(2)),
+			hikeCondition: joi.string().valid(...Object.values(HikeCondition)),
 		});
 &nbsp;
 		// Validate request body against schema
 		const { error, value } = schema.validate(body);
+		
 &nbsp;
 		<span class="missing-if-branch" title="if path not taken" >I</span>if (error) <span class="cstat-no" title="statement not covered" >throw error; </span>// Joi validation error, goes to catch block
 &nbsp;
-		const hikeUpdated = await hikeService.updateHike(params.id, value);
+		const hikeUpdated = await hikeDAL.updateHike(params.id, value);
 &nbsp;
 		return res.status(StatusCodes.OK).json(hikeUpdated);
 	} catch (err) {
@@ -763,7 +730,7 @@ module.exports = {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2022-12-11T10:16:39.894Z
+                at 2022-12-11T18:54:00.223Z
             </div>
         <script src="../prettify.js"></script>
         <script>

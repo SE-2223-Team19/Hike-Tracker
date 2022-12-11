@@ -16,6 +16,7 @@ const Hikes = () => {
 	const [filters, setFilters] = useState({});
 	const [showPositionFilter, setShowPositionFilter] = useState(false);
 	const [currentHike, setCurrentHike] = useState(null);
+	const [dirty, setDirty] = useState(false);
 
 	return (
 		<div className="w-100">
@@ -44,17 +45,19 @@ const Hikes = () => {
 					openModal={() => setShowPositionFilter(true)}
 				/>
 			)}
-			<PaginatedList 
-				dataElement={(hike) => <HikeCard 
-											key={hike._id} 
-											hike={hike} 
-											showDetails={setCurrentHike}
-										/>}
-				errorElement={(error) => <NoData message={"Something went wrong during the request. Try again later."} />}
+			<PaginatedList
+				dataElement={(hike) => (
+					<HikeCard key={hike._id} hike={hike} showDetails={setCurrentHike} setDirty={setDirty} />
+				)}
+				errorElement={(error) => (
+					<NoData message={"Something went wrong during the request. Try again later."} />
+				)}
 				noDataElement={() => <NoData message={"No hikes found."} />}
 				loadingElement={() => <Loading />}
 				fetchCall={getHikes}
 				filters={filters}
+				dirty={dirty}
+				setDirty={setDirty}
 			/>
 			<PositionFilterModal
 				show={showPositionFilter}

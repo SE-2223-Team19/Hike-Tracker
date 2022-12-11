@@ -52,7 +52,7 @@ describe("getHikeById", () => {
 				body: {
 					email: "hiker@test.com",
 					fullName: "John Doe",
-					userType: UserType.HIKER,
+					userType: UserType.LOCAL_GUIDE,
 					password: "password",
 					confirmPassword: "password",
 				},
@@ -63,11 +63,12 @@ describe("getHikeById", () => {
 		expect(responseUserCreation.statusCode).toBe(StatusCodes.CREATED);
 
 		const response = new ResponseHelper();
+
 		await hikeController.createHike(
 			{
 				user: {
 					_id: responseUserCreation.responseBody._id,
-					userType: UserType.HIKER,
+					userType: UserType.LOCAL_GUIDE,
 					email: "hiker@test.com",
 					fullName: "John Doe",
 				},
@@ -78,22 +79,8 @@ describe("getHikeById", () => {
 					expectedTime: 60 * 3, // 3 h
 					difficulty: Difficulty.HIKER,
 					description: "A test hike",
-					startPoint: {
-						locationType: LocationType.PARKING_LOT,
-						description: "Starting point",
-						point: {
-							lat: 45.177786,
-							lng: 7.083372,
-						},
-					},
-					endPoint: {
-						locationType: LocationType.PARKING_LOT,
-						description: "Ending point",
-						point: {
-							lat: 45.203531,
-							lng: 7.07734,
-						},
-					},
+					startPoint: null,
+					endPoint: null,
 					referencePoints: [],
 					trackPoints: [
 						[45.177786, 7.083372],
@@ -466,22 +453,8 @@ describe("createHike", () => {
 					expectedTime: 60 * 3, // 3 h
 					difficulty: Difficulty.HIKER,
 					description: "A test hike",
-					startPoint: {
-						locationType: LocationType.PARKING_LOT,
-						description: "Starting point",
-						point: {
-							lat: 45.177786,
-							lng: 7.083372,
-						},
-					},
-					endPoint: {
-						locationType: LocationType.PARKING_LOT,
-						description: "Ending point",
-						point: {
-							lat: 45.203531,
-							lng: 7.07734,
-						},
-					},
+					startPoint: null,
+					endPoint: null,
 					referencePoints: [],
 					trackPoints: [
 						[45.177786, 7.083372],
@@ -837,22 +810,8 @@ describe("update Hike", () => {
 					expectedTime: 60 * 3, // 3 h
 					difficulty: Difficulty.HIKER,
 					description: "A test hike",
-					startPoint: {
-						locationType: LocationType.PARKING_LOT,
-						description: "Starting point",
-						point: {
-							lat: 45.177786,
-							lng: 7.083372,
-						},
-					},
-					endPoint: {
-						locationType: LocationType.PARKING_LOT,
-						description: "Ending point",
-						point: {
-							lat: 45.203531,
-							lng: 7.07734,
-						},
-					},
+					startPoint: null,
+					endPoint: null,
 					referencePoints: [],
 					trackPoints: [
 						[45.177786, 7.083372],
@@ -1205,22 +1164,8 @@ describe("update Hike", () => {
 					expectedTime: 60 * 3, // 3 h
 					difficulty: Difficulty.HIKER,
 					description: "A test hike",
-					startPoint: {
-						locationType: LocationType.PARKING_LOT,
-						description: "Starting point",
-						point: {
-							lat: 45.177786,
-							lng: 7.083372,
-						},
-					},
-					endPoint: {
-						locationType: LocationType.PARKING_LOT,
-						description: "Ending point",
-						point: {
-							lat: 45.203531,
-							lng: 7.07734,
-						},
-					},
+					startPoint: null,
+					endPoint: null,
 					referencePoints: [],
 					trackPoints: [
 						[45.177786, 7.083372],
@@ -1529,7 +1474,7 @@ describe("update Hike", () => {
 			[3, 4],
 			[5, 6],
 		];
-		const hikeUpdated = await hikeController.updateHike(
+		await hikeController.updateHike(
 			{
 				user: {
 					_id: responseUserCreation.responseBody._id,
@@ -1549,8 +1494,7 @@ describe("update Hike", () => {
 
 		newTrackPoints.reverse();
 		for (let i = 0; i < newTrackPoints.length; i++) {
-			let trackPoint =
-				hikeUpdated.responseBody.trackPoints[hikeUpdated.responseBody.trackPoints.length - (1 + i)];
+			let trackPoint = responseHikeUpdate.responseBody.trackPoints[responseHikeUpdate.responseBody.trackPoints.length - (1 + i)];
 			console.log("TP", i, trackPoint);
 			expect(newTrackPoints[i]).toStrictEqual(trackPoint);
 		}
@@ -1576,7 +1520,7 @@ describe("update Hike", () => {
 		expect(responseUserCreation.statusCode).toBe(StatusCodes.CREATED);
 
 		const responseHikeCreation = new ResponseHelper();
-		const hike = await hikeController.createHike(
+		await hikeController.createHike(
 			{
 				user: {
 					_id: responseUserCreation.responseBody._id,
@@ -1591,22 +1535,8 @@ describe("update Hike", () => {
 					expectedTime: 60 * 3, // 3 h
 					difficulty: Difficulty.HIKER,
 					description: "A test hike",
-					startPoint: {
-						locationType: LocationType.PARKING_LOT,
-						description: "Starting point",
-						point: {
-							lat: 45.177786,
-							lng: 7.083372,
-						},
-					},
-					endPoint: {
-						locationType: LocationType.PARKING_LOT,
-						description: "Ending point",
-						point: {
-							lat: 45.203531,
-							lng: 7.07734,
-						},
-					},
+					startPoint: null,
+					endPoint: null,
 					referencePoints: [],
 					trackPoints: [
 						[45.177786, 7.083372],
@@ -1916,7 +1846,7 @@ describe("update Hike", () => {
 		const hikeUpdated = await hikeController.updateHike(
 			{
 				params: {
-					id: hike.responseBody._id.toString(),
+					id: responseHikeCreation.responseBody._id.toString(),
 				},
 				body: {
 					referencePoints: [location1, location2],
@@ -1947,7 +1877,7 @@ describe("update Hike", () => {
 		expect(responseUserCreation.statusCode).toBe(StatusCodes.CREATED);
 
 		const responseHikeCreation = new ResponseHelper();
-		const hike = await hikeController.createHike(
+		await hikeController.createHike(
 			{
 				user: {
 					_id: responseUserCreation.responseBody._id,
@@ -1962,22 +1892,8 @@ describe("update Hike", () => {
 					expectedTime: 60 * 3, // 3 h
 					difficulty: Difficulty.HIKER,
 					description: "A test hike",
-					startPoint: {
-						locationType: LocationType.PARKING_LOT,
-						description: "Starting point",
-						point: {
-							lat: 45.177786,
-							lng: 7.083372,
-						},
-					},
-					endPoint: {
-						locationType: LocationType.PARKING_LOT,
-						description: "Ending point",
-						point: {
-							lat: 45.203531,
-							lng: 7.07734,
-						},
-					},
+					startPoint: null,
+					endPoint: null,
 					referencePoints: [],
 					trackPoints: [
 						[45.177786, 7.083372],
@@ -2278,30 +2194,34 @@ describe("update Hike", () => {
 			responseHikeCreation
 		);
 
-		const responseHikeUpdate = new ResponseHelper();
-
-		const startPoint = {
-			locationType: LocationType.DEFAULT,
-			description: "Example starting point",
-			point: {
-				lat: 45.177786,
-				lng: 7.083372,
+		const responseCreateLocation = new ResponseHelper();
+		await locationController.createLocation({
+			user: {
+				userType: UserType.LOCAL_GUIDE
 			},
-		};
+			body: {
+				locationType: LocationType.DEFAULT,
+				description: "Example starting point",
+				point: [ 7.083372, 45.177786 ]
+			}
+		}, responseCreateLocation);
+
+		expect(responseCreateLocation.statusCode).toBe(StatusCodes.CREATED);
+		const responseHikeUpdate = new ResponseHelper();
 
 		const hikeUpdated = await hikeController.updateHike(
 			{
 				user: {
-					_id: responseUserCreation.responseBody._id,
+					_id: responseUserCreation.responseBody._id.toString(),
 					userType: UserType.HIKER,
 					email: "hiker@test.com",
 					fullName: "John Doe",
 				},
 				params: {
-					id: hike.responseBody._id.toString(),
+					id: responseHikeCreation.responseBody._id.toString(),
 				},
 				body: {
-					startPoint: startPoint,
+					startPoint: responseCreateLocation.responseBody._id.toString(),
 				},
 			},
 			responseHikeUpdate
@@ -2352,22 +2272,8 @@ describe("update Hike", () => {
 					expectedTime: 60 * 3, // 3 h
 					difficulty: Difficulty.HIKER,
 					description: "A test hike",
-					startPoint: {
-						locationType: LocationType.PARKING_LOT,
-						description: "Starting point",
-						point: {
-							lat: 45.177786,
-							lng: 7.083372,
-						},
-					},
-					endPoint: {
-						locationType: LocationType.PARKING_LOT,
-						description: "Ending point",
-						point: {
-							lat: 45.203531,
-							lng: 7.07734,
-						},
-					},
+					startPoint: null,
+					endPoint: null,
 					referencePoints: [
 						[45.178477, 7.082895],
 						[45.17988, 7.082138],
@@ -2684,7 +2590,7 @@ describe("update Hike", () => {
 		const hikeUpdated = await hikeController.updateHike(
 			{
 				user: {
-					_id: responseUserCreation.responseBody._id,
+					_id: responseUserCreation.responseBody._id.toString(),
 					userType: UserType.HIKER,
 					email: "hiker@test.com",
 					fullName: "John Doe",

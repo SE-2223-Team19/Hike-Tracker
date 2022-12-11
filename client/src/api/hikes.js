@@ -20,7 +20,6 @@ async function getHikes(filters = {}) {
 			return await response.json();
 		throw await response.json();
 	} catch (err) {
-		console.log(err);
 		return { error: err };
 	}
 }
@@ -67,6 +66,7 @@ async function createHike(hike) {
 }
 
 async function updateHike(id, changes) {
+	
 	try {
 		const response = await fetch(new URL(ENDPOINTS.hikes.update.replace(":id", id), BACKEND_URL), {
 			method: "PATCH",

@@ -12,4 +12,6 @@ describe("Login as a local guide", () => {
 		cy.get('[data-test-id="password"').type("password");
 		cy.get("button").click();
 	});
+	
+	
 });

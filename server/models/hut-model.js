@@ -28,6 +28,11 @@ const Hut = Location.discriminator(LocationType.HUT, new Schema({
     webSite: {
         type: String,
         required: false
+    },
+    peopleWorks: { 
+        type: [Schema.Types.ObjectId], 
+        ref: "User", 
+        required: true 
     }
 }));
 

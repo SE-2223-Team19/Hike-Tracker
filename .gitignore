@@ -101,3 +101,7 @@ dist
 
 # mongom folder
 mongo
+
+# GitHub and VSCode
+.vscode
+.github

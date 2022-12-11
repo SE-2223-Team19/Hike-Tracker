@@ -8,15 +8,15 @@ user type: local_guide
 
 email: vittorioarpino@test.it
 password: password
-user type: local_guide
+user type: hiker
 
 email: matteorosati@test.it
 password: password
-user type: local_guide
+user type: platform manager
 
 email: martacorci1@test.it
 password: password
-user type: local_guide
+user type: hut worker
 
 email: michelemochi@test.it
 password: password

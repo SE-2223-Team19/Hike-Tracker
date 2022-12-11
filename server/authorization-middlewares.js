@@ -26,6 +26,7 @@ const isHiker = (req, res, next) => {
 };
 
 const isLocalGuide = (req, res, next) => {
+	
 	if (
 		req.isAuthenticated() &&
 		(req.user.userType === UserType.LOCAL_GUIDE || req.user.userType === UserType.PLATFORM_MANAGER)
@@ -56,11 +57,13 @@ const isHutWorker = (req, res, next) => {
 	return res.status(StatusCodes.UNAUTHORIZED).end();
 };
 
+
+
 module.exports = {
 	isLoggedIn,
 	isPlatformManager,
 	isHiker,
 	isLocalGuide,
 	isEmergencyOperator,
-	isHutWorker,
+	isHutWorker
 };

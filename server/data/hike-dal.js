@@ -199,7 +199,7 @@ async function getHikes(page, pageSize, filterQuery = {}) {
 /**
  * Create a new hike.
  * @param {Object} hike Hike to create. Object must match Hike model.
- * @returns {HikeModel}
+ * @returns {Primise<HikeModel>}
  */
 async function createHike(hike) {
 	const newHike = new Hike({
@@ -244,8 +244,9 @@ async function updateHike(id, hikeUpdate) {
 			coordinates: hikeUpdate.trackPoints.map((p) => [p[1], p[0]]),
 		};
 	}
-	const hikeUpdated = await Hike.findByIdAndUpdate(id, hikeUpdate);
-	return await getHikeById(hikeUpdated._id);
+	const hikeUpdated = await Hike.findByIdAndUpdate(id, hikeUpdate, { new: true });
+	
+	return await getHikeById(id);
 }
 
 module.exports = {

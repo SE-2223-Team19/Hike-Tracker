@@ -4,7 +4,7 @@ const LocalStrategy = require("passport-local");
 const { StatusCodes } = require("http-status-codes");
 
 const localStrategy = new LocalStrategy(async function verify(username, password, cb) {
-    const users = await userDAL.getUsers({ email: username, isValid: true });
+    const users = await userDAL.getUsers({ email: username, isEmailValidated: true, isValid: true });
 
     if (users.length !== 1) {
         return cb("Incorrect username or password.");

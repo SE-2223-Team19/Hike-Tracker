@@ -1,6 +1,8 @@
+const { object } = require("joi");
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
-const { Difficulty } = require("./enums");
+const { Difficulty, HikeCondition } = require("./enums");
+
 
 const trackSchema = new Schema({
 	type: {
@@ -31,7 +33,8 @@ const hikeSchema = new Schema(
 			type: trackSchema,
 			index: "2dsphere"
 		},
-		createdBy: { type: Schema.Types.ObjectId, ref: "User", required: true }
+		createdBy: { type: Schema.Types.ObjectId, ref: "User", required: true },
+		hikeCondition:{ type: String, enum: Object.values(HikeCondition) }
 	},
 	{ timestamps: true }
 );

@@ -34,6 +34,9 @@ function ResponseHelper() {
         this.responseBody = value;
         return this;
     };
+    this.end = () => {
+        return this;
+    };
 }
 
 module.exports = {

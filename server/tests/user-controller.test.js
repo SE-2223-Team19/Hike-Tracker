@@ -10,23 +10,27 @@ setupDB("user-controller");
 describe("getUsers", () => {
 	test("all users", async () => {
 		const response = new ResponseHelper();
-		await userController.getUsers({
-			query: {
-
-			}
-		}, response);
+		await userController.getUsers(
+			{
+				query: {},
+			},
+			response
+		);
 		expect(response.statusCode).toBe(StatusCodes.OK);
 		expect(Array.isArray(response.responseBody)).toBe(true);
 	});
 
 	test("all users with pagination", async () => {
 		const response = new ResponseHelper();
-		await userController.getUsers({
-			query: {
-				page: 1,
-				pageSize: 10
-			}
-		}, response);
+		await userController.getUsers(
+			{
+				query: {
+					page: 1,
+					pageSize: 10,
+				},
+			},
+			response
+		);
 		expect(response.statusCode).toBe(StatusCodes.OK);
 		expect(response.responseBody && typeof response.responseBody === "object").toBe(true);
 		expect(Array.isArray(response.responseBody.data)).toBe(true);
@@ -286,7 +290,16 @@ describe("updatePreferences", () => {
 					_id: response.responseBody._id,
 				},
 				body: {
-					minLength: 500, maxLength: 1000, minAscent: 0, maxAscent: 200, minExpectedTime: 0, maxExpectedTime: 1200, difficulty: "Hiker", locationCoordinatesLat: 45.06837, locationCoordinatesLng: 7.68307, locationRadius: 50000
+					minLength: 500,
+					maxLength: 1000,
+					minAscent: 0,
+					maxAscent: 200,
+					minExpectedTime: 0,
+					maxExpectedTime: 1200,
+					difficulty: "Hiker",
+					locationCoordinatesLat: 45.06837,
+					locationCoordinatesLng: 7.68307,
+					locationRadius: 50000,
 				},
 			},
 			response
@@ -302,7 +315,16 @@ describe("updatePreferences", () => {
 					_id: new ObjectId("123456789123"),
 				},
 				body: {
-					minLength: 500, maxLength: 1000, minAscent: 0, maxAscent: 200, minExpectedTime: 0, maxExpectedTime: 1200, difficulty: "Hiker", locationCoordinatesLat: 45.06837, locationCoordinatesLng: 7.68307, locationRadius: 50000
+					minLength: 500,
+					maxLength: 1000,
+					minAscent: 0,
+					maxAscent: 200,
+					minExpectedTime: 0,
+					maxExpectedTime: 1200,
+					difficulty: "Hiker",
+					locationCoordinatesLat: 45.06837,
+					locationCoordinatesLng: 7.68307,
+					locationRadius: 50000,
 				},
 			},
 			response
@@ -334,7 +356,16 @@ describe("getPreferences", () => {
 					_id: responseUser.responseBody._id,
 				},
 				body: {
-					minLength: 500, maxLength: 1000, minAscent: 0, maxAscent: 200, minExpectedTime: 0, maxExpectedTime: 1200, difficulty: "Hiker", locationCoordinatesLat: 45.06837, locationCoordinatesLng: 7.68307, locationRadius: 50000
+					minLength: 500,
+					maxLength: 1000,
+					minAscent: 0,
+					maxAscent: 200,
+					minExpectedTime: 0,
+					maxExpectedTime: 1200,
+					difficulty: "Hiker",
+					locationCoordinatesLat: 45.06837,
+					locationCoordinatesLng: 7.68307,
+					locationRadius: 50000,
 				},
 			},
 			response
@@ -413,7 +444,16 @@ describe("deletePreferences", () => {
 					_id: responseUser.responseBody._id,
 				},
 				body: {
-					minLength: 500, maxLength: 1000, minAscent: 0, maxAscent: 200, minExpectedTime: 0, maxExpectedTime: 1200, difficulty: "Hiker", locationCoordinatesLat: 45.06837, locationCoordinatesLng: 7.68307, locationRadius: 50000
+					minLength: 500,
+					maxLength: 1000,
+					minAscent: 0,
+					maxAscent: 200,
+					minExpectedTime: 0,
+					maxExpectedTime: 1200,
+					difficulty: "Hiker",
+					locationCoordinatesLat: 45.06837,
+					locationCoordinatesLng: 7.68307,
+					locationRadius: 50000,
 				},
 			},
 			response

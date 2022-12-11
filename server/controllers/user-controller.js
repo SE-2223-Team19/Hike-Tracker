@@ -4,21 +4,21 @@ const { StatusCodes } = require("http-status-codes");
 const userDAL = require("../data/user-dal");
 const { UserType } = require("../models/enums");
 const { randString } = require("../helper/utility");
-const { sendVerificationEmail, sendAccountBlockedEmail, sendAccountValidatedEmail } = require("../email/account");
-const locationDAL = require("../data/location-dal")
+const {
+	sendVerificationEmail,
+	sendAccountBlockedEmail,
+	sendAccountValidatedEmail,
+} = require("../email/account");
+const locationDAL = require("../data/location-dal");
 
 async function getUsers(req, res) {
 	try {
 		const { query } = req;
 
 		const schema = joi.object().keys({
-			email: joi
-				.string()
-				.email({ tlds: { allow: false } }),
+			email: joi.string().email({ tlds: { allow: false } }),
 			fullName: joi.string(),
-			userType: joi
-				.string()
-				.valid(...Object.values(UserType)),
+			userType: joi.string().valid(...Object.values(UserType)),
 			page: joi.number().greater(0),
 			pageSize: joi.number().greater(0),
 		});
@@ -41,7 +41,7 @@ async function getUsers(req, res) {
 			data: users.data.map(u => {
 				const { salt, hash, uniqueString, ...user } = u;
 				return user;
-			})
+			}),
 		});
 	} catch (err) {
 		return res
@@ -145,7 +145,6 @@ async function createUser(req, res) {
  */
 async function verifyUser(req, res) {
 	try {
-
 		const uniqueString = req.params.uniqueString;
 		const users = await userDAL.getUsers({ uniqueString: uniqueString });
 		const user = users[0];
@@ -174,21 +173,18 @@ async function verifyUser(req, res) {
 
 async function updateUser(req, res) {
 	try {
-
 		const { id } = req.params;
 		const { body } = req;
 
 		const schema = joi.object().keys({
-			userType: joi
-				.string()
-				.valid(...Object.values(UserType)),
+			userType: joi.string().valid(...Object.values(UserType)),
 			password: joi.string(),
 			confirmPassword: joi.string().allow(joi.ref("password")).when(joi.ref("password"), {
 				is: joi.exist(),
 				then: joi.required(),
-				otherwise: joi.forbidden()
+				otherwise: joi.forbidden(),
 			}),
-			isValid: joi.boolean()
+			isValid: joi.boolean(),
 		});
 
 		const { error, value } = schema.validate(body);
@@ -212,17 +208,14 @@ async function updateUser(req, res) {
 		if (value.isValid !== undefined) {
 			if (value.isValid) {
 				await sendAccountValidatedEmail(updatedUser.email, req.user.fullName);
-			}
-			else {
+			} else {
 				await sendAccountBlockedEmail(updatedUser.email, req.user.fullName);
 			}
 		}
 
 		return res.status(StatusCodes.OK).end();
 	} catch (err) {
-		return res
-			.status(StatusCodes.BAD_REQUEST)
-			.json({ err: err.message });
+		return res.status(StatusCodes.BAD_REQUEST).json({ err: err.message });
 	}
 }
 
@@ -234,14 +227,11 @@ async function getPreferences(req, res) {
 	if (user) {
 		if (user.preferences) {
 			return res.status(StatusCodes.OK).json(user.preferences);
-		}
-		else {
+		} else {
 			return res.status(StatusCodes.OK).json({});
 		}
 	} else {
-		return res
-			.status(StatusCodes.NOT_FOUND)
-			.json({ message: "User not found" });
+		return res.status(StatusCodes.NOT_FOUND).json({ message: "User not found" });
 	}
 }
 
@@ -255,9 +245,7 @@ async function updatePreferences(req, res) {
 		await userDAL.updateUser(user);
 		return res.status(StatusCodes.OK).json(user.preferences);
 	} else {
-		return res
-			.status(StatusCodes.NOT_FOUND)
-			.json({ message: "User not found" });
+		return res.status(StatusCodes.NOT_FOUND).json({ message: "User not found" });
 	}
 }
 
@@ -270,12 +258,9 @@ async function deletePreferences(req, res) {
 		await userDAL.updateUser(user);
 		return res.status(StatusCodes.OK).json(user.preferences);
 	} else {
-		return res
-			.status(StatusCodes.NOT_FOUND)
-			.json({ message: "User not found" });
+		return res.status(StatusCodes.NOT_FOUND).json({ message: "User not found" });
 	}
 }
-
 
 module.exports = {
 	getUsers,

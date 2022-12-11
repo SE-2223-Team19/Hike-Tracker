@@ -50,14 +50,17 @@ const AuthProvider = ({ children }) => {
 		setMessage({ msg: `Logout successful!`, type: "secondary" });
 	}, [navigate]);
 
-	const memoValue = useMemo(() => ({
-		handleLogin, 
-		handleLogout, 
-		loggedIn, 
-		message, 
-		setMessage, 
-		user 
-	}), [loggedIn, message, user, handleLogin, handleLogout]);
+	const memoValue = useMemo(
+		() => ({
+			handleLogin,
+			handleLogout,
+			loggedIn,
+			message,
+			setMessage,
+			user,
+		}),
+		[handleLogin, handleLogout, loggedIn, message, user]
+	);
 
 	return (
 		<AuthContext.Provider value={memoValue}>{!loadingInitial && children}</AuthContext.Provider>

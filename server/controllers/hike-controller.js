@@ -164,6 +164,23 @@ async function updateHike(req, res) {
 	console.log(params,"params");
 	console.log(body,"body");
 
+		// Location validation schema
+		const locationSchema = joi.object().keys({
+			_id: joi.string(),
+			locationType: joi
+				.string()
+				.valid(...Object.values(LocationType))
+				.required(),
+			description: joi.string().allow(""),
+			point: joi
+				.object()
+				.keys({
+					lat: joi.number().required(),
+					lng: joi.number().required(),
+				})
+				.required(),
+		});
+
 		// Hike validation schema
 		const schema = joi.object().keys({
 			title: joi.string(),

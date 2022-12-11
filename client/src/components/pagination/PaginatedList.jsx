@@ -42,25 +42,12 @@ function PaginatedList({
 			pageSize: pagination.pageSize,
 		})
 			.then((data) => {
-				console.log(data);
 				if (setDirty) setDirty(false);
 				if (data.error) {
 					setData(null);
 					setLoading(false);
-					setError(data.error);
-					return;
+					setError(null);
 				}
-				setData(data.data);
-				setPagination(
-					(old) =>
-						data.metadata.find((m) => m.type === "pagination") || {
-							...old,
-							currentPage: 1,
-							totalPages: 0,
-						}
-				);
-				setLoading(false);
-				setError(null);
 			})
 			.catch((err) => {
 				if (setDirty) setDirty(false);

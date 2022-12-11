@@ -91,16 +91,20 @@ function DescribeHikeForm({ hike }) {
 
 	// ** On submit
 	const handleSubmit = async (values) => {
+		console.log(values);
 		// Format points for backend
 		delete values.gpxFile;
 		delete values.extractPoints;
 		if (values.startPoint === "") {
 			values.startPoint = null;
 		}
-		if (values.endPoint === "") {
-			values.endPoint = null;
+		if (values.endPoint) {
+			values.endPoint = values.endPoint._id;
 		}
 		console.log("on submit", values);
+		if (values.linkedHuts && values.linkedHuts.length > 0) {
+			values.linkedHuts = values.linkedHuts.map((hut) => hut._id);
+		}
 		if (hike) {
 			// Update hike
 			delete values.trackPoints;
@@ -119,7 +123,7 @@ function DescribeHikeForm({ hike }) {
 			return;
 		}
 		const createdHike = await createHike({ ...values });
-		if (createdHike) {
+		if (createdHike._id) {
 			return navigate("/profile");
 		}
 		setMessage({
@@ -131,7 +135,7 @@ function DescribeHikeForm({ hike }) {
 	// ** Form validation
 	const locationSchema = Yup.object().shape({
 		_id: Yup.string().nullable(),
-		locationType: Yup.string(), // FIXME: Required in the controller (this is the main error)
+		locationType: Yup.string(),
 		point: Yup.object()
 			.shape({
 				lat: Yup.number().required("Required"),
@@ -160,13 +164,11 @@ function DescribeHikeForm({ hike }) {
 	});
 
 	const formatPoint = (pointFromMongo) => {
-		const { _id, locationType, point } = pointFromMongo;
 		return {
-			_id,
-			locationType,
+			...pointFromMongo,
 			point: {
-				lat: point[1],
-				lng: point[0],
+				lat: pointFromMongo.point[1],
+				lng: pointFromMongo.point[0],
 			},
 		};
 	};
@@ -202,7 +204,7 @@ function DescribeHikeForm({ hike }) {
 			}}
 			onSubmit={async (values, { setSubmitting }) => {
 				setSubmitting(true);
-				await handleSubmit(values);
+				await handleSubmit({ ...values });
 				setSubmitting(false);
 			}}
 			validationSchema={validationSchema}

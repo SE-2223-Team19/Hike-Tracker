@@ -2,7 +2,6 @@ const joi = require("joi");
 const ObjectId = require("mongoose").Types.ObjectId;
 const { StatusCodes } = require("http-status-codes");
 const hikeDAL = require("../data/hike-dal");
-const hikeService = require("../services/hike-service");
 const { Difficulty, LocationType, UserType } = require("../models/enums");
 
 /**
@@ -116,20 +115,6 @@ async function createHike(req, res) {
 		// Validate request body
 		const { body } = req;
 
-		// Location validation schema
-		const locationSchema = joi.object().keys({
-			_id: joi.string(),
-			locationType: joi
-				.string()
-				.valid(...Object.values(LocationType))
-				.required(),
-			description: joi.string().allow(""),
-			point: joi.object().keys({
-				lat: joi.number().required(),
-				lng: joi.number().required(),
-			}),
-		});
-
 		// Hike validation schema
 		const schema = joi.object().keys({
 			title: joi.string().required(),
@@ -141,9 +126,9 @@ async function createHike(req, res) {
 				.required()
 				.valid(...Object.values(Difficulty)),
 			description: joi.string().required(),
-			startPoint: locationSchema.allow(null),
-			endPoint: locationSchema.allow(null),
-			linkedHuts: joi.array().items(locationSchema).default([]),
+			startPoint: joi.string().allow(null),
+			endPoint: joi.string().allow(null),
+			linkedHuts: joi.array().items(joi.string()),
 			trackPoints: joi.array().items(joi.array().items(joi.number()).length(2)),
 			referencePoints: joi.array().items(joi.array().items(joi.number()).length(2)),
 		});
@@ -157,8 +142,7 @@ async function createHike(req, res) {
 		// Adding currently logged in user
 		value.createdBy = req.user._id;
 
-		// Create new hike
-		const createdHike = await hikeService.createHike(value);
+		const createdHike = await hikeDAL.createHike(value);
 		return res.status(StatusCodes.CREATED).json(createdHike);
 	} catch (err) {
 		return res.status(StatusCodes.BAD_REQUEST).json({ err: err.message, stack: err.stack });
@@ -176,8 +160,6 @@ async function updateHike(req, res) {
 	try {
 		// Validate request body
 		const { params, body } = req;
-
-		console.log("body", body);
 
 		// Location validation schema
 		const locationSchema = joi.object().keys({
@@ -204,9 +186,9 @@ async function updateHike(req, res) {
 			expectedTime: joi.number(),
 			difficulty: joi.string().valid(...Object.values(Difficulty)),
 			description: joi.string(),
-			startPoint: [locationSchema, joi.string()],
-			endPoint: [locationSchema, joi.string()],
-			linkedHuts: joi.array().items(locationSchema, joi.string()),
+			startPoint: joi.string().allow(null),
+			endPoint: joi.string().allow(null),
+			linkedHuts: joi.array().items(joi.string()),
 			trackPoints: joi.array().items(joi.array().items(joi.number()).length(2)),
 			referencePoints: joi.array().items(joi.array().items(joi.number()).length(2)),
 		});
@@ -216,7 +198,7 @@ async function updateHike(req, res) {
 
 		if (error) throw error; // Joi validation error, goes to catch block
 
-		const hikeUpdated = await hikeService.updateHike(params.id, value);
+		const hikeUpdated = await hikeDAL.updateHike(params.id, value);
 
 		return res.status(StatusCodes.OK).json(hikeUpdated);
 	} catch (err) {

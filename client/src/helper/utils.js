@@ -1,6 +1,6 @@
 /** Utility functions */
 
-import { Difficulty, UserType } from "./enums";
+import { Difficulty, UserType, HikeCondition } from "./enums";
 
 /**
  * Convert minutes to hours and minutes display format
@@ -50,6 +50,21 @@ export const userTypeToColour = (userType) => {
 			return "dark";
 		default:
 			return "light";
+	}
+};
+
+export const ConditionColor = (condition) => {
+	switch (condition) {
+		case HikeCondition.Open:
+			return "info";
+		case HikeCondition.Overloaded:
+			return "warning";
+		case HikeCondition.Close_BadWeather:
+			return "danger";
+		case HikeCondition.Close_maintenance:
+			return "danger"	
+		default:
+			return "secondary";
 	}
 };
 

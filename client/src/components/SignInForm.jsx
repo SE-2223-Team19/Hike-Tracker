@@ -56,7 +56,7 @@ function SignInForm() {
 	};
 
 	const userTypeValidation = () => {
-		const test = Object.values(UserType).some((t) => t === userType);
+		const test = Object.values(UserType).filter(userType => userType !== UserType.PLATFORM_MANAGER).some((t) => t === userType);
 		setErrors({ ...errors, userType: test ? "" : "Unknown user type" });
 		return test;
 	};
@@ -73,25 +73,19 @@ function SignInForm() {
 		if ([emailValidation(), confirmPasswordValidation(), userTypeValidation()].every((a) => a)) {
 			try {
 				setErrors({ ...errors, form: "" });
-				if (userType === UserType.HUT_WORKER && hutsSelectedValidation.apply()) {
+				let user = {
+					email,
+					fullName,
+					userType,
+					password,
+					confirmPassword
+				};
+				if (userType === UserType.HUT_WORKER && hutsSelectedValidation()) {
 					setErrors({ ...errors, form: "" });
-					await createUser({
-						email,
-						fullName,
-						userType,
-						password,
-						confirmPassword,
-						hutsSelected
-					});
+					user = { ...user, hutsSelected };
 				}
-				if (userType !== UserType.HUT_WORKER)
-					await createUser({
-						email,
-						fullName,
-						userType,
-						password,
-						confirmPassword
-					});
+
+				await createUser(user);
 
 				setShowModal(true);
 			} catch (err) {
@@ -176,7 +170,7 @@ function SignInForm() {
 								isInvalid={!!errors.userType}
 							>
 								<option value="">Select a user type</option>
-								{Object.values(UserType).map((userType) => (
+								{Object.values(UserType).filter(userType => userType !== UserType.PLATFORM_MANAGER).map((userType) => (
 									<option key={userType} value={userType}>
 										{capitalizeAndReplaceUnderscores(userType)}
 									</option>

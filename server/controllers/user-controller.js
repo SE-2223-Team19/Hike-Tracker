@@ -72,12 +72,13 @@ async function createUser(req, res) {
 			userType: joi
 				.string()
 				.required()
-				.valid(...Object.values(UserType)),
+				.valid(...Object.values(UserType).filter(userType => userType !== UserType.PLATFORM_MANAGER)),
 			password: joi.string().required(),
 			confirmPassword: joi.string().required().allow(joi.ref("password")),
 			hutsSelected: joi.alternatives().conditional("userType", {
 				is: UserType.HUT_WORKER,
-				then: joi.array().items(joi.string()).min(1).required()
+				then: joi.array().items(joi.string()).min(1).required(),
+				otherwise: joi.forbidden()
 			})
 		});
 
@@ -96,6 +97,10 @@ async function createUser(req, res) {
 
 		const isValid = false;
 
+		if (UserType.HUT_WORKER === value.userType && !(await Promise.all(value.hutsSelected.map((hut) => locationDAL.getLocationById(hut)))).every(hut => hut !== null)) {
+			throw new Error("A hut does not exist");
+		}
+
 		const createdUser = await userDAL.createUser({
 			email: value.email,
 			fullName: value.fullName,
@@ -108,10 +113,10 @@ async function createUser(req, res) {
 
 		if (UserType.HUT_WORKER === value.userType) {
 			value.hutsSelected.forEach(async (e) => {
-				let loc = await locationDAL.getLocationById(e)
-				loc.peopleWorks = loc.peopleWorks.push(createdUser._id)
-				await locationDAL.updateLocation(e, loc)
-			})
+				const loc = await locationDAL.getLocationById(e);
+				loc.peopleWorks = [ ...loc.peopleWorks, createdUser._id ];
+				await locationDAL.updateLocation(e, loc);
+			});
 		}
 
 		await sendVerificationEmail(value.email, uniqueString);

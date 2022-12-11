@@ -9,32 +9,23 @@ import PositionFilterModal from "../components/PositionFilterModal";
 import * as L from "leaflet";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
+import PaginatedList from "../components/pagination/PaginatedList";
 
 function Huts() {
 	const navigate = useNavigate();
 	const { user, setMessage } = useContext(AuthContext);
 
-	const [huts, setHuts] = useState([]);
-	const [loading, setLoading] = useState(true);
 	const [openFilters, setOpenFilters] = useState(false);
 	const [filters, setFilters] = useState({});
 	const [showPositionFilter, setShowPositionFilter] = useState(false);
 
 	// ** Fetch hikes from API
 	useEffect(() => {
-		setLoading(true);
-		const fetchHikes = async () => {
-			const huts = await getHuts({ ...filters });
-			setHuts(huts);
-			setLoading(false);
-		};
-		if (user) {
-			fetchHikes();
-		} else {
+		if (!user) {
 			navigate("/");
 			setMessage({ type: "danger", msg: "You must be logged in to access this page" });
 		}
-	}, [filters, user, navigate, setMessage]);
+	}, [user, navigate, setMessage]);
 
 	return (
 		<div className="w-100">
@@ -65,12 +56,16 @@ function Huts() {
 					openModal={() => setShowPositionFilter(true)}
 				/>
 			)}
-			{loading && <Loading />}
-			{(!huts || huts.length <= 0) && !loading && <NoData message={"No huts found."} />}
 			<Container>
-				<Row className="g-4 row-cols-1 row-cols-sm-1 row-cols-md-3">
-					{huts.length > 0 && !loading && huts.map(hut => <HutCard key={hut._id} hut={hut} />)}
-				</Row>
+				<PaginatedList
+					dataElement={(hut) => <HutCard key={hut._id} hut={hut} />}
+					dataContainer={({children}) => <Row className="g-4 row-cols-1 row-cols-sm-1 row-cols-md-3">{children}</Row>}
+					errorElement={(error) => <NoData message={error} />}
+					noDataElement={() => <NoData message={"No huts found."} />}
+					loadingElement={() => <Loading />}
+					fetchCall={getHuts}
+					filters={filters}
+				/>
 			</Container>
 			<PositionFilterModal
 				show={showPositionFilter}

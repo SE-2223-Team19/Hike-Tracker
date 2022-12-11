@@ -19,6 +19,7 @@ const ENDPOINTS = {
 	users: {
 		insert: "user",
 		verify: "user/verify/:uniqueString",
+		preferences: "user/preferences",
 	},
 };
 

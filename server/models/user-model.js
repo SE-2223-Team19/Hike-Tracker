@@ -13,6 +13,7 @@ const userSchema = new Schema({
 	// verification fields:
 	uniqueString: { type: String, unique: true },
 	isValid: Boolean,
+	preferences: { minLength: Number, maxLength: Number, minAscent: Number, maxAscent: Number, minExpectedTime: Number, maxExpectedTime: Number, difficulty: String, locationCoordinatesLat: Number, locationCoordinatesLng: Number, locationRadius: Number }
 });
 
 // User Model

@@ -1,5 +1,4 @@
-import { useMemo } from "react";
-import { React, useState } from "react";
+import { React, useState, useMemo } from "react";
 import { Button, Stack } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { getHikes } from "../../api/hikes.js";
@@ -15,9 +14,12 @@ const LocalGuideProfile = ({ user }) => {
 	const navigate = useNavigate();
 	const [currentHike, setCurrentHike] = useState(null);
 
-	const filter = useMemo(() => ({
-		createdBy: user._id
-	}), [user]);
+	const filter = useMemo(
+		() => ({
+			createdBy: user._id,
+		}),
+		[user]
+	);
 
 	return (
 		<>
@@ -35,9 +37,7 @@ const LocalGuideProfile = ({ user }) => {
 				</Stack>
 			</Stack>
 			<PaginatedList
-				dataElement={(hike) => (
-					<HikeCard key={hike._id} hike={hike} showDetails={setCurrentHike} />
-				)}
+				dataElement={(hike) => <HikeCard key={hike._id} hike={hike} showDetails={setCurrentHike} />}
 				errorElement={(error) => <NoData message={error} />}
 				noDataElement={() => <NoData message={"You have not created any hikes yet."} />}
 				loadingElement={() => <Loading />}

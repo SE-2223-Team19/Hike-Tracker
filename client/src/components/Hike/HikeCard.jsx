@@ -9,11 +9,12 @@ import {
 	displayLength,
 } from "../../helper/utils";
 import { AuthContext } from "../../context/AuthContext";
+import { UserType } from "../../helper/enums";
 
 const HikeCard = ({ hike, showDetails }) => {
 	const navigate = useNavigate();
-	// ** User (if user is not logged in cannot see hike details)
-	const { loggedIn } = useContext(AuthContext);
+	// ** User (if user is not logged in and has not permission, he cannot see hike details)
+	const { loggedIn, user } = useContext(AuthContext);
 
 	return (
 		<Card className="flex-row p-3 mt-4">
@@ -41,9 +42,9 @@ const HikeCard = ({ hike, showDetails }) => {
 							<span className="ms-1">{displayExpectedTime(hike.expectedTime)}</span>
 						</div>
 						<div className="ms-auto">
-							{loggedIn && (
+							{(loggedIn && user.userType !== UserType.HUT_WORKER ) && (
 								<Stack direction="horizontal" gap={3}>
-									<Button onClick={() => showDetails(hike)} variant={"success"}>
+									<Button data-test-id = "seeOnMap" onClick={() => showDetails(hike)} variant={"success"}>
 										See on Map
 									</Button>
 									<Button variant="dark" onClick={() => navigate("/hike", { state: { hike } })}>

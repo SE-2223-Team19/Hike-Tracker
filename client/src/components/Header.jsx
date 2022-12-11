@@ -1,8 +1,8 @@
-import React from "react";
-import { useContext } from "react";
+import React, { useContext } from "react";
 import { Nav, Navbar, Stack, Dropdown } from "react-bootstrap";
 import { NavLink, useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
+import { UserType } from "../helper/enums";
 import { capitalizeAndReplaceUnderscores } from "../helper/utils";
 import "./Header.css";
 
@@ -26,7 +26,7 @@ const Header = () => {
 					<NavLink to="/" className="nav-link">
 						Hikes
 					</NavLink>
-					{loggedIn && (
+					{(loggedIn && user.userType !== UserType.HUT_WORKER) && (
 						<NavLink to="/huts" className="nav-link">
 							Huts
 						</NavLink>

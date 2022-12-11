@@ -20,7 +20,6 @@ async function getHikes(filters = {}) {
 			return await response.json();
 		throw await response.json();
 	} catch (err) {
-		console.log(err);
 		return { error: err };
 	}
 }

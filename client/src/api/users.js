@@ -18,14 +18,14 @@ async function getUsers(filters = {}) {
 	}
 }
 
-async function createUser({ email, fullName, userType, password, confirmPassword }) {
+async function createUser({ email, fullName, userType, password, confirmPassword, hutsSelected }) {
     const response = await fetch(new URL(ENDPOINTS.users.insert, BACKEND_URL), {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
         credentials: "include",
-        body: JSON.stringify({ email, fullName, userType, password, confirmPassword })
+        body: JSON.stringify({ email, fullName, userType, password, confirmPassword, hutsSelected })
     });
     if (!response.ok) {
         const errDetails = await response.json();

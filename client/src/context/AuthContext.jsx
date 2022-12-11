@@ -1,5 +1,4 @@
-import React, { useEffect, useState, useMemo } from "react";
-import { createContext } from "react";
+import React, { useEffect, useState, useMemo, createContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { getUserInfo, logIn, logOut } from "../api/sessions";
 
@@ -28,8 +27,7 @@ const AuthProvider = ({ children }) => {
 				setUser(user);
 			}
 		};
-		checkAuth()
-		.then(() => setLoadingInitial(false));
+		checkAuth().then(() => setLoadingInitial(false));
 	}, []);
 
 	const handleLogin = useMemo(() => async (credentials) => {
@@ -62,11 +60,7 @@ const AuthProvider = ({ children }) => {
 	}), [loggedIn, message, user, handleLogin, handleLogout]);
 
 	return (
-		<AuthContext.Provider
-			value={memoValue}
-		>
-			{!loadingInitial && children}
-		</AuthContext.Provider>
+		<AuthContext.Provider value={memoValue}>{!loadingInitial && children}</AuthContext.Provider>
 	);
 };
 

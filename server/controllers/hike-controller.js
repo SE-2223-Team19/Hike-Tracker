@@ -64,16 +64,16 @@ async function getHikes(req, res) {
 			filter.trackPoints = {
 				$geoNear: {
 					near: {
-						type: "Point", 
-						coordinates: [value.locationCoordinatesLng, value.locationCoordinatesLat]
+						type: "Point",
+						coordinates: [value.locationCoordinatesLng, value.locationCoordinatesLat],
 					},
 					maxDistance: value.locationRadius,
 					distanceField: "distance",
-					spherical: true
-				}
+					spherical: true,
+				},
 			};
 
-		const hikes = await hikeDAL.getHikes(filter, value.page, value.pageSize);
+		const hikes = await hikeDAL.getHikes(value.page, value.pageSize, filter);
 		return res.status(StatusCodes.OK).json(hikes);
 	} catch (err) {
 		return res.status(StatusCodes.BAD_REQUEST).json({ err: err.message });
@@ -130,7 +130,7 @@ async function createHike(req, res) {
 			endPoint: joi.string().allow(null),
 			linkedHuts: joi.array().items(joi.string()),
 			trackPoints: joi.array().items(joi.array().items(joi.number()).length(2)),
-			referencePoints: joi.array().items(joi.array().items(joi.number()).length(2))
+			referencePoints: joi.array().items(joi.array().items(joi.number()).length(2)),
 		});
 
 		// Validate request body against schema

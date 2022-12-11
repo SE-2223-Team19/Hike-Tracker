@@ -1,8 +1,8 @@
-import React, { useEffect } from "react";
-import { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import { UserType } from "../helper/enums";
+import HutWorkerProfile from "./profiles/HutWorkerProfile";
 import LocalGuideProfile from "./profiles/LocalGuideProfile";
 import PlatformManagerProfile from "./profiles/PlatformManagerProfile";
 
@@ -29,8 +29,10 @@ const ProfileSwitch = ({ user }) => {
 			return <LocalGuideProfile user={user} />;
 		case UserType.PLATFORM_MANAGER:
 			return <PlatformManagerProfile />;
+		case UserType.HUT_WORKER:
+			return <HutWorkerProfile user={user} />;
 		default:
-			break;
+			return false;
 	}
 };
 

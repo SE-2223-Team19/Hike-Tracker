@@ -1,9 +1,11 @@
-import { React, useState } from "react";
+import { React, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Form, Row, Col, Button, Modal, Alert } from "react-bootstrap";
+import { Form, Row, Col, Button, Modal, Alert, ListGroup, Container } from "react-bootstrap";
 import { UserType } from "../helper/enums";
 import { capitalizeAndReplaceUnderscores } from "../helper/utils";
 import { createUser } from "../api/users";
+import { getHuts } from "../api/locations"
+import HutSelection from "./HutSelection";
 
 function SignInForm() {
 	const [email, setEmail] = useState("");
@@ -12,7 +14,10 @@ function SignInForm() {
 	const [confirmPassword, setConfirmPassword] = useState("");
 	const [userType, setUserType] = useState("");
 	const [isSubmitting, setIsSubmitting] = useState(false);
+	const [huts, setHuts] = useState([])
+	const [hutsSelected, setHutsSelected] = useState([])
 	const [showModal, setShowModal] = useState(false);
+	const [showModalHutWorker, setShowModalHutWorker] = useState(false);
 	const [errors, setErrors] = useState({
 		email: "",
 		fullName: "",
@@ -21,6 +26,22 @@ function SignInForm() {
 		userType: "",
 		form: "",
 	});
+
+	const addHutToList = (hut) => {
+		setHutsSelected(olderList => [...olderList, hut])
+	}
+
+	const removeHutToList = (hut) => {
+		setHutsSelected(hutsSelected.filter(item => item !== hut))
+	}
+
+	useEffect(() => {
+		const fetchHuts = async () => {
+			const huts = await getHuts()
+			setHuts(huts)
+		}
+		fetchHuts()
+	}, [])
 
 	const emailValidation = () => {
 		const test = /\S+@\S+\.\S+/.test(email);
@@ -40,19 +61,38 @@ function SignInForm() {
 		return test;
 	};
 
+	const hutsSelectedValidation = () => {
+		const test = hutsSelected.length !== 0
+		setErrors({ ...errors, form: "You have to select at least 1 hut where you work" })
+		return test
+	}
+
 	const onSubmit = async (e) => {
 		e.preventDefault();
 		setIsSubmitting(true);
 		if ([emailValidation(), confirmPasswordValidation(), userTypeValidation()].every((a) => a)) {
 			try {
 				setErrors({ ...errors, form: "" });
-				await createUser({
-					email,
-					fullName,
-					userType,
-					password,
-					confirmPassword,
-				});
+				if (userType === UserType.HUT_WORKER && hutsSelectedValidation.apply()) {
+					setErrors({ ...errors, form: "" });
+					await createUser({
+						email,
+						fullName,
+						userType,
+						password,
+						confirmPassword,
+						hutsSelected
+					});
+				}
+				if (userType !== UserType.HUT_WORKER)
+					await createUser({
+						email,
+						fullName,
+						userType,
+						password,
+						confirmPassword
+					});
+
 				setShowModal(true);
 			} catch (err) {
 				setErrors({ ...errors, form: err.err });
@@ -72,6 +112,7 @@ function SignInForm() {
 						<Form.Group>
 							<Form.Label>Email</Form.Label>
 							<Form.Control
+								data-test-id="email"
 								type={"email"}
 								value={email}
 								onChange={(e) => setEmail(e.target.value)}
@@ -85,6 +126,7 @@ function SignInForm() {
 						<Form.Group>
 							<Form.Label>Full name</Form.Label>
 							<Form.Control
+								data-test-id="fullName"
 								type={"text"}
 								value={fullName}
 								onChange={(e) => setFullName(e.target.value)}
@@ -99,6 +141,7 @@ function SignInForm() {
 						<Form.Group className="mt-4">
 							<Form.Label>Password</Form.Label>
 							<Form.Control
+								data-test-id="password"
 								type={"password"}
 								value={password}
 								onChange={(e) => setPassword(e.target.value)}
@@ -111,6 +154,7 @@ function SignInForm() {
 						<Form.Group>
 							<Form.Label className="mt-4">Confirm password</Form.Label>
 							<Form.Control
+								data-test-id="confirmPass"
 								type={"password"}
 								value={confirmPassword}
 								onChange={(e) => setConfirmPassword(e.target.value)}
@@ -126,6 +170,7 @@ function SignInForm() {
 						<Form.Group className="mt-4">
 							<Form.Label>User type</Form.Label>
 							<Form.Select
+								data-test-id="userType"
 								value={userType}
 								onChange={(e) => setUserType(e.target.value)}
 								isInvalid={!!errors.userType}
@@ -138,17 +183,38 @@ function SignInForm() {
 								))}
 							</Form.Select>
 							<Form.Control.Feedback type="invalid">{errors.userType}</Form.Control.Feedback>
+							{userType == UserType.HUT_WORKER && <Button variant="success" className="mt-2" onClick={() => setShowModalHutWorker(true)}>Select the hut</Button>}
 						</Form.Group>
 					</Col>
 				</Row>
 				<Row>
 					<Col>
-						<Button type="submit" className="mt-4" variant="success" disabled={isSubmitting}>
+						<Button data-test-id="sign-in" type="submit" className="mt-4" variant="success" disabled={isSubmitting}>
 							Sign in
 						</Button>
 					</Col>
 				</Row>
+
 			</Form>
+			<Modal show={showModalHutWorker} onHide={() => {
+				setShowModalHutWorker(false)
+				setHutsSelected([])
+			}} backdrop={"static"} scrollable={true} style={{ maxHeight: "70vh" }}>
+				<Modal.Header closeButton>
+					<Modal.Title>Select the huts where you work</Modal.Title>
+				</Modal.Header>
+				<Modal.Body>
+					<ListGroup style={{ overflow: "scroll" }}>
+						{
+							huts.map((hut) => <HutSelection key={hut._id} hutsSelected={hutsSelected} hut={hut} addHutToList={addHutToList}
+								removeHutToList={removeHutToList} />)
+						}
+					</ListGroup>
+				</Modal.Body>
+				<Modal.Footer>
+					<Button variant="success" onClick={() => { setShowModalHutWorker(false) }}>Save</Button>
+				</Modal.Footer>
+			</Modal>
 			<Modal show={showModal} onHide={() => setShowModal(false)} backdrop={"static"}>
 				<Modal.Header>
 					<Modal.Title>Registration completed</Modal.Title>

@@ -3,29 +3,34 @@ const userController = require("../controllers/user-controller");
 const { StatusCodes } = require("http-status-codes");
 const { UserType } = require("../models/enums");
 const { setupDB, ResponseHelper } = require("./setup");
+const ObjectId = require("mongoose").Types.ObjectId;
 
 setupDB("user-controller");
 
 describe("getUsers", () => {
 	test("all users", async () => {
 		const response = new ResponseHelper();
-		await userController.getUsers({
-			query: {
-
-			}
-		}, response);
+		await userController.getUsers(
+			{
+				query: {},
+			},
+			response
+		);
 		expect(response.statusCode).toBe(StatusCodes.OK);
 		expect(Array.isArray(response.responseBody)).toBe(true);
 	});
 
 	test("all users with pagination", async () => {
 		const response = new ResponseHelper();
-		await userController.getUsers({
-			query: {
-				page: 1,
-				pageSize: 10
-			}
-		}, response);
+		await userController.getUsers(
+			{
+				query: {
+					page: 1,
+					pageSize: 10,
+				},
+			},
+			response
+		);
 		expect(response.statusCode).toBe(StatusCodes.OK);
 		expect(response.responseBody && typeof response.responseBody === "object").toBe(true);
 		expect(Array.isArray(response.responseBody.data)).toBe(true);
@@ -140,13 +145,13 @@ describe("verifyUser", () => {
 	});
 });
 
-describe("update User", () => {
-	test("update user type", async () => {
+describe("updatePreferences", () => {
+	test("update preferences", async () => {
 		const response = new ResponseHelper();
 		await userController.createUser(
 			{
 				body: {
-					email: "update1@test.com",
+					email: "hiker@test.com",
 					fullName: "John Doe",
 					userType: UserType.HIKER,
 					password: "password",
@@ -156,109 +161,199 @@ describe("update User", () => {
 			response
 		);
 		expect(response.statusCode).toBe(StatusCodes.CREATED);
-		await userController.updateUser({
-			user: {
-				userType: UserType.PLATFORM_MANAGER,
-				fullName: "PM"
+		await userController.updatePreferences(
+			{
+				user: {
+					_id: response.responseBody._id,
+				},
+				body: {
+					minLength: 500,
+					maxLength: 1000,
+					minAscent: 0,
+					maxAscent: 200,
+					minExpectedTime: 0,
+					maxExpectedTime: 1200,
+					difficulty: "Hiker",
+					locationCoordinatesLat: 45.06837,
+					locationCoordinatesLng: 7.68307,
+					locationRadius: 50000,
+				},
 			},
-			params: {
-				id: response.responseBody._id
-			},
-			body: {
-				userType: UserType.HUT_WORKER
-			}
-		}, response);
+			response
+		);
 		expect(response.statusCode).toBe(StatusCodes.OK);
 	});
 
-	test("update user password", async () => {
+	test("user not found", async () => {
 		const response = new ResponseHelper();
+		await userController.updatePreferences(
+			{
+				user: {
+					_id: new ObjectId("123456789123"),
+				},
+				body: {
+					minLength: 500,
+					maxLength: 1000,
+					minAscent: 0,
+					maxAscent: 200,
+					minExpectedTime: 0,
+					maxExpectedTime: 1200,
+					difficulty: "Hiker",
+					locationCoordinatesLat: 45.06837,
+					locationCoordinatesLng: 7.68307,
+					locationRadius: 50000,
+				},
+			},
+			response
+		);
+		expect(response.statusCode).toBe(StatusCodes.NOT_FOUND);
+	});
+});
+describe("getPreferences", () => {
+	test("get preferences", async () => {
+		const responseUser = new ResponseHelper();
 		await userController.createUser(
 			{
 				body: {
-					email: "update2@test.com",
+					email: "hiker@test.com",
 					fullName: "John Doe",
 					userType: UserType.HIKER,
 					password: "password",
 					confirmPassword: "password",
 				},
 			},
+			responseUser
+		);
+		expect(responseUser.statusCode).toBe(StatusCodes.CREATED);
+		const response = new ResponseHelper();
+		await userController.updatePreferences(
+			{
+				user: {
+					_id: responseUser.responseBody._id,
+				},
+				body: {
+					minLength: 500,
+					maxLength: 1000,
+					minAscent: 0,
+					maxAscent: 200,
+					minExpectedTime: 0,
+					maxExpectedTime: 1200,
+					difficulty: "Hiker",
+					locationCoordinatesLat: 45.06837,
+					locationCoordinatesLng: 7.68307,
+					locationRadius: 50000,
+				},
+			},
 			response
 		);
-		expect(response.statusCode).toBe(StatusCodes.CREATED);
-		await userController.updateUser({
-			user: {
-				userType: UserType.PLATFORM_MANAGER,
-				fullName: "PM"
+		expect(response.statusCode).toBe(StatusCodes.OK);
+		await userController.getPreferences(
+			{
+				user: {
+					_id: responseUser.responseBody._id,
+				},
 			},
-			params: {
-				id: response.responseBody._id
-			},
-			body: {
-				password: "passwordupdate",
-				confirmPassword: "passwordupdate"
-			}
-		}, response);
+			response
+		);
 		expect(response.statusCode).toBe(StatusCodes.OK);
 	});
-
-	test("update user validity", async () => {
-		const response = new ResponseHelper();
+	test("no preferences", async () => {
+		const responseUser = new ResponseHelper();
 		await userController.createUser(
 			{
 				body: {
-					email: "update3@test.com",
+					email: "hiker@test.com",
 					fullName: "John Doe",
 					userType: UserType.HIKER,
 					password: "password",
 					confirmPassword: "password",
 				},
 			},
+			responseUser
+		);
+		expect(responseUser.statusCode).toBe(StatusCodes.CREATED);
+		const response = new ResponseHelper();
+		await userController.getPreferences(
+			{
+				user: {
+					_id: responseUser.responseBody._id,
+				},
+			},
 			response
 		);
-		expect(response.statusCode).toBe(StatusCodes.CREATED);
-		await userController.updateUser({
-			user: {
-				userType: UserType.PLATFORM_MANAGER,
-				fullName: "PM"
-			},
-			params: {
-				id: response.responseBody._id
-			},
-			body: {
-				isValid: true
-			}
-		}, response);
 		expect(response.statusCode).toBe(StatusCodes.OK);
 	});
-
-	test("error in schema", async () => {
+	test("user not found", async () => {
 		const response = new ResponseHelper();
+		await userController.getPreferences(
+			{
+				user: {
+					_id: new ObjectId("123456789123"),
+				},
+			},
+			response
+		);
+		expect(response.statusCode).toBe(StatusCodes.NOT_FOUND);
+	});
+});
+describe("deletePreferences", () => {
+	test("delete preferences", async () => {
+		const responseUser = new ResponseHelper();
 		await userController.createUser(
 			{
 				body: {
-					email: "update3@test.com",
+					email: "hiker@test.com",
 					fullName: "John Doe",
 					userType: UserType.HIKER,
 					password: "password",
 					confirmPassword: "password",
 				},
 			},
+			responseUser
+		);
+		expect(responseUser.statusCode).toBe(StatusCodes.CREATED);
+		const response = new ResponseHelper();
+		await userController.updatePreferences(
+			{
+				user: {
+					_id: responseUser.responseBody._id,
+				},
+				body: {
+					minLength: 500,
+					maxLength: 1000,
+					minAscent: 0,
+					maxAscent: 200,
+					minExpectedTime: 0,
+					maxExpectedTime: 1200,
+					difficulty: "Hiker",
+					locationCoordinatesLat: 45.06837,
+					locationCoordinatesLng: 7.68307,
+					locationRadius: 50000,
+				},
+			},
 			response
 		);
-		expect(response.statusCode).toBe(StatusCodes.CREATED);
-		await userController.updateUser({
-			user: {
-				userType: UserType.PLATFORM_MANAGER,
-				fullName: "PM"
+		expect(response.statusCode).toBe(StatusCodes.OK);
+		await userController.deletePreferences(
+			{
+				user: {
+					_id: responseUser.responseBody._id,
+				},
 			},
-			params: {
-				id: response.responseBody._id
+			response
+		);
+		expect(response.statusCode).toBe(StatusCodes.OK);
+	});
+	test("user not found", async () => {
+		const response = new ResponseHelper();
+		await userController.deletePreferences(
+			{
+				user: {
+					_id: new ObjectId("123456789123"),
+				},
 			},
-			body: {
-				erroneousField: "sdufndfnj"
-			}
-		}, response);
-		expect(response.statusCode).toBe(StatusCodes.BAD_REQUEST);
+			response
+		);
+		expect(response.statusCode).toBe(StatusCodes.NOT_FOUND);
 	});
 });

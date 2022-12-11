@@ -226,9 +226,63 @@ async function updateUser(req, res) {
 	}
 }
 
+async function getPreferences(req, res) {
+	const userId = req.user._id;
+	const users = await userDAL.getUsers({ _id: userId });
+	const user = users[0];
+	console.log(user);
+	if (user) {
+		if (user.preferences) {
+			return res.status(StatusCodes.OK).json(user.preferences);
+		}
+		else {
+			return res.status(StatusCodes.OK).json({});
+		}
+	} else {
+		return res
+			.status(StatusCodes.NOT_FOUND)
+			.json({ message: "User not found" });
+	}
+}
+
+async function updatePreferences(req, res) {
+	const userId = req.user._id;
+	const users = await userDAL.getUsers({ _id: userId });
+	const user = users[0];
+	console.log(user);
+	if (user) {
+		user.preferences = req.body;
+		await userDAL.updateUser(user);
+		return res.status(StatusCodes.OK).json(user.preferences);
+	} else {
+		return res
+			.status(StatusCodes.NOT_FOUND)
+			.json({ message: "User not found" });
+	}
+}
+
+async function deletePreferences(req, res) {
+	const userId = req.user._id;
+	const users = await userDAL.getUsers({ _id: userId });
+	const user = users[0];
+	if (user) {
+		user.preferences = {};
+		await userDAL.updateUser(user);
+		return res.status(StatusCodes.OK).json(user.preferences);
+	} else {
+		return res
+			.status(StatusCodes.NOT_FOUND)
+			.json({ message: "User not found" });
+	}
+}
+
+
 module.exports = {
 	getUsers,
 	createUser,
 	verifyUser,
-	updateUser
+	updateUser,
+	getPreferences,
+	updatePreferences,
+	deletePreferences,
 };

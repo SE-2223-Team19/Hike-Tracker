@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import { UserType } from "../helper/enums";
 import HutWorkerProfile from "./profiles/HutWorkerProfile";
+import HikerProfile from "./profiles/HikerProfile";
 import LocalGuideProfile from "./profiles/LocalGuideProfile";
 import PlatformManagerProfile from "./profiles/PlatformManagerProfile";
 
@@ -31,6 +32,8 @@ const ProfileSwitch = ({ user }) => {
 			return <PlatformManagerProfile />;
 		case UserType.HUT_WORKER:
 			return <HutWorkerProfile user={user} />;
+		case UserType.HIKER:
+			return <HikerProfile user={user} />;
 		default:
 			return false;
 	}

@@ -67,9 +67,68 @@ async function updateUser(id, changes) {
 	}
 }
 
+async function getPreferences() {
+    const response = await fetch(new URL(ENDPOINTS.users.preferences, BACKEND_URL), {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        credentials: "include",
+    });
+    if (response.ok) {
+        const preferences = await response.json();
+        return preferences;
+    }
+    else {
+        const errDetails = await response.text();
+        throw errDetails;
+    }
+}
+
+async function updatePreferences(preferences) {
+    const response = await fetch(new URL(ENDPOINTS.users.preferences, BACKEND_URL), {
+        method: 'PATCH',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        credentials: "include",
+        body: JSON.stringify(preferences)
+    });
+    if (response.ok) {
+        const preferences = await response.json();
+        return preferences;
+    }
+    else {
+        const errDetails = await response.json();
+        throw errDetails;
+    }
+}
+
+async function deletePreferences() {
+    const response = await fetch(new URL(ENDPOINTS.users.preferences, BACKEND_URL), {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        credentials: "include",
+    });
+    if (response.ok) {
+        const preferences = await response.json();
+        return preferences;
+    }
+    else {
+        const errDetails = await response.text();
+        throw errDetails;
+    }
+}
+
+
 module.exports = {
     getUsers,
     createUser,
     verifyUser,
-    updateUser
+    updateUser,
+    getPreferences,
+    updatePreferences,
+    deletePreferences
 };

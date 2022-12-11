@@ -18,7 +18,7 @@ function HutSelection({ hut, addHutToList, hutsSelected, removeHutToList }) {
 					<li
 						className={"list-group-item " + active}
 						style={{ height: "100%" }}
-						onClick={() => removeInsertHut(hut)}
+						onClick={() => removeInsertHut()}
 					>
 						{hut.name}
 					</li>

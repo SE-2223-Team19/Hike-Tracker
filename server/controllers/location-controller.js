@@ -129,9 +129,7 @@ async function createLocation(req, res) {
 			peopleWorks: joi.alternatives().conditional("locationType", {
 				is: LocationType.HUT,
 				then: joi.array().items(joi.string())
-			}),
-			latitude: joi.number(),
-			longitude: joi.number()
+			})
 		});
 
 		// Validate request body against schema

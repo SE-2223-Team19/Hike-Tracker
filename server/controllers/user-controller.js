@@ -9,6 +9,7 @@ const {
 	sendAccountBlockedEmail,
 	sendAccountValidatedEmail,
 } = require("../email/account");
+
 const locationDAL = require("../data/location-dal");
 
 async function getUsers(req, res) {
@@ -16,9 +17,13 @@ async function getUsers(req, res) {
 		const { query } = req;
 
 		const schema = joi.object().keys({
-			email: joi.string().email({ tlds: { allow: false } }),
+			email: joi
+				.string()
+				.email({ tlds: { allow: false } }),
 			fullName: joi.string(),
-			userType: joi.string().valid(...Object.values(UserType)),
+			userType: joi
+				.string()
+				.valid(...Object.values(UserType)),
 			page: joi.number().greater(0),
 			pageSize: joi.number().greater(0),
 		});
@@ -27,26 +32,26 @@ async function getUsers(req, res) {
 
 		if (error) throw error;
 
-		const { page, pageSize, ...filter } = value;
+		const {page, pageSize, ...filter} = value;
 
 		const users = await userDAL.getUsers(filter, page, pageSize);
 		if (Array.isArray(users)) {
 			return res.status(StatusCodes.OK).json(users.map(u => {
-				const { salt, hash, uniqueString, ...user } = u;
+				const { salt, hash, uniqueString, ...user} = u;
 				return user;
 			}));
 		}
 		return res.status(StatusCodes.OK).json({
 			...users,
 			data: users.data.map(u => {
-				const { salt, hash, uniqueString, ...user } = u;
+				const { salt, hash, uniqueString, ...user} = u;
 				return user;
-			}),
+			})
 		});
 	} catch (err) {
 		return res
-			.status(StatusCodes.BAD_REQUEST)
-			.json({ err: err.message });
+		.status(StatusCodes.BAD_REQUEST)
+		.json({ err: err.message });
 	}
 }
 
@@ -72,13 +77,12 @@ async function createUser(req, res) {
 			userType: joi
 				.string()
 				.required()
-				.valid(...Object.values(UserType).filter(userType => userType !== UserType.PLATFORM_MANAGER)),
+				.valid(...Object.values(UserType)),
 			password: joi.string().required(),
 			confirmPassword: joi.string().required().allow(joi.ref("password")),
 			hutsSelected: joi.alternatives().conditional("userType", {
 				is: UserType.HUT_WORKER,
-				then: joi.array().items(joi.string()).min(1).required(),
-				otherwise: joi.forbidden()
+				then: joi.array().items(joi.string()).min(1).required()
 			})
 		});
 
@@ -88,6 +92,9 @@ async function createUser(req, res) {
 		if (error) throw error; // Joi validation error, goes to catch block
 
 		// Create new user
+		if (UserType.HUT_WORKER === value.userType && !(await Promise.all(value.hutsSelected.map((hut) => locationDAL.getLocationById(hut)))).every(hut => hut !== null)) {
+			throw new Error("A hut does not exist");
+		}
 
 		const salt = crypto.randomBytes(16).toString("hex");
 
@@ -96,10 +103,6 @@ async function createUser(req, res) {
 		const uniqueString = randString();
 
 		const isValid = false;
-
-		if (UserType.HUT_WORKER === value.userType && !(await Promise.all(value.hutsSelected.map((hut) => locationDAL.getLocationById(hut)))).every(hut => hut !== null)) {
-			throw new Error("A hut does not exist");
-		}
 
 		const createdUser = await userDAL.createUser({
 			email: value.email,
@@ -113,9 +116,9 @@ async function createUser(req, res) {
 
 		if (UserType.HUT_WORKER === value.userType) {
 			value.hutsSelected.forEach(async (e) => {
-				const loc = await locationDAL.getLocationById(e);
+				const loc = await locationDAL.getLocationById(e)
 				loc.peopleWorks = [ ...loc.peopleWorks, createdUser._id ];
-				await locationDAL.updateLocation(e, loc);
+				await locationDAL.updateLocation(e, loc)
 			});
 		}
 
@@ -123,7 +126,6 @@ async function createUser(req, res) {
 		return res
 			.status(StatusCodes.CREATED)
 			.json({ _id: createdUser._id, uniqueString: uniqueString });
-
 	} catch (err) {
 		if (err.name === "MongoServerError" && err.code === 11000) {
 			return res
@@ -145,17 +147,18 @@ async function createUser(req, res) {
  */
 async function verifyUser(req, res) {
 	try {
+
 		const uniqueString = req.params.uniqueString;
 		const users = await userDAL.getUsers({ uniqueString: uniqueString });
 		const user = users[0];
 		if (user) {
 			user.isEmailValidated = true;
-
+	
 			// For all users except hikers the validation is handled by the platform manager
 			if (user.userType === UserType.HIKER) {
 				user.isValid = true;
 			}
-
+	
 			await userDAL.updateUser(user._id, user);
 			return res
 				.status(StatusCodes.OK)
@@ -173,18 +176,21 @@ async function verifyUser(req, res) {
 
 async function updateUser(req, res) {
 	try {
+
 		const { id } = req.params;
 		const { body } = req;
 
 		const schema = joi.object().keys({
-			userType: joi.string().valid(...Object.values(UserType)),
+			userType: joi
+				.string()
+				.valid(...Object.values(UserType)),
 			password: joi.string(),
 			confirmPassword: joi.string().allow(joi.ref("password")).when(joi.ref("password"), {
 				is: joi.exist(),
 				then: joi.required(),
-				otherwise: joi.forbidden(),
+				otherwise: joi.forbidden()
 			}),
-			isValid: joi.boolean(),
+			isValid: joi.boolean()
 		});
 
 		const { error, value } = schema.validate(body);
@@ -208,14 +214,17 @@ async function updateUser(req, res) {
 		if (value.isValid !== undefined) {
 			if (value.isValid) {
 				await sendAccountValidatedEmail(updatedUser.email, req.user.fullName);
-			} else {
+			}
+			else {
 				await sendAccountBlockedEmail(updatedUser.email, req.user.fullName);
 			}
 		}
 
 		return res.status(StatusCodes.OK).end();
 	} catch (err) {
-		return res.status(StatusCodes.BAD_REQUEST).json({ err: err.message });
+		return res
+			.status(StatusCodes.BAD_REQUEST)
+			.json({ err: err.message });
 	}
 }
 
@@ -227,11 +236,14 @@ async function getPreferences(req, res) {
 	if (user) {
 		if (user.preferences) {
 			return res.status(StatusCodes.OK).json(user.preferences);
-		} else {
+		}
+		else {
 			return res.status(StatusCodes.OK).json({});
 		}
 	} else {
-		return res.status(StatusCodes.NOT_FOUND).json({ message: "User not found" });
+		return res
+			.status(StatusCodes.NOT_FOUND)
+			.json({ message: "User not found" });
 	}
 }
 
@@ -245,7 +257,9 @@ async function updatePreferences(req, res) {
 		await userDAL.updateUser(user);
 		return res.status(StatusCodes.OK).json(user.preferences);
 	} else {
-		return res.status(StatusCodes.NOT_FOUND).json({ message: "User not found" });
+		return res
+			.status(StatusCodes.NOT_FOUND)
+			.json({ message: "User not found" });
 	}
 }
 
@@ -258,9 +272,12 @@ async function deletePreferences(req, res) {
 		await userDAL.updateUser(user);
 		return res.status(StatusCodes.OK).json(user.preferences);
 	} else {
-		return res.status(StatusCodes.NOT_FOUND).json({ message: "User not found" });
+		return res
+			.status(StatusCodes.NOT_FOUND)
+			.json({ message: "User not found" });
 	}
 }
+
 
 module.exports = {
 	getUsers,

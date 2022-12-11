@@ -169,6 +169,9 @@ async function updateHike(req, res) {
 	try {
 		// Validate request body
 		const { params, body } = req;
+	console.log(params,"params");
+	console.log(body,"body");
+
          
 		
 
@@ -202,7 +205,7 @@ async function updateHike(req, res) {
 			referencePoints: joi.array().items(locationSchema, joi.string()),
 			trackPoints: joi.array().items(joi.array().items(joi.number()).length(2)),
 			hikeCondition:joi.string().valid(...Object.values(Hut_Condition)),
-			hutNumber:joi.string().valid(...Object.values(Hut_Number))
+			
 		});
 
 		// Validate request body against schema

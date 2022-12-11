@@ -16,14 +16,15 @@ const HikeCard = ({ hike, showDetails }) => {
 	const navigate = useNavigate();
 	// ** User (if user is not logged in cannot see hike details)
 	const { loggedIn } = useContext(AuthContext);
-
+	
 	return (
+		
 		<Card className="flex-row p-3 mt-4">
 			<Card.Body>
 				<Card.Title>
 					<Stack direction="horizontal" className="justify-content-between align-items-center">
 						<h5>{hike.title}</h5>
-
+                         
 						<Badge bg={ConditionColor(hike.hikeCondition)}>
                         {hike.hikeCondition}
                         </Badge>{' '}

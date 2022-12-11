@@ -61,8 +61,7 @@ async function createHike(hike) {
 }
 
 async function updateHike(id, changes) {
-	console.log(id);
-	console.log(changes);
+	
 	try {
 		const response = await fetch(new URL(ENDPOINTS.hikes.update.replace(":id", id), BACKEND_URL), {
 			method: "PATCH",

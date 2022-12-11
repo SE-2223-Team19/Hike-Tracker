@@ -34,6 +34,5 @@ module.exports = {
 	Difficulty,
 	LocationType,
 	UserType,
-	Hut_Condition,
-	Hut_Number
+	Hut_Condition
 };

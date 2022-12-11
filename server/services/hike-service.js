@@ -142,7 +142,8 @@ async function checkPropertyLocation(point) {
  * @returns {Promise<Hike>}
  */
 async function updateHike(id, changes, hike) {
-	
+	console.log(id,"##########");
+	console.log(changes,"##########");
 	
 	
 	if (changes.startPoint) {

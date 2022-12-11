@@ -28,19 +28,9 @@ const Hut_Condition={
 	Close_maintenance: "close_maintenance"
 }
 
-const Hut_Number={
-	One : "one",
-	Two: "two",
-	Three: "three",
-	Four: "Four",
-	Five: "Five"
-
-}
-
 module.exports = {
 	Difficulty,
 	LocationType,
 	UserType,
 	Hut_Condition,
-	Hut_Number
 };

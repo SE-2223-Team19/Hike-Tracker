@@ -244,7 +244,7 @@ async function updateHike(id, hikeUpdate) {
 			coordinates: hikeUpdate.trackPoints.map((p) => [p[1], p[0]]),
 		};
 	}
-	const hikeUpdated = await Hike.findByIdAndUpdate(id, hikeUpdate, { new: true });
+	await Hike.findByIdAndUpdate(id, hikeUpdate, { new: true });
 	
 	return await getHikeById(id);
 }

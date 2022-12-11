@@ -316,6 +316,13 @@ describe("getHikes", () => {
 				query: {
 					page: 1,
 					pageSize: 50,
+					minLength: 1,
+					maxLength: 2,
+					minAscent: 3,
+					maxAscent: 4,
+					minExpectedTime: 10,
+					maxExpectedTime: 15,
+					difficulty: Difficulty.HIKER
 				},
 			},
 			response
@@ -777,9 +784,6 @@ describe("update Hike", () => {
 		const startPointUpdated = await Location.findById(
 			hikeUpdated.responseBody.startPoint._id.toString()
 		);
-		
-		console.log("Update", startPointUpdated)
-		console.log("Start", startPoint)
 
 		expect(startPointUpdated.locationType).toBe(startPoint.locationType);
 		expect(startPointUpdated.description).toBe(startPoint.description);

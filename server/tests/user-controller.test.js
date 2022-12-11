@@ -207,8 +207,8 @@ describe("update User", () => {
 					id: response.responseBody._id,
 				},
 				body: {
-					password: "passwordupdate",
-					confirmPassword: "passwordupdate",
+					password: process.env.DEFAULT_PASSWORD + "update",
+					confirmPassword: process.env.DEFAULT_PASSWORD + "update",
 				},
 			},
 			response

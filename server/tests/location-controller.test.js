@@ -57,7 +57,7 @@ describe("createLocation", () => {
 	test("insert new Hut", async () => {
 		const responseUserCreation = new ResponseHelper();
 
-		const user = await userController.createUser(
+		await userController.createUser(
 			{
 				body: {
 					email: "hiker@test.com",
@@ -205,7 +205,7 @@ describe("update Hut Informations", () => {
 	test("Try to update fields of hut", async () => {
 		const responseUserCreation = new ResponseHelper();
 
-		const user = await userController.createUser(
+		await userController.createUser(
 			{
 				body: {
 					email: "hiker@test.com",
@@ -274,14 +274,14 @@ describe("update Hut Informations", () => {
 	test("Try to update fields of hut with error field capacity of Parking Lot", async () => {
 		const responseUserCreation = new ResponseHelper();
 
-		const user = await userController.createUser(
+		await userController.createUser(
 			{
 				body: {
 					email: "hiker@test.com",
 					fullName: "John Doe",
 					userType: UserType.HIKER,
-					password: "password",
-					confirmPassword: "password",
+					password: process.env.DEFAULT_PASSWORD,
+					confirmPassword: process.env.DEFAULT_PASSWORD,
 				},
 			},
 			responseUserCreation
@@ -334,7 +334,7 @@ describe("update Hut Informations", () => {
 	test("Try to update hut with empty fields", async () => {
 		const responseUserCreation = new ResponseHelper();
 
-		const user = await userController.createUser(
+		await userController.createUser(
 			{
 				body: {
 					email: "hiker@test.com",

@@ -1,5 +1,5 @@
 import { React, useContext, useEffect } from "react";
-import { Difficulty, UserType, LocationType } from "../../helper/enums";
+import { Difficulty, UserType } from "../../helper/enums";
 import {
 	Form,
 	Button,

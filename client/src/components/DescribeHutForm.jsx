@@ -1,12 +1,11 @@
 import { createLocation } from "../api/locations";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { Form, Row, Col, Button, Stack } from "react-bootstrap";
 import { LocationType } from "../helper/enums";
 import PositionSelectorModal from "./PositionSelectorModal";
 import { useNavigate } from "react-router-dom";
 import { Formik } from "formik";
 import * as Yup from "yup";
-import { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 
 function DescribeHutForm() {

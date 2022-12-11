@@ -8,7 +8,7 @@ import ModalMap from "../../components/ModalMap";
 import NoData from "../../components/NoData";
 import PaginatedList from "../../components/pagination/PaginatedList.jsx";
 
-// TODO: Modify the Profile page based on the user type (for now only local_guide)
+// Modify the Profile page based on the user type (for now only local_guide)
 
 const LocalGuideProfile = ({ user }) => {
 	const navigate = useNavigate();

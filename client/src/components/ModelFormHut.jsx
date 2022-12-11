@@ -1,5 +1,5 @@
-import { Button, Form, Modal, Stack } from "react-bootstrap";
-import { React, useState, useMemo } from "react";
+import { Button, Form, Modal } from "react-bootstrap";
+import { React } from "react";
 import { updateLocation } from "../api/locations";
 import { LocationType } from "../helper/enums";
 import { Formik } from "formik";
@@ -45,12 +45,13 @@ function ModelFormHut({ currentHut, show, setShow, setDirty }) {
 				webSite: currentHut ? currentHut.webSite : "",
 				numberOfBeds: currentHut ? currentHut.numberOfBeds : ""
 			}}
-			onSubmit={async (values, { setSubmitting }) => {
-				console.log(values)
+			onSubmit={
+				async (values, { setSubmitting }) => {
 				setSubmitting(true)
 				await onSaveModifiedHut(values);
 				setSubmitting(false)
-			}}
+			}
+		}
 			validationSchema={validationSchema}
 			validateOnChange={true}
 			validateOnBlur={false}

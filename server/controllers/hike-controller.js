@@ -2,7 +2,7 @@ const joi = require("joi");
 const ObjectId = require("mongoose").Types.ObjectId;
 const { StatusCodes } = require("http-status-codes");
 const hikeDAL = require("../data/hike-dal");
-const { Difficulty, LocationType, UserType, HikeCondition } = require("../models/enums");
+const { Difficulty, LocationType, HikeCondition } = require("../models/enums");
 
 /**
  * GET /hike
@@ -161,25 +161,6 @@ async function updateHike(req, res) {
 	try {
 		// Validate request body
 		const { params, body } = req;
-	console.log(params,"params");
-	console.log(body,"body");
-
-		// Location validation schema
-		const locationSchema = joi.object().keys({
-			_id: joi.string(),
-			locationType: joi
-				.string()
-				.valid(...Object.values(LocationType))
-				.required(),
-			description: joi.string().allow(""),
-			point: joi
-				.object()
-				.keys({
-					lat: joi.number().required(),
-					lng: joi.number().required(),
-				})
-				.required(),
-		});
 
 		// Hike validation schema
 		const schema = joi.object().keys({

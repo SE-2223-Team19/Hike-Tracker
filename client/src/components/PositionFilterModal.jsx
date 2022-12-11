@@ -1,7 +1,7 @@
 import { React, useState } from "react";
 import { Button, Container, Form, Modal, Row, Col, Alert } from "react-bootstrap";
 import { MapContainer, TileLayer, useMapEvent, Circle } from 'react-leaflet';
-import {  getLatLongFromCity } from "../helper/utils";
+import { getLatLongFromCity } from "../helper/utils";
 
 const PositionFilterModal = ({ onCancel, onOk, onRemoveFilter, show, setShow }) => {
     const [coordinates, setCoordinates] = useState([45.068370, 7.683070]);
@@ -37,7 +37,7 @@ const PositionFilterModal = ({ onCancel, onOk, onRemoveFilter, show, setShow }) 
                 <Modal.Title>Select area</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                {error && <Alert variant = "danger" onClose = {() => setError("")} dismissible>{error}</Alert>}
+                {error && <Alert variant="danger" onClose={() => setError("")} dismissible>{error}</Alert>}
                 <Container>
                     <Row>
                         <Col>
@@ -71,9 +71,11 @@ const PositionFilterModal = ({ onCancel, onOk, onRemoveFilter, show, setShow }) 
             <Modal.Footer>
                 <Button onClick={onRemoveFilter} variant={"danger"}>Remove</Button>
                 <Button onClick={onCancel} variant={"secondary"}>Cancel</Button>
-                <Button onClick={() => {
-                    onOk(coordinates, radius);
-                }} variant={"success"}>Ok</Button>
+                <Button
+                    data-test-id="position-ok-button"
+                    onClick={() => {
+                        onOk(coordinates, radius);
+                    }} variant={"success"}>Ok</Button>
             </Modal.Footer>
         </Modal>
     );

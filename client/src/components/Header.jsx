@@ -39,7 +39,8 @@ const Header = () => {
 				<Nav className="ms-auto">
 					{loggedIn ? (
 						<Dropdown as={Nav.Item}>
-							<Dropdown.Toggle as={Nav.Link} className="d-flex flex-row align-items-center gap-3">
+							<Dropdown.Toggle as={Nav.Link} className="d-flex flex-row align-items-center gap-3"
+								data-test-id="user-dropdown">
 								<div className="d-inline-block">
 									<div className="d-flex flex-column align-items-end">
 										<p className="m-0">{user.fullName}</p>
@@ -48,7 +49,8 @@ const Header = () => {
 								</div>
 							</Dropdown.Toggle>
 							<Dropdown.Menu>
-								<Dropdown.Item onClick={() => navigate("/profile")} className="dropdown-item">
+								<Dropdown.Item data-test-id="profile-button"
+									onClick={() => navigate("/profile")} className="dropdown-item">
 									Profile
 								</Dropdown.Item>
 								<Dropdown.Divider></Dropdown.Divider>

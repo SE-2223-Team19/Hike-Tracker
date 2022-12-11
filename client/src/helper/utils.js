@@ -1,6 +1,6 @@
 /** Utility functions */
 
-import { Difficulty,Hut_Condition } from "./enums";
+import { Difficulty, UserType, HikeCondition } from "./enums";
 
 /**
  * Convert minutes to hours and minutes display format
@@ -36,15 +36,32 @@ export const difficultyToColor = (difficulty) => {
 	}
 };
 
+export const userTypeToColour = (userType) => {
+	switch (userType) {
+		case UserType.HIKER:
+			return "success";
+		case UserType.EMERGENCY_OPERATOR:
+			return "danger";
+		case UserType.HUT_WORKER:
+			return "warning";
+		case UserType.LOCAL_GUIDE:
+			return "info";
+		case UserType.PLATFORM_MANAGER:
+			return "dark";
+		default:
+			return "light";
+	}
+};
+
 export const ConditionColor = (condition) => {
 	switch (condition) {
-		case Hut_Condition.Open:
+		case HikeCondition.Open:
 			return "info";
-		case Hut_Condition.Overloaded:
+		case HikeCondition.Overloaded:
 			return "warning";
-		case Hut_Condition.Close_BadWeather:
+		case HikeCondition.Close_BadWeather:
 			return "danger";
-		case Hut_Condition.Close_maintenance:
+		case HikeCondition.Close_maintenance:
 			return "danger"	
 		default:
 			return "secondary";

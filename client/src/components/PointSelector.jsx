@@ -2,13 +2,13 @@ import React, { useEffect, useState } from "react";
 import { Form } from "react-bootstrap";
 import { getLocations } from "../api/locations";
 
-const PointSelector = ({ name, handleChange, value, isInvalid, multiple }) => {
+const PointSelector = ({ filter = {}, name, handleChange, value, isInvalid, multiple }) => {
 	const [locations, setLocations] = useState([]);
 
 	// ** Data fetching
 	useEffect(() => {
 		const fetchLocations = async () => {
-			const locations = await getLocations();
+			const locations = await getLocations(filter);
 			setLocations(locations.filter((location) => location.locationType !== "default")); // TODO: Filter on api query
 		};
 		fetchLocations();

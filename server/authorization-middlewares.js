@@ -26,6 +26,7 @@ const isHiker = (req, res, next) => {
 };
 
 const isLocalGuide = (req, res, next) => {
+	
 	if (
 		req.isAuthenticated() &&
 		(req.user.userType === UserType.LOCAL_GUIDE || req.user.userType === UserType.PLATFORM_MANAGER)

@@ -22,7 +22,7 @@ function DefineReferencepage() {
 		<Container>
 			<Row>
 				<Col>
-					<Button variant="outline-dark" onClick={() => navigate("/profile")}>
+					<Button variant="outline-dark" onClick={() => navigate(-1)}>
 						<CgArrowLeft />
 						<span>Back</span>
 					</Button>

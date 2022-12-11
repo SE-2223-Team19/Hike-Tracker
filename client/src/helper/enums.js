@@ -21,7 +21,7 @@ const UserType = {
 	HUT_WORKER: "hut_worker",
 };
 
-const Hut_Condition={
+const HikeCondition = {
 	Open : "open",
 	Overloaded: "overloaded",
 	Close_BadWeather: "close_BadWeather",
@@ -32,5 +32,5 @@ module.exports = {
 	Difficulty,
 	LocationType,
 	UserType,
-	Hut_Condition,
+	HikeCondition,
 };

@@ -11,13 +11,16 @@ const ENDPOINTS = {
 		all: "location",
 		byId: "location/:id",
 		insert: "location",
+		update: "location/:id"
 	},
 	sessions: {
 		insert: "session",
 		current: "session/current",
 	},
 	users: {
+		all: "user",
 		insert: "user",
+		update: "user/:id",
 		verify: "user/verify/:uniqueString",
 		preferences: "user/preferences",
 	},

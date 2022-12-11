@@ -25,6 +25,7 @@ const HikeFilters = ({ filters, setFilters, openModal }) => {
 						<Form.Label>Length (Km)</Form.Label>
 						<Stack direction="horizontal" gap={2}>
 							<Form.Control
+								data-test-id="min-length"
 								type="number"
 								min="0"
 								placeholder="Min"
@@ -34,6 +35,7 @@ const HikeFilters = ({ filters, setFilters, openModal }) => {
 								}}
 							/>
 							<Form.Control
+								data-test-id="max-length"
 								type="number"
 								placeholder="Max"
 								min="0"
@@ -50,6 +52,7 @@ const HikeFilters = ({ filters, setFilters, openModal }) => {
 						<Form.Label>Ascent (m)</Form.Label>
 						<Stack direction="horizontal" gap={2}>
 							<Form.Control
+								data-test-id="min-ascent"
 								type="number"
 								placeholder="Min"
 								value={filters.minAscent}
@@ -58,6 +61,7 @@ const HikeFilters = ({ filters, setFilters, openModal }) => {
 								}}
 							/>
 							<Form.Control
+								data-test-id="max-ascent"
 								type="number"
 								placeholder="Max"
 								value={filters.maxAscent}
@@ -73,6 +77,7 @@ const HikeFilters = ({ filters, setFilters, openModal }) => {
 						<Form.Label>Expected Time (minutes)</Form.Label>
 						<Stack direction="horizontal" gap={2}>
 							<Form.Control
+								data-test-id="min-expected-time"
 								type="number"
 								min="0"
 								placeholder="Min"
@@ -82,6 +87,7 @@ const HikeFilters = ({ filters, setFilters, openModal }) => {
 								}}
 							/>
 							<Form.Control
+								data-test-id="max-expected-time"
 								type="number"
 								min="0"
 								placeholder="Max"
@@ -99,6 +105,7 @@ const HikeFilters = ({ filters, setFilters, openModal }) => {
 					<Form.Group>
 						<Form.Label>Difficulty</Form.Label>
 						<Form.Select
+							data-test-id="difficulty"
 							value={filters.difficulty}
 							onChange={(event) => {
 								setFilters({ ...filters, difficulty: event.target.value });
@@ -121,7 +128,9 @@ const HikeFilters = ({ filters, setFilters, openModal }) => {
 					<Row>
 						<Col>
 							<Form.Label>Area</Form.Label>
-							<Button onClick={openModal} variant={"success"} className="d-block">
+							<Button
+								data-test-id="select-area"
+								onClick={openModal} variant={"success"} className="d-block">
 								Select area
 							</Button>
 						</Col>

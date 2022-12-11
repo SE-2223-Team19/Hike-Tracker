@@ -58,6 +58,7 @@ const HikerProfile = ({ user }) => {
                     <Button
                         variant={openPreferences ? "success" : "outline-success"}
                         style={{ borderRadius: 20 }}
+                        data-test-id="set-preferences-button"
                         onClick={() => {
                             setOpenPreferences(!openPreferences);
                         }}
@@ -75,18 +76,22 @@ const HikerProfile = ({ user }) => {
                             openModal={() => setShowPositionFilter(true)}
                         />
                         <Stack direction="horizontal" gap={3} style={{ marginTop: "10px" }}>
-                            <Button variant={"danger"} onClick={() => {
-                                setShowConfirmationModal(true);
-                                setModalType("delete");
-                            }}>Remove</Button>
+                            <Button variant={"danger"}
+                                data-test-id="delete-preferences-button"
+                                onClick={() => {
+                                    setShowConfirmationModal(true);
+                                    setModalType("delete");
+                                }}>Remove</Button>
                             <Button variant={"secondary"} onClick={() => {
                                 setCurrentPreferences({});
                                 setOpenPreferences(false);
                             }}>Cancel</Button>
-                            <Button variant={"success"} onClick={() => {
-                                setShowConfirmationModal(true);
-                                setModalType("save");
-                            }}>Ok</Button>
+                            <Button variant={"success"}
+                                data-test-id="save-preferences-button"
+                                onClick={() => {
+                                    setShowConfirmationModal(true);
+                                    setModalType("save");
+                                }}>Ok</Button>
                         </Stack>
                     </div>
                 )}
@@ -99,7 +104,7 @@ const HikerProfile = ({ user }) => {
                         <p>Are you sure you want to {modalType} your preferences?</p>
                     </Modal.Body>
                     <Modal.Footer>
-                        {modalType === "delete" ? <Button className="btn btn-danger" onClick={() => { setShowConfirmationModal(false); removePreferences(); }}>Delete</Button> : <Button className="btn btn-success" onClick={() => { setShowConfirmationModal(false); savePreferences(); }}>Save</Button>}
+                        {modalType === "delete" ? <Button className="btn btn-danger" data-test-id="confirm-delete-preferences" onClick={() => { setShowConfirmationModal(false); removePreferences(); }}>Delete</Button> : <Button className="btn btn-success" data-test-id="confirm-save-preferences" onClick={() => { setShowConfirmationModal(false); savePreferences(); }}>Save</Button>}
                     </Modal.Footer>
                 </Modal>
                 <PositionFilterModal

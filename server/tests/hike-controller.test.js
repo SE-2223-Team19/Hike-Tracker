@@ -7,6 +7,9 @@ const { Difficulty, LocationType, UserType } = require("../models/enums");
 const { setupDB, ResponseHelper } = require("./setup");
 const { ObjectId } = require("mongodb");
 const Location = require("../models/location-model");
+const dotenv = require("dotenv");
+
+dotenv.config();
 
 setupDB("hike-controller");
 
@@ -53,8 +56,8 @@ describe("getHikeById", () => {
 					email: "hiker@test.com",
 					fullName: "John Doe",
 					userType: UserType.LOCAL_GUIDE,
-					password: "password",
-					confirmPassword: "password",
+					password: process.env.DEFAULT_PASSWORD,
+					confirmPassword: process.env.DEFAULT_PASSWORD,
 				},
 			},
 			responseUserCreation
@@ -428,8 +431,8 @@ describe("createHike", () => {
 					email: "hiker@test.com",
 					fullName: "John Doe",
 					userType: UserType.HIKER,
-					password: "password",
-					confirmPassword: "password",
+					password: process.env.DEFAULT_PASSWORD,
+					confirmPassword: process.env.DEFAULT_PASSWORD,
 				},
 			},
 			responseUserCreation
@@ -785,8 +788,8 @@ describe("update Hike", () => {
 					email: "hiker@test.com",
 					fullName: "John Doe",
 					userType: UserType.HIKER,
-					password: "password",
-					confirmPassword: "password",
+					password: process.env.DEFAULT_PASSWORD,
+					confirmPassword: process.env.DEFAULT_PASSWORD,
 				},
 			},
 			responseUserCreation
@@ -1139,8 +1142,8 @@ describe("update Hike", () => {
 					email: "hiker@test.com",
 					fullName: "John Doe",
 					userType: UserType.HIKER,
-					password: "password",
-					confirmPassword: "password",
+					password: process.env.DEFAULT_PASSWORD,
+					confirmPassword: process.env.DEFAULT_PASSWORD,
 				},
 			},
 			responseUserCreation
@@ -1494,7 +1497,10 @@ describe("update Hike", () => {
 
 		newTrackPoints.reverse();
 		for (let i = 0; i < newTrackPoints.length; i++) {
-			let trackPoint = responseHikeUpdate.responseBody.trackPoints[responseHikeUpdate.responseBody.trackPoints.length - (1 + i)];
+			let trackPoint =
+				responseHikeUpdate.responseBody.trackPoints[
+					responseHikeUpdate.responseBody.trackPoints.length - (1 + i)
+				];
 			console.log("TP", i, trackPoint);
 			expect(newTrackPoints[i]).toStrictEqual(trackPoint);
 		}
@@ -1510,8 +1516,8 @@ describe("update Hike", () => {
 					email: "hiker@test.com",
 					fullName: "John Doe",
 					userType: UserType.HIKER,
-					password: "password",
-					confirmPassword: "password",
+					password: process.env.DEFAULT_PASSWORD,
+					confirmPassword: process.env.DEFAULT_PASSWORD,
 				},
 			},
 			responseUserCreation
@@ -1867,8 +1873,8 @@ describe("update Hike", () => {
 					email: "hiker@test.com",
 					fullName: "John Doe",
 					userType: UserType.HIKER,
-					password: "password",
-					confirmPassword: "password",
+					password: process.env.DEFAULT_PASSWORD,
+					confirmPassword: process.env.DEFAULT_PASSWORD,
 				},
 			},
 			responseUserCreation
@@ -2195,16 +2201,19 @@ describe("update Hike", () => {
 		);
 
 		const responseCreateLocation = new ResponseHelper();
-		await locationController.createLocation({
-			user: {
-				userType: UserType.LOCAL_GUIDE
+		await locationController.createLocation(
+			{
+				user: {
+					userType: UserType.LOCAL_GUIDE,
+				},
+				body: {
+					locationType: LocationType.DEFAULT,
+					description: "Example starting point",
+					point: [7.083372, 45.177786],
+				},
 			},
-			body: {
-				locationType: LocationType.DEFAULT,
-				description: "Example starting point",
-				point: [ 7.083372, 45.177786 ]
-			}
-		}, responseCreateLocation);
+			responseCreateLocation
+		);
 
 		expect(responseCreateLocation.statusCode).toBe(StatusCodes.CREATED);
 		const responseHikeUpdate = new ResponseHelper();
@@ -2246,8 +2255,8 @@ describe("update Hike", () => {
 					email: "hiker@test.com",
 					fullName: "John Doe",
 					userType: UserType.LOCAL_GUIDE,
-					password: "password",
-					confirmPassword: "password",
+					password: process.env.DEFAULT_PASSWORD,
+					confirmPassword: process.env.DEFAULT_PASSWORD,
 				},
 			},
 			responseUserCreation
@@ -2277,7 +2286,7 @@ describe("update Hike", () => {
 					referencePoints: [
 						[45.178477, 7.082895],
 						[45.17988, 7.082138],
-						[45.178983, 7.081805]
+						[45.178983, 7.081805],
 					],
 					trackPoints: [
 						[45.177786, 7.083372],

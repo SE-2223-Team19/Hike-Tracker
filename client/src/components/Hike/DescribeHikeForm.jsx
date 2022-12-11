@@ -180,8 +180,8 @@ function DescribeHikeForm({ hike }) {
 	const getInitialExpectedTime = () => (hike ? hike.expectedTime : "");
 	const getInitialDifficulty = () => (hike ? hike.difficulty : "");
 	const getInitialDescription = () => (hike ? hike.description : "");
-	const getInitialStartPoint = () => (hike ? formatPoint(hike.startPoint) : "");
-	const getInitialEndPoint = () => (hike ? formatPoint(hike.endPoint) : "");
+	const getInitialStartPoint = () => (hike && hike.startPoint ? formatPoint(hike.startPoint) : "");
+	const getInitialEndPoint = () => (hike && hike.endPoint ? formatPoint(hike.endPoint) : "");
 	const getInitialReferencePoints = () => (hike ? hike.referencePoints : []);
 	const getInitialLinkedHuts = () => (hike ? hike.linkedHuts.map(formatPoint) : []);
 

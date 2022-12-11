@@ -34,5 +34,6 @@ user type: local_guide
   MONGO_PORT=27017
   MONGO_DB=hike-tracker
   SERVER_PORT=8080
+  DEFAULT_PASSWORD = password
 
 - Launch "docker-compose up"

@@ -1,7 +1,7 @@
 const { object } = require("joi");
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
-const { Difficulty } = require("./enums");
+const { Difficulty , Hut_Condition} = require("./enums");
 
 const trackSchema = new Schema({
 	type: {

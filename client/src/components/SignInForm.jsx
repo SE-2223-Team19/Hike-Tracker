@@ -1,10 +1,10 @@
 import { React, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Form, Row, Col, Button, Modal, Alert, ListGroup, Container } from "react-bootstrap";
+import { Form, Row, Col, Button, Modal, Alert, ListGroup } from "react-bootstrap";
 import { UserType } from "../helper/enums";
 import { capitalizeAndReplaceUnderscores } from "../helper/utils";
 import { createUser } from "../api/users";
-import { getHuts } from "../api/locations"
+import { getHuts } from "../api/locations";
 import HutSelection from "./HutSelection";
 
 function SignInForm() {
@@ -14,8 +14,8 @@ function SignInForm() {
 	const [confirmPassword, setConfirmPassword] = useState("");
 	const [userType, setUserType] = useState("");
 	const [isSubmitting, setIsSubmitting] = useState(false);
-	const [huts, setHuts] = useState([])
-	const [hutsSelected, setHutsSelected] = useState([])
+	const [huts, setHuts] = useState([]);
+	const [hutsSelected, setHutsSelected] = useState([]);
 	const [showModal, setShowModal] = useState(false);
 	const [showModalHutWorker, setShowModalHutWorker] = useState(false);
 	const [errors, setErrors] = useState({
@@ -28,20 +28,20 @@ function SignInForm() {
 	});
 
 	const addHutToList = (hut) => {
-		setHutsSelected(olderList => [...olderList, hut])
-	}
+		setHutsSelected((olderList) => [...olderList, hut]);
+	};
 
 	const removeHutToList = (hut) => {
-		setHutsSelected(hutsSelected.filter(item => item !== hut))
-	}
+		setHutsSelected(hutsSelected.filter((item) => item !== hut));
+	};
 
 	useEffect(() => {
 		const fetchHuts = async () => {
-			const huts = await getHuts()
-			setHuts(huts)
-		}
-		fetchHuts()
-	}, [])
+			const huts = await getHuts();
+			setHuts(huts);
+		};
+		fetchHuts();
+	}, []);
 
 	const emailValidation = () => {
 		const test = /\S+@\S+\.\S+/.test(email);
@@ -56,16 +56,18 @@ function SignInForm() {
 	};
 
 	const userTypeValidation = () => {
-		const test = Object.values(UserType).filter(userType => userType !== UserType.PLATFORM_MANAGER).some((t) => t === userType);
+		const test = Object.values(UserType)
+			.filter((userType) => userType !== UserType.PLATFORM_MANAGER)
+			.some((t) => t === userType);
 		setErrors({ ...errors, userType: test ? "" : "Unknown user type" });
 		return test;
 	};
 
 	const hutsSelectedValidation = () => {
-		const test = hutsSelected.length !== 0
-		setErrors({ ...errors, form: "You have to select at least 1 hut where you work" })
-		return test
-	}
+		const test = hutsSelected.length !== 0;
+		setErrors({ ...errors, form: "You have to select at least 1 hut where you work" });
+		return test;
+	};
 
 	const onSubmit = async (e) => {
 		e.preventDefault();
@@ -78,7 +80,7 @@ function SignInForm() {
 					fullName,
 					userType,
 					password,
-					confirmPassword
+					confirmPassword,
 				};
 				if (userType === UserType.HUT_WORKER && hutsSelectedValidation()) {
 					setErrors({ ...errors, form: "" });
@@ -170,43 +172,76 @@ function SignInForm() {
 								isInvalid={!!errors.userType}
 							>
 								<option value="">Select a user type</option>
-								{Object.values(UserType).filter(userType => userType !== UserType.PLATFORM_MANAGER).map((userType) => (
-									<option key={userType} value={userType}>
-										{capitalizeAndReplaceUnderscores(userType)}
-									</option>
-								))}
+								{Object.values(UserType)
+									.filter((userType) => userType !== UserType.PLATFORM_MANAGER)
+									.map((userType) => (
+										<option key={userType} value={userType}>
+											{capitalizeAndReplaceUnderscores(userType)}
+										</option>
+									))}
 							</Form.Select>
 							<Form.Control.Feedback type="invalid">{errors.userType}</Form.Control.Feedback>
-							{userType == UserType.HUT_WORKER && <Button variant="success" className="mt-2" onClick={() => setShowModalHutWorker(true)}>Select the hut</Button>}
+							{userType === UserType.HUT_WORKER && (
+								<Button
+									variant="success"
+									className="mt-2"
+									onClick={() => setShowModalHutWorker(true)}
+								>
+									Select the hut
+								</Button>
+							)}
 						</Form.Group>
 					</Col>
 				</Row>
 				<Row>
 					<Col>
-						<Button data-test-id="sign-in" type="submit" className="mt-4" variant="success" disabled={isSubmitting}>
+						<Button
+							data-test-id="sign-in"
+							type="submit"
+							className="mt-4"
+							variant="success"
+							disabled={isSubmitting}
+						>
 							Sign in
 						</Button>
 					</Col>
 				</Row>
-
 			</Form>
-			<Modal show={showModalHutWorker} onHide={() => {
-				setShowModalHutWorker(false)
-				setHutsSelected([])
-			}} backdrop={"static"} scrollable={true} style={{ maxHeight: "70vh" }}>
+			<Modal
+				show={showModalHutWorker}
+				onHide={() => {
+					setShowModalHutWorker(false);
+					setHutsSelected([]);
+				}}
+				backdrop={"static"}
+				scrollable={true}
+				style={{ maxHeight: "70vh" }}
+			>
 				<Modal.Header closeButton>
 					<Modal.Title>Select the huts where you work</Modal.Title>
 				</Modal.Header>
 				<Modal.Body>
 					<ListGroup style={{ overflow: "scroll" }}>
-						{
-							huts.map((hut) => <HutSelection key={hut._id} hutsSelected={hutsSelected} hut={hut} addHutToList={addHutToList}
-								removeHutToList={removeHutToList} />)
-						}
+						{huts.map((hut) => (
+							<HutSelection
+								key={hut._id}
+								hutsSelected={hutsSelected}
+								hut={hut}
+								addHutToList={addHutToList}
+								removeHutToList={removeHutToList}
+							/>
+						))}
 					</ListGroup>
 				</Modal.Body>
 				<Modal.Footer>
-					<Button variant="success" onClick={() => { setShowModalHutWorker(false) }}>Save</Button>
+					<Button
+						variant="success"
+						onClick={() => {
+							setShowModalHutWorker(false);
+						}}
+					>
+						Save
+					</Button>
 				</Modal.Footer>
 			</Modal>
 			<Modal show={showModal} onHide={() => setShowModal(false)} backdrop={"static"}>

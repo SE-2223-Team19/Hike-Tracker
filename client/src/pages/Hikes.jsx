@@ -9,8 +9,6 @@ import { CgOptions } from "react-icons/cg";
 import HikeFilters from "../components/Hike/HikeFilters";
 import PositionFilterModal from "../components/PositionFilterModal";
 import PaginatedList from "../components/pagination/PaginatedList";
-import { updateHike } from "../api/hikes";
-
 
 const Hikes = () => {
 	// ** State
@@ -20,10 +18,8 @@ const Hikes = () => {
 	const [currentHike, setCurrentHike] = useState(null);
 	const [dirty, setDirty] = useState(false);
 
-
 	return (
 		<div className="w-100">
-			
 			<Stack direction="horizontal" className="justify-content-between align-items-center">
 				<h1 className="#tests-title">Hikes</h1>
 				<Button
@@ -49,14 +45,13 @@ const Hikes = () => {
 					openModal={() => setShowPositionFilter(true)}
 				/>
 			)}
-			<PaginatedList 
-				dataElement={(hike) => <HikeCard 
-											key={hike._id} 
-											hike={hike} 
-											showDetails={setCurrentHike}
-											setDirty={setDirty}
-										/>}
-				errorElement={(error) => <NoData message={"Something went wrong during the request. Try again later."} />}
+			<PaginatedList
+				dataElement={(hike) => (
+					<HikeCard key={hike._id} hike={hike} showDetails={setCurrentHike} setDirty={setDirty} />
+				)}
+				errorElement={(error) => (
+					<NoData message={"Something went wrong during the request. Try again later."} />
+				)}
 				noDataElement={() => <NoData message={"No hikes found."} />}
 				loadingElement={() => <Loading />}
 				fetchCall={getHikes}

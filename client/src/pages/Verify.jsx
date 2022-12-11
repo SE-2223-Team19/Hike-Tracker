@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { verifyUser } from "../api/users";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 
 const Verify = () => {
 	const { uniqueString } = useParams();
@@ -33,6 +33,10 @@ const Verify = () => {
 					</h1>
 					<h2 style={{ fontWeight: "bold" }}>{message}</h2>
 					<h4>You can continue using our application!</h4>
+
+					<Link to="/" className="btn btn-success">
+						Go to homepage
+					</Link>
 				</div>
 			) : (
 				<div>
@@ -41,6 +45,10 @@ const Verify = () => {
 					</h1>
 					<h2 style={{ fontWeight: "bold" }}>{message}</h2>
 					<h4>The verification link is not valid.</h4>
+
+					<Link to="/" className="btn btn-success">
+						Go to homepage
+					</Link>
 				</div>
 			)}
 		</div>

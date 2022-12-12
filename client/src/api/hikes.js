@@ -82,9 +82,27 @@ async function updateHike(id, changes) {
 	}
 }
 
+async function updateHikeCondition(id, changes) {
+	
+	try {
+		const response = await fetch(new URL(ENDPOINTS.hikes.updateCondition.replace(":id", id), BACKEND_URL), {
+			method: "PATCH",
+			credentials: "include",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify(changes),
+		});
+		return await response.json();
+	} catch (err) {
+		console.error(err);
+	}
+}
+
 module.exports = {
 	getHikes,
 	getHikeById,
 	createHike,
 	updateHike,
+	updateHikeCondition
 };

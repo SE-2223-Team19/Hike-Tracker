@@ -3,7 +3,7 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
 import { HikeCondition } from '../../helper/enums';
-import {updateHike} from '../../api/hikes';
+import {updateHikeCondition} from '../../api/hikes';
 
 function NewHikeCondition({ hike, setDirty }) {
 
@@ -24,7 +24,7 @@ function NewHikeCondition({ hike, setDirty }) {
           hikeCondition: condition
         }
         console.log(hike._id);
-        await updateHike(hike._id,{...changes})
+        await updateHikeCondition(hike._id,{...changes})
 
         console.log(description);
         setDescription("")

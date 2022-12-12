@@ -5,7 +5,8 @@ const ENDPOINTS = {
 		all: "hike",
 		byId: "hike/:id",
 		insert: "hike",
-		update: "hike/:id"
+		update: "hike/:id",
+		updateCondition: "hike/:id/condition"
 	},
 	locations: {
 		all: "location",

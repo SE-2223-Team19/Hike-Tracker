@@ -21,7 +21,7 @@ const HikeCard = ({ hike, showDetails, setDirty }) => {
 	return (
 		<Card className="flex-row p-3 mt-4">
 			<Image
-				src="assets/images/hike-1.jpg"
+				src="assets/images/hike-2.jpg"
 				alt="hike"
 				fluid
 				height="100%"

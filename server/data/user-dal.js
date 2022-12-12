@@ -70,6 +70,11 @@ async function getUsers(filterQuery = {}, page, pageSize) {
 	return users;
 }
 
+async function getUserById(id) {
+	const user = await User.findById(id);
+	return user;
+}
+
 /**
  * Create a new user.
  * @param {User} user User to create. Object must match User model.
@@ -92,6 +97,7 @@ async function updateUser(id, user) {
 
 module.exports = {
 	getUsers,
+	getUserById,
 	createUser,
 	updateUser,
 };

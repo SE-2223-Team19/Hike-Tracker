@@ -29,7 +29,7 @@ const HikeFilters = ({ filters, setFilters, openModal }) => {
 								type="number"
 								min="0"
 								placeholder="Min"
-								value={filters.minLength}
+								value={filters.minLength || ""}
 								onChange={(event) => {
 									setFilters({ ...filters, minLength: Number(event.target.value) });
 								}}
@@ -39,7 +39,7 @@ const HikeFilters = ({ filters, setFilters, openModal }) => {
 								type="number"
 								placeholder="Max"
 								min="0"
-								value={filters.maxLength}
+								value={filters.maxLength || ""}
 								onChange={(event) => {
 									setFilters({ ...filters, maxLength: Number(event.target.value) });
 								}}
@@ -55,7 +55,7 @@ const HikeFilters = ({ filters, setFilters, openModal }) => {
 								data-test-id="min-ascent"
 								type="number"
 								placeholder="Min"
-								value={filters.minAscent}
+								value={filters.minAscent || ""}
 								onChange={(event) => {
 									setFilters({ ...filters, minAscent: Number(event.target.value) });
 								}}
@@ -64,7 +64,7 @@ const HikeFilters = ({ filters, setFilters, openModal }) => {
 								data-test-id="max-ascent"
 								type="number"
 								placeholder="Max"
-								value={filters.maxAscent}
+								value={filters.maxAscent || ""}
 								onChange={(event) => {
 									setFilters({ ...filters, maxAscent: Number(event.target.value) });
 								}}
@@ -81,7 +81,7 @@ const HikeFilters = ({ filters, setFilters, openModal }) => {
 								type="number"
 								min="0"
 								placeholder="Min"
-								value={filters.minExpectedTime}
+								value={filters.minExpectedTime || ""}
 								onChange={(event) => {
 									setFilters({ ...filters, minExpectedTime: Number(event.target.value) });
 								}}
@@ -91,7 +91,7 @@ const HikeFilters = ({ filters, setFilters, openModal }) => {
 								type="number"
 								min="0"
 								placeholder="Max"
-								value={filters.maxExpectedTime}
+								value={filters.maxExpectedTime || ""}
 								onChange={(event) => {
 									setFilters({ ...filters, maxExpectedTime: Number(event.target.value) });
 								}}
@@ -106,7 +106,7 @@ const HikeFilters = ({ filters, setFilters, openModal }) => {
 						<Form.Label>Difficulty</Form.Label>
 						<Form.Select
 							data-test-id="difficulty"
-							value={filters.difficulty}
+							value={filters.difficulty || "all"}
 							onChange={(event) => {
 								setFilters({ ...filters, difficulty: event.target.value });
 								if (event.target.value === "all") {

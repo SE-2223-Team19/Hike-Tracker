@@ -1,4 +1,4 @@
-import { React, useState, useEffect } from "react";
+import { React, useState, useEffect, useContext } from "react";
 import { Button, Stack, Card, Container, Row, Col, Modal } from "react-bootstrap";
 import { BiRuler, BiTrendingUp, BiTime, BiWalk, BiMap } from "react-icons/bi";
 import Loading from "../../components/Loading";
@@ -13,9 +13,11 @@ import { getPreferences, deletePreferences, updatePreferences } from "../../api/
 import { getHikes } from "../../api/hikes";
 import HikeCard from "../../components/Hike/HikeCard";
 import ModalMap from "../../components/ModalMap";
+import { AuthContext } from "../../context/AuthContext";
 
 const HikerProfile = ({ user }) => {
     const navigate = useNavigate();
+    const { setMessage } = useContext(AuthContext);
     const [openPreferences, setOpenPreferences] = useState(false);
     const [savedPreferences, setSavedPreferences] = useState({});
     const [currentPreferences, setCurrentPreferences] = useState({});
@@ -46,8 +48,15 @@ const HikerProfile = ({ user }) => {
         setOpenPreferences(false);
     };
     const savePreferences = async () => {
-        await updatePreferences(currentPreferences);
-        setSavedPreferences(currentPreferences);
+        try {
+            await updatePreferences(currentPreferences);
+            setSavedPreferences(currentPreferences);
+        } catch (err) {
+            setMessage({
+                type: "danger",
+                msg: err.err
+            });
+        }
     };
 
     return (

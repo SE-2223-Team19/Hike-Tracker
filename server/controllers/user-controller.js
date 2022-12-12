@@ -230,9 +230,7 @@ async function updateUser(req, res) {
 
 async function getPreferences(req, res) {
 	const userId = req.user._id;
-	const users = await userDAL.getUsers({ _id: userId });
-	const user = users[0];
-	console.log(user);
+	const user = await userDAL.getUserById(userId);
 	if (user) {
 		if (user.preferences) {
 			return res.status(StatusCodes.OK).json(user.preferences);
@@ -249,13 +247,12 @@ async function getPreferences(req, res) {
 
 async function updatePreferences(req, res) {
 	const userId = req.user._id;
-	const users = await userDAL.getUsers({ _id: userId });
-	const user = users[0];
-	console.log(user);
+	const user = await userDAL.getUserById(userId);
 	if (user) {
-		user.preferences = req.body;
-		await userDAL.updateUser(user);
-		return res.status(StatusCodes.OK).json(user.preferences);
+		const updatedUser = await userDAL.updateUser(userId, {
+			preferences: req.body
+		});
+		return res.status(StatusCodes.OK).json(updatedUser.preferences);
 	} else {
 		return res
 			.status(StatusCodes.NOT_FOUND)
@@ -265,11 +262,12 @@ async function updatePreferences(req, res) {
 
 async function deletePreferences(req, res) {
 	const userId = req.user._id;
-	const users = await userDAL.getUsers({ _id: userId });
-	const user = users[0];
+	const user = await userDAL.getUserById(userId);
 	if (user) {
 		user.preferences = {};
-		await userDAL.updateUser(user);
+		await userDAL.updateUser(userId, {
+			preferences: {}
+		});
 		return res.status(StatusCodes.OK).json(user.preferences);
 	} else {
 		return res

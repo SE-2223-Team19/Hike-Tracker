@@ -20,11 +20,11 @@ const User = require("../models/user-model");
  */
 async function getUsers(filterQuery = {}, page, pageSize) {
 	const paginationActive = page !== undefined && pageSize !== undefined;
-	
+
 	let p = [
 		{
-			$match: filterQuery
-		}
+			$match: filterQuery,
+		},
 	];
 
 	if (paginationActive) {
@@ -34,15 +34,15 @@ async function getUsers(filterQuery = {}, page, pageSize) {
 				$facet: {
 					data: [
 						{
-							$skip: (page - 1) * pageSize
+							$skip: (page - 1) * pageSize,
 						},
 						{
-							$limit: pageSize
-						}
+							$limit: pageSize,
+						},
 					],
 					metadata: [
 						{
-							$count: "totalElements"
+							$count: "totalElements",
 						},
 						{
 							$addFields: {
@@ -51,21 +51,20 @@ async function getUsers(filterQuery = {}, page, pageSize) {
 								pageSize: pageSize,
 								totalPages: {
 									$ceil: {
-										$divide: [ "$totalElements", pageSize ]
-									}
-								}
-							}
-						}
-					]
-				}
-			}
+										$divide: ["$totalElements", pageSize],
+									},
+								},
+							},
+						},
+					],
+				},
+			},
 		];
 	}
 
 	const users = await User.aggregate(p);
 
-	if (paginationActive)
-		return users[0];
+	if (paginationActive) return users[0];
 
 	return users;
 }
@@ -84,14 +83,19 @@ async function createUser(user) {
 /**
  * Updates a user
  * @param {String} id
- * @param {User} user 
+ * @param {User} user
  */
 async function updateUser(id, user) {
 	return await User.findByIdAndUpdate(id, user, { new: true }).lean();
+}
+
+async function getUserById(id) {
+	return await User.findById(id).lean();
 }
 
 module.exports = {
 	getUsers,
 	createUser,
 	updateUser,
+	getUserById,
 };

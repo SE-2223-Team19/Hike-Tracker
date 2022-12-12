@@ -1,6 +1,6 @@
-import { React, useState, useMemo } from "react";
-import { Button, Form, Modal, Stack } from "react-bootstrap";
-import Huts, { HutCard } from "../Huts.jsx";
+import { React, useState } from "react";
+import { Stack } from "react-bootstrap";
+import Huts from "../Huts.jsx";
 import ModelFormHut from "../../components/ModelFormHut.jsx";
 
 const HutWorkerProfile = ({user}) => {

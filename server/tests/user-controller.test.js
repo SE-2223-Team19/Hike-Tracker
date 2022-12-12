@@ -4,6 +4,9 @@ const { StatusCodes } = require("http-status-codes");
 const { UserType } = require("../models/enums");
 const { setupDB, ResponseHelper } = require("./setup");
 const ObjectId = require("mongoose").Types.ObjectId;
+const dotenv = require("dotenv");
+
+dotenv.config();
 
 setupDB("user-controller");
 
@@ -47,8 +50,8 @@ describe("createUser", () => {
 					email: "hiker@test.com",
 					fullName: "John Doe",
 					userType: UserType.HIKER,
-					password: "password",
-					confirmPassword: "password",
+					password: process.env.DEFAULT_PASSWORD,
+					confirmPassword: process.env.DEFAULT_PASSWORD,
 				},
 			},
 			response
@@ -64,7 +67,7 @@ describe("createUser", () => {
 					email: "hiker.test.com", // Wrong email format
 					fullName: "John Doe",
 					userType: "Wrong type",
-					password: "password",
+					password: process.env.DEFAULT_PASSWORD,
 					confirmPassword: "wrong password",
 				},
 			},
@@ -81,8 +84,8 @@ describe("createUser", () => {
 					email: "hiker@test.com",
 					fullName: "John Doe",
 					userType: UserType.HIKER,
-					password: "password",
-					confirmPassword: "password",
+					password: process.env.DEFAULT_PASSWORD,
+					confirmPassword: process.env.DEFAULT_PASSWORD,
 				},
 			},
 			response
@@ -94,8 +97,8 @@ describe("createUser", () => {
 					email: "hiker@test.com",
 					fullName: "John Doe",
 					userType: UserType.HIKER,
-					password: "password",
-					confirmPassword: "password",
+					password: process.env.DEFAULT_PASSWORD,
+					confirmPassword: process.env.DEFAULT_PASSWORD,
 				},
 			},
 			response
@@ -113,8 +116,8 @@ describe("verifyUser", () => {
 					email: "hiker@test.com",
 					fullName: "John Doe",
 					userType: UserType.HIKER,
-					password: "password",
-					confirmPassword: "password",
+					password: process.env.DEFAULT_PASSWORD,
+					confirmPassword: process.env.DEFAULT_PASSWORD,
 				},
 			},
 			response
@@ -154,25 +157,28 @@ describe("update User", () => {
 					email: "update1@test.com",
 					fullName: "John Doe",
 					userType: UserType.HIKER,
-					password: "password",
-					confirmPassword: "password",
+					password: process.env.DEFAULT_PASSWORD,
+					confirmPassword: process.env.DEFAULT_PASSWORD,
 				},
 			},
 			response
 		);
 		expect(response.statusCode).toBe(StatusCodes.CREATED);
-		await userController.updateUser({
-			user: {
-				userType: UserType.PLATFORM_MANAGER,
-				fullName: "PM"
+		await userController.updateUser(
+			{
+				user: {
+					userType: UserType.PLATFORM_MANAGER,
+					fullName: "PM",
+				},
+				params: {
+					id: response.responseBody._id,
+				},
+				body: {
+					userType: UserType.HUT_WORKER,
+				},
 			},
-			params: {
-				id: response.responseBody._id
-			},
-			body: {
-				userType: UserType.HUT_WORKER
-			}
-		}, response);
+			response
+		);
 		expect(response.statusCode).toBe(StatusCodes.OK);
 	});
 
@@ -184,26 +190,29 @@ describe("update User", () => {
 					email: "update2@test.com",
 					fullName: "John Doe",
 					userType: UserType.HIKER,
-					password: "password",
-					confirmPassword: "password",
+					password: process.env.DEFAULT_PASSWORD,
+					confirmPassword: process.env.DEFAULT_PASSWORD,
 				},
 			},
 			response
 		);
 		expect(response.statusCode).toBe(StatusCodes.CREATED);
-		await userController.updateUser({
-			user: {
-				userType: UserType.PLATFORM_MANAGER,
-				fullName: "PM"
+		await userController.updateUser(
+			{
+				user: {
+					userType: UserType.PLATFORM_MANAGER,
+					fullName: "PM",
+				},
+				params: {
+					id: response.responseBody._id,
+				},
+				body: {
+					password: process.env.DEFAULT_PASSWORD + "update",
+					confirmPassword: process.env.DEFAULT_PASSWORD + "update",
+				},
 			},
-			params: {
-				id: response.responseBody._id
-			},
-			body: {
-				password: "passwordupdate",
-				confirmPassword: "passwordupdate"
-			}
-		}, response);
+			response
+		);
 		expect(response.statusCode).toBe(StatusCodes.OK);
 	});
 
@@ -215,25 +224,28 @@ describe("update User", () => {
 					email: "update3@test.com",
 					fullName: "John Doe",
 					userType: UserType.HIKER,
-					password: "password",
-					confirmPassword: "password",
+					password: process.env.DEFAULT_PASSWORD,
+					confirmPassword: process.env.DEFAULT_PASSWORD,
 				},
 			},
 			response
 		);
 		expect(response.statusCode).toBe(StatusCodes.CREATED);
-		await userController.updateUser({
-			user: {
-				userType: UserType.PLATFORM_MANAGER,
-				fullName: "PM"
+		await userController.updateUser(
+			{
+				user: {
+					userType: UserType.PLATFORM_MANAGER,
+					fullName: "PM",
+				},
+				params: {
+					id: response.responseBody._id,
+				},
+				body: {
+					isValid: true,
+				},
 			},
-			params: {
-				id: response.responseBody._id
-			},
-			body: {
-				isValid: true
-			}
-		}, response);
+			response
+		);
 		expect(response.statusCode).toBe(StatusCodes.OK);
 	});
 
@@ -245,25 +257,28 @@ describe("update User", () => {
 					email: "update3@test.com",
 					fullName: "John Doe",
 					userType: UserType.HIKER,
-					password: "password",
-					confirmPassword: "password",
+					password: process.env.DEFAULT_PASSWORD,
+					confirmPassword: process.env.DEFAULT_PASSWORD,
 				},
 			},
 			response
 		);
 		expect(response.statusCode).toBe(StatusCodes.CREATED);
-		await userController.updateUser({
-			user: {
-				userType: UserType.PLATFORM_MANAGER,
-				fullName: "PM"
+		await userController.updateUser(
+			{
+				user: {
+					userType: UserType.PLATFORM_MANAGER,
+					fullName: "PM",
+				},
+				params: {
+					id: response.responseBody._id,
+				},
+				body: {
+					erroneousField: "sdufndfnj",
+				},
 			},
-			params: {
-				id: response.responseBody._id
-			},
-			body: {
-				erroneousField: "sdufndfnj"
-			}
-		}, response);
+			response
+		);
 		expect(response.statusCode).toBe(StatusCodes.BAD_REQUEST);
 	});
 });
@@ -277,8 +292,8 @@ describe("updatePreferences", () => {
 					email: "hiker@test.com",
 					fullName: "John Doe",
 					userType: UserType.HIKER,
-					password: "password",
-					confirmPassword: "password",
+					password: process.env.DEFAULT_PASSWORD,
+					confirmPassword: process.env.DEFAULT_PASSWORD,
 				},
 			},
 			response
@@ -342,8 +357,8 @@ describe("getPreferences", () => {
 					email: "hiker@test.com",
 					fullName: "John Doe",
 					userType: UserType.HIKER,
-					password: "password",
-					confirmPassword: "password",
+					password: process.env.DEFAULT_PASSWORD,
+					confirmPassword: process.env.DEFAULT_PASSWORD,
 				},
 			},
 			responseUser
@@ -389,8 +404,8 @@ describe("getPreferences", () => {
 					email: "hiker@test.com",
 					fullName: "John Doe",
 					userType: UserType.HIKER,
-					password: "password",
-					confirmPassword: "password",
+					password: process.env.DEFAULT_PASSWORD,
+					confirmPassword: process.env.DEFAULT_PASSWORD,
 				},
 			},
 			responseUser
@@ -430,8 +445,8 @@ describe("deletePreferences", () => {
 					email: "hiker@test.com",
 					fullName: "John Doe",
 					userType: UserType.HIKER,
-					password: "password",
-					confirmPassword: "password",
+					password: process.env.DEFAULT_PASSWORD,
+					confirmPassword: process.env.DEFAULT_PASSWORD,
 				},
 			},
 			responseUser

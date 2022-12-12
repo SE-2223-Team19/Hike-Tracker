@@ -7,7 +7,7 @@ import HikerProfile from "./profiles/HikerProfile";
 import LocalGuideProfile from "./profiles/LocalGuideProfile";
 import PlatformManagerProfile from "./profiles/PlatformManagerProfile";
 
-// TODO: Modify the Profile page based on the user type (for now only local_guide)
+// Modify the Profile page based on the user type (for now only local_guide)
 
 const Profile = () => {
 	const navigate = useNavigate();

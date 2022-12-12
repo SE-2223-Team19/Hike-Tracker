@@ -14,7 +14,7 @@ const UserFilters = ({ filters, setFilters }) => {
 	}, [filters]);
 
 	useEffect(() => {
-		submit();
+		submit()
 	}, [localFilters.userType]);
 
 	return (

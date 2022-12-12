@@ -2,29 +2,21 @@
 
 Credentials:
 
-email: shao@test.it
+email: test_localGuide@test.it
 password: password
 user type: local_guide
 
-email: vittorioarpino@test.it
+email: test_Hiker@test.it
 password: password
 user type: hiker
 
-email: matteorosati@test.it
+email: test_PlatformManager@test.it
 password: password
 user type: platform manager
 
-email: martacorci1@test.it
+email: test_hutWorker@test.it
 password: password
 user type: hut worker
-
-email: michelemochi@test.it
-password: password
-user type: local_guide
-
-email: pouya@test.it
-password: password
-user type: local_guide
 
 # Docker Instructions
 
@@ -34,5 +26,6 @@ user type: local_guide
   MONGO_PORT=27017
   MONGO_DB=hike-tracker
   SERVER_PORT=8080
+  DEFAULT_PASSWORD = password
 
 - Launch "docker-compose up"

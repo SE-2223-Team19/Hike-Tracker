@@ -9,7 +9,7 @@ const PointSelector = ({ filter = {}, name, handleChange, value, isInvalid, mult
 	useEffect(() => {
 		const fetchLocations = async () => {
 			const locations = await getLocations(filter);
-			setLocations(locations.filter((location) => location.locationType !== "default")); // TODO: Filter on api query
+			setLocations(locations.filter((location) => location.locationType !== "default")); 
 		};
 		fetchLocations();
 	}, []);

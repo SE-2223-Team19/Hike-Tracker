@@ -18,14 +18,6 @@ email: test_hutWorker@test.it
 password: password
 user type: hut worker
 
-email: michelemochi@test.it
-password: password
-user type: local_guide
-
-email: pouya@test.it
-password: password
-user type: local_guide
-
 # Docker Instructions
 
 - Create .env file in server folder

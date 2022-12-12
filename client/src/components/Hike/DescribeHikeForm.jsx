@@ -94,7 +94,6 @@ function DescribeHikeForm({ hike }) {
 		console.log(values);
 		// Format points for backend
 		delete values.gpxFile;
-		delete values.extractPoints;
 		if (values.startPoint === "") {
 			values.startPoint = null;
 		}
@@ -325,21 +324,7 @@ function DescribeHikeForm({ hike }) {
 						<Row>
 							<Col xs={12}>
 								<Form.Group controlId="gpxFile" className="mt-4">
-									<Stack
-										direction="horizontal"
-										className="align-items-center justify-content-between"
-									>
-										<Form.Label>Load GPX File</Form.Label>
-										<Form.Check
-											data-test-id="extract-points-from-gpx"
-											type="checkbox"
-											defaultChecked={false}
-											name="extractPoints"
-											value={values.extractPoints}
-											onChange={handleChange}
-											label="Extract Start Point/End Point"
-										/>
-									</Stack>
+									<Form.Label>Load GPX File</Form.Label>
 									<Form.Control
 										type="file"
 										name="gpxFile"
@@ -452,7 +437,7 @@ function DescribeHikeForm({ hike }) {
 												onClick={() => {
 													setFieldValue(
 														"referencePoints",
-														values.referencePoints.filter((p) => p._id !== point._id)
+														values.linkedHuts.filter((p) => p._id !== point._id)
 													);
 												}}
 											/>

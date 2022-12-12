@@ -101,13 +101,13 @@ sections:
 
 
 - What lessons did you learn (both positive and negative) in this sprint?
-  - Better planning is better work. But we have to finish the work with 1/2 days left for merge all branches and test all function.
+  - Better planning is better work. But we have to finish the work with 1/2 days left for merge all branches and test all functionalities.
 
 - Which improvement goals set in the previous retrospective were you able to achieve? 
   - Better coordination between us.
 
 - Improvement goals for the next sprint and how to achieve them (technical tasks, team coordination, etc.)
-  - Don't do code review the last day for merge and test all funtion.
+  - Don't do code review the last day for merge and test all function.
 
 - One thing you are proud of as a Team!!
   - Try and success in coordinate 7 people.

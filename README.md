@@ -2,19 +2,19 @@
 
 Credentials:
 
-email: shao@test.it
+email: test_localGuide@test.it
 password: password
 user type: local_guide
 
-email: vittorioarpino@test.it
+email: test_Hiker@test.it
 password: password
 user type: hiker
 
-email: matteorosati@test.it
+email: test_PlatformManager@test.it
 password: password
 user type: platform manager
 
-email: martacorci1@test.it
+email: test_hutWorker@test.it
 password: password
 user type: hut worker
 

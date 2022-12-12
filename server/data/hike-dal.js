@@ -199,7 +199,7 @@ async function getHikes(page, pageSize, filterQuery = {}) {
 /**
  * Create a new hike.
  * @param {Object} hike Hike to create. Object must match Hike model.
- * @returns {Primise<HikeModel>}
+ * @returns {Promise<HikeModel>}
  */
 async function createHike(hike) {
 	const newHike = new Hike({
@@ -249,9 +249,14 @@ async function updateHike(id, hikeUpdate) {
 	return await getHikeById(id);
 }
 
+async function deleteHikeById(id) {
+	await Hike.findByIdAndDelete(id);
+}
+
 module.exports = {
 	getHikes,
 	createHike,
 	getHikeById,
 	updateHike,
+	deleteHikeById
 };

@@ -2,7 +2,8 @@ const joi = require("joi");
 const { StatusCodes } = require("http-status-codes");
 const locationDAL = require("../data/location-dal");
 const { LocationType } = require("../models/enums");
-const ObjectId = require('mongoose').Types.ObjectId
+const Hike = require("../models/hike-model");
+const { ObjectId } = require('mongoose').Types;
 
 /**
  * GET /location
@@ -30,7 +31,16 @@ async function getLocations(req, res) {
 			}),
 			page: joi.number().greater(0),
 			pageSize: joi.number().greater(0),
-			workedPeopleId: joi.string()
+			workedPeopleId: joi.string(),
+			nearHike: joi.string().when(joi.ref("locationLat"), {
+				is: joi.exist(),
+				then: joi.forbidden()
+			}),
+			nearHikeRadius: joi.number().greater(0).when(joi.ref("nearHike"), {
+				is: joi.exist(),
+				then: joi.required(),
+				otherwise: joi.forbidden(),
+			})
 		});
 
 		const { error, value } = schema.validate(query);
@@ -40,7 +50,7 @@ async function getLocations(req, res) {
 
 		if (value.locationType) filter.locationType = value.locationType;
 		if (value.description) filter.description = { $regex: value.description };
-		if (value.workedPeopleId) filter.peopleWorks = ObjectId(value.workedPeopleId)
+		if (value.workedPeopleId) filter.peopleWorks = new ObjectId(value.workedPeopleId);
 		if (value.locationLat && value.locationLon && value.locationRadius)
 			filter.point = {
 				$near: {
@@ -51,6 +61,43 @@ async function getLocations(req, res) {
 					$maxDistance: value.locationRadius, // Distance in meters
 				},
 			};
+		if (value.nearHike && value.nearHikeRadius) filter.nearHike = [
+			{
+				$lookup: {
+					from: Hike.collection.name,
+					as: "hikes",
+					let: {
+						point: "$point"
+					},
+					pipeline: [
+						{
+							$geoNear: {
+								near: {
+									type: "Point",
+									coordinates: "$$point"
+								},
+								spherical: true,
+								distanceField: "distance",
+								maxDistance: value.nearHikeRadius,
+								query: {
+									_id: new ObjectId(value.nearHike)
+								}
+							}
+						}
+					]
+				}
+			},
+			{
+				$unwind: {
+					path: "$hikes"
+				}
+			},
+			{
+				$project: {
+					hikes: 0
+				}
+			}
+		];
 
 		const locations = await locationDAL.getLocations(value.page, value.pageSize, filter);
 		return res.status(StatusCodes.OK).json(locations);

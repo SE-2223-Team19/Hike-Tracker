@@ -19,8 +19,18 @@ const ParkingLot = require("../models/parking-lot-model");
  */
 async function getLocations(page, pageSize, filterQuery = {}) {
 	const paginationActive = page !== undefined && pageSize !== undefined;
+	let p = [];
 
-	let p = [
+	if (filterQuery.nearHike) {
+		p = [
+			...p,
+			...filterQuery.nearHike
+		];
+		delete filterQuery.nearHike;
+	}
+
+	p = [ 
+		...p,
 		{
 			$match: filterQuery,
 		},

@@ -1,7 +1,9 @@
 const joi = require("joi");
-const ObjectId = require("mongoose").Types.ObjectId;
+const { ObjectId } = require("mongoose").Types;
 const { StatusCodes } = require("http-status-codes");
+const Hike = require("../models/hike-model");
 const hikeDAL = require("../data/hike-dal");
+const locationDAL = require("../data/location-dal");
 const { Difficulty, LocationType, HikeCondition } = require("../models/enums");
 
 /**
@@ -144,6 +146,52 @@ async function createHike(req, res) {
 		value.createdBy = req.user._id;
 
 		const createdHike = await hikeDAL.createHike(value);
+
+		const huts = await locationDAL.getLocations(undefined, undefined, {
+			locationType: LocationType.HUT,
+			nearHike: [
+				{
+					$lookup: {
+						from: Hike.collection.name,
+						as: "hikes",
+						let: {
+							point: "$point"
+						},
+						pipeline: [
+							{
+								$geoNear: {
+									near: {
+										type: "Point",
+										coordinates: "$$point"
+									},
+									spherical: true,
+									distanceField: "distance",
+									maxDistance: 5000,
+									query: {
+										_id: new ObjectId(createdHike._id)
+									}
+								}
+							}
+						]
+					}
+				},
+				{
+					$unwind: {
+						path: "$hikes"
+					}
+				},
+				{
+					$project: {
+						hikes: 0
+					}
+				}
+			]
+		});
+		if (!createdHike.linkedHuts.every(hut => huts.some(h => h._id === hut))) {
+			await hikeDAL.deleteHikeById(createdHike._id);
+			throw new Error("The linked huts are too far from the hike track points");
+		}
+
 		return res.status(StatusCodes.CREATED).json(createdHike);
 	} catch (err) {
 		return res.status(StatusCodes.BAD_REQUEST).json({ err: err.message, stack: err.stack });

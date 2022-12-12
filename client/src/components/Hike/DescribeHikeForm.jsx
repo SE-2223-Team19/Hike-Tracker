@@ -1,5 +1,5 @@
-import { React, useContext, useEffect } from "react";
-import { Difficulty, UserType } from "../../helper/enums";
+import { React, useContext, useEffect, useMemo } from "react";
+import { Difficulty, LocationType, UserType } from "../../helper/enums";
 import {
 	Form,
 	Button,
@@ -25,6 +25,12 @@ function DescribeHikeForm({ hike }) {
 	const navigate = useNavigate();
 
 	const { user, setMessage } = useContext(AuthContext);
+
+	const hutFilter = useMemo(() => (hike ? {
+		locationType: LocationType.HUT,
+		nearHike: hike._id,
+		nearHikeRadius: 5000
+	} : {}), [hike]);
 
 	useEffect(() => {
 		if (user === null || user.userType !== UserType.LOCAL_GUIDE) {
@@ -445,6 +451,7 @@ function DescribeHikeForm({ hike }) {
 									))}
 								</ListGroup>
 								<PointSelector
+									filter={hutFilter}
 									name="linkedHuts"
 									value={values.linkedHuts.map((p) => p._id)}
 									multiple

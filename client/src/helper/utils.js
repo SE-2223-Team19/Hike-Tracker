@@ -98,3 +98,11 @@ export async function getLatLongFromCity(city) {
 export function getRandomHikeThumbnail() {
 	return `/assets/images/hike-${Math.floor(Math.random() * 5) + 1}.jpg`;
 }
+
+export const getBase64 = (file) =>
+	new Promise((resolve, reject) => {
+		const reader = new FileReader();
+		reader.readAsDataURL(file);
+		reader.onload = () => resolve(reader.result);
+		reader.onerror = (error) => reject(error);
+	});

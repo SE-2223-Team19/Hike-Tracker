@@ -126,6 +126,7 @@ async function createHike(req, res) {
 				.required()
 				.valid(...Object.values(Difficulty)),
 			description: joi.string().required(),
+			thumbnail: joi.string().allow(null),
 			startPoint: joi.string().allow(null),
 			endPoint: joi.string().allow(null),
 			linkedHuts: joi.array().items(joi.string()),
@@ -169,6 +170,7 @@ async function updateHike(req, res) {
 			expectedTime: joi.number(),
 			difficulty: joi.string().valid(...Object.values(Difficulty)),
 			description: joi.string(),
+			thumbnail: joi.string().allow(null),
 			startPoint: joi.string().allow(null),
 			endPoint: joi.string().allow(null),
 			linkedHuts: joi.array().items(joi.string()),

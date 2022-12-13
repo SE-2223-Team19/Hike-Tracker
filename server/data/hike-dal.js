@@ -211,6 +211,11 @@ async function getHikes(page, pageSize, filterQuery = {}) {
  * @returns {Primise<HikeModel>}
  */
 async function createHike(hike) {
+	if (hike.thumbnail) {
+		const thumbnail = await Image.create({ data: hike.thumbnail });
+		hike.thumbnail = thumbnail._id;
+	}
+
 	const newHike = new Hike({
 		...hike,
 		trackPoints: {
@@ -253,6 +258,12 @@ async function updateHike(id, hikeUpdate) {
 			coordinates: hikeUpdate.trackPoints.map((p) => [p[1], p[0]]),
 		};
 	}
+
+	if (hikeUpdate.thumbnail) {
+		const thumbnail = await Image.create({ data: hikeUpdate.thumbnail });
+		hikeUpdate.thumbnail = thumbnail._id;
+	}
+
 	await Hike.findByIdAndUpdate(id, hikeUpdate, { new: true });
 
 	return await getHikeById(id);

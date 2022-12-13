@@ -10,7 +10,7 @@ import {
 	ListGroupItem,
 	CloseButton,
 } from "react-bootstrap";
-import { capitalizeAndReplaceUnderscores } from "../../helper/utils";
+import { capitalizeAndReplaceUnderscores, getBase64 } from "../../helper/utils";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import GpxParser from "gpxparser";
@@ -93,15 +93,19 @@ function DescribeHikeForm({ hike }) {
 		console.log(values);
 		// Format points for backend
 		delete values.gpxFile;
-		if (values.startPoint === "") {
+		if (values.startPoint.locationType === "default") {
 			values.startPoint = null;
 		}
-		if (values.endPoint) {
-			values.endPoint = values.endPoint._id;
+		if (values.endPoint.locationType === "default") {
+			values.endPoint = null;
 		}
 		console.log("on submit", values);
 		if (values.linkedHuts && values.linkedHuts.length > 0) {
 			values.linkedHuts = values.linkedHuts.map((hut) => hut._id);
+		}
+		if (values.thumbnail) {
+			// Covert to base64 with prexif
+			values.thumbnail = await getBase64(values.thumbnail);
 		}
 		if (hike) {
 			// Update hike
@@ -110,7 +114,6 @@ function DescribeHikeForm({ hike }) {
 			delete values.startPoint;
 			delete values.endPoint;
 			const updatedHike = await updateHike(hike._id, { ...values });
-			console.log(updatedHike);
 			if (updatedHike._id) {
 				return navigate("/profile");
 			}
@@ -120,6 +123,7 @@ function DescribeHikeForm({ hike }) {
 			});
 			return;
 		}
+		console.log("create hike", values);
 		const createdHike = await createHike({ ...values });
 		if (createdHike._id) {
 			return navigate("/profile");

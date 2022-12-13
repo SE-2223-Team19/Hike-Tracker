@@ -243,8 +243,8 @@ function DescribeHikeForm({ hike }) {
 								/>
 								<img
 									id="thumbnail-img"
-									src=""
-									alt="no-selected-file"
+									src={hike && hike.thumbnail.length > 0 ? hike.thumbnail[0].data : ""}
+									alt="no-thumbnail"
 									className="img-fluid"
 									style={{ height: "200px", width: "100%" }}
 								/>

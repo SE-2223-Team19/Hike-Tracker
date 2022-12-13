@@ -29,6 +29,7 @@ const HikeCard = ({ hike, showDetails, setDirty }) => {
 				width="20%"
 				rounded
 				style={{ maxHeight: "150px", objectFit: "cover" }}
+				className="d-none d-lg-block" // Hide image on small screens
 			/>
 			<Card.Body className="py-0">
 				<Stack className="h-100" style={{ justifyContent: "space-between" }}>

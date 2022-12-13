@@ -111,7 +111,6 @@ async function getHikeById(req, res) {
  * @returns {Promise<Response>}
  */
 async function createHike(req, res) {
-	
 	try {
 		// Validate request body
 		const { body } = req;
@@ -180,7 +179,6 @@ async function updateHike(req, res) {
 
 		// Validate request body against schema
 		const { error, value } = schema.validate(body);
-		
 
 		if (error) throw error; // Joi validation error, goes to catch block
 

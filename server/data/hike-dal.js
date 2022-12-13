@@ -1,5 +1,6 @@
 const ObjectId = require("mongoose").Types.ObjectId;
 const Hike = require("../models/hike-model");
+const Image = require("../models/image-model");
 const Location = require("../models/location-model");
 const User = require("../models/user-model");
 
@@ -84,6 +85,14 @@ const commonLookups = [
 			localField: "linkedHuts",
 			foreignField: "_id",
 			as: "linkedHuts",
+		},
+	},
+	{
+		$lookup: {
+			from: Image.collection.name,
+			localField: "thumbnail",
+			foreignField: "_id",
+			as: "thumbnail",
 		},
 	},
 	{
@@ -245,7 +254,7 @@ async function updateHike(id, hikeUpdate) {
 		};
 	}
 	await Hike.findByIdAndUpdate(id, hikeUpdate, { new: true });
-	
+
 	return await getHikeById(id);
 }
 

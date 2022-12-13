@@ -62,7 +62,7 @@ export const ConditionColor = (condition) => {
 		case HikeCondition.Close_BadWeather:
 			return "danger";
 		case HikeCondition.Close_maintenance:
-			return "danger"	
+			return "danger";
 		default:
 			return "secondary";
 	}
@@ -75,20 +75,26 @@ export const removeMongoKeys = (obj) => {
 	return newObj;
 };
 
-
 /**
  *
- * @param {String} city 
+ * @param {String} city
  * @returns A json Object that describe the place and its coordinates in terms of latitude and longitude
  */
 export async function getLatLongFromCity(city) {
-	console.log(city)
-	const url = "https://nominatim.openstreetmap.org/search?city=" + city + "&zoom=10&format=jsonv2&limit=1"
+	console.log(city);
+	const url =
+		"https://nominatim.openstreetmap.org/search?city=" + city + "&zoom=10&format=jsonv2&limit=1";
 	try {
-		const response = await fetch(url)
-		return await response.json()
-	} catch(err) {
-		return err
+		const response = await fetch(url);
+		return await response.json();
+	} catch (err) {
+		return err;
 	}
+}
 
+/** Get the path of one of the pictures in public/assets/images, named hike-$, where $ is
+ * a random number between 1 and 5.
+ */
+export function getRandomHikeThumbnail() {
+	return `/assets/images/hike-${Math.floor(Math.random() * 5) + 1}.jpg`;
 }

@@ -4,12 +4,12 @@ const { Schema } = mongoose;
 // Image Schema
 const imageSchema = new Schema(
 	{
-		data: { type: BinData, required: true },
+		data: { type: String, required: true }, // base64 encoded image data
 	},
 	{ timestamps: true }
 );
 
 // Image Model
-const HikeTrackerImage = mongoose.model("HikeTrackerImage", imageSchema);
+const Image = mongoose.model("Image", imageSchema);
 
-module.exports = HikeTrackerImage;
+module.exports = Image;

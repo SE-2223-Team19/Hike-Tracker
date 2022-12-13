@@ -15,12 +15,12 @@ const ParkingLot = Location.discriminator(
 			type: Number,
 			required: true,
 		},
-		image: {
+		thumbnail: {
 			type: Schema.Types.ObjectId,
-			ref: "HikeTrackerImage",
+			ref: "Image",
 			required: false,
 		},
-		photos: [{ type: Schema.Types.ObjectId, ref: "HikeTrackerImage", required: false }],
+		photos: [{ type: Schema.Types.ObjectId, ref: "Image", required: false }],
 	})
 );
 

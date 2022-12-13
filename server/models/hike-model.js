@@ -34,8 +34,8 @@ const hikeSchema = new Schema(
 		},
 		createdBy: { type: Schema.Types.ObjectId, ref: "User", required: true },
 		hikeCondition: { type: String, enum: Object.values(HikeCondition) },
-		image: { type: Schema.Types.ObjectId, ref: "HikeTrackerImage", required: false },
-		photos: [{ type: Schema.Types.ObjectId, ref: "HikeTrackerImage", required: false }],
+		thumbnail: { type: Schema.Types.ObjectId, ref: "Image", required: false },
+		photos: [{ type: Schema.Types.ObjectId, ref: "Image", required: false }],
 	},
 	{ timestamps: true }
 );

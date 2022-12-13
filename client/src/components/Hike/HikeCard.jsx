@@ -9,6 +9,7 @@ import {
 	difficultyToColor,
 	displayExpectedTime,
 	displayLength,
+	getRandomHikeThumbnail,
 } from "../../helper/utils";
 import { AuthContext } from "../../context/AuthContext";
 import { UserType } from "../../helper/enums";
@@ -18,10 +19,12 @@ const HikeCard = ({ hike, showDetails, setDirty }) => {
 	// ** User (if user is not logged in and has not permission, he cannot see hike details)
 	const { loggedIn, user } = useContext(AuthContext);
 
+	console.log(hike.thumbnail);
+
 	return (
 		<Card className="flex-row p-3 mt-4">
 			<Image
-				src="assets/images/hike-2.jpg"
+				src={hike.thumbnail.length >= 1 ? hike.thumbnail[0].data : getRandomHikeThumbnail()}
 				alt="hike"
 				fluid
 				height="100%"

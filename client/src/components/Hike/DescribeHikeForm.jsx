@@ -9,7 +9,6 @@ import {
 	ListGroup,
 	ListGroupItem,
 	CloseButton,
-	Stack,
 } from "react-bootstrap";
 import { capitalizeAndReplaceUnderscores } from "../../helper/utils";
 import { Formik } from "formik";
@@ -150,6 +149,7 @@ function DescribeHikeForm({ hike }) {
 		expectedTime: Yup.number().required("Required"),
 		difficulty: Yup.string().required("Required"),
 		description: Yup.string("Required").typeError("Required").required("Required"),
+		thumbnail: Yup.mixed(),
 		gpxFile: !hike && Yup.mixed().required("Required"),
 		startPoint: !hike && locationSchema.nullable(true).typeError("Type Error"),
 		endPoint: !hike && locationSchema.nullable(true).typeError("Type Error"),
@@ -179,6 +179,8 @@ function DescribeHikeForm({ hike }) {
 	const getInitialExpectedTime = () => (hike ? hike.expectedTime : "");
 	const getInitialDifficulty = () => (hike ? hike.difficulty : "");
 	const getInitialDescription = () => (hike ? hike.description : "");
+	const getInitialThumbnail = () =>
+		hike ? (hike.thumbnail.length > 0 ? hike.thumbnail[0].data : "") : "";
 	const getInitialStartPoint = () => (hike && hike.startPoint ? formatPoint(hike.startPoint) : "");
 	const getInitialEndPoint = () => (hike && hike.endPoint ? formatPoint(hike.endPoint) : "");
 	const getInitialReferencePoints = () => (hike ? hike.referencePoints : []);
@@ -194,6 +196,7 @@ function DescribeHikeForm({ hike }) {
 				expectedTime: getInitialExpectedTime(),
 				difficulty: getInitialDifficulty(),
 				description: getInitialDescription(),
+				thumbnail: getInitialThumbnail(),
 				startPoint: getInitialStartPoint(),
 				endPoint: getInitialEndPoint(),
 				referencePoints: getInitialReferencePoints(),
@@ -224,100 +227,129 @@ function DescribeHikeForm({ hike }) {
 			}) => (
 				<Form noValidate onSubmit={handleSubmit}>
 					<Row>
-						<Col xs={12} md={4}>
-							<Form.Group controlId="title" className="mt-3">
-								<Form.Label>Title</Form.Label>
+						<Col xs={12} md={3}>
+							<Form.Group controlId="thumbnail" className="mt-3">
+								<Form.Label>Thumbnail</Form.Label>
 								<Form.Control
-									type="text"
-									name="title"
-									value={values.title}
-									onChange={handleChange}
+									type="file"
+									name="thumbnail"
+									onChange={(e) => {
+										setFieldValue("thumbnail", e.target.files[0]);
+										const thumbnail = document.getElementById("thumbnail-img");
+										thumbnail.src = URL.createObjectURL(e.target.files[0]);
+									}}
+									className="mb-4"
 									onBlur={handleBlur}
-									isInvalid={!!errors.title}
 								/>
-								<Form.Control.Feedback type="invalid">{errors.title}</Form.Control.Feedback>
+								<img
+									id="thumbnail-img"
+									src=""
+									alt="no-selected-file"
+									className="img-fluid"
+									style={{ height: "200px", width: "100%" }}
+								/>
 							</Form.Group>
 						</Col>
-						<Col xs={12} md={4}>
-							<Form.Group controlId="length" className="mt-3">
-								<Form.Label>Length (in meters)</Form.Label>
-								<Form.Control
-									type="number"
-									name="length"
-									value={values.length}
-									onChange={handleChange}
-									onBlur={handleBlur}
-									isInvalid={!!errors.length}
-								/>
-								<Form.Control.Feedback type="invalid">{errors.length}</Form.Control.Feedback>
-							</Form.Group>
-						</Col>
-						<Col xs={12} md={4}>
-							<Form.Group controlId="ascent" className="mt-3">
-								<Form.Label>Ascent (in meters)</Form.Label>
-								<Form.Control
-									type="number"
-									name="ascent"
-									value={values.ascent}
-									onChange={handleChange}
-									onBlur={handleBlur}
-									isInvalid={!!errors.ascent}
-								/>
-								<Form.Control.Feedback type="invalid">{errors.ascent}</Form.Control.Feedback>
-							</Form.Group>
-						</Col>
-					</Row>
-					<Row>
-						<Col xs={12} md={6}>
-							<Form.Group controlId="expectedTime" className="mt-4">
-								<Form.Label>Expected time (in minutes)</Form.Label>
-								<Form.Control
-									type="number"
-									name="expectedTime"
-									value={values.expectedTime}
-									onChange={handleChange}
-									onBlur={handleBlur}
-									isInvalid={!!errors.expectedTime}
-								/>
-								<Form.Control.Feedback type="invalid">{errors.expectedTime}</Form.Control.Feedback>
-							</Form.Group>
-						</Col>
-						<Col xs={12} md={6}>
-							<Form.Group controlId="difficulty" className="mt-4">
-								<Form.Label>Difficulty</Form.Label>
-								<Form.Select
-									as="select"
-									name="difficulty"
-									value={values.difficulty || ""}
-									onChange={handleChange}
-									onBlur={handleBlur}
-									isInvalid={!!errors.difficulty}
-								>
-									<option value="">Select difficulty</option>
-									{Object.values(Difficulty).map((difficulty) => (
-										<option key={difficulty} value={difficulty}>
-											{capitalizeAndReplaceUnderscores(difficulty)}
-										</option>
-									))}
-								</Form.Select>
-								<Form.Control.Feedback type="invalid">{errors.difficulty}</Form.Control.Feedback>
-							</Form.Group>
-						</Col>
-					</Row>
-					<Row>
-						<Col xs={12}>
-							<Form.Group controlId="description" className="mt-4">
-								<Form.Label>Description</Form.Label>
-								<Form.Control
-									as="textarea"
-									name="description"
-									value={values.description || ""}
-									onChange={handleChange}
-									onBlur={handleBlur}
-									isInvalid={!!errors.description}
-								/>
-								<Form.Control.Feedback type="invalid">{errors.description}</Form.Control.Feedback>
-							</Form.Group>
+						<Col xs={12} md={9}>
+							<Row>
+								<Col xs={12} md={4}>
+									<Form.Group controlId="title" className="mt-3">
+										<Form.Label>Title</Form.Label>
+										<Form.Control
+											type="text"
+											name="title"
+											value={values.title}
+											onChange={handleChange}
+											onBlur={handleBlur}
+											isInvalid={!!errors.title}
+										/>
+										<Form.Control.Feedback type="invalid">{errors.title}</Form.Control.Feedback>
+									</Form.Group>
+								</Col>
+								<Col xs={12} md={4}>
+									<Form.Group controlId="length" className="mt-3">
+										<Form.Label>Length (in meters)</Form.Label>
+										<Form.Control
+											type="number"
+											name="length"
+											value={values.length}
+											onChange={handleChange}
+											onBlur={handleBlur}
+											isInvalid={!!errors.length}
+										/>
+										<Form.Control.Feedback type="invalid">{errors.length}</Form.Control.Feedback>
+									</Form.Group>
+								</Col>
+								<Col xs={12} md={4}>
+									<Form.Group controlId="ascent" className="mt-3">
+										<Form.Label>Ascent (in meters)</Form.Label>
+										<Form.Control
+											type="number"
+											name="ascent"
+											value={values.ascent}
+											onChange={handleChange}
+											onBlur={handleBlur}
+											isInvalid={!!errors.ascent}
+										/>
+										<Form.Control.Feedback type="invalid">{errors.ascent}</Form.Control.Feedback>
+									</Form.Group>
+								</Col>
+							</Row>
+							<Row>
+								<Col xs={12} md={6}>
+									<Form.Group controlId="expectedTime" className="mt-4">
+										<Form.Label>Expected time (in minutes)</Form.Label>
+										<Form.Control
+											type="number"
+											name="expectedTime"
+											value={values.expectedTime}
+											onChange={handleChange}
+											onBlur={handleBlur}
+											isInvalid={!!errors.expectedTime}
+										/>
+										<Form.Control.Feedback type="invalid">
+											{errors.expectedTime}
+										</Form.Control.Feedback>
+									</Form.Group>
+								</Col>
+								<Col xs={12} md={6}>
+									<Form.Group controlId="difficulty" className="mt-4">
+										<Form.Label>Difficulty</Form.Label>
+										<Form.Select
+											as="select"
+											name="difficulty"
+											value={values.difficulty || ""}
+											onChange={handleChange}
+											onBlur={handleBlur}
+											isInvalid={!!errors.difficulty}
+										>
+											<option value="">Select difficulty</option>
+											{Object.values(Difficulty).map((difficulty) => (
+												<option key={difficulty} value={difficulty}>
+													{capitalizeAndReplaceUnderscores(difficulty)}
+												</option>
+											))}
+										</Form.Select>
+										<Form.Control.Feedback type="invalid">
+											{errors.difficulty}
+										</Form.Control.Feedback>
+									</Form.Group>
+								</Col>
+							</Row>
+							<Col xs={12}>
+								<Form.Group controlId="description" className="mt-4">
+									<Form.Label>Description</Form.Label>
+									<Form.Control
+										as="textarea"
+										name="description"
+										value={values.description || ""}
+										onChange={handleChange}
+										onBlur={handleBlur}
+										isInvalid={!!errors.description}
+									/>
+									<Form.Control.Feedback type="invalid">{errors.description}</Form.Control.Feedback>
+								</Form.Group>
+							</Col>
 						</Col>
 					</Row>
 					{!hike && (
@@ -425,7 +457,7 @@ function DescribeHikeForm({ hike }) {
 					)}
 					<Row>
 						<Col>
-							<Form.Group>
+							<Form.Group className="mt-4">
 								<Form.Label>Linked Huts</Form.Label>
 								<ListGroup as="ol" className="mb-3">
 									{values.linkedHuts.map((point) => (
@@ -435,8 +467,9 @@ function DescribeHikeForm({ hike }) {
 											</span>
 											<CloseButton
 												onClick={() => {
+													console.log("linked huts", values.linkedHuts);
 													setFieldValue(
-														"referencePoints",
+														"linkedHuts",
 														values.linkedHuts.filter((p) => p._id !== point._id)
 													);
 												}}

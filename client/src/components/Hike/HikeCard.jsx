@@ -19,8 +19,6 @@ const HikeCard = ({ hike, showDetails, setDirty }) => {
 	// ** User (if user is not logged in and has not permission, he cannot see hike details)
 	const { loggedIn, user } = useContext(AuthContext);
 
-	console.log(hike.thumbnail);
-
 	return (
 		<Card className="flex-row p-3 mt-4">
 			<Image

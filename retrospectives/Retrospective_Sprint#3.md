@@ -102,9 +102,9 @@ sections:
   - Hours spent on remediation 1h
   - Debt ratio (as reported by SonarQube under "Measures-Maintainability") 0.4%
   - Rating for each quality characteristic reported in SonarQube under "Measures" (namely reliability, security, maintainability )
-   - Reliability A
-   - Security E
-   - Maintainability A
+    - Reliability A
+    - Security E
+    - Maintainability A
 
 
 ## ASSESSMENT

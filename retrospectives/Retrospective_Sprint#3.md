@@ -1,4 +1,4 @@
-RETROSPECTIVE #1 (Team 19)
+RETROSPECTIVE #3 (Team 19)
 =====================================
 
 The retrospective should include _at least_ the following
@@ -20,7 +20,7 @@ sections:
  
 - Unit Tests passing 27 in this sprint
 - Code review completed 2
-- End-to-End tests performed 0
+- End-to-End tests performed 5 in this sprint
 
 > Please refine your DoD if required (you cannot remove items!) 
 
@@ -94,7 +94,14 @@ sections:
 - Code review 
   - Total hours estimated 16h
   - Total hours spent 14h
-  
+- Technical Debt management:
+  - Total hours estimated
+  - Total hours spent
+  - Hours estimated for remediation by SonarQube
+  - Hours estimated for remediation by SonarQube only for the selected and planned issues
+  - Hours spent on remediation
+  - Debt ratio (as reported by SonarQube under "Measures-Maintainability")
+  - Rating for each quality characteristic reported in SonarQube under "Measures" (namely reliability, security, maintainability )  
 
 
 ## ASSESSMENT

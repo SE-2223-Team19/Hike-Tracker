@@ -2,7 +2,7 @@ const joi = require("joi");
 const { StatusCodes } = require("http-status-codes");
 const locationDAL = require("../data/location-dal");
 const { LocationType } = require("../models/enums");
-const ObjectId = require('mongoose').Types.ObjectId
+const ObjectId = require("mongoose").Types.ObjectId;
 
 /**
  * GET /location
@@ -30,7 +30,7 @@ async function getLocations(req, res) {
 			}),
 			page: joi.number().greater(0),
 			pageSize: joi.number().greater(0),
-			workedPeopleId: joi.string()
+			workedPeopleId: joi.string(),
 		});
 
 		const { error, value } = schema.validate(query);
@@ -40,7 +40,7 @@ async function getLocations(req, res) {
 
 		if (value.locationType) filter.locationType = value.locationType;
 		if (value.description) filter.description = { $regex: value.description };
-		if (value.workedPeopleId) filter.peopleWorks = ObjectId(value.workedPeopleId)
+		if (value.workedPeopleId) filter.peopleWorks = ObjectId(value.workedPeopleId);
 		if (value.locationLat && value.locationLon && value.locationRadius)
 			filter.point = {
 				$near: {
@@ -55,7 +55,7 @@ async function getLocations(req, res) {
 		const locations = await locationDAL.getLocations(value.page, value.pageSize, filter);
 		return res.status(StatusCodes.OK).json(locations);
 	} catch (err) {
-		console.log(err)
+		console.log(err);
 		return res.status(StatusCodes.BAD_REQUEST).json({ err: err.message });
 	}
 }
@@ -102,6 +102,7 @@ async function createLocation(req, res) {
 				is: [LocationType.HUT, LocationType.PARKING_LOT],
 				then: joi.string().required(),
 			}),
+			thumbnail: joi.string().allow(null),
 			capacity: joi.alternatives().conditional("locationType", {
 				is: LocationType.PARKING_LOT,
 				then: joi.number().required(),
@@ -128,8 +129,8 @@ async function createLocation(req, res) {
 			}),
 			peopleWorks: joi.alternatives().conditional("locationType", {
 				is: LocationType.HUT,
-				then: joi.array().items(joi.string())
-			})
+				then: joi.array().items(joi.string()),
+			}),
 		});
 
 		// Validate request body against schema
@@ -166,7 +167,6 @@ async function updateLocationDescription(req, res) {
 }
 
 async function updateLocation(req, res) {
-	
 	try {
 		const { params, body } = req;
 		const id = params.id;
@@ -178,7 +178,7 @@ async function updateLocation(req, res) {
 				.required(),
 			name: joi.alternatives().conditional("locationType", {
 				is: [LocationType.HUT, LocationType.PARKING_LOT],
-				then: joi.string()
+				then: joi.string(),
 			}),
 			capacity: joi.alternatives().conditional("locationType", {
 				is: LocationType.PARKING_LOT,
@@ -204,7 +204,7 @@ async function updateLocation(req, res) {
 				is: LocationType.HUT,
 				then: joi.string().uri().allow(""),
 			}),
-			description: joi.string()
+			description: joi.string(),
 		});
 
 		const { value, error } = schema.validate(body);

@@ -21,18 +21,24 @@ const UserType = {
 	HUT_WORKER: "hut_worker",
 };
 
-const HikeCondition={
-	Open : "open",
+const HikeCondition = {
+	Open: "open",
 	Overloaded: "overloaded",
 	Close_BadWeather: "close_BadWeather",
-	Close_maintenance: "close_maintenance"
+	Close_maintenance: "close_maintenance",
+};
 
-}
-
+const HikeStatus = {
+	ACTIVE: "active",
+	COMPLETED: "completed",
+	CANCELLED: "cancelled",
+	IN_PROGRESS: "in_progress",
+};
 
 module.exports = {
 	Difficulty,
 	LocationType,
 	UserType,
-	HikeCondition
+	HikeCondition,
+	HikeStatus,
 };

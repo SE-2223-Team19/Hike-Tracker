@@ -13,11 +13,32 @@ import {
 } from "../../helper/utils";
 import { AuthContext } from "../../context/AuthContext";
 import { UserType } from "../../helper/enums";
+import { startHike } from "../../api/hikes";
 
-const HikeCard = ({ hike, showDetails, setDirty }) => {
+const HikeCard = ({ hike, setDirty }) => {
 	const navigate = useNavigate();
 	// ** User (if user is not logged in and has not permission, he cannot see hike details)
-	const { loggedIn, user } = useContext(AuthContext);
+	const { loggedIn, user, setMessage } = useContext(AuthContext);
+
+	const start = async () => {
+		// ** Check if user is a hiker
+		if (user.userType !== UserType.HIKER) {
+			setMessage({ msg: "You must be a hiker to start a hike", type: "danger" });
+			return;
+		}
+
+		const startedHike = await startHike(hike._id, user._id);
+		if (startedHike) {
+			setMessage({
+				msg: "Hike started successfully, you can track it in your profile in the 'Active Hikes' section",
+				type: "success",
+			});
+			return;
+		}
+
+		// ** Error
+		setMessage({ msg: "Error starting hike", type: "danger" });
+	};
 
 	return (
 		<Card className="flex-row p-3 mt-4">
@@ -63,15 +84,11 @@ const HikeCard = ({ hike, showDetails, setDirty }) => {
 										{user.userType === UserType.HUT_WORKER && (
 											<NewHikeCondition hike={hike} setDirty={setDirty} />
 										)}
-										<Button
-											data-test-id="seeOnMap"
-											onClick={() => showDetails(hike)}
-											variant={"success"}
-										>
-											See on Map
-										</Button>
 										<Button variant="dark" onClick={() => navigate("/hike", { state: { hike } })}>
 											Details
+										</Button>
+										<Button variant="outline-success" onClick={() => start()}>
+											Start
 										</Button>
 									</Stack>
 								)}

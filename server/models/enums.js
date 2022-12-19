@@ -32,7 +32,6 @@ const HikeStatus = {
 	ACTIVE: "active",
 	COMPLETED: "completed",
 	CANCELLED: "cancelled",
-	IN_PROGRESS: "in_progress",
 };
 
 module.exports = {

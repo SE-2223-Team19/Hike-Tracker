@@ -27,10 +27,10 @@ const HikeCard = ({ hike, setDirty }) => {
 			return;
 		}
 
-		const startedHike = await startHike(hike._id, user._id);
+		const startedHike = await startHike(hike._id);
 		if (startedHike) {
 			setMessage({
-				msg: "Hike started successfully, you can track it in your profile in the 'Active Hikes' section",
+				msg: "Hike started successfully, you can track it in your profile in the 'Registered Hikes' section",
 				type: "success",
 			});
 			return;

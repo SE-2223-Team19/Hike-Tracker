@@ -1,7 +1,7 @@
 const ObjectId = require("mongoose").Types.ObjectId;
 const Hike = require("../models/hike-model");
 const RegisteredHike = require("../models/registered-hike-model");
-const { HikeStatus } = require("../models/enums");
+const { RegisteredHikeStatus } = require("../models/enums");
 
 /**
  * Start a new hike, inserting the new registered hike in the database
@@ -22,7 +22,7 @@ async function insert(userId, hikeId) {
 	const registeredHike = await RegisteredHike.create({
 		hike: ObjectId(hikeId),
 		user: ObjectId(userId),
-		status: HikeStatus.ACTIVE,
+		status: RegisteredHikeStatus.ACTIVE,
 		startTime: new Date(), // Can be omitted, because there's the createdAt field by default
 	});
 	return registeredHike;
@@ -37,8 +37,8 @@ async function completeRegisteredHike(id) {
 	const registeredHike = await RegisteredHike.findById(id);
 	if (registeredHike === null)
 		return null;
-	if (registeredHike.status === HikeStatus.ACTIVE) {
-		registeredHike.status = HikeStatus.COMPLETED;
+	if (registeredHike.status === RegisteredHikeStatus.ACTIVE) {
+		registeredHike.status = RegisteredHikeStatus.COMPLETED;
 		registeredHike.endTime = new Date();
 	}
 	return await registeredHike.save();
@@ -53,8 +53,8 @@ async function cancelRegisteredHike(id) {
 	const registeredHike = await RegisteredHike.findById(id);
 	if (registeredHike === null)
 		return null;
-	if (registeredHike.status === HikeStatus.ACTIVE) {
-		registeredHike.status = HikeStatus.CANCELLED;
+	if (registeredHike.status === RegisteredHikeStatus.ACTIVE) {
+		registeredHike.status = RegisteredHikeStatus.CANCELLED;
 		registeredHike.endTime = new Date();
 	}
 	return await registeredHike.save();
@@ -68,7 +68,7 @@ async function cancelRegisteredHike(id) {
 async function userHasActiveRecordedHikes(userId) {
 	const registeredHikes = await RegisteredHike.count({
 		user: new ObjectId(userId),
-		status: HikeStatus.ACTIVE
+		status: RegisteredHikeStatus.ACTIVE
 	});
 	return registeredHikes > 0;
 }
@@ -83,7 +83,7 @@ async function addBuddyToRegisteredHike(id, buddyId) {
 	const registeredHike = await RegisteredHike.findById(id);
 	if (registeredHike === null)
 		return null;
-	if (registeredHike.status !== HikeStatus.ACTIVE) {
+	if (registeredHike.status !== RegisteredHikeStatus.ACTIVE) {
 		throw new Error("Can't add buddy to a closed hike");
 	}
 	if (registeredHike.user.toString() === buddyId) {

@@ -8,11 +8,13 @@ async function sendRegisteredHikeTerminatedEmail(registeredHike) {
                         .then(b => b.email)
         )
     );
-    sendEmail({
-        to: buddieEmails,
-        subject: `[${registeredHike.hike.title}] Registered hike terminated`,
-        html: `<p>The hike <b>${registeredHike.hike.title}<b> you were following was terminated by the user <b>${registeredHike.user.fullName}</b> at <b>${registeredHike.endTime.toString()}</b></p>`
-    })
+    if (buddieEmails.length > 0) {
+        sendEmail({
+            to: buddieEmails,
+            subject: `[${registeredHike.hike.title}] Registered hike terminated`,
+            html: `<p>The hike <b>${registeredHike.hike.title}<b> you were following was terminated by the user <b>${registeredHike.user.fullName}</b> at <b>${registeredHike.endTime.toString()}</b></p>`
+        });
+    }
 }
 
 module.exports = {

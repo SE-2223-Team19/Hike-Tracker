@@ -1,6 +1,6 @@
 import { React, useContext } from "react";
 import { Alert } from "react-bootstrap";
-import { Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import Header from "../components/Header";
 import DefineReferencepage from "./DefineReference";
 import DescribeHike from "./DescribeHike";
@@ -13,7 +13,7 @@ import Profile from "./Profile";
 import { AuthContext } from "../context/AuthContext";
 import HikeDetail from "./HikeDetail";
 import HikerPreferences from "./profiles/HikerPreferences";
-import HikerActiveHikes from "./profiles/HikerActiveHikes";
+import HikerRegisteredHikes from "./profiles/HikerRegisteredHikes";
 
 const Home = () => {
 	const { message, setMessage } = useContext(AuthContext);
@@ -31,8 +31,8 @@ const Home = () => {
 					<Route path="/" element={<Hikes />} />
 					<Route path="profile" element={<Profile />}>
 						<Route path="preferences" element={<HikerPreferences />} />
-						<Route path="active-hikes" element={<HikerActiveHikes />} />
-						<Route path="completed-hikes" element={<div>Completed hikes</div>} />
+						<Route path="registered-hikes" element={<HikerRegisteredHikes />} />
+						<Route index element={<Navigate to="/profile/preferences" />} />
 					</Route>
 					<Route path="/describe-hike" element={<DescribeHike />} />
 					<Route path="/hike" element={<HikeDetail />} />

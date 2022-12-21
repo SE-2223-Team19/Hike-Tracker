@@ -1,12 +1,12 @@
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
-const { HikeStatus } = require("./enums");
+const { RegisteredHikeStatus } = require("./enums");
 
 // Registered Hike Schema
 const registeredHikeSchema = new Schema(
 	{
 		hike: { type: Schema.Types.ObjectId, ref: "Hike", required: true },
-		status: { type: String, enum: Object.values(HikeStatus) },
+		status: { type: String, enum: Object.values(RegisteredHikeStatus) },
 		user: { type: Schema.Types.ObjectId, ref: "User", required: true },
 		buddyUsers: [{ type: Schema.Types.ObjectId, ref: "User", required: false }],
 		recordedPoints: [[Number]], // Must be a reference point of the hike (validation server side should checks this)

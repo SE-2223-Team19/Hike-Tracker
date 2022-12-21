@@ -28,9 +28,16 @@ const HikeCondition = {
 	Close_maintenance: "close_maintenance"
 }
 
+const RegisteredHikeStatus = {
+	ACTIVE: "active",
+	COMPLETED: "completed",
+	CANCELLED: "cancelled",
+};
+
 module.exports = {
 	Difficulty,
 	LocationType,
 	UserType,
 	HikeCondition,
+	RegisteredHikeStatus,
 };

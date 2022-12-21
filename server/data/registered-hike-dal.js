@@ -67,7 +67,8 @@ async function cancelRegisteredHike(id) {
  */
 async function userHasActiveRecordedHikes(userId) {
 	const registeredHikes = await RegisteredHike.count({
-		user: new ObjectId(userId)
+		user: new ObjectId(userId),
+		status: HikeStatus.ACTIVE
 	});
 	return registeredHikes > 0;
 }

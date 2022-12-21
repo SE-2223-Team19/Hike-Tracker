@@ -11,7 +11,7 @@ async function sendRegisteredHikeTerminatedEmail(registeredHike) {
     sendEmail({
         to: buddieEmails,
         subject: `[${registeredHike.hike.title}] Registered hike terminated`,
-        html: `<p>The hike '${registeredHike.hike.title}' you were following was terminated by the user ${registeredHike.user.fullName} at ${registeredHike.endTime.toString()}`
+        html: `<p>The hike <b>${registeredHike.hike.title}<b> you were following was terminated by the user <b>${registeredHike.user.fullName}</b> at <b>${registeredHike.endTime.toString()}</b></p>`
     })
 }
 

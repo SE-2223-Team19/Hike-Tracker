@@ -3,7 +3,7 @@
 <html lang="en">
 
 <head>
-    <title>Code coverage report for models/user-model.js</title>
+    <title>Code coverage report for models/registered-hike-model.js</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../prettify.css" />
     <link rel="stylesheet" href="../base.css" />
@@ -19,7 +19,7 @@
 <body>
 <div class='wrapper'>
     <div class='pad1'>
-        <h1><a href="../index.html">All files</a> / <a href="index.html">models</a> user-model.js</h1>
+        <h1><a href="../index.html">All files</a> / <a href="index.html">models</a> registered-hike-model.js</h1>
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
@@ -85,14 +85,12 @@
 <a name='L20'></a><a href='#L20'>20</a>
 <a name='L21'></a><a href='#L21'>21</a>
 <a name='L22'></a><a href='#L22'>22</a>
-<a name='L23'></a><a href='#L23'>23</a>
-<a name='L24'></a><a href='#L24'>24</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
+<a name='L23'></a><a href='#L23'>23</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -106,32 +104,31 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">const mongoose = require("mongoose");
 const { Schema } = mongoose;
-const { UserType } = require("./enums");
+const { HikeStatus } = require("./enums");
 &nbsp;
-// User Schema
-const userSchema = new Schema({
-	email: { type: String, required: true, unique: true },
-	fullName: String,
-	userType: { type: String, enum: Object.values(UserType) },
-	// Password fields
-	salt: String,
-	hash: String,
-	// verification fields:
-	uniqueString: { type: String, unique: true },
-	isEmailValidated: Boolean,
-	isValid: Boolean,
-	preferences: { minLength: Number, maxLength: Number, minAscent: Number, maxAscent: Number, minExpectedTime: Number, maxExpectedTime: Number, difficulty: String, locationCoordinatesLat: Number, locationCoordinatesLng: Number, locationRadius: Number }
-});
+// Registered Hike Schema
+const registeredHikeSchema = new Schema(
+	{
+		hike: { type: Schema.Types.ObjectId, ref: "Hike", required: true },
+		status: { type: String, enum: Object.values(HikeStatus) },
+		user: { type: Schema.Types.ObjectId, ref: "User", required: true },
+		buddyUsers: [{ type: Schema.Types.ObjectId, ref: "User", required: false }],
+		recordedPoints: [[Number]], // Must be a reference point of the hike (validation server side should checks this)
+		startTime: { type: Date, required: true },
+		endTime: { type: Date, required: false }, // If the hike is not completed, this field is null
+	},
+	{ timestamps: true }
+);
 &nbsp;
-// User Model
-const User = mongoose.model("User", userSchema);
+// Registered Hike Model
+const RegisteredHike = mongoose.model("RegisteredHike", registeredHikeSchema);
 &nbsp;
-module.exports = User;
+module.exports = RegisteredHike;
 &nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->

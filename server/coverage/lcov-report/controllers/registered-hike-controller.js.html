@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">67.85% </span>
+                <span class="strong">76% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>19/28</span>
+                <span class='fraction'>19/25</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">50% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>1/2</span>
+                <span class='fraction'>4/4</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">80% </span>
+                <span class="strong">75% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>4/5</span>
+                <span class='fraction'>3/4</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">65.38% </span>
+                <span class="strong">75% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>17/26</span>
+                <span class='fraction'>18/24</span>
             </div>
         
             
@@ -116,9 +116,7 @@
 <a name='L51'></a><a href='#L51'>51</a>
 <a name='L52'></a><a href='#L52'>52</a>
 <a name='L53'></a><a href='#L53'>53</a>
-<a name='L54'></a><a href='#L54'>54</a>
-<a name='L55'></a><a href='#L55'>55</a>
-<a name='L56'></a><a href='#L56'>56</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L54'></a><a href='#L54'>54</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -135,23 +133,21 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -193,20 +189,18 @@ async function endHike(req, res) {
 	const { id } = req.params; // Hike id
 	try {
 		const hikesForUser = await registeredHikeDAL.getRegisteredHikeByUserId(req.user._id);
-		console.log(hikesForUser);
-		console.log(!hikesForUser.some((h) =&gt; h._id.toString() === id)); //
-		<span class="missing-if-branch" title="else path not taken" >E</span>if (!hikesForUser.some((h) =&gt; h._id.toString() === id)) {
+		if (hikesForUser.length === 0 || !hikesForUser.some((h) =&gt; h._id.toString() === id)) {
 			return res
-				.status(StatusCodes.UNAUTHORIZED)
-				.json(new Error("Can't end another user's recorded hike"));
+				.status(StatusCodes.NOT_FOUND)
+				.json(new Error("Can't find the recorded hike"));
 		}
-		const registeredHike = <span class="cstat-no" title="statement not covered" >await registeredHikeDAL.completeRegisteredHike(id);</span>
+		const registeredHike = await registeredHikeDAL.completeRegisteredHike(id);
 		// Inform buddies
-<span class="cstat-no" title="statement not covered" >		await sendRegisteredHikeTerminatedEmail(</span>
+		await sendRegisteredHikeTerminatedEmail(
 			await (await registeredHike.populate("hike")).populate("user")
 		);
 &nbsp;
-<span class="cstat-no" title="statement not covered" >		return res.status(StatusCodes.OK).json(registeredHike);</span>
+		return res.status(StatusCodes.OK).json(registeredHike);
 	} catch (err) {
 <span class="cstat-no" title="statement not covered" >		return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(err);</span>
 	}
@@ -235,7 +229,7 @@ module.exports = {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2022-12-21T15:47:40.951Z
+                at 2022-12-22T10:55:24.024Z
             </div>
         <script src="../prettify.js"></script>
         <script>

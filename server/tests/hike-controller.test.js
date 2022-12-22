@@ -631,7 +631,6 @@ describe("update Hike", () => {
 				responseHikeUpdate.responseBody.trackPoints[
 					responseHikeUpdate.responseBody.trackPoints.length - (1 + i)
 				];
-			console.log("TP", i, trackPoint);
 			expect(newTrackPoints[i]).toStrictEqual(trackPoint);
 		}
 

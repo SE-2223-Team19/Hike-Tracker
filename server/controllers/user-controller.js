@@ -169,7 +169,6 @@ async function verifyUser(req, res) {
 				.json({ message: "Your email address hasn't been verified.", verified: false });
 		}
 	} catch (err) {
-		console.log(err);
 		return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ err: err });
 	}
 }

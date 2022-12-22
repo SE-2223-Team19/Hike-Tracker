@@ -18,7 +18,7 @@ async function endHike(req, res) {
 	const { id } = req.params; // Hike id
 	try {
 		const hikesForUser = await registeredHikeDAL.getRegisteredHikeByUserId(req.user._id);
-		if (hikesForUser.length === 0 || !hikesForUser.some((h) => h._id.toString() === id)) {
+		if (hikesForUser.length === 0 || !hikesForUser.some((h) => h._id.equals(id))) {
 			return res
 				.status(StatusCodes.NOT_FOUND)
 				.json(new Error("Can't find the recorded hike"));

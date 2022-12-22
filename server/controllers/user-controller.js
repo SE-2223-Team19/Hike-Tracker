@@ -126,7 +126,7 @@ async function createUser(req, res) {
 		await sendVerificationEmail(value.email, uniqueString);
 		return res
 			.status(StatusCodes.CREATED)
-			.json({ _id: createdUser._id, uniqueString: uniqueString });
+			.json({ _id: createdUser._id });
 	} catch (err) {
 		if (err.name === "MongoServerError" && err.code === 11000) {
 			return res

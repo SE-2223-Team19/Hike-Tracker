@@ -8,9 +8,11 @@ const { StatusCodes } = require("http-status-codes");
 dotenv.config();
 setupDB("registered-hike-test");
 
+jest.mock("nodemailer");
+
 describe("Registered Hike", () => {
 
-	jest.setTimeout(10000);
+	const nodemailer = require("nodemailer");
 
 	test("Start a new hike", async () => {
 		// Create local guide
@@ -23,19 +25,7 @@ describe("Registered Hike", () => {
 		const hikerResponse = await createHiker();
 
 		// Start hike
-		const startHikeResponse = new ResponseHelper();
-		await registeredHikeController.startHike(
-			{
-				params: { id: hikeResponse.responseBody._id },
-				user: {
-					_id: hikerResponse.responseBody._id,
-					userType: UserType.HIKER,
-					email: hikeResponse.responseBody.email,
-					fullName: hikeResponse.responseBody.fullName,
-				},
-			},
-			startHikeResponse
-		);
+		const startHikeResponse = await startHike(hikerResponse, hikeResponse);
 
 		// Check if the response is correct
 		expect(startHikeResponse.statusCode).toBe(StatusCodes.CREATED);
@@ -53,37 +43,13 @@ describe("Registered Hike", () => {
 		const hikerResponse = await createHiker();
 
 		// Start hike
-		const startHikeResponse = new ResponseHelper();
-		await registeredHikeController.startHike(
-			{
-				params: { id: hikeResponse.responseBody._id },
-				user: {
-					_id: hikerResponse.responseBody._id,
-					userType: UserType.HIKER,
-					email: hikeResponse.responseBody.email,
-					fullName: hikeResponse.responseBody.fullName,
-				},
-			},
-			startHikeResponse
-		);
+		const startHikeResponse = await startHike(hikerResponse, hikeResponse);
 
 		// Check if the response is correct
 		expect(startHikeResponse.statusCode).toBe(StatusCodes.CREATED);
 
 		// Start hike
-		const startHikeResponse2 = new ResponseHelper();
-		await registeredHikeController.startHike(
-			{
-				params: { id: hikeResponse2.responseBody._id },
-				user: {
-					_id: hikerResponse.responseBody._id,
-					userType: UserType.HIKER,
-					email: hikerResponse.responseBody.email,
-					fullName: hikerResponse.responseBody.fullName,
-				},
-			},
-			startHikeResponse2
-		);
+		const startHikeResponse2 = await startHike(hikerResponse, hikeResponse);
 
 		// Check if the response is correct
 		expect(startHikeResponse2.statusCode).toBe(StatusCodes.INTERNAL_SERVER_ERROR);
@@ -93,20 +59,14 @@ describe("Registered Hike", () => {
 		// Create hiker
 		const hikerResponse = await createHiker();
 
+		// Simulating create hike response
+		const hikeResponse = new ResponseHelper();
+		hikeResponse.json({
+			_id: "5f9f1b9b9b9b9b9b9b9b9b9b"
+		});
+
 		// Start hike
-		const startHikeResponse = new ResponseHelper();
-		await registeredHikeController.startHike(
-			{
-				params: { id: "5f9f1b9b9b9b9b9b9b9b9b9b" },
-				user: {
-					_id: hikerResponse.responseBody._id,
-					userType: UserType.HIKER,
-					email: hikerResponse.responseBody.email,
-					fullName: hikerResponse.responseBody.fullName,
-				},
-			},
-			startHikeResponse
-		);
+		const startHikeResponse = await startHike(hikerResponse, hikeResponse);
 
 		// Check if the response is correct
 		expect(startHikeResponse.statusCode).toBe(StatusCodes.INTERNAL_SERVER_ERROR);
@@ -125,18 +85,8 @@ describe("Registered Hike", () => {
 		// Start hike
 		const startHikeResponse = await startHike(hikerResponse, hikeResponse);
 		expect(startHikeResponse.statusCode).toBe(StatusCodes.CREATED);
-
 		// End hike
-		const endHikeResponse = new ResponseHelper();
-		await registeredHikeController.endHike(
-			{
-				params: { id: startHikeResponse.responseBody._id.toString() },
-				user: {
-					_id: hikerResponse.responseBody._id,
-				},
-			},
-			endHikeResponse
-		);
+		const endHikeResponse = await endHike(hikerResponse, startHikeResponse);
 
 		// Check if the response is correct
 		expect(endHikeResponse.statusCode).toBe(StatusCodes.OK);
@@ -146,19 +96,39 @@ describe("Registered Hike", () => {
 		// Create hiker
 		const hikerResponse = await createHiker();
 
+		// Simulating create hike response
+		const startHikeResponse = new ResponseHelper();
+		startHikeResponse.json({
+			_id: "5f9f1b9b9b9b9b9b9b9b9b9b"
+		});
+
 		// End hike
-		const endHikeResponse = new ResponseHelper();
-		await registeredHikeController.endHike(
-			{
-				params: { id: "5f9f1b9b9b9b9b9b9b9b9b9b" },
-				user: {
-					_id: hikerResponse.responseBody._id,
-				},
-			},
-			endHikeResponse
-		);
+		const endHikeResponse = await endHike(hikerResponse, startHikeResponse)
 
 		// Check if the response is correct
 		expect(endHikeResponse.statusCode).toBe(StatusCodes.NOT_FOUND);
+	});
+	
+	test("Buddies notified at end of hike", async () => {
+		// Create local guide
+		const localguideReponse = await createLocalGuide();
+
+		// Create hike
+		const hikeResponse = await createHike(localguideReponse);
+
+		// Create hiker
+		const hikerResponse = await createHiker();
+
+		// Start hike
+		const startHikeResponse = await startHike(hikerResponse, hikeResponse);
+		expect(startHikeResponse.statusCode).toBe(StatusCodes.CREATED);
+
+		// Add buddies
+
+		// End hike
+		const endHikeResponse = await endHike(hikerResponse, startHikeResponse);
+
+		// Check if the response is correct
+		expect(endHikeResponse.statusCode).toBe(StatusCodes.OK);
 	});
 });

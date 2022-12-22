@@ -82,8 +82,6 @@ const startHike = async (responseUserCreation, responseHikeCreation) => {
 			user: {
 				_id: responseUserCreation.responseBody._id,
 				userType: UserType.HIKER,
-				email: responseUserCreation.responseBody.email,
-				fullName: responseUserCreation.responseBody.fullName,
 			},
 		},
 		startHikeResponse
@@ -100,8 +98,6 @@ const endHike = async (responseUserCreation, responseStartHikeCreation) => {
 			user: {
 				_id: responseUserCreation.responseBody._id,
 				userType: UserType.HIKER,
-				email: responseUserCreation.responseBody.email,
-				fullName: responseUserCreation.responseBody.fullName,
 			},
 		},
 		endHikeResponse

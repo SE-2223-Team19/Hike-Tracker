@@ -40,7 +40,7 @@ async function getRegisteredHikes(req, res) {
 
 	try {
 		const registeredHikes = await registeredHikeDAL.getRegisteredHikeByUserId(userId);
-		return res.status(StatusCodes.OK).send(registeredHikes);
+		return res.status(StatusCodes.OK).json(registeredHikes);
 	} catch (err) {
 		return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(err);
 	}

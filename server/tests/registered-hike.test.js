@@ -1,5 +1,6 @@
 const { setupDB, ResponseHelper } = require("./setup");
 const dotenv = require("dotenv");
+const registerHikeController = require("../controllers/registered-hike-controller");
 const registeredHikeDAL = require("../data/registered-hike-dal");
 const { createLocalGuide, createHiker, createHike, startHike, endHike } = require("./sample-data");
 const { StatusCodes } = require("http-status-codes");
@@ -10,12 +11,55 @@ setupDB("registered-hike-test");
 jest.mock("nodemailer");
 
 const nodemailer = require("nodemailer");
+const { UserType } = require("../models/enums");
 
 beforeEach(() => {
 	nodemailer.clearAllInboxes();
 });
 
 describe("Registered Hike", () => {
+
+	test("Get registered hike", async () => {
+		// Create local guide
+		const localguideReponse = await createLocalGuide();
+
+		// Create hike
+		const hikeResponse = await createHike(localguideReponse);
+
+		// Create hiker
+		const hikerResponse = await createHiker();
+
+		// Start hike
+		const startHikeResponse = await startHike(hikerResponse, hikeResponse);
+
+		// Check if the response is correct
+		expect(startHikeResponse.statusCode).toBe(StatusCodes.CREATED);
+
+		const getRegisteredHikesResponse = await registerHikeController.getRegisteredHikes({
+			params: {
+				userId: hikerResponse.responseBody._id
+			},
+			user: {
+				_id: hikerResponse.responseBody._id,
+				userType: UserType.HIKER
+			}
+		}, new ResponseHelper());
+		expect(getRegisteredHikesResponse.statusCode).toBe(StatusCodes.OK);
+		expect(getRegisteredHikesResponse.responseBody.length).toBe(1);
+	});
+
+	test("Get registered hike for unknown userId format", async () => {
+		const getRegisteredHikesResponse = await registerHikeController.getRegisteredHikes({
+			params: {
+				userId: "fakeUserId"
+			},
+			user: {
+				_id: "5f9f1b9b9b9b9b9b9b9b9b9b",
+				userType: UserType.HIKER
+			}
+		}, new ResponseHelper());
+		expect(getRegisteredHikesResponse.statusCode).toBe(StatusCodes.INTERNAL_SERVER_ERROR);
+	});
 
 	test("Start a new hike", async () => {
 		// Create local guide
@@ -143,5 +187,20 @@ describe("Registered Hike", () => {
 
 		// Check if the response is correct
 		expect(endHikeResponse.statusCode).toBe(StatusCodes.OK);
+	});
+
+	test("End registered hike for unknown userId format", async () => {
+
+		const hikerResponse = new ResponseHelper();
+		hikerResponse.json({
+			_id: "fakeUserId"
+		});
+
+		const startHikeResponse = new ResponseHelper();
+		startHikeResponse.json({
+			_id: "fakeRegisteredHikeId"
+		});
+		const endHikeResponse = await endHike(hikerResponse, startHikeResponse);
+		expect(endHikeResponse.statusCode).toBe(StatusCodes.INTERNAL_SERVER_ERROR);
 	});
 });

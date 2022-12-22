@@ -1,7 +1,6 @@
-const { UserType } = require("../models/enums");
 const { setupDB, ResponseHelper } = require("./setup");
 const dotenv = require("dotenv");
-const registeredHikeController = require("../controllers/registered-hike-controller");
+const registeredHikeDAL = require("../data/registered-hike-dal");
 const { createLocalGuide, createHiker, createHike, startHike, endHike } = require("./sample-data");
 const { StatusCodes } = require("http-status-codes");
 
@@ -10,9 +9,13 @@ setupDB("registered-hike-test");
 
 jest.mock("nodemailer");
 
-describe("Registered Hike", () => {
+const nodemailer = require("nodemailer");
 
-	const nodemailer = require("nodemailer");
+beforeEach(() => {
+	nodemailer.clearAllInboxes();
+});
+
+describe("Registered Hike", () => {
 
 	test("Start a new hike", async () => {
 		// Create local guide
@@ -49,7 +52,7 @@ describe("Registered Hike", () => {
 		expect(startHikeResponse.statusCode).toBe(StatusCodes.CREATED);
 
 		// Start hike
-		const startHikeResponse2 = await startHike(hikerResponse, hikeResponse);
+		const startHikeResponse2 = await startHike(hikerResponse, hikeResponse2);
 
 		// Check if the response is correct
 		expect(startHikeResponse2.statusCode).toBe(StatusCodes.INTERNAL_SERVER_ERROR);
@@ -85,6 +88,7 @@ describe("Registered Hike", () => {
 		// Start hike
 		const startHikeResponse = await startHike(hikerResponse, hikeResponse);
 		expect(startHikeResponse.statusCode).toBe(StatusCodes.CREATED);
+
 		// End hike
 		const endHikeResponse = await endHike(hikerResponse, startHikeResponse);
 
@@ -113,6 +117,9 @@ describe("Registered Hike", () => {
 		// Create local guide
 		const localguideReponse = await createLocalGuide();
 
+		let localguideEmails = nodemailer.getInboxFor("localguide@test.com");
+		expect(localguideEmails.length).toBe(1);
+
 		// Create hike
 		const hikeResponse = await createHike(localguideReponse);
 
@@ -124,9 +131,15 @@ describe("Registered Hike", () => {
 		expect(startHikeResponse.statusCode).toBe(StatusCodes.CREATED);
 
 		// Add buddies
+		const registeredHike = await registeredHikeDAL.addBuddyToRegisteredHike(startHikeResponse.responseBody._id, localguideReponse.responseBody._id);
 
 		// End hike
 		const endHikeResponse = await endHike(hikerResponse, startHikeResponse);
+
+		localguideEmails = nodemailer.getInboxFor("localguide@test.com");
+		expect(localguideEmails.length).toBe(2);
+		const lastEmail = localguideEmails[1];
+		expect(lastEmail.subject).toBe(`[${hikeResponse.responseBody.title}] Registered hike terminated`);
 
 		// Check if the response is correct
 		expect(endHikeResponse.statusCode).toBe(StatusCodes.OK);

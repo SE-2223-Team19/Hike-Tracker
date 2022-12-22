@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">53.65% </span>
+                <span class="strong">70.73% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>22/41</span>
+                <span class='fraction'>29/41</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">30% </span>
+                <span class="strong">50% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>6/20</span>
+                <span class='fraction'>10/20</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">57.14% </span>
+                <span class="strong">71.42% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>4/7</span>
+                <span class='fraction'>5/7</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">55% </span>
+                <span class="strong">72.5% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>22/40</span>
+                <span class='fraction'>29/40</span>
             </div>
         
             
@@ -261,20 +261,20 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -376,21 +376,21 @@ async function userHasActiveRecordedHikes(userId) {
  * @param {string} buddyId Id of the buddy user to add
  * @returns The saved hike
  */
-async function <span class="fstat-no" title="function not covered" >addBuddyToRegisteredHike(</span>id, buddyId) {
-	const registeredHike = <span class="cstat-no" title="statement not covered" >await RegisteredHike.findById(id);</span>
-<span class="cstat-no" title="statement not covered" >	if (registeredHike === null)</span>
+async function addBuddyToRegisteredHike(id, buddyId) {
+	const registeredHike = await RegisteredHike.findById(id);
+	<span class="missing-if-branch" title="if path not taken" >I</span>if (registeredHike === null)
 <span class="cstat-no" title="statement not covered" >		return null;</span>
-<span class="cstat-no" title="statement not covered" >	if (registeredHike.status !== RegisteredHikeStatus.ACTIVE) {</span>
+	<span class="missing-if-branch" title="if path not taken" >I</span>if (registeredHike.status !== RegisteredHikeStatus.ACTIVE) {
 <span class="cstat-no" title="statement not covered" >		throw new Error("Can't add buddy to a closed hike");</span>
 	}
-<span class="cstat-no" title="statement not covered" >	if (registeredHike.user.toString() === buddyId) {</span>
+	<span class="missing-if-branch" title="if path not taken" >I</span>if (registeredHike.user.toString() === buddyId) {
 <span class="cstat-no" title="statement not covered" >		throw new Error("The creator of the hike can't add itself as a buddy");</span>
 	}
 &nbsp;
-<span class="cstat-no" title="statement not covered" >	if (!registeredHike.buddyUsers.some(<span class="fstat-no" title="function not covered" >b </span>=&gt; <span class="cstat-no" title="statement not covered" >b.toString() === buddyId)</span>) {</span>
-<span class="cstat-no" title="statement not covered" >		registeredHike.buddyUsers.push(new ObjectId(buddyId));</span>
+	<span class="missing-if-branch" title="else path not taken" >E</span>if (!registeredHike.buddyUsers.some(<span class="fstat-no" title="function not covered" >b </span>=&gt; <span class="cstat-no" title="statement not covered" >b.toString() === buddyId)</span>) {
+		registeredHike.buddyUsers.push(new ObjectId(buddyId));
 	}
-<span class="cstat-no" title="statement not covered" >	return await registeredHike.save();</span>
+	return await registeredHike.save();
 }
 &nbsp;
 /**
@@ -418,7 +418,7 @@ module.exports = {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2022-12-22T14:10:38.655Z
+                at 2022-12-22T14:21:45.801Z
             </div>
         <script src="../prettify.js"></script>
         <script>

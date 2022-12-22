@@ -22,7 +22,7 @@ const HikeFilters = ({ filters, setFilters, openModal }) => {
 			<Row className="mt-4">
 				<Col xs={12} md={4}>
 					<Form.Group>
-						<Form.Label>Length (Km)</Form.Label>
+						<Form.Label>Length (m)</Form.Label>
 						<Stack direction="horizontal" gap={2}>
 							<Form.Control
 								data-test-id="min-length"

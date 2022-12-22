@@ -1,5 +1,6 @@
 const { LocationType } = require("../models/enums");
 const Hut = require("../models/hut-model");
+const Image = require("../models/image-model");
 const Location = require("../models/location-model");
 const ParkingLot = require("../models/parking-lot-model");
 
@@ -29,6 +30,14 @@ async function getLocations(page, pageSize, filterQuery = {}) {
 	if (paginationActive) {
 		p = [
 			...p,
+			{
+				$lookup: {
+					from: Image.collection.name,
+					localField: "thumbnail",
+					foreignField: "_id",
+					as: "thumbnail",
+				},
+			},
 			{
 				$facet: {
 					data: [
@@ -85,7 +94,11 @@ async function getLocationById(id) {
 async function createLocation(location) {
 	let newLocation = null;
 	if (location.locationType === LocationType.HUT) {
-		location.peopleWork = []
+		location.peopleWork = [];
+		if (location.thumbnail) {
+			const thumbnail = await Image.create({ data: location.thumbnail });
+			location.thumbnail = thumbnail._id;
+		}
 		newLocation = new Hut(location);
 	} else if (location.locationType === LocationType.PARKING_LOT) {
 		newLocation = new ParkingLot(location);

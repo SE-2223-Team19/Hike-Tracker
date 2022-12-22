@@ -2,10 +2,9 @@ import React from "react";
 import { Row, Col, Button } from "react-bootstrap";
 import { CgArrowLeft } from "react-icons/cg";
 import { useNavigate } from "react-router-dom";
-import DescribeHutForm from "../components/DescribeHutForm";
+import DescribeHutForm from "../components/Hut/DescribeHutForm";
 
 function DescribeHut() {
-
 	const navigate = useNavigate();
 
 	return (
@@ -18,9 +17,9 @@ function DescribeHut() {
 					</Button>
 				</Col>
 			</Row>
-			<Row>
+			<Row className="mt-4">
 				<Col>
-					<h1 className="mb-5">Describe Hut</h1>
+					<h1 className="mb-3">Describe Hut</h1>
 				</Col>
 			</Row>
 			<Row>

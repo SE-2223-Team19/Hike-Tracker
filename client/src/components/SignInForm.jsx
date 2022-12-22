@@ -5,7 +5,7 @@ import { UserType } from "../helper/enums";
 import { capitalizeAndReplaceUnderscores } from "../helper/utils";
 import { createUser } from "../api/users";
 import { getHuts } from "../api/locations";
-import HutSelection from "./HutSelection";
+import HutSelection from "./Hut/HutSelection";
 
 function SignInForm() {
 	const [email, setEmail] = useState("");

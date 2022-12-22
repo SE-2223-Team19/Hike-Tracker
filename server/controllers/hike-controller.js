@@ -111,7 +111,6 @@ async function getHikeById(req, res) {
  * @returns {Promise<Response>}
  */
 async function createHike(req, res) {
-	
 	try {
 		// Validate request body
 		const { body } = req;
@@ -127,6 +126,7 @@ async function createHike(req, res) {
 				.required()
 				.valid(...Object.values(Difficulty)),
 			description: joi.string().required(),
+			thumbnail: joi.string().allow(null),
 			startPoint: joi.string().allow(null),
 			endPoint: joi.string().allow(null),
 			linkedHuts: joi.array().items(joi.string()),
@@ -170,6 +170,7 @@ async function updateHike(req, res) {
 			expectedTime: joi.number(),
 			difficulty: joi.string().valid(...Object.values(Difficulty)),
 			description: joi.string(),
+			thumbnail: joi.string().allow(null),
 			startPoint: joi.string().allow(null),
 			endPoint: joi.string().allow(null),
 			linkedHuts: joi.array().items(joi.string()),
@@ -179,7 +180,6 @@ async function updateHike(req, res) {
 
 		// Validate request body against schema
 		const { error, value } = schema.validate(body);
-		
 
 		if (error) throw error; // Joi validation error, goes to catch block
 

@@ -79,10 +79,10 @@ const RegisteredHikeCard = ({ registeredHike, setDirty }) => {
 							<BiPlay size={24} />
 							<span className="ms-1">{new Date(registeredHike.startTime).toUTCString()}</span>
 						</div>
-						<div className="d-flex flex-row">
+						{registeredHike.status == RegisteredHikeStatus.COMPLETED && <div className="d-flex flex-row">
 							<BiStop size={24} />
-							<span className="ms-1">{(registeredHike.endTime && new Date(registeredHike.endTime).toUTCString()) || "?"}</span>
-						</div>
+							<span className="ms-1">{new Date(registeredHike.endTime).toUTCString()}</span>
+						</div>}
 					</Stack>
 				</Stack>
 			</Card.Body>

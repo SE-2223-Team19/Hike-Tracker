@@ -4,7 +4,7 @@ import { getRegisteredHikesForUser } from "../../api/hikes";
 import Loading from "../../components/Loading";
 import { useNavigate } from "react-router-dom";
 import RegisteredHikeCard from "../../components/Hike/RegisteredHikeCard";
-import { UserType } from "../../helper/enums";
+import { RegisteredHikeStatus, UserType } from "../../helper/enums";
 
 const HikerRegisteredHikes = () => {
 	const { user } = useContext(AuthContext);
@@ -19,8 +19,8 @@ const HikerRegisteredHikes = () => {
 		const fetchActiveHikes = async () => {
 			const response = await getRegisteredHikesForUser(user._id);
 			if (response) {
-				const AH = response.filter(h => h.status === "active");
-				const CH = response.filter(h => h.status === "completed");
+				const AH = response.filter(h => h.status === RegisteredHikeStatus.ACTIVE);
+				const CH = response.filter(h => h.status === RegisteredHikeStatus.COMPLETED);
 				setActiveHikes(AH);
 				setCompletedHikes(CH);
 				setLoading(false);

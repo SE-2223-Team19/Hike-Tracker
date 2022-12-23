@@ -24,10 +24,8 @@ const HikerRegisteredHikes = () => {
 				setActiveHikes(AH);
 				setCompletedHikes(CH);
 				setLoading(false);
-				return;
+				setDirty(false);
 			}
-			setLoading(false);
-			setDirty(false);
 		};
 
 		if (user && user.userType === UserType.HIKER) {

@@ -10,7 +10,8 @@ const HikerRegisteredHikes = () => {
 	const { user } = useContext(AuthContext);
 	const navigate = useNavigate();
 
-	const [registeredHikes, setRegisteredHikes] = useState([]);
+	const [ActiveHikes, setActiveHikes] = useState([]);
+	const [CompletedHikes, setCompletedHikes] = useState([]);
 	const [loading, setLoading] = useState(true);
 	const [dirty, setDirty] = useState(true);
 
@@ -18,7 +19,10 @@ const HikerRegisteredHikes = () => {
 		const fetchActiveHikes = async () => {
 			const response = await getRegisteredHikesForUser(user._id);
 			if (response) {
-				setRegisteredHikes(response);
+				const AH = response.filter(h => h.status === "active");
+				const CH = response.filter(h => h.status === "completed");
+				setActiveHikes(AH);
+				setCompletedHikes(CH);
 				setLoading(false);
 				return;
 			}
@@ -41,10 +45,16 @@ const HikerRegisteredHikes = () => {
 		<div>
 			<h2>Active Hikes</h2>
 			{loading && <Loading />}
-			{!loading && registeredHikes.length === 0 && <p>No active hikes</p>}
+			{!loading && ActiveHikes.length === 0 && <p>No active hikes</p>}
 			{!loading &&
-				registeredHikes.length > 0 &&
-				registeredHikes.map((hike) => <RegisteredHikeCard key={hike._id} registeredHike={hike} setDirty={setDirty} />)}
+				ActiveHikes.length > 0 &&
+				ActiveHikes.map((hike) => <RegisteredHikeCard key={hike._id} registeredHike={hike} setDirty={setDirty} />)}
+			<h2>Terminated Hikes: {CompletedHikes.length}</h2>
+			{loading && <Loading />}
+			{!loading && CompletedHikes.length === 0 && <p>No completed hikes</p>}
+			{!loading &&
+				CompletedHikes.length > 0 &&
+				CompletedHikes.map((hike) => <RegisteredHikeCard key={hike._id} registeredHike={hike} setDirty={setDirty} />)}
 		</div>
 	);
 };

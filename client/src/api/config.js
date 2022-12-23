@@ -6,13 +6,18 @@ const ENDPOINTS = {
 		byId: "hike/:id",
 		insert: "hike",
 		update: "hike/:id",
-		updateCondition: "hike/:id/condition"
+		updateCondition: "hike/:id/condition",
+	},
+	registeredHikes: {
+		start: "registered-hike/start/:id",
+		end: "registered-hike/end/:id",
+		byUser: "registered-hike/:userId",
 	},
 	locations: {
 		all: "location",
 		byId: "location/:id",
 		insert: "location",
-		update: "location/:id"
+		update: "location/:id",
 	},
 	sessions: {
 		insert: "session",
@@ -29,8 +34,8 @@ const ENDPOINTS = {
 
 /**
  * Adds the query parameters to the url
- * @param {URL} url 
- * @param {Object} query 
+ * @param {URL} url
+ * @param {Object} query
  */
 function addQueryParams(url, query) {
 	for (const [key, value] of Object.entries(query)) {

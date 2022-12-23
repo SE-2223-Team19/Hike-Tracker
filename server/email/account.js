@@ -13,13 +13,7 @@ async function sendVerificationEmail(email, uniqueString) {
         html: `<p>Thank you for registering with Hike Tracker. Please click the link below to verify your account.</p>
         <p><a href="http://localhost:3000/verify/${uniqueString}">Verify Account</a></p> <p>Thank you!</p>`
     };
-    return sendEmail(mailOptions)
-    .then(response => {
-        console.log("Message sent: " + response);
-    })
-    .catch(error => {
-        console.error(error);
-    });
+    return sendEmail(mailOptions);
 }
 
 /**
@@ -34,13 +28,7 @@ async function sendAccountBlockedEmail(email, blockedBy) {
         subject: "Hike Tracker Account Blocked",
         html: `<p>Your account has been blocked by ${blockedBy}</p>`
     };
-    return sendEmail(mailOptions)
-    .then(response => {
-        console.log("Message sent: " + response);
-    })
-    .catch(error => {
-        console.error(error);
-    });
+    return sendEmail(mailOptions);
 }
 
 /**
@@ -55,13 +43,7 @@ async function sendAccountValidatedEmail(email, activatedBy) {
         subject: "Hike Tracker Account Validated",
         html: `<p>Your account has been activated by ${activatedBy}</p>`
     };
-    return sendEmail(mailOptions)
-    .then(response => {
-        console.log("Message sent: " + response);
-    })
-    .catch(error => {
-        console.error(error);
-    });
+    return sendEmail(mailOptions);
 }
 
 module.exports = {

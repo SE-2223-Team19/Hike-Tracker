@@ -16,8 +16,7 @@ async function getHikes(filters = {}) {
 		const response = await fetch(url, {
 			credentials: "include",
 		});
-		if (response.ok)
-			return await response.json();
+		if (response.ok) return await response.json();
 		throw await response.json();
 	} catch (err) {
 		return { error: err };
@@ -34,8 +33,7 @@ async function getHikeById(id) {
 		const response = await fetch(new URL(ENDPOINTS.hikes.byId.replace(":id", id), BACKEND_URL), {
 			credentials: "include",
 		});
-		if (response.ok)
-			return await response.json();
+		if (response.ok) return await response.json();
 		throw await response.json();
 	} catch (err) {
 		console.error(err);
@@ -57,8 +55,7 @@ async function createHike(hike) {
 			},
 			body: JSON.stringify(hike),
 		});
-		if (response.ok)
-			return await response.json();
+		if (response.ok) return await response.json();
 		throw await response.json();
 	} catch (err) {
 		console.error(err);
@@ -66,7 +63,6 @@ async function createHike(hike) {
 }
 
 async function updateHike(id, changes) {
-	
 	try {
 		const response = await fetch(new URL(ENDPOINTS.hikes.update.replace(":id", id), BACKEND_URL), {
 			method: "PATCH",
@@ -82,17 +78,76 @@ async function updateHike(id, changes) {
 	}
 }
 
-async function updateHikeCondition(id, changes) {
-	
+async function startHike(id) {
 	try {
-		const response = await fetch(new URL(ENDPOINTS.hikes.updateCondition.replace(":id", id), BACKEND_URL), {
-			method: "PATCH",
-			credentials: "include",
-			headers: {
-				"Content-Type": "application/json",
-			},
-			body: JSON.stringify(changes),
-		});
+		const response = await fetch(
+			new URL(ENDPOINTS.registeredHikes.start.replace(":id", id), BACKEND_URL),
+			{
+				method: "POST",
+				credentials: "include",
+				headers: {
+					"Content-Type": "application/json",
+				},
+			}
+		);
+		return await response.json();
+	} catch (err) {
+		console.error(err);
+		return null;
+	}
+}
+
+async function endHike(id) {
+	try {
+		const response = await fetch(
+			new URL(ENDPOINTS.registeredHikes.end.replace(":id", id), BACKEND_URL),
+			{
+				method: "PATCH",
+				credentials: "include",
+				headers: {
+					"Content-Type": "application/json",
+				},
+			}
+		);
+		return await response.json();
+	} catch (err) {
+		console.error(err);
+		return null;
+	}
+}
+
+async function getRegisteredHikesForUser(userId) {
+	try {
+		const response = await fetch(
+			new URL(ENDPOINTS.registeredHikes.byUser.replace(":userId", userId), BACKEND_URL),
+			{
+				method: "GET",
+				credentials: "include",
+				headers: {
+					"Content-Type": "application/json",
+				},
+			}
+		);
+		return await response.json();
+	} catch (err) {
+		console.error(err);
+		return null;
+	}
+}
+
+async function updateHikeCondition(id, changes) {
+	try {
+		const response = await fetch(
+			new URL(ENDPOINTS.hikes.updateCondition.replace(":id", id), BACKEND_URL),
+			{
+				method: "PATCH",
+				credentials: "include",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify(changes),
+			}
+		);
 		return await response.json();
 	} catch (err) {
 		console.error(err);
@@ -104,5 +159,8 @@ module.exports = {
 	getHikeById,
 	createHike,
 	updateHike,
-	updateHikeCondition
+	startHike,
+	endHike,
+	getRegisteredHikesForUser,
+	updateHikeCondition,
 };

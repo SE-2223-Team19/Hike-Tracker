@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">85.71% </span>
+                <span class="strong">85% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>54/63</span>
+                <span class='fraction'>51/60</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">89.28% </span>
+                <span class="strong">88.67% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>50/56</span>
+                <span class='fraction'>47/53</span>
             </div>
         
             
@@ -289,10 +289,7 @@
 <a name='L224'></a><a href='#L224'>224</a>
 <a name='L225'></a><a href='#L225'>225</a>
 <a name='L226'></a><a href='#L226'>226</a>
-<a name='L227'></a><a href='#L227'>227</a>
-<a name='L228'></a><a href='#L228'>228</a>
-<a name='L229'></a><a href='#L229'>229</a>
-<a name='L230'></a><a href='#L230'>230</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">2x</span>
+<a name='L227'></a><a href='#L227'>227</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
@@ -349,7 +346,6 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -386,6 +382,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">11x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -436,7 +433,6 @@
 <span class="cline-any cline-yes">9x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -460,7 +456,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
@@ -509,7 +504,6 @@
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -525,7 +519,7 @@
 const { StatusCodes } = require("http-status-codes");
 const locationDAL = require("../data/location-dal");
 const { LocationType } = require("../models/enums");
-const ObjectId = require('mongoose').Types.ObjectId
+const ObjectId = require("mongoose").Types.ObjectId;
 &nbsp;
 /**
  * GET /location
@@ -553,7 +547,7 @@ async function getLocations(req, res) {
 			}),
 			page: joi.number().greater(0),
 			pageSize: joi.number().greater(0),
-			workedPeopleId: joi.string()
+			workedPeopleId: joi.string(),
 		});
 &nbsp;
 		const { error, value } = schema.validate(query);
@@ -563,7 +557,7 @@ async function getLocations(req, res) {
 &nbsp;
 		<span class="missing-if-branch" title="if path not taken" >I</span>if (value.locationType) <span class="cstat-no" title="statement not covered" >filter.locationType = value.locationType;</span>
 		<span class="missing-if-branch" title="if path not taken" >I</span>if (value.description) <span class="cstat-no" title="statement not covered" >filter.description = { $regex: value.description };</span>
-		<span class="missing-if-branch" title="if path not taken" >I</span>if (value.workedPeopleId) <span class="cstat-no" title="statement not covered" >filter.peopleWorks = ObjectId(value.workedPeopleId)</span>
+		<span class="missing-if-branch" title="if path not taken" >I</span>if (value.workedPeopleId) <span class="cstat-no" title="statement not covered" >filter.peopleWorks = ObjectId(value.workedPeopleId);</span>
 		<span class="missing-if-branch" title="if path not taken" >I</span>if (value.locationLat &amp;&amp; <span class="branch-1 cbranch-no" title="branch not covered" >value.locationLon </span>&amp;&amp; <span class="branch-2 cbranch-no" title="branch not covered" >value.locationRadius)</span>
 <span class="cstat-no" title="statement not covered" >			filter.point = {</span>
 				$near: {
@@ -578,7 +572,6 @@ async function getLocations(req, res) {
 		const locations = await locationDAL.getLocations(value.page, value.pageSize, filter);
 		return res.status(StatusCodes.OK).json(locations);
 	} catch (err) {
-		console.log(err)
 		return res.status(StatusCodes.BAD_REQUEST).json({ err: err.message });
 	}
 }
@@ -625,6 +618,7 @@ async function createLocation(req, res) {
 				is: [LocationType.HUT, LocationType.PARKING_LOT],
 				then: joi.string().required(),
 			}),
+			thumbnail: joi.string().allow(null),
 			capacity: joi.alternatives().conditional("locationType", {
 				is: LocationType.PARKING_LOT,
 				then: joi.number().required(),
@@ -651,8 +645,8 @@ async function createLocation(req, res) {
 			}),
 			peopleWorks: joi.alternatives().conditional("locationType", {
 				is: LocationType.HUT,
-				then: joi.array().items(joi.string())
-			})
+				then: joi.array().items(joi.string()),
+			}),
 		});
 &nbsp;
 		// Validate request body against schema
@@ -664,7 +658,6 @@ async function createLocation(req, res) {
 		const createdLocation = await locationDAL.createLocation(value);
 		return res.status(StatusCodes.CREATED).json(createdLocation);
 	} catch (err) {
-		console.log(err.message);
 		return res.status(StatusCodes.BAD_REQUEST).json({ err: err.message });
 	}
 }
@@ -689,7 +682,6 @@ async function updateLocationDescription(req, res) {
 }
 &nbsp;
 async function updateLocation(req, res) {
-	
 	try {
 		const { params, body } = req;
 		const id = params.id;
@@ -701,7 +693,7 @@ async function updateLocation(req, res) {
 				.required(),
 			name: joi.alternatives().conditional("locationType", {
 				is: [LocationType.HUT, LocationType.PARKING_LOT],
-				then: joi.string()
+				then: joi.string(),
 			}),
 			capacity: joi.alternatives().conditional("locationType", {
 				is: LocationType.PARKING_LOT,
@@ -727,7 +719,7 @@ async function updateLocation(req, res) {
 				is: LocationType.HUT,
 				then: joi.string().uri().allow(""),
 			}),
-			description: joi.string()
+			description: joi.string(),
 		});
 &nbsp;
 		const { value, error } = schema.validate(body);
@@ -738,7 +730,6 @@ async function updateLocation(req, res) {
 		const result = await locationDAL.updateLocation(id, locationUpdate);
 		return res.status(StatusCodes.OK).json(result);
 	} catch (err) {
-		console.log(err);
 		return res.status(StatusCodes.BAD_REQUEST).json({ err: err.message });
 	}
 }
@@ -757,7 +748,7 @@ module.exports = {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2022-12-11T21:17:21.771Z
+                at 2022-12-22T14:36:44.840Z
             </div>
         <script src="../prettify.js"></script>
         <script>

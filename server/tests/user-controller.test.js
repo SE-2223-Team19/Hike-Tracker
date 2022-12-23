@@ -8,7 +8,15 @@ const dotenv = require("dotenv");
 
 dotenv.config();
 
+jest.mock("nodemailer");
+
+const nodemailer = require("nodemailer");
+
 setupDB("user-controller");
+
+beforeEach(() => {
+	nodemailer.clearAllInboxes();
+});
 
 describe("getUsers", () => {
 	test("all users", async () => {
@@ -123,10 +131,14 @@ describe("verifyUser", () => {
 			response
 		);
 		expect(response.statusCode).toBe(StatusCodes.CREATED);
+		const receivedEmails = nodemailer.getInboxFor("hiker@test.com");
+		expect(receivedEmails.length).toBe(1);
+		const verifyUrl = receivedEmails[0].html.match(/http:\/\/localhost:3000\/verify\/[^\"\/]+/)[0];
+		const uniqueString = verifyUrl.substr(verifyUrl.lastIndexOf("/") + 1);
 		await userController.verifyUser(
 			{
 				params: {
-					uniqueString: response.responseBody.uniqueString,
+					uniqueString: uniqueString,
 				},
 			},
 			response

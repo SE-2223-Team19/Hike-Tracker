@@ -2,7 +2,7 @@ import React from "react";
 import { Badge, Card, Image, Stack, Button } from "react-bootstrap";
 import { BiRuler, BiTrendingUp, BiTime, BiPlay, BiStop } from "react-icons/bi";
 import { RegisteredHikeStatus } from "../../helper/enums";
-import { endHike } from "../../api/hikes"
+import { endHike } from "../../api/hikes";
 import {
 	capitalizeAndReplaceUnderscores,
 	ConditionColor,
@@ -52,8 +52,7 @@ const RegisteredHikeCard = ({ registeredHike, setDirty }) => {
 							</Badge>
 						</Stack>
 					</Card.Title>
-					{
-						registeredHike.status === RegisteredHikeStatus.ACTIVE &&
+					{registeredHike.status === RegisteredHikeStatus.ACTIVE && (
 						<Stack direction="horizontal" gap={4}>
 							<div className="ms-auto">
 								<Button variant="outline-danger" onClick={() => end()}>
@@ -61,7 +60,7 @@ const RegisteredHikeCard = ({ registeredHike, setDirty }) => {
 								</Button>
 							</div>
 						</Stack>
-					}
+					)}
 					<Stack direction="horizontal" gap={4}>
 						<div className="d-flex flex-row">
 							<BiRuler size={24} />
@@ -79,10 +78,12 @@ const RegisteredHikeCard = ({ registeredHike, setDirty }) => {
 							<BiPlay size={24} />
 							<span className="ms-1">{new Date(registeredHike.startTime).toUTCString()}</span>
 						</div>
-						{registeredHike.status == RegisteredHikeStatus.COMPLETED && <div className="d-flex flex-row">
-							<BiStop size={24} />
-							<span className="ms-1">{new Date(registeredHike.endTime).toUTCString()}</span>
-						</div>}
+						{registeredHike.status === RegisteredHikeStatus.COMPLETED && (
+							<div className="d-flex flex-row">
+								<BiStop size={24} />
+								<span className="ms-1">{new Date(registeredHike.endTime).toUTCString()}</span>
+							</div>
+						)}
 					</Stack>
 				</Stack>
 			</Card.Body>

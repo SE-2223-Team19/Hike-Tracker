@@ -176,7 +176,6 @@ async function updateHike(req, res) {
 			linkedHuts: joi.array().items(joi.string()),
 			trackPoints: joi.array().items(joi.array().items(joi.number()).length(2)),
 			referencePoints: joi.array().items(joi.array().items(joi.number()).length(2)),
-			hikeCondition: joi.string().valid(...Object.values(HikeCondition)),
 		});
 
 		// Validate request body against schema
@@ -192,9 +191,35 @@ async function updateHike(req, res) {
 	}
 }
 
+async function updateHikeCondition(req, res) {
+	try {
+		// Validate request body
+		const { params, body } = req;
+
+		// Hike validation schema
+		const schema = joi.object().keys({
+			description: joi.string(),
+			hikeCondition: joi.string().valid(...Object.values(HikeCondition)),
+		});
+
+		// Validate request body against schema
+		const { error, value } = schema.validate(body);
+		
+
+		if (error) throw error; // Joi validation error, goes to catch block
+
+		const hikeUpdated = await hikeDAL.updateHike(params.id, value);
+
+		return res.status(StatusCodes.OK).json(hikeUpdated);
+	} catch (err) {
+		console.log(err);
+		return res.status(StatusCodes.BAD_REQUEST).json({ err: err.message, stack: err.stack });
+	}
+}
 module.exports = {
 	getHikes,
 	getHikeById,
 	createHike,
 	updateHike,
+	updateHikeCondition
 };

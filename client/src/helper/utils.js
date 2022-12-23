@@ -55,13 +55,13 @@ export const userTypeToColour = (userType) => {
 
 export const ConditionColor = (condition) => {
 	switch (condition) {
-		case HikeCondition.Open:
+		case HikeCondition.OPEN:
 			return "info";
-		case HikeCondition.Overloaded:
+		case HikeCondition.OVERLOADED:
 			return "warning";
-		case HikeCondition.Close_BadWeather:
+		case HikeCondition.CLOSE_BAD_WEATHER:
 			return "danger";
-		case HikeCondition.Close_maintenance:
+		case HikeCondition.CLOSE_MAINTENANCE:
 			return "danger";
 		default:
 			return "secondary";

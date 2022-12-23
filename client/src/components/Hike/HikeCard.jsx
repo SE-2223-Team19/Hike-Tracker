@@ -2,6 +2,7 @@ import React, { useContext } from "react";
 import { Badge, Button, Card, Image, Stack } from "react-bootstrap";
 import { BiRuler, BiTrendingUp, BiTime } from "react-icons/bi";
 import NewHikeCondition from "./NewHikeCondition";
+import WeatherAlert from "./NewWeatherAlert"
 import { useNavigate } from "react-router-dom";
 import {
 	capitalizeAndReplaceUnderscores,
@@ -45,6 +46,7 @@ const HikeCard = ({ hike, showDetails, setDirty }) => {
 						<Badge bg={ConditionColor(hike.hikeCondition)}>{hike.hikeCondition}</Badge>
 
 						</Stack>
+
 					</Card.Title>
 					<>
 						<Stack direction="horizontal" gap={4} className="mt-4">
@@ -67,6 +69,10 @@ const HikeCard = ({ hike, showDetails, setDirty }) => {
 										{user.userType === UserType.HUT_WORKER && (
 											<NewHikeCondition hike={hike} setDirty={setDirty} />
 										)}
+                                        
+                                        {user.userType === UserType.PLATFORM_MANAGER&&(
+											<WeatherAlert/>
+										)}
 										<Button
 											data-test-id="seeOnMap"
 											onClick={() => showDetails(hike)}
@@ -77,6 +83,7 @@ const HikeCard = ({ hike, showDetails, setDirty }) => {
 										<Button variant="dark" onClick={() => navigate("/hike", { state: { hike } })}>
 											Details
 										</Button>
+
 									</Stack>
 								)}
 							</div>

@@ -6,6 +6,7 @@ const ENDPOINTS = {
 		byId: "hike/:id",
 		insert: "hike",
 		update: "hike/:id",
+		updateCondition: "hike/:id/condition",
 	},
 	registeredHikes: {
 		start: "registered-hike/start/:id",

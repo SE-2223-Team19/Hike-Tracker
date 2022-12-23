@@ -87,7 +87,7 @@ async function startHike(id) {
 				credentials: "include",
 				headers: {
 					"Content-Type": "application/json",
-				}
+				},
 			}
 		);
 		return await response.json();
@@ -106,7 +106,7 @@ async function endHike(id) {
 				credentials: "include",
 				headers: {
 					"Content-Type": "application/json",
-				}
+				},
 			}
 		);
 		return await response.json();
@@ -135,6 +135,25 @@ async function getRegisteredHikesForUser(userId) {
 	}
 }
 
+async function updateHikeCondition(id, changes) {
+	try {
+		const response = await fetch(
+			new URL(ENDPOINTS.hikes.updateCondition.replace(":id", id), BACKEND_URL),
+			{
+				method: "PATCH",
+				credentials: "include",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify(changes),
+			}
+		);
+		return await response.json();
+	} catch (err) {
+		console.error(err);
+	}
+}
+
 module.exports = {
 	getHikes,
 	getHikeById,
@@ -143,4 +162,5 @@ module.exports = {
 	startHike,
 	endHike,
 	getRegisteredHikesForUser,
+	updateHikeCondition,
 };

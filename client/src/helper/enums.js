@@ -22,11 +22,11 @@ const UserType = {
 };
 
 const HikeCondition = {
-	Open : "open",
-	Overloaded: "overloaded",
-	Close_BadWeather: "close_BadWeather",
-	Close_maintenance: "close_maintenance"
-}
+	OPEN : "open",
+	OVERLOADED: "overloaded",
+	CLOSE_BAD_WEATHER: "close_bad_weather",
+	CLOSE_MAINTENANCE: "close_maintenance"
+};
 
 const RegisteredHikeStatus = {
 	ACTIVE: "active",

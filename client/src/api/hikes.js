@@ -247,6 +247,44 @@ async function getStats(id) {
 		console.error(err);
 	}
 }
+
+async function updateWeatherAlert(Mapchanges) {
+	//console.log(weather);
+	// console.log(Mapchanges);
+
+	try {
+		const response = await fetch(new URL(ENDPOINTS.weatherAlert.update, BACKEND_URL), {
+			method: "PATCH",
+			credentials: "include",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify(Mapchanges),
+		});
+		return await response.json();
+	} catch (err) {
+		console.error(err);
+	}
+}
+
+async function getStats(id) {
+	try {
+		const response = await fetch(
+			new URL(ENDPOINTS.registeredHikes.stats.replace(":id", id), BACKEND_URL),
+			{
+				method: "GET",
+				credentials: "include",
+				headers: {
+					"Content-Type": "application/json",
+				},
+			}
+		);
+		return await response.json();
+	} catch (err) {
+		console.error(err);
+	}
+}
+
 module.exports = {
 	getHikes,
 	getHikeById,

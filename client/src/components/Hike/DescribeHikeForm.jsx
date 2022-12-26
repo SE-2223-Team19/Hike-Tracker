@@ -50,7 +50,7 @@ function DescribeHikeForm({ hike }) {
 				Math.floor(
 					(gpx.tracks[0].points[gpx.tracks[0].points.length - 1].time -
 						gpx.tracks[0].points[0].time) /
-						60000
+					60000
 				)
 			);
 			setFieldValue(

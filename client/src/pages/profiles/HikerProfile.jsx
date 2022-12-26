@@ -1,7 +1,8 @@
 import React from "react";
-import { Badge, Col, Row, Stack } from "react-bootstrap";
+import { Badge, Col, Row } from "react-bootstrap";
 import { capitalizeAndReplaceUnderscores } from "../../helper/utils";
-import { Outlet, NavLink } from "react-router-dom";
+import { Outlet } from "react-router-dom";
+import HikerStatistics from "./HikerStatistics";
 
 const HikerProfile = ({ user }) => {
 	return (
@@ -13,7 +14,9 @@ const HikerProfile = ({ user }) => {
 					<Badge bg="success">{capitalizeAndReplaceUnderscores(user.userType)} (user type)</Badge>
 				</Col>
 				<Col xs={12} md={9}>
-					<div className="bg-info h-100">Stats here?</div>
+					<div className="h-100">
+						<HikerStatistics />
+					</div>
 				</Col>
 			</Row>
 			<Row className="mt-2">

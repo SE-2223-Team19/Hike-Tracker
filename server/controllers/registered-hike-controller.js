@@ -72,9 +72,31 @@ async function getRegisteredHikes(req, res) {
 	}
 }
 
+async function getStats(req, res) {
+	const { id } = req.params; // User id
+
+	try {
+		const completedRegisteredHikes = await registeredHikeDAL.getCompletedRegisteredHikeByUserId(id);
+		const stats = {
+			numberHikes: completedRegisteredHikes.length,
+			numberKilometers: completedRegisteredHikes.reduce((acc, curr) => acc + curr.hike.length, 0) / 1000,
+			highestAltitudeRange: completedRegisteredHikes.reduce((acc, curr) => Math.max(acc, curr.hike.ascent), 0),
+			longestLengthHike: completedRegisteredHikes.reduce((acc, curr) => Math.max(acc, curr.hike.length), 0) / 1000,
+			longestTimeHike: completedRegisteredHikes.reduce((acc, curr) => Math.max(acc, curr.endTime - curr.startTime), 0) / 36e5,
+			shortestLengthHike: completedRegisteredHikes.reduce((acc, curr) => Math.min(acc, curr.hike.length), Number.MAX_VALUE) / 1000,
+			shortestTimeHike: completedRegisteredHikes.reduce((acc, curr) => Math.min(acc, curr.endTime - curr.startTime), Number.MAX_VALUE) / 36e5,
+			averagePace: completedRegisteredHikes.reduce((acc, curr) => acc + ((curr.endTime - curr.startTime) / 60000) / (curr.hike.length / 1000), 0) / completedRegisteredHikes.length,
+			fastestPacedHike: completedRegisteredHikes.reduce((acc, curr) => Math.min(acc, ((curr.endTime - curr.startTime) / 60000) / (curr.hike.length / 1000)), Number.MAX_VALUE),
+		}
+		return res.status(StatusCodes.OK).json(stats);
+	} catch (err) {
+		return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(err);
+	}
+}
 module.exports = {
 	startHike,
 	endHike,
 	getRegisteredHikes,
 	addRecordPoint
+	getStats,
 };

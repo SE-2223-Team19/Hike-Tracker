@@ -154,6 +154,23 @@ async function updateHikeCondition(id, changes) {
 	}
 }
 
+async function getStats(id) {
+	try {
+		const response = await fetch(
+			new URL(ENDPOINTS.registeredHikes.stats.replace(":id", id), BACKEND_URL),
+			{
+				method: "GET",
+				credentials: "include",
+				headers: {
+					"Content-Type": "application/json",
+				},
+			}
+		);
+		return await response.json();
+	} catch (err) {
+		console.error(err);
+	}
+}
 module.exports = {
 	getHikes,
 	getHikeById,
@@ -163,4 +180,5 @@ module.exports = {
 	endHike,
 	getRegisteredHikesForUser,
 	updateHikeCondition,
+	getStats
 };

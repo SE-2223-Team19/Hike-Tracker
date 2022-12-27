@@ -1,10 +1,12 @@
 import React from "react";
 import { Badge, Col, Row } from "react-bootstrap";
 import { capitalizeAndReplaceUnderscores } from "../../helper/utils";
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 import HikerStatistics from "./HikerStatistics";
 
 const HikerProfile = ({ user }) => {
+	const location = useLocation();
+
 	return (
 		<div>
 			<Row>
@@ -12,20 +14,22 @@ const HikerProfile = ({ user }) => {
 					<h5>{user.fullName} (Nome Cognome)</h5>
 					<p>{user.email} (Email)</p>
 					<Badge bg="success">{capitalizeAndReplaceUnderscores(user.userType)} (user type)</Badge>
-				</Col>
-				<Col xs={12} md={9}>
+
 					<div className="h-100">
-						<HikerStatistics />
+						{location.pathname.includes("preferences") && <HikerStatistics />}
 					</div>
 				</Col>
-			</Row>
-			<Row className="mt-2">
-				{/** This outlet comes from react-router-dom for nested routes
+
+				<Col>
+					<Row className="mt-2">
+						{/** This outlet comes from react-router-dom for nested routes
 				 * - HikerPreferences
 				 * - Active Hikes
 				 * - Completed Hikes
 				 */}
-				<Outlet />
+						<Outlet />
+					</Row>
+				</Col>
 			</Row>
 		</div>
 	);

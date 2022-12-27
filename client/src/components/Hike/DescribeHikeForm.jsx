@@ -39,7 +39,7 @@ function DescribeHikeForm({ hike }) {
 			gpx.parse(fileReader.result);
 			setFieldValue("length", gpx.tracks[0].distance.total);
 			setFieldValue("title", gpx.tracks[0].name);
-			setFieldValue("ascent", gpx.tracks[0].elevation.max - gpx.tracks[0].elevation.min);
+			//setFieldValue("ascent", gpx.tracks[0].elevation.max - gpx.tracks[0].elevation.min);
 			setFieldValue("description", gpx.tracks[0].desc);
 			setFieldValue(
 				"trackPoints",

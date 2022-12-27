@@ -12,8 +12,6 @@ import ParkingLots from "./ParkingLots";
 import Profile from "./Profile";
 import { AuthContext } from "../context/AuthContext";
 import HikeDetail from "./HikeDetail";
-import HikerPreferences from "./profiles/HikerPreferences";
-import HikerRegisteredHikes from "./profiles/HikerRegisteredHikes";
 
 const Home = () => {
 	const { message, setMessage } = useContext(AuthContext);
@@ -29,11 +27,7 @@ const Home = () => {
 			<div className="mt-4">
 				<Routes>
 					<Route path="/" element={<Hikes />} />
-					<Route path="profile" element={<Profile />}>
-						<Route path="preferences" element={<HikerPreferences />} />
-						<Route path="registered-hikes" element={<HikerRegisteredHikes />} />
-						<Route index element={<Navigate to="/profile/preferences" />} />
-					</Route>
+					<Route path="profile" element={<Profile />} />
 					<Route path="/describe-hike" element={<DescribeHike />} />
 					<Route path="/hike" element={<HikeDetail />} />
 					<Route path="/reference-point" element={<DefineReferencepage />} />

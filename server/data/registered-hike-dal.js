@@ -42,7 +42,9 @@ async function registerPoint(hikeId, point) {
 		throw new Error("Hike not found");
 	}
 	registeredHike.recordedPoints.push(point)
-	return await RegisteredHike.findOneAndUpdate({_id: hikeId}, {recordedPoints: registeredHike.recordedPoints}, {new: true})
+	registeredHike.timePoints.push(new Date(Date.now()).toString())
+
+	return await RegisteredHike.findOneAndUpdate({_id: hikeId}, {recordedPoints: registeredHike.recordedPoints, timePoints: registeredHike.timePoints}, {new: true})
 	
 }
 

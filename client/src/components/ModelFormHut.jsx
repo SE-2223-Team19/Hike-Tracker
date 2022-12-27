@@ -75,7 +75,7 @@ function ModelFormHut({ currentHut, show, setShow, setDirty }) {
 								onChange={handleChange}
 								onBlur={handleBlur}
 								isInvalid={!!errors.description}
-								type="text"
+								as="textarea" 
 								name="description"
 							/>
 							<Form.Control.Feedback type="invalid">{errors.description}</Form.Control.Feedback>

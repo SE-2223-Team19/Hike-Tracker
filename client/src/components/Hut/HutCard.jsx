@@ -1,13 +1,16 @@
 import React from "react";
-import { Card, Image, Stack } from "react-bootstrap";
+import { Card, Image, Stack, Button } from "react-bootstrap";
 import HutMap from "./HutMap";
 import { FaBed } from "react-icons/fa";
 import { BiPhone, BiGlobe } from "react-icons/bi";
 import { TbMail } from "react-icons/tb";
 
 const HutCard = ({ hut, user, setCurrentHut, setShow }) => {
-	console.log(hut);
 
+	const settingProperty = () => {
+		setCurrentHut(hut)
+		setShow(true)
+	}
 	return (
 		<Card className="mt-4 p-3">
 			<h4>{hut.name}</h4>
@@ -26,6 +29,7 @@ const HutCard = ({ hut, user, setCurrentHut, setShow }) => {
 				<HutIcon icon={<BiPhone size={24} />} text={`${hut.phone}`} />
 				<HutIcon icon={<BiGlobe size={24} />} text={`${hut.webSite}`} />
 				<HutIcon icon={<TbMail size={24} />} text={`${hut.email}`} />
+				<div><Button onClick={() => settingProperty()}>Update Hut</Button></div>
 			</Stack>
 		</Card>
 	);

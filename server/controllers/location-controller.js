@@ -200,7 +200,7 @@ async function updateLocation(req, res) {
 			}),
 			webSite: joi.alternatives().conditional("locationType", {
 				is: LocationType.HUT,
-				then: joi.string().uri().allow(""),
+				then: joi.string().allow(""),
 			}),
 			description: joi.string(),
 		});

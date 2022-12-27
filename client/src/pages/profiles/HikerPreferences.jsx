@@ -64,7 +64,6 @@ const HikerPreferences = () => {
 		<>
 			<div className="w-100">
 				<Stack direction="horizontal" className="justify-content-between align-items-center">
-					<h2>My Preferences</h2>
 					<Button
 						variant={openPreferences ? "success" : "outline-success"}
 						style={{ borderRadius: 20 }}

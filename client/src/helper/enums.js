@@ -29,6 +29,7 @@ const HikeCondition = {
 };
 
 const RegisteredHikeStatus = {
+	PLANNED: "planned",
 	ACTIVE: "active",
 	COMPLETED: "completed",
 	CANCELLED: "cancelled",

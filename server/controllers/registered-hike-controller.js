@@ -37,6 +37,17 @@ async function addRecordPoint(req, res) {
 	}
 }
 
+async function planHike(req, res) {
+	try {
+		const { id } = req.params; // Hike id
+		// Plan hike for the current user
+		const registeredHike = await registeredHikeDAL.insertPlan(req.user._id, id);
+		return res.status(StatusCodes.CREATED).json(registeredHike);
+	} catch (err) {
+		return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(err);
+	}
+}
+
 async function endHike(req, res) {
 	const { id } = req.params; // Hike id
 	try {
@@ -54,6 +65,48 @@ async function endHike(req, res) {
 
 		await notificationUserDAL.addCompletedHike(id, req.user._id);
 		taskScheduler.clearUnfinishedHikeNotification(req.user._id.toString());
+
+		return res.status(StatusCodes.OK).json(registeredHike);
+	} catch (err) {
+		return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(err);
+	}
+}
+
+async function startPlannedHike(req, res) {
+	const { id } = req.params; // Hike id
+	try {
+		const hikesForUser = await registeredHikeDAL.getRegisteredHikeByUserId(req.user._id);
+		if (hikesForUser.length === 0 || !hikesForUser.some((h) => h._id.equals(id))) {
+			return res
+				.status(StatusCodes.NOT_FOUND)
+				.json(new Error("Can't find the recorded hike"));
+		}
+		const registeredHike = await registeredHikeDAL.startPlannedHike(id);
+		// Inform buddies
+		await sendRegisteredHikeTerminatedEmail(
+			await (await registeredHike.populate("hike")).populate("user")
+		);
+
+		return res.status(StatusCodes.OK).json(registeredHike);
+	} catch (err) {
+		return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(err);
+	}
+}
+
+async function startPlannedHike(req, res) {
+	const { id } = req.params; // Hike id
+	try {
+		const hikesForUser = await registeredHikeDAL.getRegisteredHikeByUserId(req.user._id);
+		if (hikesForUser.length === 0 || !hikesForUser.some((h) => h._id.equals(id))) {
+			return res
+				.status(StatusCodes.NOT_FOUND)
+				.json(new Error("Can't find the recorded hike"));
+		}
+		const registeredHike = await registeredHikeDAL.startPlannedHike(id);
+		// Inform buddies
+		await sendRegisteredHikeTerminatedEmail(
+			await (await registeredHike.populate("hike")).populate("user")
+		);
 
 		return res.status(StatusCodes.OK).json(registeredHike);
 	} catch (err) {
@@ -95,8 +148,10 @@ async function getStats(req, res) {
 }
 module.exports = {
 	startHike,
+	planHike,
 	endHike,
+	startPlannedHike,
 	getRegisteredHikes,
-	addRecordPoint
+	addRecordPoint,
 	getStats,
 };

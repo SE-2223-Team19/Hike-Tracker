@@ -14,7 +14,7 @@ import {
 } from "../../helper/utils";
 import { AuthContext } from "../../context/AuthContext";
 import { UserType } from "../../helper/enums";
-import { startHike } from "../../api/hikes";
+import { startHike, planHike } from "../../api/hikes";
 
 const HikeCard = ({ hike, showDetails ,setDirty }) => {
 	const navigate = useNavigate();
@@ -29,16 +29,37 @@ const HikeCard = ({ hike, showDetails ,setDirty }) => {
 		}
 
 		const startedHike = await startHike(hike._id);
-		if (startedHike) {
+		if (startedHike.status == undefined) {
+			setMessage({
+				msg: "You have another active hike, you can see it on your profile page under 'Active hikes'",
+				type: "danger",
+			})
+			return;
+		} else {
 			setMessage({
 				msg: "Hike started successfully, you can track it in your profile in the 'Registered Hikes' section",
 				type: "success",
 			});
 			return;
 		}
+	};
 
-		// ** Error
-		setMessage({ msg: "Error starting hike", type: "danger" });
+	const plan = async () => {
+		// ** Check if user is a hiker
+		if (user.userType !== UserType.HIKER) {
+			setMessage({ msg: "You must be a hiker to start a hike", type: "danger" });
+			return;
+		}
+
+		const plannedHike = await planHike(hike._id);
+		if (plannedHike.status !== undefined) {
+			setMessage({
+				msg: "Hike planned successfully, you can see it in your profile in the 'Plannad Hikes' section",
+				type: "success",
+			});
+		} else {
+			setMessage({ msg: "Error in planning hike", type: "danger" });
+		}
 	};
 
 	return (
@@ -58,14 +79,12 @@ const HikeCard = ({ hike, showDetails ,setDirty }) => {
 					<Card.Title>
 						<Stack direction="horizontal" className="justify-content-between align-items-center">
 							<h5>{hike.title}</h5>
-							
 							<Badge bg={difficultyToColor(hike.difficulty)}>
 								{capitalizeAndReplaceUnderscores(hike.difficulty)}
 							</Badge>
 						</Stack>
 						<Stack direction="horizontal" className="justify-content-between align-items-center">
-						<Badge bg={ConditionColor(hike.hikeCondition)}>{hike.hikeCondition}</Badge>
-
+							<Badge bg={ConditionColor(hike.hikeCondition)}>{hike.hikeCondition}</Badge>
 						</Stack>
 
 					</Card.Title>
@@ -83,7 +102,6 @@ const HikeCard = ({ hike, showDetails ,setDirty }) => {
 								<BiTime size={24} />
 								<span className="ms-1">{displayExpectedTime(hike.expectedTime)}</span>
 							</div>
-
 							<div className="ms-auto">
 								{loggedIn && (
 									<Stack direction="horizontal" gap={3}>
@@ -104,6 +122,9 @@ const HikeCard = ({ hike, showDetails ,setDirty }) => {
 										</Button>
 										<Button variant="outline-success" onClick={() => start()}>
 											Start
+										</Button>
+										<Button variant="info" onClick={() => plan()}>
+											Plan
 										</Button>
 									</Stack>
 								)}

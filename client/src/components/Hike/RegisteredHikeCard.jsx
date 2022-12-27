@@ -1,8 +1,8 @@
-import React from "react";
+import React, { useContext, useState } from "react";
 import { Badge, Card, Image, Stack, Button, Modal } from "react-bootstrap";
 import { BiRuler, BiTrendingUp, BiTime, BiPlay, BiStop } from "react-icons/bi";
 import { RegisteredHikeStatus } from "../../helper/enums";
-import { endHike, addRecordPoint } from "../../api/hikes";
+import { endHike, addRecordPoint, startHikePlanned } from "../../api/hikes";
 import {
 	capitalizeAndReplaceUnderscores,
 	ConditionColor,
@@ -11,10 +11,12 @@ import {
 	displayLength,
 	getRandomHikeThumbnail,
 } from "../../helper/utils";
-import { useState } from "react";
 import RecordPoint from "../RecordPointForm";
+import { AuthContext } from "../../context/AuthContext";
+import { UserType } from "../../helper/enums";
 
 const RegisteredHikeCard = ({ registeredHike, setDirty }) => {
+	const { user, setMessage } = useContext(AuthContext);
 	const { hike, status } = registeredHike;
 	const [show, setShow] = useState(false);
 	const [point, setPoint] = useState(
@@ -60,6 +62,27 @@ const RegisteredHikeCard = ({ registeredHike, setDirty }) => {
 		if (res !== null) {
 			setDirty(true);
 		}
+	};
+
+	const start = async () => {
+		// ** Check if user is a hiker
+		if (user.userType !== UserType.HIKER) {
+			setMessage({ msg: "You must be a hiker to start a hike", type: "danger" });
+			return;
+		}
+
+		const startedHikePlanned = await startHikePlanned(registeredHike._id);
+		if (startedHikePlanned) {
+			setMessage({
+				msg: "Hike started successfully, you can track it in 'Active hikes' section",
+				type: "success",
+			});
+			setDirty(true);
+			return;
+		}
+
+		// ** Error
+		setMessage({ msg: "Error starting hike", type: "danger" });
 	};
 
 	return (
@@ -114,7 +137,16 @@ const RegisteredHikeCard = ({ registeredHike, setDirty }) => {
 								</div>
 							</Stack>
 						)}
+						{registeredHike.status === RegisteredHikeStatus.PLANNED && (
 						<Stack direction="horizontal" gap={4}>
+							<div className="ms-auto">
+								<Button variant="outline-success" onClick={() => start()}>
+									Start
+								</Button>
+							</div>
+						</Stack>
+					)}
+					<Stack direction="horizontal" gap={4}>
 							<div className="d-flex flex-row">
 								<BiRuler size={24} />
 								<span className="ms-1">{displayLength(hike.length)} Km</span>
@@ -127,10 +159,11 @@ const RegisteredHikeCard = ({ registeredHike, setDirty }) => {
 								<BiTime size={24} />
 								<span className="ms-1">{displayExpectedTime(hike.expectedTime)}</span>
 							</div>
+							{registeredHike.status !== RegisteredHikeStatus.PLANNED &&
 							<div className="d-flex flex-row ms-auto">
-								<BiPlay size={24} />
-								<span className="ms-1">{new Date(registeredHike.startTime).toUTCString()}</span>
-							</div>
+									<BiPlay size={24} />
+									<span className="ms-1">{new Date(registeredHike.startTime).toUTCString()}</span>
+								</div>}
 							{registeredHike.status === RegisteredHikeStatus.COMPLETED && (
 								<div className="d-flex flex-row">
 									<BiStop size={24} />

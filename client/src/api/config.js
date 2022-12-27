@@ -10,6 +10,8 @@ const ENDPOINTS = {
 	},
 	registeredHikes: {
 		start: "registered-hike/start/:id",
+		plan: "registered-hike/plan/:id",
+		startplan: "registered-hike/startplan/:id",
 		end: "registered-hike/end/:id",
 		byUser: "registered-hike/:userId",
 		point: "registered-hike/point/:id"

@@ -22,10 +22,16 @@ const UserType = {
 };
 
 const HikeCondition = {
-	OPEN : "open",
+	OPEN: "open",
 	OVERLOADED: "overloaded",
 	CLOSE_BAD_WEATHER: "close_bad_weather",
-	CLOSE_MAINTENANCE: "close_maintenance"
+	CLOSE_MAINTENANCE: "close_maintenance",
+};
+
+const RegisteredHikeStatus = {
+	ACTIVE: "active",
+	COMPLETED: "completed",
+	CANCELLED: "cancelled",
 };
 
 const WeatherCondition = {
@@ -43,5 +49,6 @@ module.exports = {
 	LocationType,
 	UserType,
 	HikeCondition,
+	RegisteredHikeStatus,
 	WeatherCondition
 };

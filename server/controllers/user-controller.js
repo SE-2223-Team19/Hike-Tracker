@@ -126,7 +126,7 @@ async function createUser(req, res) {
 		await sendVerificationEmail(value.email, uniqueString);
 		return res
 			.status(StatusCodes.CREATED)
-			.json({ _id: createdUser._id, uniqueString: uniqueString });
+			.json({ _id: createdUser._id });
 	} catch (err) {
 		if (err.name === "MongoServerError" && err.code === 11000) {
 			return res
@@ -169,7 +169,6 @@ async function verifyUser(req, res) {
 				.json({ message: "Your email address hasn't been verified.", verified: false });
 		}
 	} catch (err) {
-		console.log(err);
 		return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ err: err });
 	}
 }

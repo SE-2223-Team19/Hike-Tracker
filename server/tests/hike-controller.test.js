@@ -8,6 +8,7 @@ const { setupDB, ResponseHelper } = require("./setup");
 const { ObjectId } = require("mongodb");
 const Location = require("../models/location-model");
 const dotenv = require("dotenv");
+const { createLocalGuide, createHiker } = require("./sample-data");
 
 dotenv.config();
 
@@ -351,19 +352,7 @@ describe("getHikes", () => {
 
 describe("getHikeById", () => {
 	test("get hike by id", async () => {
-		const responseUserCreation = new ResponseHelper();
-		await userController.createUser(
-			{
-				body: {
-					email: "hiker@test.com",
-					fullName: "John Doe",
-					userType: UserType.LOCAL_GUIDE,
-					password: process.env.DEFAULT_PASSWORD,
-					confirmPassword: process.env.DEFAULT_PASSWORD,
-				},
-			},
-			responseUserCreation
-		);
+		const responseUserCreation = await createLocalGuide();
 
 		expect(responseUserCreation.statusCode).toBe(StatusCodes.CREATED);
 
@@ -374,7 +363,7 @@ describe("getHikeById", () => {
 				user: {
 					_id: responseUserCreation.responseBody._id,
 					userType: UserType.LOCAL_GUIDE,
-					email: "hiker@test.com",
+					email: "localguide@test.com",
 					fullName: "John Doe",
 				},
 				body: {
@@ -433,19 +422,7 @@ describe("getHikeById", () => {
 
 describe("createHike", () => {
 	test("insert hike", async () => {
-		const responseUserCreation = new ResponseHelper();
-		await userController.createUser(
-			{
-				body: {
-					email: "hiker@test.com",
-					fullName: "John Doe",
-					userType: UserType.HIKER,
-					password: process.env.DEFAULT_PASSWORD,
-					confirmPassword: process.env.DEFAULT_PASSWORD,
-				},
-			},
-			responseUserCreation
-		);
+		const responseUserCreation = await createHiker();
 
 		expect(responseUserCreation.statusCode).toBe(StatusCodes.CREATED);
 
@@ -497,19 +474,7 @@ describe("createHike", () => {
 
 describe("update Hike", () => {
 	test("update a single field (like title)", async () => {
-		const responseUserCreation = new ResponseHelper();
-		await userController.createUser(
-			{
-				body: {
-					email: "hiker@test.com",
-					fullName: "John Doe",
-					userType: UserType.HIKER,
-					password: process.env.DEFAULT_PASSWORD,
-					confirmPassword: process.env.DEFAULT_PASSWORD,
-				},
-			},
-			responseUserCreation
-		);
+		const responseUserCreation = await createHiker();
 
 		expect(responseUserCreation.statusCode).toBe(StatusCodes.CREATED);
 
@@ -558,19 +523,7 @@ describe("update Hike", () => {
 	});
 
 	test("update array field (like trackPoints) as an adding new Point", async () => {
-		const responseUserCreation = new ResponseHelper();
-		await userController.createUser(
-			{
-				body: {
-					email: "hiker@test.com",
-					fullName: "John Doe",
-					userType: UserType.HIKER,
-					password: process.env.DEFAULT_PASSWORD,
-					confirmPassword: process.env.DEFAULT_PASSWORD,
-				},
-			},
-			responseUserCreation
-		);
+		const responseUserCreation = await createHiker();
 
 		expect(responseUserCreation.statusCode).toBe(StatusCodes.CREATED);
 
@@ -631,7 +584,6 @@ describe("update Hike", () => {
 				responseHikeUpdate.responseBody.trackPoints[
 					responseHikeUpdate.responseBody.trackPoints.length - (1 + i)
 				];
-			console.log("TP", i, trackPoint);
 			expect(newTrackPoints[i]).toStrictEqual(trackPoint);
 		}
 
@@ -639,19 +591,7 @@ describe("update Hike", () => {
 	});
 
 	test("update an object type as Location", async () => {
-		const responseUserCreation = new ResponseHelper();
-		await userController.createUser(
-			{
-				body: {
-					email: "hiker@test.com",
-					fullName: "John Doe",
-					userType: UserType.HIKER,
-					password: process.env.DEFAULT_PASSWORD,
-					confirmPassword: process.env.DEFAULT_PASSWORD,
-				},
-			},
-			responseUserCreation
-		);
+		const responseUserCreation = await createHiker();
 
 		expect(responseUserCreation.statusCode).toBe(StatusCodes.CREATED);
 
@@ -703,19 +643,7 @@ describe("update Hike", () => {
 	});
 
 	test("update startPoint", async () => {
-		const responseUserCreation = new ResponseHelper();
-		await userController.createUser(
-			{
-				body: {
-					email: "hiker@test.com",
-					fullName: "John Doe",
-					userType: UserType.HIKER,
-					password: process.env.DEFAULT_PASSWORD,
-					confirmPassword: process.env.DEFAULT_PASSWORD,
-				},
-			},
-			responseUserCreation
-		);
+		const responseUserCreation = await createHiker();
 
 		expect(responseUserCreation.statusCode).toBe(StatusCodes.CREATED);
 
@@ -794,19 +722,7 @@ describe("update Hike", () => {
 	});
 
 	test("add new reference points to Hike", async () => {
-		const responseUserCreation = new ResponseHelper();
-		await userController.createUser(
-			{
-				body: {
-					email: "hiker@test.com",
-					fullName: "John Doe",
-					userType: UserType.LOCAL_GUIDE,
-					password: process.env.DEFAULT_PASSWORD,
-					confirmPassword: process.env.DEFAULT_PASSWORD,
-				},
-			},
-			responseUserCreation
-		);
+		const responseUserCreation = await createLocalGuide();
 
 		expect(responseUserCreation.statusCode).toBe(StatusCodes.CREATED);
 

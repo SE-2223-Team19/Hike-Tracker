@@ -55,7 +55,6 @@ async function getLocations(req, res) {
 		const locations = await locationDAL.getLocations(value.page, value.pageSize, filter);
 		return res.status(StatusCodes.OK).json(locations);
 	} catch (err) {
-		console.log(err);
 		return res.status(StatusCodes.BAD_REQUEST).json({ err: err.message });
 	}
 }
@@ -142,7 +141,6 @@ async function createLocation(req, res) {
 		const createdLocation = await locationDAL.createLocation(value);
 		return res.status(StatusCodes.CREATED).json(createdLocation);
 	} catch (err) {
-		console.log(err.message);
 		return res.status(StatusCodes.BAD_REQUEST).json({ err: err.message });
 	}
 }
@@ -215,7 +213,6 @@ async function updateLocation(req, res) {
 		const result = await locationDAL.updateLocation(id, locationUpdate);
 		return res.status(StatusCodes.OK).json(result);
 	} catch (err) {
-		console.log(err);
 		return res.status(StatusCodes.BAD_REQUEST).json({ err: err.message });
 	}
 }

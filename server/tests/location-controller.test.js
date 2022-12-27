@@ -262,8 +262,6 @@ describe("update Hut Informations", () => {
 			responseHutUpdate
 		);
 
-		console.log(responseHutUpdate);
-
 		expect(hut_updated.responseBody.description).toBe("A test hut for updating");
 		expect(hut_updated.responseBody.numberOfBeds).toBe(2000);
 		expect(hut_updated.responseBody.email).toBe("test@polito1.it");

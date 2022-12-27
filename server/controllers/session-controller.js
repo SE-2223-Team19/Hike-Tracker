@@ -44,7 +44,6 @@ async function createSession(req, res) {
         }));
         return res.status(StatusCodes.CREATED).json(user);
     } catch (err) {
-        console.log(err);
         return res.status(StatusCodes.UNAUTHORIZED).json({ err: err.message });
     }
 }

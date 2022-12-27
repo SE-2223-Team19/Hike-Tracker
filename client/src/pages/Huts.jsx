@@ -79,7 +79,7 @@ function Huts({ setCurrentHut, setShow, dirty, setDirty }) {
 						/>
 					)}
 					dataContainer={({ children }) => (
-						<Row className="g-4 row-cols-1 row-cols-sm-1 row-cols-md-2 mt-4">{children}</Row>
+						<Row className="d-flex flex-row row-cols-md-2 mt-4 gap-0">{children}</Row>
 					)}
 					errorElement={(error) => <NoData message={error} />}
 					noDataElement={() => <NoData message={"No huts found."} />}

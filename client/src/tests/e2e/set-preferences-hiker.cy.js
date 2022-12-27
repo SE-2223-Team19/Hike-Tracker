@@ -4,7 +4,7 @@
 describe("get and set preferences hiker", () => {
     it("get and set preferences", () => {
         cy.visit("http://localhost:3000/login");
-        cy.get('[data-test-id="email"]').type("vittorioarpino@test.it");
+        cy.get('[data-test-id="email"]').type("test_Hiker@test.it");
         cy.get('[data-test-id="password"').type("password");
         cy.get("button").click();
         cy.get('[data-test-id="user-dropdown"]').click();
@@ -26,7 +26,7 @@ describe("get and set preferences hiker", () => {
 describe("Delete preferences hiker", () => {
     it("delete preferences", () => {
         cy.visit("http://localhost:3000/login");
-        cy.get('[data-test-id="email"]').type("vittorioarpino@test.it");
+        cy.get('[data-test-id="email"]').type("test_Hiker@test.it");
         cy.get('[data-test-id="password"').type("password");
         cy.get("button").click();
         cy.get('[data-test-id="user-dropdown"]').click();

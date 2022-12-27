@@ -126,7 +126,7 @@ async function createUser(req, res) {
 		await sendVerificationEmail(value.email, uniqueString);
 		return res
 			.status(StatusCodes.CREATED)
-			.json({ _id: createdUser._id, uniqueString: uniqueString });
+			.json({ _id: createdUser._id });
 	} catch (err) {
 		if (err.name === "MongoServerError" && err.code === 11000) {
 			return res
@@ -169,7 +169,6 @@ async function verifyUser(req, res) {
 				.json({ message: "Your email address hasn't been verified.", verified: false });
 		}
 	} catch (err) {
-		console.log(err);
 		return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ err: err });
 	}
 }
@@ -225,8 +224,6 @@ async function updateUser(req, res) {
 async function getPreferences(req, res) {
 	const userId = req.user._id;
 	const user = await userDAL.getUserById(userId);
-	// const user = users[0];
-	console.log(user);
 	if (user) {
 		if (user.preferences) {
 			return res.status(StatusCodes.OK).json(user.preferences);
@@ -241,12 +238,11 @@ async function getPreferences(req, res) {
 async function updatePreferences(req, res) {
 	const userId = req.user._id;
 	const user = await userDAL.getUserById(userId);
-	// const user = users[0];
-	console.log(user);
 	if (user) {
-		user.preferences = req.body;
-		await userDAL.updateUser(user);
-		return res.status(StatusCodes.OK).json(user.preferences);
+		const updatedUser = await userDAL.updateUser(userId, {
+			preferences: req.body,
+		});
+		return res.status(StatusCodes.OK).json(updatedUser.preferences);
 	} else {
 		return res.status(StatusCodes.NOT_FOUND).json({ message: "User not found" });
 	}
@@ -255,10 +251,11 @@ async function updatePreferences(req, res) {
 async function deletePreferences(req, res) {
 	const userId = req.user._id;
 	const user = await userDAL.getUserById(userId);
-	// const user = users[0];
 	if (user) {
 		user.preferences = {};
-		await userDAL.updateUser(user);
+		await userDAL.updateUser(userId, {
+			preferences: {},
+		});
 		return res.status(StatusCodes.OK).json(user.preferences);
 	} else {
 		return res.status(StatusCodes.NOT_FOUND).json({ message: "User not found" });

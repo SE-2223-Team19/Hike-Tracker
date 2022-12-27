@@ -1,5 +1,5 @@
 import React from "react";
-import { Card, Image, Stack, Button } from "react-bootstrap";
+import { Card, Col, Image, Stack, Button } from "react-bootstrap";
 import HutMap from "./HutMap";
 import { FaBed } from "react-icons/fa";
 import { BiPhone, BiGlobe } from "react-icons/bi";

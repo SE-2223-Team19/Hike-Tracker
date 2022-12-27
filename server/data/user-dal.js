@@ -95,7 +95,7 @@ async function getUserById(id) {
 
 module.exports = {
 	getUsers,
+	getUserById,
 	createUser,
 	updateUser,
-	getUserById,
 };

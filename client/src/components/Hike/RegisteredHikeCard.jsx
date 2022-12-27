@@ -1,8 +1,8 @@
 import React from "react";
-import { Badge, Card, Image, Stack, Button } from "react-bootstrap";
+import { Badge, Card, Image, Stack, Button, Modal } from "react-bootstrap";
 import { BiRuler, BiTrendingUp, BiTime, BiPlay, BiStop } from "react-icons/bi";
 import { RegisteredHikeStatus } from "../../helper/enums";
-import { endHike } from "../../api/hikes"
+import { endHike, addRecordPoint } from "../../api/hikes"
 import {
 	capitalizeAndReplaceUnderscores,
 	ConditionColor,
@@ -11,10 +11,14 @@ import {
 	displayLength,
 	getRandomHikeThumbnail,
 } from "../../helper/utils";
+import { useState } from "react";
+import RecordPoint from "../RecordPointForm";
 
 const RegisteredHikeCard = ({ registeredHike, setDirty }) => {
 	const { hike, status } = registeredHike;
-
+	const [show, setShow] = useState(false)
+	const [point, setPoint] = useState(registeredHike.recordedPoints[registeredHike.recordedPoints.length-1] ? [...registeredHike.recordedPoints[registeredHike.recordedPoints.length-1]].reverse() : [0,0])
+	
 	const end = async () => {
 		const res = await endHike(registeredHike._id);
 		if (res !== null) {
@@ -22,8 +26,20 @@ const RegisteredHikeCard = ({ registeredHike, setDirty }) => {
 		}
 	};
 
+	const openModal = async () => {
+		setShow(true)
+	}
+
+	const record = async () => {
+		const res = await addRecordPoint(registeredHike._id, [...point].reverse())
+		if (res !== null) {
+			setDirty(true);
+		}
+		setPoint([...point].reverse())
+	}
+
 	return (
-		<Card className="flex-row p-3 mt-4">
+		<><Card className="flex-row p-3 mt-4">
 			<Image
 				src={
 					hike.thumbnail && hike.thumbnail.length >= 1
@@ -56,9 +72,14 @@ const RegisteredHikeCard = ({ registeredHike, setDirty }) => {
 						registeredHike.status === RegisteredHikeStatus.ACTIVE &&
 						<Stack direction="horizontal" gap={4}>
 							<div className="ms-auto">
-								<Button variant="outline-danger" onClick={() => end()}>
-									Stop
-								</Button>
+								<Stack direction="horizontal" gap={4}>
+									<Button variant="outline-danger" onClick={() => end()}>
+										Stop
+									</Button>
+									<Button variant="outline-danger" onClick={() => openModal()}>
+										Add new Point
+									</Button>
+								</Stack>
 							</div>
 						</Stack>
 					}
@@ -87,6 +108,19 @@ const RegisteredHikeCard = ({ registeredHike, setDirty }) => {
 				</Stack>
 			</Card.Body>
 		</Card>
+			<Modal show={show} >
+				<Modal.Header>
+					<Modal.Title>Record Point</Modal.Title>
+				</Modal.Header>
+				<Modal.Body>
+					<RecordPoint regHike={registeredHike} setPoint = {setPoint} point = {point} />
+				</Modal.Body>
+				<Modal.Footer>
+					<Button variant="secondary" onClick={() => setShow(false)}>Close</Button>
+					<Button variant="primary" onClick={async () => await record()}>Save changes</Button>
+				</Modal.Footer>
+			</Modal>
+		</>
 	);
 };
 

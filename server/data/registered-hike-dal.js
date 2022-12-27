@@ -29,6 +29,24 @@ async function insert(userId, hikeId) {
 }
 
 /**
+ * Add new Point to record points into registeredHikes
+ * @param {string} hikeId Id of the RegisteredHike
+ * @param {Array} point Array as point object as [Lon, Lat]
+ * @returns The updated registered hike
+ */
+
+async function registerPoint(hikeId, point) {
+	
+	const registeredHike = await RegisteredHike.findById(hikeId)
+	if (!registeredHike) {
+		throw new Error("Hike not found");
+	}
+	registeredHike.recordedPoints.push(point)
+	return await RegisteredHike.findOneAndUpdate({_id: hikeId}, {recordedPoints: registeredHike.recordedPoints}, {new: true})
+	
+}
+
+/**
  * Sets the status to COMPLETED
  * @param {string} id Id of the RegisteredHike
  * @returns The saved hike
@@ -113,4 +131,5 @@ module.exports = {
 	userHasActiveRecordedHikes,
 	addBuddyToRegisteredHike,
 	getRegisteredHikeByUserId,
+	registerPoint
 };

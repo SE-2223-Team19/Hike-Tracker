@@ -14,6 +14,21 @@ async function startHike(req, res) {
 	}
 }
 
+async function addRecordPoint(req, res) {
+	try {
+
+		const hikeId = req.params.id
+		const { point } = req.body
+
+		const registeredHikeUpdated = await registeredHikeDAL.registerPoint(hikeId, point)
+		return res.status(StatusCodes.OK).json(registeredHikeUpdated)
+
+	} catch(err) {
+		console.log(err)
+		return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(err)
+	}
+}
+
 async function endHike(req, res) {
 	const { id } = req.params; // Hike id
 	try {
@@ -50,4 +65,5 @@ module.exports = {
 	startHike,
 	endHike,
 	getRegisteredHikes,
+	addRecordPoint
 };

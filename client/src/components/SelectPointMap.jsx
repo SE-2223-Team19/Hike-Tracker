@@ -3,8 +3,18 @@ import { MapContainer, Marker, Polyline, TileLayer, Popup } from "react-leaflet"
 import * as L from "leaflet";
 import { Button, Row, Col } from "react-bootstrap";
 
-function SelectPointMap({ regHike, trackPoints, point, setPoint }) {
+function SelectPointMap({ regHike, trackPoints, setPoint }) {
     const [map, setMap] = useState(null);
+    
+    function checkEquals(point, idx) {
+        for(let i = 0; i < regHike.recordedPoints.length; i++) {
+            const currPoint = [...regHike.recordedPoints[i]].reverse()
+            if(currPoint[0] == point[0] && currPoint[1] == point[1]) {
+                return true
+            }  
+        }
+        return false
+    }
 
 	const markerStartEndPoint = new L.icon({
 		iconUrl: require("../icons/marker_start_end_point.png"),
@@ -12,6 +22,11 @@ function SelectPointMap({ regHike, trackPoints, point, setPoint }) {
 		iconAnchor: [17, 46],
 		popupAnchor: [0, -46],
 	});
+
+    const handleButton = (point, index) => {
+        setPoint({point: point, index: index+1})
+        map.closePopup();
+    }
 
     useEffect(() => {
         const bounds = [
@@ -34,13 +49,6 @@ function SelectPointMap({ regHike, trackPoints, point, setPoint }) {
             >
                 <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
                 <Marker
-                    key={"arrivedPoint"}
-                    position={point}
-                    icon={markerStartEndPoint}
-                >
-                    <Popup>Point of arrive</Popup>
-                </Marker>
-                <Marker
                     key={"start"}
                     position={trackPoints[0]}
                     icon={markerStartEndPoint}
@@ -57,9 +65,16 @@ function SelectPointMap({ regHike, trackPoints, point, setPoint }) {
                     regHike.hike.referencePoints && 
                     regHike.hike.referencePoints.map((point, index) => (
                         <Marker key={`ref-point-${index}`} position={point}>
-                            <Popup>
+                            <Popup >
                                 <Row>
                                     <Col>Reference Point N°. {index + 1}</Col>
+                                </Row>
+                                <Row>
+                                    <Col>
+                                        {!checkEquals(point, index + 1) ? <Button variant="danger" size="sm" onClick={() => handleButton(point, index)}>
+                                            Add as Arrived Point
+                                        </Button> : <></>}
+                                    </Col>
                                 </Row>
                             </Popup>
                         </Marker>
@@ -67,11 +82,6 @@ function SelectPointMap({ regHike, trackPoints, point, setPoint }) {
                 }
                 <Polyline
                     pathOptions={{ fillColor: "red", color: "blue" }}
-                    eventHandlers={{
-                        click(e) {
-                            setPoint([e.latlng.lat, e.latlng.lng])
-                        }
-                    }}
                     positions={trackPoints}
                 />
             </MapContainer>

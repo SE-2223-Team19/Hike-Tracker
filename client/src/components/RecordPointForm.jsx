@@ -2,7 +2,7 @@ import { React, useState, useEffect, useContext } from "react";
 import { Col, Row, Button } from "react-bootstrap";
 import SelectPointMap from "./SelectPointMap";
 
-function RecordPoint({ regHike, setPoint, point }) {
+function RecordPoint({ regHike, setPoint }) {
 
     const trackPoints = regHike.hike.trackPoints.coordinates.map(e => {
 		return [...e].reverse()
@@ -12,7 +12,7 @@ function RecordPoint({ regHike, setPoint, point }) {
 		<Col>
 			<Row>
 				<Col style={{"height": "50vh"}}>
-					<SelectPointMap point = {point} setPoint = {setPoint} regHike = {regHike} trackPoints = {trackPoints}/>
+					<SelectPointMap setPoint = {setPoint} regHike = {regHike} trackPoints = {trackPoints}/>
 				</Col>
 			</Row>
 		</Col>

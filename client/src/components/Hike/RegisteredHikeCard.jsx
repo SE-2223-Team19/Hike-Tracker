@@ -30,12 +30,31 @@ const RegisteredHikeCard = ({ registeredHike, setDirty }) => {
 		setShow(true)
 	}
 
+	const checkNotPresence = async (point) => {
+		const recordedPoints = await registeredHike.recordedPoints
+		let flag = true
+		for(let i = 0; i < registeredHike.recordedPoints.length; i++) {
+			let currPoint = [...recordedPoints[i]].reverse()
+            if(currPoint[0] == point[0] && currPoint[1] == point[1]) {
+				console.log(currPoint, point)
+				flag = false
+            }  
+        }
+		return flag
+	}
+
 	const record = async () => {
-		const res = await addRecordPoint(registeredHike._id, [...point].reverse())
+
+		let res = null
+		
+		for(let i=0; i < point.index; i++) {
+			if(await checkNotPresence(registeredHike.hike.referencePoints[i]))
+				res = await addRecordPoint(registeredHike._id, [...registeredHike.hike.referencePoints[i]].reverse())
+		}
 		if (res !== null) {
 			setDirty(true);
 		}
-		setPoint([...point].reverse())
+		
 	}
 
 	return (
@@ -76,9 +95,9 @@ const RegisteredHikeCard = ({ registeredHike, setDirty }) => {
 									<Button variant="outline-danger" onClick={() => end()}>
 										Stop
 									</Button>
-									<Button variant="outline-danger" onClick={() => openModal()}>
+									{!(registeredHike.recordedPoints.length === registeredHike.hike.referencePoints.length) ? <Button variant="outline-danger" onClick={() => openModal()}>
 										Add new Point
-									</Button>
+									</Button> : <></>}
 								</Stack>
 							</div>
 						</Stack>

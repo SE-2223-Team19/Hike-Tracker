@@ -1,5 +1,5 @@
 import React from "react";
-import { Badge, Card, Image, Stack, Button } from "react-bootstrap";
+import { Badge, Card, Image, Stack, Button, OverlayTrigger, Tooltip } from "react-bootstrap";
 import { BiRuler, BiTrendingUp, BiTime, BiPlay, BiStop } from "react-icons/bi";
 import { RegisteredHikeStatus } from "../../helper/enums";
 import { endHike } from "../../api/hikes";
@@ -13,13 +13,17 @@ import {
 } from "../../helper/utils";
 
 const RegisteredHikeCard = ({ registeredHike, setDirty }) => {
-	const { hike, status } = registeredHike;
+	const { _id, hike, status } = registeredHike;
 
 	const end = async () => {
 		const res = await endHike(registeredHike._id);
 		if (res !== null) {
 			setDirty(true);
 		}
+	};
+
+	const copyUrlToClipboard = async () => {
+		await navigator.clipboard.writeText(`https://localhost:3000/registered-hike/${_id}`);
 	};
 
 	return (
@@ -58,6 +62,23 @@ const RegisteredHikeCard = ({ registeredHike, setDirty }) => {
 								<Button variant="outline-danger" onClick={() => end()}>
 									Stop
 								</Button>
+							</div>
+							<div>
+								<OverlayTrigger
+									trigger={"click"}
+									overlay={(props) => 
+										<Tooltip {...props}>
+											Share link copied to clipboard
+										</Tooltip>
+									}
+								>
+									<Button 
+										variant="outline-success"
+										onClick={() => copyUrlToClipboard()}
+									>
+										Share
+									</Button>
+								</OverlayTrigger>
 							</div>
 						</Stack>
 					)}

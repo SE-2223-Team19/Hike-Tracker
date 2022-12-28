@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { Badge, Card, Image, Stack, Button, Modal } from "react-bootstrap";
+import { Badge, Card, Image, Stack, Button, Modal, OverlayTrigger, Tooltip } from "react-bootstrap";
 import { BiRuler, BiTrendingUp, BiTime, BiPlay, BiStop } from "react-icons/bi";
 import { RegisteredHikeStatus } from "../../helper/enums";
 import { endHike, addRecordPoint, startHikePlanned } from "../../api/hikes";
@@ -17,7 +17,7 @@ import { UserType } from "../../helper/enums";
 
 const RegisteredHikeCard = ({ registeredHike, setDirty }) => {
 	const { user, setMessage } = useContext(AuthContext);
-	const { hike, status } = registeredHike;
+	const { _id, hike, status } = registeredHike;
 	const [show, setShow] = useState(false);
 	const [point, setPoint] = useState(
 		registeredHike.recordedPoints[registeredHike.recordedPoints.length - 1]
@@ -85,6 +85,10 @@ const RegisteredHikeCard = ({ registeredHike, setDirty }) => {
 		setMessage({ msg: "Error starting hike", type: "danger" });
 	};
 
+	const copyUrlToClipboard = async () => {
+		await navigator.clipboard.writeText(`https://localhost:3000/registered-hike/${_id}`);
+	};
+
 	return (
 		<>
 			<Card className="flex-row p-3 mt-4">
@@ -143,6 +147,23 @@ const RegisteredHikeCard = ({ registeredHike, setDirty }) => {
 								<Button variant="outline-success" onClick={() => start()}>
 									Start
 								</Button>
+							</div>
+							<div>
+								<OverlayTrigger
+									trigger={"click"}
+									overlay={(props) => 
+										<Tooltip {...props}>
+											Share link copied to clipboard
+										</Tooltip>
+									}
+								>
+									<Button 
+										variant="outline-success"
+										onClick={() => copyUrlToClipboard()}
+									>
+										Share
+									</Button>
+								</OverlayTrigger>
 							</div>
 						</Stack>
 					)}

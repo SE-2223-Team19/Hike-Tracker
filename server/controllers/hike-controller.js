@@ -2,7 +2,7 @@ const joi = require("joi");
 const ObjectId = require("mongoose").Types.ObjectId;
 const { StatusCodes } = require("http-status-codes");
 const hikeDAL = require("../data/hike-dal");
-const { Difficulty, LocationType, HikeCondition } = require("../models/enums");
+const { Difficulty, LocationType, HikeCondition, WeatherCondition } = require("../models/enums");
 
 /**
  * GET /hike
@@ -216,10 +216,46 @@ async function updateHikeCondition(req, res) {
 		return res.status(StatusCodes.BAD_REQUEST).json({ err: err.message, stack: err.stack });
 	}
 }
+
+
+async function updateWeatherAlert(req, res) {
+
+	   //console.log("controller**************************",req);
+	try {
+		// Validate request body
+		const { body } = req;
+        
+		console.log("controller**************************",body);
+
+		// Hike validation schema
+		const schema = joi.object().keys({
+			
+			weatherAlert: joi.string().valid(...Object.values(WeatherCondition))
+
+		});
+
+		// Validate request body against schema
+		const { error, value } = schema.validate(body);
+		
+
+		if (error) throw error; // Joi validation error, goes to catch block
+
+		const hikeUpdated = await hikeDAL.updateHike(value);
+
+		return res.status(StatusCodes.OK).json(hikeUpdated);
+	} catch (err) {
+		console.log(err);
+		return res.status(StatusCodes.BAD_REQUEST).json({ err: err.message, stack: err.stack });
+	}
+}
+
+
+
 module.exports = {
 	getHikes,
 	getHikeById,
 	createHike,
 	updateHike,
-	updateHikeCondition
+	updateHikeCondition,
+	updateWeatherAlert
 };

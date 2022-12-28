@@ -269,9 +269,32 @@ async function updateHike(id, hikeUpdate) {
 	return await getHikeById(id);
 }
 
+
+async function updateWeatherAlert(hikeUpdate) {
+
+	console.log("KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK",hikeUpdate);
+	
+	if (hikeUpdate.trackPoints) {
+		hikeUpdate.trackPoints = {
+			type: "LineString",
+			coordinates: hikeUpdate.trackPoints.map((p) => [p[1], p[0]]),
+		};
+	}
+
+	if (hikeUpdate.thumbnail) {
+		const thumbnail = await Image.create({ data: hikeUpdate.thumbnail });
+		//hikeUpdate.thumbnail = thumbnail._id;
+	}
+
+	await Hike.findByIdAndUpdate(hikeUpdate, { new: true });
+
+	return await getHikes();
+}
+
 module.exports = {
 	getHikes,
 	createHike,
 	getHikeById,
 	updateHike,
+	updateWeatherAlert
 };

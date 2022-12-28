@@ -4,6 +4,9 @@ import { MapContainer, TileLayer, useMapEvent, Circle } from 'react-leaflet';
 import { getLatLongFromCity } from "../../helper/utils";
 //import { WeatherCondition } from "../../helper/enums ";
 import {WeatherCondition} from '../../helper/enums'
+import {updateHikeCondition, updateWeatherAlert} from '../../api/hikes';
+import { array, object } from "yup";
+import { json } from "react-router-dom";
 
 
 
@@ -12,6 +15,7 @@ const WeatherAlert = ({ onCancel, onOk, onRemoveFilter }) => {
     const [radius, setRadius] = useState(50); // Radius in meters
     console.log(radius);
     console.log(coordinates);
+    
     const [city, setCity] = useState("Torino")
     const [ref, setRef] = useState(undefined)
     const [error, setError] = useState("")
@@ -21,14 +25,27 @@ const WeatherAlert = ({ onCancel, onOk, onRemoveFilter }) => {
     //console.log(ref);
     const handlesubmit = async (event)=>{
         event.preventDefault()
-        const changes = {
-            weatherCondition: weather,
-            selectedZone: radius,
+        const Mapchanges = {
+            weatherAlert : weather,
             radius : radius,
             coordinates : coordinates
-
-
         }
+        
+
+      //   for(var key in Mapchanges) {
+      //     if(Mapchanges.hasOwnProperty(key)) {
+      //         var value = Mapchanges[key];
+      //         console.log(value);
+      //         var Map = JSON.stringify(value);
+       
+      //       }  
+             
+      // }
+     
+      await updateWeatherAlert(Mapchanges) 
+        
+        onHide()
+
     }
 
     async function loadAddress() {
@@ -113,12 +130,10 @@ const WeatherAlert = ({ onCancel, onOk, onRemoveFilter }) => {
 
             <Modal.Footer>
                 <Button onClick={onRemoveFilter} variant={"danger"}>Remove</Button>
-                <Button onClick={onCancel} variant={"secondary"}>Cancel</Button>
+                <Button onClick={onHide} variant={"secondary"}>Cancel</Button>
                 <Button
                     data-test-id="position-ok-button"
-                    onClick={() => {
-                        onOk(coordinates, radius);
-                    }} variant={"success"}>Ok</Button>
+                    onClick={handlesubmit} variant={"success"}>Ok</Button>
             </Modal.Footer>
         </Modal>
         </>

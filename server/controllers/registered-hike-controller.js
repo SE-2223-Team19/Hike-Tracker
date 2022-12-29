@@ -1,6 +1,7 @@
 const { StatusCodes } = require("http-status-codes");
 const joi = require("joi");
 const registeredHikeDAL = require("../data/registered-hike-dal");
+const notificationUserDAL = require("../data/notificationUser-dal")
 const { sendRegisteredHikeTerminatedEmail } = require("../email/registered-hike");
 
 async function startHike(req, res) {
@@ -8,6 +9,10 @@ async function startHike(req, res) {
 		const { id } = req.params; // Hike id
 		// Start hike for the current user
 		const registeredHike = await registeredHikeDAL.insert(req.user._id, id);
+		
+		const notification = await notificationUserDAL.addRegisteredHike(registeredHike._id, req.user._id)
+		console.log(notification)
+
 		return res.status(StatusCodes.CREATED).json(registeredHike);
 	} catch (err) {
 		return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(err);
@@ -24,7 +29,6 @@ async function addRecordPoint(req, res) {
 		return res.status(StatusCodes.OK).json(registeredHikeUpdated)
 
 	} catch(err) {
-		console.log(err)
 		return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(err)
 	}
 }
@@ -43,6 +47,8 @@ async function endHike(req, res) {
 		await sendRegisteredHikeTerminatedEmail(
 			await (await registeredHike.populate("hike")).populate("user")
 		);
+
+		await notificationUserDAL.addCompletedHike(registeredHike._id, req.user._id)
 
 		return res.status(StatusCodes.OK).json(registeredHike);
 	} catch (err) {

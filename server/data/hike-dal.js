@@ -270,9 +270,29 @@ async function updateHike(id, hikeUpdate) {
 }
 
 
-async function updateWeatherAlert(hikeUpdate) {
+async function updateWeatherAlert(body) {
 
-	console.log("KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK",hikeUpdate);
+	console.log("KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK",body);
+
+	const weatherkey = Object.keys(body)[0]
+	const weatherValue =  body[weatherkey]
+    
+	const radiuskey = Object.keys(body)[1]
+	const radiusValue =  body[radiuskey]
+     
+	const coordinateskey = Object.keys(body)[2]
+	const coordinatesValue =  body[coordinateskey]
+
+	const weather ={
+		weatherAlert : weatherValue
+	}
+	
+	const Mapchange = {
+		radius : radiusValue,
+		coordinates : coordinatesValue
+	}
+	console.log("KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK",weather);
+	console.log("KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK",Mapchange);
 	
 	if (hikeUpdate.trackPoints) {
 		hikeUpdate.trackPoints = {

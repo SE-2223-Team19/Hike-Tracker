@@ -5,7 +5,7 @@ import Loading from "../../components/Loading";
 import { useNavigate } from "react-router-dom";
 import RegisteredHikeCard from "../../components/Hike/RegisteredHikeCard";
 import { RegisteredHikeStatus, UserType } from "../../helper/enums";
-
+import NoData from "../../components/NoData";
 
 const HikerPlannedHikes = () => {
 	const { user } = useContext(AuthContext);
@@ -41,7 +41,7 @@ const HikerPlannedHikes = () => {
 		<div>
 			{loading && <Loading />}
 			{PlannedHikes.length !== 0 && <h2>Planned Hikes: {PlannedHikes.length}</h2>}
-			{!loading && PlannedHikes.length === 0 && <h2>No planned hikes</h2>}
+			{!loading && PlannedHikes.length === 0 && <NoData message={"No planned hikes."} />}
 			{!loading &&
 				PlannedHikes.length > 0 &&
 				PlannedHikes.map((hike) => <RegisteredHikeCard key={hike._id} registeredHike={hike} setDirty={setDirty} />)}
@@ -83,7 +83,7 @@ const HikerActiveHikes = () => {
 		<div>
 			{loading && <Loading />}
 			{ActiveHikes.length !== 0 && <h2>Active Hikes: {ActiveHikes.length}</h2>}
-			{!loading && ActiveHikes.length === 0 && <h2>No active hikes</h2>}
+			{!loading && ActiveHikes.length === 0 && <NoData message="No active hikes" />}
 			{!loading &&
 				ActiveHikes.length > 0 &&
 				ActiveHikes.map((hike) => <RegisteredHikeCard key={hike._id} registeredHike={hike} setDirty={setDirty} />)}
@@ -125,7 +125,7 @@ const HikerTerminetedHikes = () => {
 		<div>
 			{loading && <Loading />}
 			{TerminatedHikes.length !== 0 && <h2>Terminated Hikes: {TerminatedHikes.length}</h2>}
-			{!loading && TerminatedHikes.length === 0 && <h2>No completed hikes</h2>}
+			{!loading && TerminatedHikes.length === 0 && <NoData message="No completed hikes" />}
 			{!loading &&
 				TerminatedHikes.length > 0 &&
 				TerminatedHikes.map((hike) => <RegisteredHikeCard key={hike._id} registeredHike={hike} setDirty={setDirty} />)}

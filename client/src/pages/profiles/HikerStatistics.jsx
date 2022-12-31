@@ -1,5 +1,5 @@
 import { React, useState, useEffect, useContext } from "react";
-import { Stack, Card, Row } from "react-bootstrap";
+import { Container, Row, Col } from "react-bootstrap";
 import { BiTrendingUp, BiTime, BiWalk, BiMapAlt, BiRun, BiDirections } from "react-icons/bi";
 import { MdHiking } from "react-icons/md";
 import Loading from "../../components/Loading";
@@ -51,24 +51,19 @@ const HikerStatistics = () => {
 
 const Statistics = ({ stats }) => {
     return (
-        <Card className="flex-col p-3 mt-4">
-            <Card.Body>
-                <Card.Title>
-                    <Stack
-                        direction="horizontal"
-                        className="justify-content-between align-items-center"
-                    >
-                        <h3>
-                            My Statistics
-                        </h3>
-                    </Stack>
-                </Card.Title>
-                <div>
+        <Container>
+            <Row>
+                <h3>
+                    My Statistics
+                </h3>
+            </Row>
+            <Row style={{ marginTop: "10px" }}>
+                <Col>
                     <Row>
-                        <h5 className="ms-1">
+                        <h5 >
                             <BiDirections /> Completed Hikes
                         </h5>
-                        <h6 className="ms-1">
+                        <h6 >
                             <CountUp end={stats.numberHikes} />
                         </h6>
                     </Row>
@@ -76,10 +71,7 @@ const Statistics = ({ stats }) => {
                         <h5>
                             <MdHiking /> Travelled Kilometers
                         </h5>
-                    </Row>
-
-                    <Row className="justify-content-md-center ">
-                        <h6 className="ms-1">
+                        <h6 >
                             <CountUp end={stats.numberKilometers}
                                 decimals={2}
                                 decimal="," /> km
@@ -90,22 +82,19 @@ const Statistics = ({ stats }) => {
                         <h5>
                             <BiTrendingUp /> Highest Altitude Range
                         </h5>
-                    </Row>
-
-                    <Row className="justify-content-md-center ">
-                        <h6 className="ms-1">
+                        <h6 >
                             <CountUp end={stats.highestAltitudeRange}
                                 decimals={2}
                                 decimal="," /> m
                         </h6>
                     </Row>
+                </Col>
+                <Col>
                     <Row>
                         <h5>
                             <BiMapAlt /> Longest Length Hike
                         </h5>
-                    </Row>
-                    <Row>
-                        <h6 className="ms-1">
+                        <h6 >
                             <CountUp end={stats.longestLengthHike}
                                 decimals={2}
                                 decimal="," /> km
@@ -115,9 +104,7 @@ const Statistics = ({ stats }) => {
                         <h5>
                             <BiTime /> Longest Time Hike
                         </h5>
-                    </Row>
-                    <Row className="justify-content-md-center ">
-                        <h6 className="ms-1">
+                        <h6 >
                             <CountUp end={Math.floor(stats.longestTimeHike)} /> h <CountUp end={Math.floor((stats.longestTimeHike - Math.floor(stats.longestTimeHike)) * 60)} /> min
                         </h6>
                     </Row>
@@ -125,23 +112,19 @@ const Statistics = ({ stats }) => {
                         <h5>
                             <BiMapAlt /> Shortest Length Hike
                         </h5>
-                    </Row>
-
-                    <Row>
-                        <h6 className="ms-1">
+                        <h6 >
                             <CountUp end={stats.shortestLengthHike}
                                 decimals={2}
                                 decimal="," /> km
                         </h6>
                     </Row>
+                </Col>
+                <Col>
                     <Row>
                         <h5>
                             <BiTime /> Shortest Time Hike
                         </h5>
-                    </Row>
-
-                    <Row className="justify-content-md-center ">
-                        <h6 className="ms-1">
+                        <h6 >
                             <CountUp end={Math.floor(stats.shortestTimeHike)} /> h <CountUp end={Math.floor((stats.shortestTimeHike - Math.floor(stats.shortestTimeHike)) * 60)} /> min
                         </h6>
                     </Row>
@@ -149,10 +132,7 @@ const Statistics = ({ stats }) => {
                         <h5>
                             <BiWalk /> Average Pace
                         </h5>
-                    </Row>
-
-                    <Row className="justify-content-md-center ">
-                        <h6 className="ms-1">
+                        <h6 >
                             <CountUp end={stats.averagePace}
                                 decimals={2}
                                 decimal="," /> min/km
@@ -163,18 +143,15 @@ const Statistics = ({ stats }) => {
                         <h5>
                             <BiRun /> Fastest Paced Hike
                         </h5>
-                    </Row>
-
-                    <Row className="justify-content-md-center ">
-                        <h6 className="ms-1">
+                        <h6 >
                             <CountUp end={stats.fastestPacedHike}
                                 decimals={2}
                                 decimal="," /> min/km
                         </h6>
                     </Row>
-                </div>
-            </Card.Body>
-        </Card>
+                </Col>
+            </Row>
+        </Container>
     );
 };
 

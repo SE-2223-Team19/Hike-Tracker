@@ -120,12 +120,12 @@ const HikeCard = ({ hike, showDetails ,setDirty }) => {
 										<Button variant="dark" onClick={() => navigate("/hike", { state: { hike } })}>
 											Details
 										</Button>
-										<Button variant="outline-success" onClick={() => start()}>
+										{user.userType === UserType.HIKER && (<Button variant="outline-success" onClick={() => start()}>
 											Start
-										</Button>
-										<Button variant="info" onClick={() => plan()}>
+										</Button>)}
+										{user.userType === UserType.HIKER && (<Button variant="info" onClick={() => plan()}>
 											Plan
-										</Button>
+										</Button>)}
 									</Stack>
 								)}
 							</div>

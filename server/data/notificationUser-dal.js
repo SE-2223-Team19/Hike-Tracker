@@ -18,28 +18,31 @@ async function addRegisteredHike(hikeRegisteredID, userID) {
     const notificationUser = await NotificationUser.findOne({user: userID})
     const hikeRegistered = await RegisteredHike.findById({_id: hikeRegisteredID})
     const hike = await Hike.findById({_id: hikeRegistered.hike})
-    let currNotificaitonUser
+    let time
 
     if(!notificationUser) {
+        time = hike.expectedTime * 2
         currNotificaitonUser = await NotificationUser.create({
-            user: ObjectId(userID),
+            user: userID,
             completedHikes: [],
-            timeToNotify: hike.expectedTime * 2
+            timeToNotify: time
         })
     } else {
         if(completedHikes.length < 30) {
-            currNotificaitonUser = await NotificationUser.findOneAndUpdate({ user: userID, timeToNotify: hike.expectedTime * 2})
+            time = hike.expectedTime * 2
+            currNotificaitonUser = await NotificationUser.findOneAndUpdate({ user: userID, timeToNotify: time})
         } else {
             const times = []
             completedHikes.forEach(async() => {
                 const hike = await Hike.findById({_id: hike})
                 times.push(hike.expectedTime)
             })
-            const percentile = utils.percentile(times, hike.expectedTime)
-            currNotificaitonUser = await NotificationUser.findOneAndUpdate({ user: userID, timeToNotify: percentile})
+            time = utils.percentile(times, hike.expectedTime)
+            currNotificaitonUser = await NotificationUser.findOneAndUpdate({ user: userID, timeToNotify: time})
         }
     }
-    return currNotificaitonUser
+
+    return time
 
 }
 

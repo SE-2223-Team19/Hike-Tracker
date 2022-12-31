@@ -2,19 +2,29 @@ const { StatusCodes } = require("http-status-codes");
 const joi = require("joi");
 const registeredHikeDAL = require("../data/registered-hike-dal");
 const notificationUserDAL = require("../data/notificationUser-dal")
+const user = require("../data/user-dal");
 const { sendRegisteredHikeTerminatedEmail } = require("../email/registered-hike");
+const sendEmail = require("../email/send-email");
 
 async function startHike(req, res) {
 	try {
 		const { id } = req.params; // Hike id
 		// Start hike for the current user
 		const registeredHike = await registeredHikeDAL.insert(req.user._id, id);
-		
-		const notification = await notificationUserDAL.addRegisteredHike(registeredHike._id, req.user._id)
-		console.log(notification)
+
+		const time = await notificationUserDAL.addRegisteredHike(registeredHike._id, req.user._id)
+		const currUser = await user.getUserById(req.user._id);
+		global.scheduledTask[req.user._id] = setInterval(async () => {
+			await sendEmail({
+				to: currUser.email,
+				subject: `[${registeredHike.hike.title}] Unfinished Hike`,
+				html: `<p>The hike <b>${registeredHike.hike.title}<b> is not finished by you <b>${registeredHike.user.fullName}</p>`
+			})
+		}, time * 60000)
 
 		return res.status(StatusCodes.CREATED).json(registeredHike);
 	} catch (err) {
+		console.log(err)
 		return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(err);
 	}
 }
@@ -28,7 +38,7 @@ async function addRecordPoint(req, res) {
 		const registeredHikeUpdated = await registeredHikeDAL.registerPoint(hikeId, point)
 		return res.status(StatusCodes.OK).json(registeredHikeUpdated)
 
-	} catch(err) {
+	} catch (err) {
 		return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(err)
 	}
 }
@@ -49,9 +59,11 @@ async function endHike(req, res) {
 		);
 
 		await notificationUserDAL.addCompletedHike(registeredHike._id, req.user._id)
+		clearInterval(global.scheduledTask[req.user._id])
 
 		return res.status(StatusCodes.OK).json(registeredHike);
 	} catch (err) {
+		console.log(err)
 		return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(err);
 	}
 }

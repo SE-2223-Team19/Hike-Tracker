@@ -7,7 +7,6 @@ const ENDPOINTS = {
 		insert: "hike",
 		update: "hike/:id",
 		updateCondition: "hike/:id/condition",
-		weatherAlert: "hike/weatherAlert"
 	},
 	registeredHikes: {
 		start: "registered-hike/start/:id",
@@ -31,6 +30,9 @@ const ENDPOINTS = {
 		verify: "user/verify/:uniqueString",
 		preferences: "user/preferences",
 	},
+	weatherAlert: {
+		update: "weatherAlert/area"
+	}
 };
 
 /**

@@ -162,7 +162,7 @@ async function updateWeatherAlert(Mapchanges) {
 	
 	try {
 		const response = await fetch(
-			new URL(ENDPOINTS.hikes.weatherAlert, BACKEND_URL),
+			new URL(ENDPOINTS.weatherAlert.update, BACKEND_URL),
 			{
 				method: "PATCH",
 				credentials: "include",

@@ -4,13 +4,13 @@ import { MapContainer, TileLayer, useMapEvent, Circle } from 'react-leaflet';
 import { getLatLongFromCity } from "../../helper/utils";
 //import { WeatherCondition } from "../../helper/enums ";
 import {WeatherCondition} from '../../helper/enums'
-import {updateHikeCondition, updateWeatherAlert} from '../../api/hikes';
+import {updateWeatherAlert} from '../../api/weatherAlert';
 import { array, object } from "yup";
 import { json } from "react-router-dom";
+import { WiDayRainMix } from "react-icons/wi";
 
 
-
-const WeatherAlert = ({ onCancel, onOk, onRemoveFilter }) => {
+const WeatherAlert = ({ onRemoveFilter }) => {
     const [coordinates, setCoordinates] = useState([45.068370, 7.683070]);
     const [radius, setRadius] = useState(50); // Radius in meters
     console.log(radius);
@@ -31,6 +31,7 @@ const WeatherAlert = ({ onCancel, onOk, onRemoveFilter }) => {
             coordinates : coordinates
         }
         
+        console.log("########",event._id);
 
       //   for(var key in Mapchanges) {
       //     if(Mapchanges.hasOwnProperty(key)) {
@@ -72,7 +73,8 @@ const WeatherAlert = ({ onCancel, onOk, onRemoveFilter }) => {
 
     return (
         <>
-        <Button variant="primary" onClick={handleShow}>
+        <Button variant="outline-info" style={{ borderRadius: 20 }} onClick={handleShow}>
+        <WiDayRainMix style={{ marginRight: ".4rem" }} />
         Set Weather Alert
        </Button>
         <Modal show={show} onHide={onHide} size={"lg"}>

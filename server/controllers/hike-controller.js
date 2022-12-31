@@ -210,7 +210,7 @@ async function updateHikeCondition(req, res) {
 		if (error) throw error; // Joi validation error, goes to catch block
 
 		const hikeUpdated = await hikeDAL.updateHike(params.id, value);
-
+       
 		return res.status(StatusCodes.OK).json(hikeUpdated);
 	} catch (err) {
 		console.log(err);
@@ -218,48 +218,11 @@ async function updateHikeCondition(req, res) {
 	}
 }
 
-
-async function updateWeatherAlert(req, res) {
-
-	   //console.log("controller**************************",req);
-	try {
-		// Validate request body
-		const { body } = req;
-		
-		console.log("controller**************************",body);
-		//console.log("controller**************************",Mapchange);
-
-		// Hike validation schema
-		const schema = joi.object().keys({
-			
-			weatherAlert : joi.string().valid(...Object.values(WeatherCondition)),
-			radius : joi.number(),
-			coordinates : joi.array()
-		});
-
-		// Validate request body against schema
-		const { error, value } = schema.validate(body);
-		
-
-		if (error) throw error; // Joi validation error, goes to catch block
-
-		const WeatherUpdated = await hikeDAL.updateWeatherAlert(value);
-		console.log("PPPPPPPPPPPPPPPP",WeatherUpdated);
-
-		return res.status(StatusCodes.OK).json(WeatherUpdated);
-	} catch (err) {
-		console.log(err);
-		return res.status(StatusCodes.BAD_REQUEST).json({ err: err.message, stack: err.stack });
-	}
-}
-
-
-
 module.exports = {
 	getHikes,
 	getHikeById,
 	createHike,
 	updateHike,
 	updateHikeCondition,
-	updateWeatherAlert
+	
 };

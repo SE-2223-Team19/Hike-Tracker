@@ -78,6 +78,44 @@ async function updateHike(id, changes) {
 	}
 }
 
+async function planHike(id) {
+	try {
+		const response = await fetch(
+			new URL(ENDPOINTS.registeredHikes.plan.replace(":id", id), BACKEND_URL),
+			{
+				method: "POST",
+				credentials: "include",
+				headers: {
+					"Content-Type": "application/json",
+				},
+			}
+		);
+		return await response.json();
+	} catch (err) {
+		console.error(err);
+		return null;
+	}
+}
+
+async function startHikePlanned(id) {
+	try {
+		const response = await fetch(
+			new URL(ENDPOINTS.registeredHikes.startplan.replace(":id", id), BACKEND_URL),
+			{
+				method: "PATCH",
+				credentials: "include",
+				headers: {
+					"Content-Type": "application/json",
+				},
+			}
+		);
+		return await response.json();
+	} catch (err) {
+		console.error(err);
+		return null;
+	}
+}
+
 async function startHike(id) {
 	try {
 		const response = await fetch(
@@ -176,9 +214,14 @@ module.exports = {
 	getHikeById,
 	createHike,
 	updateHike,
+	planHike,
 	startHike,
 	endHike,
 	getRegisteredHikesForUser,
 	updateHikeCondition,
+<<<<<<< HEAD
 	getStats
+=======
+	startHikePlanned
+>>>>>>> plan-hike-Michele
 };

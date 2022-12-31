@@ -28,6 +28,29 @@ async function insert(userId, hikeId) {
 	return registeredHike;
 }
 
+
+/**
+ * Plan a new hike, inserting the new registered hike in the database
+ * @param {string} userId
+ * @param {string} hikeId
+ * @returns Newly created registered hike
+ */
+async function insertPlan(userId, hikeId) {
+
+	const hike = await Hike.findById(hikeId);
+	if (!hike) {
+		throw new Error("Hike not found");
+	}
+
+	const registeredHike = await RegisteredHike.create({
+		hike: ObjectId(hikeId),
+		user: ObjectId(userId),
+		status: RegisteredHikeStatus.PLANNED,
+		startTime: new Date(), // Can be omitted, because there's the createdAt field by default
+	});
+	return registeredHike;
+}
+
 /**
  * Sets the status to COMPLETED
  * @param {string} id Id of the RegisteredHike
@@ -40,6 +63,21 @@ async function completeRegisteredHike(id) {
 	if (registeredHike.status === RegisteredHikeStatus.ACTIVE) {
 		registeredHike.status = RegisteredHikeStatus.COMPLETED;
 		registeredHike.endTime = new Date();
+	}
+	return await registeredHike.save();
+}
+
+/**
+ * Sets the status to ACTIVE from PLANNED
+ * @param {string} id Id of the RegisteredHike
+ * @returns The saved hike
+ */
+async function startPlannedHike(id) {
+	const registeredHike = await RegisteredHike.findById(id);
+	if (registeredHike === null)
+		return null;
+	if (registeredHike.status === RegisteredHikeStatus.PLANNED) {
+		registeredHike.status = RegisteredHikeStatus.ACTIVE;
 	}
 	return await registeredHike.save();
 }
@@ -113,7 +151,9 @@ async function getCompletedRegisteredHikeByUserId(userId) {
 
 module.exports = {
 	insert,
+	insertPlan,
 	completeRegisteredHike,
+	startPlannedHike,
 	cancelRegisteredHike,
 	userHasActiveRecordedHikes,
 	addBuddyToRegisteredHike,

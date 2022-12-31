@@ -156,7 +156,7 @@ describe("Registered Hike", () => {
 		// Check if the response is correct
 		expect(endHikeResponse.statusCode).toBe(StatusCodes.NOT_FOUND);
 	});
-	
+
 	test("Buddies notified at end of hike", async () => {
 		// Create local guide
 		const localguideReponse = await createLocalGuide();
@@ -202,5 +202,48 @@ describe("Registered Hike", () => {
 		});
 		const endHikeResponse = await endHike(hikerResponse, startHikeResponse);
 		expect(endHikeResponse.statusCode).toBe(StatusCodes.INTERNAL_SERVER_ERROR);
+	});
+	test("Get stats", async () => {
+		// Create local guide
+		const localguideReponse = await createLocalGuide();
+
+		// Create hike
+		const hikeResponse = await createHike(localguideReponse);
+
+		// Create hiker
+		const hikerResponse = await createHiker();
+
+		// Start hike
+		const startHikeResponse = await startHike(hikerResponse, hikeResponse);
+		expect(startHikeResponse.statusCode).toBe(StatusCodes.CREATED);
+
+		// End hike
+		const endHikeResponse = await endHike(hikerResponse, startHikeResponse);
+
+		// Check if the response is correct
+		expect(endHikeResponse.statusCode).toBe(StatusCodes.OK);
+
+		const getStats = await registerHikeController.getStats({
+			params: {
+				id: hikerResponse.responseBody._id
+			},
+			user: {
+				_id: hikerResponse.responseBody._id,
+				userType: UserType.HIKER
+			}
+		}, new ResponseHelper());
+		expect(getStats.statusCode).toBe(StatusCodes.OK);
+	});
+	test("Can't get stats because user doesn't exist", async () => {
+		const getStatsResponse = await registerHikeController.getStats({
+			params: {
+				id: "fakeUserId"
+			},
+			user: {
+				_id: "5f9f1b9b9b9b9b9b9b9b9b9b",
+				userType: UserType.HIKER
+			}
+		}, new ResponseHelper());
+		expect(getStatsResponse.statusCode).toBe(StatusCodes.INTERNAL_SERVER_ERROR);
 	});
 });

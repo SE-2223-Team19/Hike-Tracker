@@ -219,9 +219,6 @@ module.exports = {
 	endHike,
 	getRegisteredHikesForUser,
 	updateHikeCondition,
-<<<<<<< HEAD
-	getStats
-=======
+	getStats,
 	startHikePlanned
->>>>>>> plan-hike-Michele
 };

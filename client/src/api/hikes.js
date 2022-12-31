@@ -260,5 +260,5 @@ module.exports = {
 	addRecordPoint,
 	updateWeatherAlert,
 	getStats,
-	startHikePlanned
+	startHikePlanned,
 };

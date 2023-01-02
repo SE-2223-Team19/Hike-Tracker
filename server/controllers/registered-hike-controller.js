@@ -2,6 +2,7 @@ const { StatusCodes } = require("http-status-codes");
 const joi = require("joi");
 const registeredHikeDAL = require("../data/registered-hike-dal");
 const notificationUserDAL = require("../data/notificationUser-dal")
+const hikeDAL = require("../data/hike-dal");
 const user = require("../data/user-dal");
 const { sendRegisteredHikeTerminatedEmail } = require("../email/registered-hike");
 const sendEmail = require("../email/send-email");
@@ -11,14 +12,14 @@ async function startHike(req, res) {
 		const { id } = req.params; // Hike id
 		// Start hike for the current user
 		const registeredHike = await registeredHikeDAL.insert(req.user._id, id);
-
+		const hike = await hikeDAL.getHikeById(id)
 		const time = await notificationUserDAL.addRegisteredHike(registeredHike._id, req.user._id)
 		const currUser = await user.getUserById(req.user._id);
 		global.scheduledTask[req.user._id] = setInterval(async () => {
 			await sendEmail({
 				to: currUser.email,
-				subject: `[${registeredHike.hike.title}] Unfinished Hike`,
-				html: `<p>The hike <b>${registeredHike.hike.title}<b> is not finished by you <b>${registeredHike.user.fullName}</p>`
+				subject: `[${hike.title}] Unfinished Hike`,
+				html: `<p>The hike <b>${hike.title}<b> is not finished by you <b>${currUser.fullName}</p>`
 			})
 		}, time * 60000)
 
@@ -34,7 +35,7 @@ async function addRecordPoint(req, res) {
 
 		const hikeId = req.params.id
 		const { point } = req.body
-
+	
 		const registeredHikeUpdated = await registeredHikeDAL.registerPoint(hikeId, point)
 		return res.status(StatusCodes.OK).json(registeredHikeUpdated)
 
@@ -75,6 +76,7 @@ async function getRegisteredHikes(req, res) {
 		const registeredHikes = await registeredHikeDAL.getRegisteredHikeByUserId(userId);
 		return res.status(StatusCodes.OK).json(registeredHikes);
 	} catch (err) {
+		console.log(err)
 		return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(err);
 	}
 }

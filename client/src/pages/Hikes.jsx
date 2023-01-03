@@ -1,4 +1,4 @@
-import { React, useState } from "react";
+import { React, useState, useContext } from "react";
 import { Button, Stack } from "react-bootstrap";
 import { getHikes } from "../api/hikes";
 import HikeCard from "../components/Hike/HikeCard";
@@ -10,6 +10,9 @@ import HikeFilters from "../components/Hike/HikeFilters";
 import PositionFilterModal from "../components/PositionFilterModal";
 import PaginatedList from "../components/pagination/PaginatedList";
 import WeatherAlert from "../components/Hike/NewWeatherAlert";
+import { AuthContext } from "../context/AuthContext";
+import { UserType } from "../helper/enums";
+import { useAsyncError } from "react-router-dom";
 
 const Hikes = () => {
 	// ** State
@@ -19,14 +22,17 @@ const Hikes = () => {
 	const [currentHike, setCurrentHike] = useState(null);
 	const [dirty, setDirty] = useState(false);
 
+	const {loggedIn, user } = useContext(AuthContext);
 
 	return (
 		<div className="w-100">
-			<Stack direction="horizontal" className="justify-content-between align-items-center">
+			   <Stack direction="horizontal" className="justify-content-between align-items-center">
 				<h1 className="#tests-title">Hikes</h1>
-
-					<WeatherAlert/>
-
+               {loggedIn&&( <div>
+				{user.userType === UserType.PLATFORM_MANAGER&&(
+						<WeatherAlert/>
+					)}
+				</div>)}
 				<Button
 					className="#tests-filter-button"
 					variant={openFilters ? "success" : "outline-success"}
@@ -42,6 +48,7 @@ const Hikes = () => {
 					Filters
 				</Button>
 			</Stack>
+
 			{/* Filters */}
 			{openFilters && (
 				<HikeFilters

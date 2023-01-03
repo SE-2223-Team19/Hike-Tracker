@@ -16,7 +16,7 @@ import { AuthContext } from "../../context/AuthContext";
 import { UserType } from "../../helper/enums";
 import { startHike } from "../../api/hikes";
 
-const HikeCard = ({ hike, setDirty }) => {
+const HikeCard = ({ hike, showDetails ,setDirty }) => {
 	const navigate = useNavigate();
 	// ** User (if user is not logged in and has not permission, he cannot see hike details)
 	const { loggedIn, user, setMessage } = useContext(AuthContext);
@@ -91,9 +91,7 @@ const HikeCard = ({ hike, setDirty }) => {
 											<NewHikeCondition hike={hike} setDirty={setDirty} />
 										)}
                                         
-                                        {user.userType === UserType.PLATFORM_MANAGER&&(
-											<WeatherAlert/>
-										)}
+                                    
 										<Button
 											data-test-id="seeOnMap"
 											onClick={() => showDetails(hike)}

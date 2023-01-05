@@ -23,6 +23,26 @@ async function getHikes(filters = {}) {
 	}
 }
 
+async function addRecordPoint(id, point) {
+	try {
+		const response = await fetch(
+			new URL(ENDPOINTS.registeredHikes.point.replace(":id", id), BACKEND_URL),
+			{
+				method: "PATCH",
+				credentials: "include",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({ point: point })
+			}
+		);
+		return await response.json();
+
+	} catch (err) {
+		return { error: err };
+	}
+}
+
 /**
  * Get a single hike by id
  * @param {string} id - Id of the hike to get
@@ -220,5 +240,6 @@ module.exports = {
 	getRegisteredHikesForUser,
 	updateHikeCondition,
 	getStats,
-	startHikePlanned
+	startHikePlanned,
+	addRecordPoint
 };

@@ -10,5 +10,6 @@ registeredHikeRouter.get("/stats/:id", isHiker, registeredHikeController.getStat
 registeredHikeRouter.patch("/startplan/:id", isHiker, registeredHikeController.startPlannedHike); // Update the entity in the database
 
 registeredHikeRouter.get("/:userId", isHiker, registeredHikeController.getRegisteredHikes);
+registeredHikeRouter.patch("/point/:id", isHiker, registeredHikeController.addRecordPoint)
 
 module.exports = registeredHikeRouter;

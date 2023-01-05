@@ -14,7 +14,8 @@ const ENDPOINTS = {
 		startplan: "registered-hike/startplan/:id",
 		end: "registered-hike/end/:id",
 		byUser: "registered-hike/:userId",
-		stats: "registered-hike/stats/:id"
+		stats: "registered-hike/stats/:id",
+		point: "registered-hike/point/:id"
 	},
 	locations: {
 		all: "location",

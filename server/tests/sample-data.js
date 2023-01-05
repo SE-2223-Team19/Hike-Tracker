@@ -61,7 +61,7 @@ const createHike = async (responseUserCreation) => {
 				description: "A test hike",
 				startPoint: null,
 				endPoint: null,
-				referencePoints: [],
+				referencePoints: [[45.177913, 7.083268]],
 				trackPoints: [
 					[45.177786, 7.083372],
 					[45.177913, 7.083268],

@@ -1,8 +1,8 @@
 import React, { useContext } from "react";
-import { Badge, Card, Image, Stack, Button } from "react-bootstrap";
+import { Badge, Card, Image, Stack, Button, Modal } from "react-bootstrap";
 import { BiRuler, BiTrendingUp, BiTime, BiPlay, BiStop } from "react-icons/bi";
 import { RegisteredHikeStatus } from "../../helper/enums";
-import { endHike, startHikePlanned } from "../../api/hikes";
+import { endHike, startHikePlanned, addRecordPoint } from "../../api/hikes";
 import {
 	capitalizeAndReplaceUnderscores,
 	ConditionColor,
@@ -11,12 +11,16 @@ import {
 	displayLength,
 	getRandomHikeThumbnail,
 } from "../../helper/utils";
+import { useState } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import { UserType } from "../../helper/enums";
+import RecordPoint from "../RecordPointForm";
 
 const RegisteredHikeCard = ({ registeredHike, setDirty }) => {
 	const { user, setMessage } = useContext(AuthContext);
 	const { hike, status } = registeredHike;
+	const [show, setShow] = useState(false)
+	const [point, setPoint] = useState(registeredHike.recordedPoints[registeredHike.recordedPoints.length - 1] ? [...registeredHike.recordedPoints[registeredHike.recordedPoints.length - 1]].reverse() : [0, 0])
 
 	const end = async () => {
 		const res = await endHike(registeredHike._id);
@@ -45,9 +49,39 @@ const RegisteredHikeCard = ({ registeredHike, setDirty }) => {
 		// ** Error
 		setMessage({ msg: "Error starting hike", type: "danger" });
 	};
+	const openModal = async () => {
+		setShow(true)
+	}
+
+	const checkNotPresence = async (point) => {
+		const recordedPoints = await registeredHike.recordedPoints
+		let flag = true
+		for (let i = 0; i < registeredHike.recordedPoints.length; i++) {
+			let currPoint = [...recordedPoints[i]].reverse()
+			if (currPoint[0] == point[0] && currPoint[1] == point[1]) {
+				console.log(currPoint, point)
+				flag = false
+			}
+		}
+		return flag
+	}
+
+	const record = async () => {
+
+		let res = null
+
+		for (let i = 0; i < point.index; i++) {
+			if (await checkNotPresence(registeredHike.hike.referencePoints[i]))
+				res = await addRecordPoint(registeredHike._id, [...registeredHike.hike.referencePoints[i]].reverse())
+		}
+		if (res !== null) {
+			setDirty(true);
+		}
+
+	}
 
 	return (
-		<Card className="flex-row p-3 mt-4">
+		<><Card className="flex-row p-3 mt-4">
 			<Image
 				src={
 					hike.thumbnail && hike.thumbnail.length >= 1
@@ -79,9 +113,14 @@ const RegisteredHikeCard = ({ registeredHike, setDirty }) => {
 					{registeredHike.status === RegisteredHikeStatus.ACTIVE && (
 						<Stack direction="horizontal" gap={4}>
 							<div className="ms-auto">
-								<Button variant="outline-danger" onClick={() => end()}>
-									Stop
-								</Button>
+								<Stack direction="horizontal" gap={4}>
+									<Button variant="outline-danger" onClick={() => end()}>
+										Stop
+									</Button>
+									{!(registeredHike.recordedPoints.length === registeredHike.hike.referencePoints.length) ? <Button variant="outline-danger" onClick={() => openModal()}>
+										Add new Point
+									</Button> : <></>}
+								</Stack>
 							</div>
 						</Stack>
 					)}
@@ -122,6 +161,19 @@ const RegisteredHikeCard = ({ registeredHike, setDirty }) => {
 				</Stack>
 			</Card.Body>
 		</Card>
+			<Modal show={show} >
+				<Modal.Header>
+					<Modal.Title>Record Point</Modal.Title>
+				</Modal.Header>
+				<Modal.Body>
+					<RecordPoint regHike={registeredHike} setPoint={setPoint} point={point} />
+				</Modal.Body>
+				<Modal.Footer>
+					<Button variant="secondary" onClick={() => setShow(false)}>Close</Button>
+					<Button variant="primary" onClick={async () => await record()}>Save changes</Button>
+				</Modal.Footer>
+			</Modal>
+		</>
 	);
 };
 

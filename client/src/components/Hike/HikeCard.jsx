@@ -36,7 +36,7 @@ const HikeCard = ({ hike, setDirty }) => {
 			return;
 		} else {
 			setMessage({
-				msg: "Hike started successfully, you can track it in your profile in the 'Registered Hikes' section",
+				msg: "Hike started successfully, you can track it in your profile in the 'Active Hikes' section",
 				type: "success",
 			});
 			return;
@@ -53,7 +53,7 @@ const HikeCard = ({ hike, setDirty }) => {
 		const plannedHike = await planHike(hike._id);
 		if (plannedHike.status !== undefined) {
 			setMessage({
-				msg: "Hike planned successfully, you can see it in your profile in the 'Plannad Hikes' section",
+				msg: "Hike planned successfully, you can see it in your profile in the 'Planned Hikes' section",
 				type: "success",
 			});
 		} else {

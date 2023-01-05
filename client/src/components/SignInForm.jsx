@@ -83,12 +83,15 @@ function SignInForm() {
 					userType,
 					password,
 					confirmPassword,
-					phone,
-					website
+				
 				};
 				if (userType === UserType.HUT_WORKER && hutsSelectedValidation()) {
 					setErrors({ ...errors, form: "" });
 					user = { ...user, hutsSelected };
+				}
+				if (userType === UserType.LOCAL_GUIDE) {
+					setErrors({ ...errors, form: "" });
+					user = { ...user, phone, website };
 				}
 
 				await createUser(user);

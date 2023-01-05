@@ -33,6 +33,15 @@ const RegisteredHikeStatus = {
 	COMPLETED: "completed",
 	CANCELLED: "cancelled",
 };
+const WeatherCondition = {
+
+	SUNNY : "sunny",
+	CLOUDY: "cloudy",
+	THUNDER_STORM: "thunder_storm",
+	WINDY: "windy",
+	BLIZZARD:"blizzard"
+
+}
 
 module.exports = {
 	Difficulty,
@@ -40,4 +49,5 @@ module.exports = {
 	UserType,
 	HikeCondition,
 	RegisteredHikeStatus,
+	WeatherCondition
 };

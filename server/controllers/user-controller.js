@@ -81,8 +81,10 @@ async function createUser(req, res) {
 				then: joi.array().items(joi.string()).min(1).required(),
 			}),
 
-			phone:  joi.number(),
-
+			phone:joi.alternatives().conditional("userType", {
+				is: UserType.LOCAL_GUIDE,
+				then: joi.number()
+			}),
 			website: joi.string()
 
 });

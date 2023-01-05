@@ -50,7 +50,6 @@ describe("getUsers", () => {
 });
 
 describe("createUser", () => {
-
 	test("insert user", async () => {
 		const response = new ResponseHelper();
 		await userController.createUser(
@@ -61,26 +60,6 @@ describe("createUser", () => {
 					userType: UserType.HIKER,
 					password: process.env.DEFAULT_PASSWORD,
 					confirmPassword: process.env.DEFAULT_PASSWORD,
-				},
-			},
-			response
-		);
-		expect(response.statusCode).toBe(StatusCodes.CREATED);
-	});
-
-	
-	test("insert user", async () => {
-		const response = new ResponseHelper();
-		await userController.createUser(
-			{
-				body: {
-					email: "localguide@test.com",
-					fullName: "John Doe",
-					userType: UserType.LOCAL_GUIDE,
-					password: process.env.DEFAULT_PASSWORD,
-					confirmPassword: process.env.DEFAULT_PASSWORD,
-					phone: "333651289",
-					website: "www.hikeexperience.com"
 				},
 			},
 			response

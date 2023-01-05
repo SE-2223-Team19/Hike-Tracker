@@ -1,10 +1,8 @@
 const ObjectId = require("mongoose").Types.ObjectId;
-const { WeatherCondition } = require("../models/enums");
 const Hike = require("../models/hike-model");
 const Image = require("../models/image-model");
 const Location = require("../models/location-model");
 const User = require("../models/user-model");
-const WeatherAlert = require("../models/weatherAlert-model")
 
 /**
  * @typedef {Object} HikeModel
@@ -254,10 +252,6 @@ async function getHikeById(id) {
  * @returns
  */
 async function updateHike(id, hikeUpdate) {
-
-console.log("id#####",id);
-console.log("hikeUpdate########",hikeUpdate);
-
 	if (hikeUpdate.trackPoints) {
 		hikeUpdate.trackPoints = {
 			type: "LineString",

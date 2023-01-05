@@ -2,8 +2,7 @@ const joi = require("joi");
 const ObjectId = require("mongoose").Types.ObjectId;
 const { StatusCodes } = require("http-status-codes");
 const hikeDAL = require("../data/hike-dal");
-const { Difficulty, LocationType, HikeCondition, WeatherCondition } = require("../models/enums");
-const { object } = require("joi");
+const { Difficulty, LocationType, HikeCondition } = require("../models/enums");
 
 /**
  * GET /hike
@@ -210,19 +209,17 @@ async function updateHikeCondition(req, res) {
 		if (error) throw error; // Joi validation error, goes to catch block
 
 		const hikeUpdated = await hikeDAL.updateHike(params.id, value);
-       
+
 		return res.status(StatusCodes.OK).json(hikeUpdated);
 	} catch (err) {
 		console.log(err);
 		return res.status(StatusCodes.BAD_REQUEST).json({ err: err.message, stack: err.stack });
 	}
 }
-
 module.exports = {
 	getHikes,
 	getHikeById,
 	createHike,
 	updateHike,
-	updateHikeCondition,
-	
+	updateHikeCondition
 };

@@ -1,7 +1,6 @@
-const { object } = require("joi");
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
-const { Difficulty, HikeCondition, WeatherCondition } = require("./enums");
+const { Difficulty, HikeCondition } = require("./enums");
 
 const trackSchema = new Schema({
 	type: {
@@ -36,7 +35,6 @@ const hikeSchema = new Schema(
 		hikeCondition: { type: String, enum: Object.values(HikeCondition) },
 		thumbnail: { type: Schema.Types.ObjectId, ref: "Image", required: false },
 		photos: [{ type: Schema.Types.ObjectId, ref: "Image", required: false }],
-		weatherAlert: [{ type: String, enum: Object.values(WeatherCondition)}]
 	},
 	{ timestamps: true }
 );

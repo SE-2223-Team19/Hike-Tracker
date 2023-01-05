@@ -32,7 +32,7 @@ const getApp = () => {
 	};
 	app.use(morgan("dev"));
 	app.use(cors(corsOptions));
-	app.use(express.json({limit: "50mb"}));
+	app.use(express.json({ limit: "50mb" }));
 	app.use(express.urlencoded({ extended: true }));
 
 	app.use(
@@ -68,16 +68,16 @@ async function runNotification() {
 	const notification = await notificationUser.getNotificationUser();
 	notification.forEach(async (notify) => {
 		const currUser = await user.getUserById(notify.user);
-		if(notify.timeToNotify != 0)
+		if (notify.timeToNotify != 0)
 			global.scheduledTask[notify.user] = setInterval(async () => {
 				await sendEmail({
 					to: currUser.email,
 					subject: `[${registeredHike.hike.title}] Unfinished Hike`,
 					html: `<p>The hike <b>${registeredHike.hike.title}<b> is not finished by you <b>${registeredHike.user.fullName}</p>`
 				})
-			},  notify.timeToNotify * 60000);
+			}, notify.timeToNotify * 60000);
 	});
-	
+
 }
 
 // Server setup and start

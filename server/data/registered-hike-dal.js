@@ -2,7 +2,7 @@ const ObjectId = require("mongoose").Types.ObjectId;
 const Hike = require("../models/hike-model");
 const RegisteredHike = require("../models/registered-hike-model");
 const { RegisteredHikeStatus } = require("../models/enums");
-
+const fetch = require("node-fetch");
 /**
  * Start a new hike, inserting the new registered hike in the database
  * @param {string} userId
@@ -65,12 +65,8 @@ async function registerPoint(hikeId, point) {
 		throw new Error("Hike not found");
 	}
 	registeredHike.recordedPoints.push(point)
-	registeredHike.timePoints.push(new Date(Date.now()).toString())
-<<<<<<< HEAD
+	registeredHike.timePoints.push(new Date(Date.now()))
 
-	return await RegisteredHike.findOneAndUpdate({ _id: hikeId }, { recordedPoints: registeredHike.recordedPoints, timePoints: registeredHike.timePoints }, { new: true })
-=======
-	
 	console.log(point)
 	let url = new URL("https://api.open-elevation.com/api/v1/lookup");
 	url.searchParams.append("locations", `${point[1]},${point[0]}`);
@@ -88,7 +84,6 @@ async function registerPoint(hikeId, point) {
 		altitudeRecordedPoints: registeredHike.altitudeRecordedPoints,
 		timePoints: registeredHike.timePoints
 	}, { new: true })
->>>>>>> victor-dev
 
 }
 

@@ -2,6 +2,8 @@ import { React, useState, useEffect, useContext } from "react";
 import { Container, Row, Col } from "react-bootstrap";
 import { BiTrendingUp, BiTime, BiWalk, BiMapAlt, BiRun, BiDirections } from "react-icons/bi";
 import { MdHiking } from "react-icons/md";
+import { TbMountain } from "react-icons/tb";
+import { GiHiking } from "react-icons/gi";
 import Loading from "../../components/Loading";
 import NoData from "../../components/NoData";
 import { useNavigate } from "react-router-dom";
@@ -35,7 +37,7 @@ const HikerStatistics = () => {
         <>
             <div className="w-100">
                 {loading && <Loading />}
-                {JSON.stringify(stats) === "{}" && !loading && (
+                {(JSON.stringify(stats) === "{}" || stats.numberHikes === 0) && !loading && (
                     <NoData message={"No statistics found."} />
                 )}
                 {!(JSON.stringify(stats) === "{}") && !loading && (
@@ -80,6 +82,17 @@ const Statistics = ({ stats }) => {
                     <Row>
 
                         <h5>
+                            <TbMountain /> Highest Altitude Reached
+                        </h5>
+                        <h6 >
+                            <CountUp end={stats.highestAltitudeReached}
+                                decimals={2}
+                                decimal="," /> m
+                        </h6>
+                    </Row>
+                    <Row>
+
+                        <h5>
                             <BiTrendingUp /> Highest Altitude Range
                         </h5>
                         <h6 >
@@ -88,6 +101,8 @@ const Statistics = ({ stats }) => {
                                 decimal="," /> m
                         </h6>
                     </Row>
+
+
                 </Col>
                 <Col>
                     <Row>
@@ -118,8 +133,6 @@ const Statistics = ({ stats }) => {
                                 decimal="," /> km
                         </h6>
                     </Row>
-                </Col>
-                <Col>
                     <Row>
                         <h5>
                             <BiTime /> Shortest Time Hike
@@ -128,6 +141,9 @@ const Statistics = ({ stats }) => {
                             <CountUp end={Math.floor(stats.shortestTimeHike)} /> h <CountUp end={Math.floor((stats.shortestTimeHike - Math.floor(stats.shortestTimeHike)) * 60)} /> min
                         </h6>
                     </Row>
+
+                </Col>
+                <Col>
                     <Row>
                         <h5>
                             <BiWalk /> Average Pace
@@ -138,6 +154,7 @@ const Statistics = ({ stats }) => {
                                 decimal="," /> min/km
                         </h6>
                     </Row>
+
                     <Row>
 
                         <h5>
@@ -147,6 +164,18 @@ const Statistics = ({ stats }) => {
                             <CountUp end={stats.fastestPacedHike}
                                 decimals={2}
                                 decimal="," /> min/km
+                        </h6>
+                    </Row>
+
+                    <Row>
+
+                        <h5>
+                            <GiHiking /> Average Vertical Ascent Speed
+                        </h5>
+                        <h6 >
+                            <CountUp end={stats.averageVerticalAscentSpeed}
+                                decimals={2}
+                                decimal="," /> m/hour
                         </h6>
                     </Row>
                 </Col>

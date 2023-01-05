@@ -137,7 +137,24 @@ const RegisteredHikeCard = ({ registeredHike, setDirty }) => {
 										) : (
 											<></>
 										)}
-									</Stack>
+										<div>
+										<OverlayTrigger
+											trigger={"click"}
+											overlay={(props) =>
+												<Tooltip {...props}>
+													Share link copied to clipboard
+												</Tooltip>
+											}
+										>
+											<Button
+												variant="outline-success"
+												onClick={() => copyUrlToClipboard()}
+											>
+												Share
+											</Button>
+										</OverlayTrigger>
+									</div>
+								</Stack>
 								</div>
 							</Stack>
 						)}

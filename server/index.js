@@ -31,7 +31,7 @@ const getApp = () => {
 	};
 	app.use(morgan("dev"));
 	app.use(cors(corsOptions));
-	app.use(express.json({limit: "50mb"}));
+	app.use(express.json({ limit: "50mb" }));
 	app.use(express.urlencoded({ extended: true }));
 
 	app.use(
@@ -71,7 +71,7 @@ async function runNotification() {
 			return;
 		taskScheduler.addUnfinishedHikeNotification(currUser, registeredHike.hike, notify.timeToNotify * 60000);
 	});
-	
+
 }
 
 // Server setup and start

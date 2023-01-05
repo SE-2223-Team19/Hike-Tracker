@@ -30,9 +30,6 @@ const ENDPOINTS = {
 		verify: "user/verify/:uniqueString",
 		preferences: "user/preferences",
 	},
-	weatherAlert: {
-		update: "weatherAlert/area"
-	}
 };
 
 /**

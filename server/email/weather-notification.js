@@ -11,7 +11,7 @@ const sendEmail = require("./send-email");
  async function sendWeatherNotificationEmail(email, geoCoordinates,geoRadius,weatherState) {
     const mailOptions = {
         to: email,
-        subject: "Weather news updates",
+        subject: "Weather updates",
         html: `<p> This area is reported with this condition:<p style="color:red;">geoCoordinates:${geoCoordinates}</p>
         <p style="color:blue;"> geoRadius:${geoRadius},</p><p style="color:green;"> weatherState=${weatherState}</p> </p>`
     };

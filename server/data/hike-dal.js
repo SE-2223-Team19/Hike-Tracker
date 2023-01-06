@@ -67,6 +67,13 @@ const WeatherAlert = require("../models/weatherAlert-model")
 const commonLookups = [
 	{
 		$lookup: {
+			from: WeatherAlert.collection.name,
+			localField: "trackPoints",
+			foreignField: "coordinates",
+			as: "AlertId",
+		
+	},
+		$lookup: {
 			from: Location.collection.name,
 			localField: "startPoint",
 			foreignField: "_id",
@@ -254,7 +261,7 @@ async function getHikeById(id) {
  * @returns
  */
 async function updateHike(id, hikeUpdate) {
-
+	
 console.log("id#####",id);
 console.log("hikeUpdate########",hikeUpdate);
 
@@ -264,7 +271,7 @@ console.log("hikeUpdate########",hikeUpdate);
 			coordinates: hikeUpdate.trackPoints.map((p) => [p[1], p[0]]),
 		};
 	}
-
+     
 	if (hikeUpdate.thumbnail) {
 		const thumbnail = await Image.create({ data: hikeUpdate.thumbnail });
 		hikeUpdate.thumbnail = thumbnail._id;

@@ -13,6 +13,8 @@ import WeatherAlert from "../components/Hike/NewWeatherAlert";
 import { AuthContext } from "../context/AuthContext";
 import { UserType } from "../helper/enums";
 import { useAsyncError } from "react-router-dom";
+import getWeatherAlertById from "../api/weatherAlert"
+import { useEffect } from "react";
 
 const Hikes = () => {
 	// ** State
@@ -21,8 +23,12 @@ const Hikes = () => {
 	const [showPositionFilter, setShowPositionFilter] = useState(false);
 	const [currentHike, setCurrentHike] = useState(null);
 	const [dirty, setDirty] = useState(false);
-
 	const {loggedIn, user } = useContext(AuthContext);
+  
+function updated(){
+	setDirty(true);
+}
+	
 
 	return (
 		<div className="w-100">
@@ -30,7 +36,7 @@ const Hikes = () => {
 				<h1 className="#tests-title">Hikes</h1>
                {loggedIn&&( <div>
 				{user.userType === UserType.PLATFORM_MANAGER&&(
-						<WeatherAlert/>
+						<WeatherAlert hikesUpdated={updated} />
 					)}
 				</div>)}
 				<Button

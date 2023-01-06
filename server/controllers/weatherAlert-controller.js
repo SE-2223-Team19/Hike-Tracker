@@ -8,18 +8,26 @@ const { object } = require("joi");
 
 
 
-
-
-
 async function updateWeatherAlert(req, res) {
 
-    //console.log("controller**************************",req);
+ 
  try {
-     // Validate request body
+     
      const { body } = req;
      
-     console.log("controller**************************",body);
-     //console.log("controller**************************",Mapchange);
+     
+	 const weatherkey = Object.keys(body)[0]
+	 const weather =  body[weatherkey]
+	 const radiuskey = Object.keys(body)[1]
+	 const radius =  body[radiuskey] 
+	 const coordinatesLatkey = Object.keys(body)[2]
+	 const coordinates=  body[coordinatesLatkey]
+	 
+	 console.log("controller**************************",body);
+     
+	 
+	//console.log("controller################",body);
+
 
      // Hike validation schema
      const schema = joi.object().keys({
@@ -46,5 +54,6 @@ async function updateWeatherAlert(req, res) {
 }
 
 module.exports = {
-    updateWeatherAlert
+    updateWeatherAlert,
+    
 }

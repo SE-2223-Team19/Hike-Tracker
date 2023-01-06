@@ -1,8 +1,9 @@
 const { ResponseHelper } = require("./setup");
 const userController = require("../controllers/user-controller");
 const hikeController = require("../controllers/hike-controller");
+const weatherAlertcontroller= require ("../controllers/weatherAlert-controller")
 const registeredHikeController = require("../controllers/registered-hike-controller");
-const { UserType, Difficulty } = require("../models/enums");
+const { UserType, Difficulty,WeatherCondition } = require("../models/enums");
 const dotenv = require("dotenv");
 
 dotenv.config();
@@ -105,10 +106,35 @@ const endHike = async (responseUserCreation, responseStartHikeCreation) => {
 	return endHikeResponse;
 };
 
+const updateWeatherAlert = async(responseUserCreation)=>{
+	const response = new ResponseHelper
+	await weatherAlertcontroller.updateWeatherAlert(
+		{
+			user: {
+				_id: response.responseBody.id,
+				userType: UserType.PLATFORM_MANAGER,
+				email: "hiker@test_PlatformManager@test.it.com",
+				fullName: "test_PlatformManager@test.it",
+			},
+			body: {
+				weatherAlert: WeatherCondition.BLIZZARD,
+				radius:50,
+				coordinates: [
+					[45.177786, 7.083372],
+					[45.177913, 7.083268],
+					[45.178044, 7.083159],
+				],
+			},
+		},
+		response
+	)
+}
+
 module.exports = {
 	createLocalGuide,
 	createHiker,
 	createHike,
 	startHike,
 	endHike,
+	updateWeatherAlert
 };

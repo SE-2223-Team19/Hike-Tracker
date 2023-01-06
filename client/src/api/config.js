@@ -31,7 +31,8 @@ const ENDPOINTS = {
 		preferences: "user/preferences",
 	},
 	weatherAlert: {
-		update: "weatherAlert/area"
+		update: "weatherAlert/area",
+		byId: "weatherAlert/:id"
 	}
 };
 

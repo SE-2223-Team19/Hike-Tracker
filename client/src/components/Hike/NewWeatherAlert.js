@@ -10,7 +10,7 @@ import { json } from "react-router-dom";
 import { WiDayRainMix } from "react-icons/wi";
 
 
-const WeatherAlert = ({ onRemoveFilter }) => {
+const WeatherAlert = ({ onRemoveFilter , hikesUpdated }) => {
     const [coordinates, setCoordinates] = useState([45.068370, 7.683070]);
     const [radius, setRadius] = useState(50); // Radius in meters
     console.log(radius);
@@ -31,7 +31,7 @@ const WeatherAlert = ({ onRemoveFilter }) => {
             coordinates : coordinates
         }
         
-        console.log("########",event._id);
+       
 
       //   for(var key in Mapchanges) {
       //     if(Mapchanges.hasOwnProperty(key)) {
@@ -45,6 +45,8 @@ const WeatherAlert = ({ onRemoveFilter }) => {
      
       await updateWeatherAlert(Mapchanges) 
         
+      hikesUpdated();
+      console.log("########",hikesUpdated);
         onHide()
 
     }

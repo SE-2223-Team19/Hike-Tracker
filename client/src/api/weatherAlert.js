@@ -2,7 +2,17 @@
 const { ENDPOINTS, BACKEND_URL } = require("./config");
 
 
-
+async function getWeatherAlertById(id) {
+	try {
+		const response = await fetch(new URL(ENDPOINTS.weatherAlert.byId.replace(":id", id), BACKEND_URL), {
+			credentials: "include",
+		});
+		if (response.ok) return await response.json();
+		throw await response.json();
+	} catch (err) {
+		console.error(err);
+	}
+}
 
 
 async function updateWeatherAlert(Mapchanges) {
@@ -30,5 +40,6 @@ async function updateWeatherAlert(Mapchanges) {
 }
 
 module.exports={
-    updateWeatherAlert
+    updateWeatherAlert,
+	getWeatherAlertById
 }

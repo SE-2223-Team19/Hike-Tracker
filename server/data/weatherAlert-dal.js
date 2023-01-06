@@ -1,4 +1,5 @@
 const ObjectId = require("mongoose").Types.ObjectId;
+const { db } = require("../models/hike-model");
 const Hike = require("../models/hike-model");
 const Image = require("../models/image-model");
 const Location = require("../models/location-model");
@@ -7,73 +8,70 @@ const WeatherAlert = require("../models/weatherAlert-model");
 
 
 
+async function getcoordinateHikes(coordinates){
+	
+	 const HikeWeather= await Hike.aggregate([{$geoNear: {
+		near: {
+			coordinates: coordinates,
+		}
+		,distanceField: "dist.calculated"
+		 
+   }},{ $project : { trackPoints:1 }}
 
-async function getWeatherAlertById(body) {
-    const radiuskey = Object.keys(body)[1]
-	const radiusValue =  body[radiuskey] 
-	const coordinatesLatkey = Object.keys(body)[2]
-	const coordinatesLatValue =  body[coordinatesLatkey]
-    const coordinateLngkey = Object.keys(body)[3]
-    const coordinateLngValue = body[coordinateLngkey]
-    // const Mapchange = {
-	// 	radius : radiusValue,
-	// 	coordinatesLat : coordinatesLatValue,
-    //     coordinateLngkey : coordinateLngValue
-	// }
-     
-    //if(Mapchange.radius<= radiusValue){}
-	const alert = await WeatherAlert.aggregate([
-		{
-			$match: {
-				radius: new ObjectId(radiusValue),
-                coordinatesLat : new ObjectId(coordinatesLatValue),
-                coordinateLngkey : new ObjectId(coordinateLngValue)
-			},
-		},
-		
-	]);
-
-	return alert;//[0];
+   
+])
+return HikeWeather
 }
 
-
-
-async function updateWeatherAlert(body) {
-
-	console.log("BODYinfo-DAL***********",body);
+async function updateWeatherAlert(body){
 
 	const weatherkey = Object.keys(body)[0]
 	const weatherValue =  body[weatherkey]
 	const radiuskey = Object.keys(body)[1]
 	const radiusValue =  body[radiuskey] 
-	const coordinatesLatkey = Object.keys(body)[2]
-	const coordinatesLatValue =  body[coordinatesLatkey]
-    const coordinateLngkey = Object.keys(body)[3]
-    const coordinateLngValue = body[coordinateLngkey]
-
-
-	const weather ={
-		weatherAlert : weatherValue
-	}
-	
+	const coordinateskey = Object.keys(body)[2]
+	const coordinates =  body[coordinateskey]
 	const Mapchange = new WeatherAlert({
         weatherAlert : weatherValue,
 		radius : radiusValue,
-		coordinates : [coordinatesLatValue,coordinateLngValue],
+		coordinates : coordinates,
         
 	})
+
+    const HikeTrackPoint=await getcoordinateHikes(coordinates)
+   let result =[];
+   HikeTrackPoint.forEach(Trackpoint => { 
+	let elemts= {
+		_id: Trackpoint._id,
+		coordinates: parseInt(Trackpoint.trackPoints.coordinates[0][1])
+	} 
+    const nearcorrdinateWeatherAlert=parseInt(coordinates[0])
+	if(elemts.coordinates==nearcorrdinateWeatherAlert){
+		result.push(elemts._id);
+		}	
+	}); 
+			   console.log("iiiidddddddddd#######",result);
+            
+   if(result.length === 0){
+
+	console.log("ssssaaaaveeeeee######");
+	const savedweather= await Mapchange.save()
+	return savedweather
 	
-
-	 
-     const savedWeatherAlert = await Mapchange.save();
-
-	 //const u = await WeatherAlert.findByIdAndUpdate(body, { new: true });
-    console.log("DAL-Updatedinfo**********",savedWeatherAlert);
-	return savedWeatherAlert  //await getWeatherAlertById(Mapchange)
+	}else{
+		result.forEach(async id=>{
+			const updatedweather=  await Hike.updateMany({  _id: id},
+				{$set: {weather: weatherValue}});
+			});	
+			let t = await Hike.findById(result[0])	
+			 console.log("updateeeepaaaart######",t);
+			 return "update has done" 
+	}	
 }
+
 
 
 module.exports={
     updateWeatherAlert,
-    getWeatherAlertById
+    
 }

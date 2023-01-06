@@ -10,7 +10,7 @@ import { json } from "react-router-dom";
 import { WiDayRainMix } from "react-icons/wi";
 
 
-const WeatherAlert = ({ onRemoveFilter , hikesUpdated }) => {
+const WeatherAlert = ({ onRemoveFilter , hikesUpdated , setDirty}) => {
     const [coordinates, setCoordinates] = useState([45.068370, 7.683070]);
     const [radius, setRadius] = useState(50); // Radius in meters
     console.log(radius);
@@ -44,9 +44,11 @@ const WeatherAlert = ({ onRemoveFilter , hikesUpdated }) => {
       // }
      
       await updateWeatherAlert(Mapchanges) 
-        
-      hikesUpdated();
+      setDirty(true)
+      //hikesUpdated();
       console.log("########",hikesUpdated);
+        setweather("")
+        setCity("Torino")
         onHide()
 
     }
@@ -72,7 +74,11 @@ const WeatherAlert = ({ onRemoveFilter , hikesUpdated }) => {
     const onHide = () => setshow(false);
    // const handleClose = () => setshow(false);
     const handleShow = () => setshow(true);
-
+    const resetcontent =() => {
+        setCity("Torino")
+        setweather("")
+        setshow(false)
+    }
     return (
         <>
         <Button variant="outline-info" style={{ borderRadius: 20 }} onClick={handleShow}>
@@ -133,8 +139,8 @@ const WeatherAlert = ({ onRemoveFilter , hikesUpdated }) => {
             </Modal.Body>
 
             <Modal.Footer>
-                <Button onClick={onRemoveFilter} variant={"danger"}>Remove</Button>
-                <Button onClick={onHide} variant={"secondary"}>Cancel</Button>
+                
+                <Button onClick={resetcontent} variant={"secondary"}>Cancel</Button>
                 <Button
                     data-test-id="position-ok-button"
                     onClick={handlesubmit} variant={"success"}>Ok</Button>

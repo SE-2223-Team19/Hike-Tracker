@@ -11,11 +11,13 @@ import {
 	displayExpectedTime,
 	displayLength,
 	getRandomHikeThumbnail,
+	weatherIcon,
 } from "../../helper/utils";
 import { AuthContext } from "../../context/AuthContext";
 import { UserType } from "../../helper/enums";
 import { startHike } from "../../api/hikes";
-
+import { IconContext } from "react-icons/lib";
+import { WiDaySunny } from 'react-icons/wi'
 const HikeCard = ({ hike, showDetails ,setDirty }) => {
 
 	const navigate = useNavigate();
@@ -67,6 +69,13 @@ const HikeCard = ({ hike, showDetails ,setDirty }) => {
 						<Stack direction="horizontal" className="justify-content-between align-items-center">
 						<Badge bg={ConditionColor(hike.hikeCondition)}>{hike.hikeCondition}</Badge>
 
+						</Stack>
+						
+						{/* <Badge bg={weathericon(hike.weather)}><WiDaySunny/></Badge> */}
+						{/* <IconContext.Provider value={weathericon(hike.weather)}><WiDaySunny/></IconContext.Provider> */}
+                        
+						<Stack>
+						<image>{weatherIcon(hike.weather[0])}</image>
 						</Stack>
 
 					</Card.Title>

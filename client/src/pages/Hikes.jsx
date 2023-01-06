@@ -36,7 +36,7 @@ function updated(){
 				<h1 className="#tests-title">Hikes</h1>
                {loggedIn&&( <div>
 				{user.userType === UserType.PLATFORM_MANAGER&&(
-						<WeatherAlert hikesUpdated={updated} />
+						<WeatherAlert hikesUpdated={updated} setDirty={setDirty}/>
 					)}
 				</div>)}
 				<Button

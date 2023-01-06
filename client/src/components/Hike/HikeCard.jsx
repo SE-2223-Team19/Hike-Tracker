@@ -28,11 +28,11 @@ const HikeCard = ({ hike, setDirty }) => {
 		}
 
 		const startedHike = await startHike(hike._id);
-		if (startedHike.status == undefined) {
+		if (startedHike.status === undefined) {
 			setMessage({
 				msg: "You have another active hike, you can see it on your profile page under 'Active hikes'",
 				type: "danger",
-			})
+			});
 			return;
 		} else {
 			setMessage({
@@ -109,12 +109,16 @@ const HikeCard = ({ hike, setDirty }) => {
 										<Button variant="dark" onClick={() => navigate("/hike", { state: { hike } })}>
 											Details
 										</Button>
-										{user.userType === UserType.HIKER && (<Button variant="outline-success" onClick={() => start()}>
-											Start
-										</Button>)}
-										{user.userType === UserType.HIKER && (<Button variant="info" onClick={() => plan()}>
-											Plan
-										</Button>)}
+										{user.userType === UserType.HIKER && (
+											<Button variant="outline-success" onClick={() => start()}>
+												Start
+											</Button>
+										)}
+										{user.userType === UserType.HIKER && (
+											<Button variant="info" onClick={() => plan()}>
+												Plan
+											</Button>
+										)}
 									</Stack>
 								)}
 							</div>

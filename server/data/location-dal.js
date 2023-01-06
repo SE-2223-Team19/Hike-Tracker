@@ -39,6 +39,14 @@ async function getLocations(page, pageSize, filterQuery = {}) {
 				},
 			},
 			{
+				$lookup: {
+					from: Image.collection.name,
+					localField: "photos",
+					foreignField: "_id",
+					as: "photos",
+				},
+			},
+			{
 				$facet: {
 					data: [
 						{
@@ -143,10 +151,20 @@ async function updateLocation(id, locationUpdate) {
 	return await getLocationById(id);
 }
 
+async function uploadHutPicture(id, image) {
+	const hut = await Hut.findById(id);
+	if (!hut) throw new Error("Hut not found");
+	const imageModel = await Image.create({ data: image });
+	hut.photos.push(imageModel._id);
+	await hut.save();
+	return hut;
+}
+
 module.exports = {
 	getLocations,
 	getLocationById,
 	createLocation,
 	updateLocationDescription,
 	updateLocation,
+	uploadHutPicture,
 };

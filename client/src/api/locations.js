@@ -87,7 +87,7 @@ async function updateLocationDescription(id, description) {
 			return response.json();
 		}
 	} catch (err) {
-		console.log(err)
+		console.log(err);
 	}
 }
 
@@ -99,18 +99,41 @@ async function updateLocation(id, location) {
 				method: "PATCH",
 				credentials: "include",
 				headers: {
-					"Content-Type": "application/json"
+					"Content-Type": "application/json",
 				},
-				body: JSON.stringify(location)
+				body: JSON.stringify(location),
 			}
-		)
-		if(response.ok) {
+		);
+		if (response.ok) {
 			return id;
 		} else {
-			return await response.json()
+			return await response.json();
 		}
-	} catch(err) {
-		console.log(err)
+	} catch (err) {
+		console.log(err);
+	}
+}
+
+async function uploadHutPicture(id, base64Image) {
+	try {
+		const response = await fetch(
+			new URL(ENDPOINTS.locations.uploadHutPicture.replace(":id", id), BACKEND_URL),
+			{
+				method: "PATCH",
+				credentials: "include",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({ base64Image: base64Image }),
+			}
+		);
+		if (response.ok) {
+			return id;
+		} else {
+			return response.json();
+		}
+	} catch (err) {
+		return { err: err };
 	}
 }
 
@@ -120,5 +143,6 @@ module.exports = {
 	createLocation,
 	getHuts,
 	getParkingLots,
-	updateLocation
+	updateLocation,
+	uploadHutPicture,
 };

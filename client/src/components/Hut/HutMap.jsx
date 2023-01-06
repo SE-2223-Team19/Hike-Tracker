@@ -2,7 +2,7 @@ import React from "react";
 import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
 import * as L from "leaflet";
 
-function HutMap({ hut }) {
+function HutMap({ hut, height = 100, zoom = 7 }) {
 	let markerLocation = new L.icon({
 		iconUrl: require("../../icons/markerLocation.png"),
 		iconSize: [35, 45],
@@ -17,9 +17,9 @@ function HutMap({ hut }) {
 	return (
 		<>
 			<MapContainer
-				style={{ width: "100%", height: "100px" }}
+				style={{ width: "100%", height }}
 				center={hut ? [...hut.point].reverse() : [0, 0]}
-				zoom={7}
+				zoom={zoom}
 				scrollWheelZoom={false}
 				zoomControl={false}
 				dragging={false}

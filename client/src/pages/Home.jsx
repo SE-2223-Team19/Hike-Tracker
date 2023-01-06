@@ -14,6 +14,7 @@ import { AuthContext } from "../context/AuthContext";
 import HikeDetail from "./HikeDetail";
 import HikerPreferences from "./profiles/HikerPreferences";
 import HikerRegisteredHikes from "./profiles/HikerRegisteredHikes";
+import HutDetail from "./HutDetail";
 
 const Home = () => {
 	const { message, setMessage } = useContext(AuthContext);
@@ -38,6 +39,7 @@ const Home = () => {
 					<Route path="/hike" element={<HikeDetail />} />
 					<Route path="/reference-point" element={<DefineReferencepage />} />
 					<Route path="/huts" element={<Huts />} />
+					<Route path="/hut" element={<HutDetail />} />
 					<Route path="/describe-hut" element={<DescribeHut />} />
 					<Route path="/parking-lots" element={<ParkingLots />} />
 					<Route path="/describe-parking" element={<DescribeParking />} />

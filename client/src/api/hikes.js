@@ -33,11 +33,10 @@ async function addRecordPoint(id, point) {
 				headers: {
 					"Content-Type": "application/json",
 				},
-				body: JSON.stringify({ point: point })
+				body: JSON.stringify({ point: point }),
 			}
 		);
 		return await response.json();
-
 	} catch (err) {
 		return { error: err };
 	}
@@ -229,6 +228,25 @@ async function getStats(id) {
 		console.error(err);
 	}
 }
+
+async function updateWeatherAlert(Mapchanges) {
+	//console.log(weather);
+	// console.log(Mapchanges);
+
+	try {
+		const response = await fetch(new URL(ENDPOINTS.weatherAlert.update, BACKEND_URL), {
+			method: "PATCH",
+			credentials: "include",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify(Mapchanges),
+		});
+		return await response.json();
+	} catch (err) {
+		console.error(err);
+	}
+}
 module.exports = {
 	getHikes,
 	getHikeById,
@@ -241,5 +259,6 @@ module.exports = {
 	updateHikeCondition,
 	getStats,
 	startHikePlanned,
-	addRecordPoint
+	addRecordPoint,
+	updateWeatherAlert,
 };

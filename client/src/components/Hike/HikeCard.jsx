@@ -2,6 +2,7 @@ import React, { useContext } from "react";
 import { Badge, Button, Card, Image, Stack } from "react-bootstrap";
 import { BiRuler, BiTrendingUp, BiTime } from "react-icons/bi";
 import NewHikeCondition from "./NewHikeCondition";
+import WeatherAlert from "./NewWeatherAlert"
 import { useNavigate } from "react-router-dom";
 import {
 	capitalizeAndReplaceUnderscores,
@@ -15,7 +16,7 @@ import { AuthContext } from "../../context/AuthContext";
 import { UserType } from "../../helper/enums";
 import { startHike, planHike } from "../../api/hikes";
 
-const HikeCard = ({ hike, setDirty }) => {
+const HikeCard = ({ hike, showDetails ,setDirty }) => {
 	const navigate = useNavigate();
 	// ** User (if user is not logged in and has not permission, he cannot see hike details)
 	const { loggedIn, user, setMessage } = useContext(AuthContext);
@@ -85,6 +86,7 @@ const HikeCard = ({ hike, setDirty }) => {
 						<Stack direction="horizontal" className="justify-content-between align-items-center">
 							<Badge bg={ConditionColor(hike.hikeCondition)}>{hike.hikeCondition}</Badge>
 						</Stack>
+
 					</Card.Title>
 					<>
 						<Stack direction="horizontal" gap={4} className="mt-4">
@@ -106,6 +108,15 @@ const HikeCard = ({ hike, setDirty }) => {
 										{user.userType === UserType.HUT_WORKER && (
 											<NewHikeCondition hike={hike} setDirty={setDirty} />
 										)}
+                                        
+                                    
+										<Button
+											data-test-id="seeOnMap"
+											onClick={() => showDetails(hike)}
+											variant={"success"}
+										>
+											See on Map
+										</Button>
 										<Button variant="dark" onClick={() => navigate("/hike", { state: { hike } })}>
 											Details
 										</Button>

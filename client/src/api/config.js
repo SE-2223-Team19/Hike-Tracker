@@ -22,6 +22,7 @@ const ENDPOINTS = {
 		byId: "location/:id",
 		insert: "location",
 		update: "location/:id",
+		uploadHutPicture: "location/hut-picture/:id",
 	},
 	sessions: {
 		insert: "session",
@@ -34,6 +35,9 @@ const ENDPOINTS = {
 		verify: "user/verify/:uniqueString",
 		preferences: "user/preferences",
 	},
+	weatherAlert: {
+		update: "weatherAlert/area"
+	}
 };
 
 /**

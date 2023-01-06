@@ -8,5 +8,6 @@ locationRouter.get("/:id", locationController.getLocationById);
 locationRouter.put("/:id", locationController.updateLocationDescription);
 locationRouter.post("/", isLocalGuide, locationController.createLocation);
 locationRouter.patch("/:id", isHutWorker, locationController.updateLocation);
+locationRouter.patch("/hut-picture/:id", isHutWorker, locationController.uploadHutPicture);
 
 module.exports = locationRouter;

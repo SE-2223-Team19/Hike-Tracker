@@ -18,9 +18,14 @@ import RecordPoint from "../RecordPointForm";
 
 const RegisteredHikeCard = ({ registeredHike, setDirty }) => {
 	const { user, setMessage } = useContext(AuthContext);
+	const [show, setShow] = useState(false);
 	const { _id, hike, status } = registeredHike;
-	const [show, setShow] = useState(false)
-	const [point, setPoint] = useState(registeredHike.recordedPoints[registeredHike.recordedPoints.length - 1] ? [...registeredHike.recordedPoints[registeredHike.recordedPoints.length - 1]].reverse() : [0, 0])
+
+	const [point, setPoint] = useState(
+		registeredHike.recordedPoints[registeredHike.recordedPoints.length - 1]
+			? [...registeredHike.recordedPoints[registeredHike.recordedPoints.length - 1]].reverse()
+			: [0, 0]
+	);
 
 	const end = async () => {
 		const res = await endHike(registeredHike._id);
@@ -50,155 +55,180 @@ const RegisteredHikeCard = ({ registeredHike, setDirty }) => {
 		setMessage({ msg: "Error starting hike", type: "danger" });
 	};
 	const openModal = async () => {
-		setShow(true)
-	}
+		setShow(true);
+	};
 
 	const checkNotPresence = async (point) => {
-		const recordedPoints = await registeredHike.recordedPoints
-		let flag = true
+		const recordedPoints = await registeredHike.recordedPoints;
+		let flag = true;
 		for (let i = 0; i < registeredHike.recordedPoints.length; i++) {
-			let currPoint = [...recordedPoints[i]].reverse()
-			if (currPoint[0] == point[0] && currPoint[1] == point[1]) {
-				console.log(currPoint, point)
-				flag = false
+			let currPoint = [...recordedPoints[i]].reverse();
+			if (currPoint[0] === point[0] && currPoint[1] === point[1]) {
+				console.log(currPoint, point);
+				flag = false;
 			}
 		}
-		return flag
-	}
+		return flag;
+	};
 
 	const record = async () => {
-
-		let res = null
+		let res = null;
 
 		for (let i = 0; i < point.index; i++) {
 			if (await checkNotPresence(registeredHike.hike.referencePoints[i]))
-				res = await addRecordPoint(registeredHike._id, [...registeredHike.hike.referencePoints[i]].reverse())
+				res = await addRecordPoint(
+					registeredHike._id,
+					[...registeredHike.hike.referencePoints[i]].reverse()
+				);
 		}
 		if (res !== null) {
 			setDirty(true);
 		}
+	};
 
-	}
 	const copyUrlToClipboard = async () => {
 		await navigator.clipboard.writeText(`https://localhost:3000/registered-hike/${_id}`);
 	};
 
 	return (
-		<><Card className="flex-row p-3 mt-4">
-			<Image
-				src={
-					hike.thumbnail && hike.thumbnail.length >= 1
-						? hike.thumbnail[0].data
-						: getRandomHikeThumbnail()
-				}
-				alt="hike"
-				fluid
-				height="100%"
-				width="20%"
-				rounded
-				style={{ maxHeight: "150px", objectFit: "cover" }}
-				className="d-none d-lg-block" // Hide image on small screens
-			/>
-			<Card.Body className="py-0">
-				<Stack className="h-100" style={{ justifyContent: "space-between" }}>
-					<Card.Title>
-						<Stack direction="horizontal" className="justify-content-between align-items-center">
-							<h5>{hike.title}</h5>
-							<Badge bg={ConditionColor(hike.hikeCondition)}>{hike.hikeCondition}</Badge>{" "}
-							<Badge bg={difficultyToColor(hike.difficulty)}>
-								{capitalizeAndReplaceUnderscores(hike.difficulty)}
-							</Badge>
-							<Badge bg={status === "active" ? "danger" : "success"}>
-								{capitalizeAndReplaceUnderscores(status.toString())}
-							</Badge>
-						</Stack>
-					</Card.Title>
-					{registeredHike.status === RegisteredHikeStatus.ACTIVE && (
-						<Stack direction="horizontal" gap={4}>
-							<div className="ms-auto">
-								<Stack direction="horizontal" gap={4}>
-									<Button variant="outline-danger" onClick={() => end()}>
-										Stop
-									</Button>
-									{!(registeredHike.recordedPoints.length === registeredHike.hike.referencePoints.length) ? <Button variant="outline-danger" onClick={() => openModal()}>
-										Add new Point
-									</Button> : <></>}
-									<div>
-										<OverlayTrigger
-											trigger={"click"}
-											overlay={(props) =>
-												<Tooltip {...props}>
-													Share link copied to clipboard
-												</Tooltip>
-											}
-										>
-											<Button
-												variant="outline-success"
-												onClick={() => copyUrlToClipboard()}
-											>
-												Share
+		<>
+			<Card className="flex-row p-3 mt-4">
+				<Image
+					src={
+						hike.thumbnail && hike.thumbnail.length >= 1
+							? hike.thumbnail[0].data
+							: getRandomHikeThumbnail()
+					}
+					alt="hike"
+					fluid
+					height="100%"
+					width="20%"
+					rounded
+					style={{ maxHeight: "150px", objectFit: "cover" }}
+					className="d-none d-lg-block" // Hide image on small screens
+				/>
+				<Card.Body className="py-0">
+					<Stack className="h-100" style={{ justifyContent: "space-between" }}>
+						<Card.Title>
+							<Stack direction="horizontal" className="justify-content-between align-items-center">
+								<h5>{hike.title}</h5>
+								<Badge bg={ConditionColor(hike.hikeCondition)}>{hike.hikeCondition}</Badge>{" "}
+								<Badge bg={difficultyToColor(hike.difficulty)}>
+									{capitalizeAndReplaceUnderscores(hike.difficulty)}
+								</Badge>
+								<Badge bg={status === "active" ? "danger" : "success"}>
+									{capitalizeAndReplaceUnderscores(status.toString())}
+								</Badge>
+							</Stack>
+						</Card.Title>
+						{registeredHike.status === RegisteredHikeStatus.ACTIVE && (
+							<Stack direction="horizontal" gap={4}>
+								<div className="ms-auto">
+									<Stack direction="horizontal" gap={4}>
+										<Button variant="outline-danger" onClick={() => end()}>
+											Stop
+										</Button>
+										{!(
+											registeredHike.recordedPoints.length ===
+											registeredHike.hike.referencePoints.length
+										) ? (
+											<Button variant="outline-danger" onClick={() => openModal()}>
+												Add new Point
 											</Button>
-										</OverlayTrigger>
-									</div>
-								</Stack>
-							</div>
-						</Stack>
-					)}
-					{registeredHike.status === RegisteredHikeStatus.PLANNED && (
-						<Stack direction="horizontal" gap={4}>
-							<div className="ms-auto">
-								<Button variant="outline-success" onClick={() => start()}>
-									Start
-								</Button>
-							</div>
-							<div>
-								<OverlayTrigger
-									trigger={"click"}
-									overlay={(props) =>
-										<Tooltip {...props}>
-											Share link copied to clipboard
-										</Tooltip>
-									}
-								>
-									<Button
-										variant="outline-success"
-										onClick={() => copyUrlToClipboard()}
-									>
-										Share
-									</Button>
-								</OverlayTrigger>
-							</div>
-						</Stack>
-					)}
-					<Stack direction="horizontal" gap={4}>
-						<div className="d-flex flex-row">
-							<BiRuler size={24} />
-							<span className="ms-1">{displayLength(hike.length)} Km</span>
-						</div>
-						<div className="d-flex flex-row">
-							<BiTrendingUp size={24} />
-							<span className="ms-1">{hike.ascent.toFixed(2)} m</span>
-						</div>
-						<div className="d-flex flex-row">
-							<BiTime size={24} />
-							<span className="ms-1">{displayExpectedTime(hike.expectedTime)}</span>
-						</div>
-						{registeredHike.status !== RegisteredHikeStatus.PLANNED &&
-							<div className="d-flex flex-row ms-auto">
-								<BiPlay size={24} />
-								<span className="ms-1">{new Date(registeredHike.startTime).toUTCString()}</span>
-							</div>}
-						{registeredHike.status === RegisteredHikeStatus.COMPLETED && (
-							<div className="d-flex flex-row">
-								<BiStop size={24} />
-								<span className="ms-1">{new Date(registeredHike.endTime).toUTCString()}</span>
-							</div>
+										) : (
+											<></>
+										)}
+										<div>
+											<OverlayTrigger
+												trigger={"click"}
+												overlay={(props) => (
+													<Tooltip {...props}>Share link copied to clipboard</Tooltip>
+												)}
+											>
+												<Button variant="outline-success" onClick={() => copyUrlToClipboard()}>
+													Share
+												</Button>
+											</OverlayTrigger>
+										</div>
+									</Stack>
+								</div>
+							</Stack>
 						)}
+						{registeredHike.status === RegisteredHikeStatus.PLANNED && (
+							<Stack direction="horizontal" gap={4}>
+								<div className="ms-auto">
+									<Button variant="outline-success" onClick={() => start()}>
+										Start
+									</Button>
+								</div>
+								<div>
+									<OverlayTrigger
+										trigger={"click"}
+										overlay={(props) => (
+											<Tooltip {...props}>Share link copied to clipboard</Tooltip>
+										)}
+									>
+										<Button variant="outline-success" onClick={() => copyUrlToClipboard()}>
+											Share
+										</Button>
+									</OverlayTrigger>
+								</div>
+							</Stack>
+						)}
+						<Stack direction="horizontal" gap={4}>
+							<div className="d-flex flex-row">
+								<BiRuler size={24} />
+								<span className="ms-1">{displayLength(hike.length)} Km</span>
+							</div>
+							<div className="d-flex flex-row">
+								<BiTrendingUp size={24} />
+								<span className="ms-1">{hike.ascent.toFixed(2)} m</span>
+							</div>
+							<div className="d-flex flex-row">
+								<BiTime size={24} />
+								<span className="ms-1">{displayExpectedTime(hike.expectedTime)}</span>
+							</div>
+							{registeredHike.status !== RegisteredHikeStatus.PLANNED && (
+								<div className="d-flex flex-row ms-auto">
+									<BiPlay size={24} />
+									<span className="ms-1">{new Date(registeredHike.startTime).toUTCString()}</span>
+								</div>
+							)}
+							{registeredHike.status === RegisteredHikeStatus.COMPLETED && (
+								<div className="d-flex flex-row">
+									<BiStop size={24} />
+									<span className="ms-1">{new Date(registeredHike.endTime).toUTCString()}</span>
+								</div>
+							)}
+							<Stack direction="horizontal" gap={4}>
+								<div className="d-flex flex-row">
+									<BiRuler size={24} />
+									<span className="ms-1">{displayLength(hike.length)} Km</span>
+								</div>
+								<div className="d-flex flex-row">
+									<BiTrendingUp size={24} />
+									<span className="ms-1">{hike.ascent.toFixed(2)} m</span>
+								</div>
+								<div className="d-flex flex-row">
+									<BiTime size={24} />
+									<span className="ms-1">{displayExpectedTime(hike.expectedTime)}</span>
+								</div>
+								<div className="d-flex flex-row ms-auto">
+									<BiPlay size={24} />
+									<span className="ms-1">{new Date(registeredHike.startTime).toUTCString()}</span>
+								</div>
+								{registeredHike.status === RegisteredHikeStatus.COMPLETED && (
+									<div className="d-flex flex-row">
+										<BiStop size={24} />
+										<span className="ms-1">{new Date(registeredHike.endTime).toUTCString()}</span>
+									</div>
+								)}
+							</Stack>
+						</Stack>
 					</Stack>
-				</Stack>
-			</Card.Body>
-		</Card>
-			<Modal show={show} >
+				</Card.Body>
+			</Card>
+			<Modal show={show}>
 				<Modal.Header>
 					<Modal.Title>Record Point</Modal.Title>
 				</Modal.Header>
@@ -206,8 +236,12 @@ const RegisteredHikeCard = ({ registeredHike, setDirty }) => {
 					<RecordPoint regHike={registeredHike} setPoint={setPoint} point={point} />
 				</Modal.Body>
 				<Modal.Footer>
-					<Button variant="secondary" onClick={() => setShow(false)}>Close</Button>
-					<Button variant="primary" onClick={async () => await record()}>Save changes</Button>
+					<Button variant="secondary" onClick={() => setShow(false)}>
+						Close
+					</Button>
+					<Button variant="primary" onClick={async () => await record()}>
+						Save changes
+					</Button>
 				</Modal.Footer>
 			</Modal>
 		</>

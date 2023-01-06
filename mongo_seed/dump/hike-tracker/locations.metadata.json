@@ -1,1 +1,43 @@
-{"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_"}],"uuid":"b322b69ee85e4fa0849c039e5d564a6a","collectionName":"locations","type":"collection"}
+<<<<<<< HEAD
+{
+    "indexes": [
+        {
+            "v": {
+                "$numberInt": "2"
+            },
+            "key": {
+                "_id": {
+                    "$numberInt": "1"
+                }
+            },
+            "name": "_id_"
+        },
+        {
+            "v": {
+                "$numberInt": "2"
+            },
+            "key": {
+                "point": "2dsphere"
+            },
+            "name": "point_2dsphere",
+            "background": true,
+            "2dsphereIndexVersion": {
+                "$numberInt": "3"
+            }
+        }
+    ],
+    "uuid": "b322b69ee85e4fa0849c039e5d564a6a",
+    "collectionName": "locations",
+    "type": "collection"
+}
+=======
+<<<<<<< HEAD
+<<<<<<< HEAD
+{"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_"},{"v":{"$numberInt":"2"},"key":{"point":"2dsphere"},"name":"point_2dsphere","background":true,"2dsphereIndexVersion":{"$numberInt":"3"}}],"uuid":"b322b69ee85e4fa0849c039e5d564a6a","collectionName":"locations","type":"collection"}
+=======
+{"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_"},{"v":{"$numberInt":"2"},"key":{"point":"2dsphere"},"name":"point_2dsphere","background":true,"2dsphereIndexVersion":{"$numberInt":"3"}}],"uuid":"c039f238461148e3812af0400fcdd402","collectionName":"locations","type":"collection"}
+>>>>>>> origin/start-hike-lorenzo
+=======
+{"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_"},{"v":{"$numberInt":"2"},"key":{"point":"2dsphere"},"name":"point_2dsphere","background":true,"2dsphereIndexVersion":{"$numberInt":"3"}}],"uuid":"b322b69ee85e4fa0849c039e5d564a6a","collectionName":"locations","type":"collection"}
+>>>>>>> development
+>>>>>>> development

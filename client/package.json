@@ -11,6 +11,7 @@
     "formik": "^2.2.9",
     "gpxparser": "^3.0.8",
     "react-bootstrap": "^2.6.0",
+    "react-countup": "^6.4.0",
     "react-hot-toast": "^2.4.0",
     "react-icons": "^4.6.0",
     "react-leaflet": "^4.1.0",

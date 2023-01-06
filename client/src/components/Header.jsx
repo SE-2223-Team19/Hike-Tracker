@@ -56,28 +56,12 @@ const Header = () => {
 								<Dropdown.Item
 									data-test-id="profile-button"
 									onClick={() => {
-										if (user.userType === UserType.HIKER) {
-											navigate("/profile/preferences");
-											return;
-										}
 										navigate("/profile");
 									}}
 									className="dropdown-item"
 								>
 									Profile
 								</Dropdown.Item>
-								{
-									user.userType === UserType.HIKER &&
-									<Dropdown.Item
-										data-test-id="profile-button"
-										onClick={() => {
-											navigate("/profile/registered-hikes");
-										}}
-										className="dropdown-item"
-									>
-										Recorded Hikes
-									</Dropdown.Item>
-								}
 								<Dropdown.Divider></Dropdown.Divider>
 								<Dropdown.Item onClick={handleLogout} className="text-danger">
 									Logout

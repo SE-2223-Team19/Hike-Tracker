@@ -10,14 +10,19 @@ const ENDPOINTS = {
 	},
 	registeredHikes: {
 		start: "registered-hike/start/:id",
+		plan: "registered-hike/plan/:id",
+		startplan: "registered-hike/startplan/:id",
 		end: "registered-hike/end/:id",
 		byUser: "registered-hike/:userId",
+		stats: "registered-hike/stats/:id",
+		point: "registered-hike/point/:id"
 	},
 	locations: {
 		all: "location",
 		byId: "location/:id",
 		insert: "location",
 		update: "location/:id",
+		uploadHutPicture: "location/hut-picture/:id",
 	},
 	sessions: {
 		insert: "session",

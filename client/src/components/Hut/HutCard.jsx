@@ -1,16 +1,18 @@
 import React from "react";
-import { Card, Col, Image, Stack } from "react-bootstrap";
+import { Card, Image, Stack, Button, Col } from "react-bootstrap";
 import HutMap from "./HutMap";
 import { FaBed } from "react-icons/fa";
 import { BiPhone, BiGlobe } from "react-icons/bi";
 import { TbMail } from "react-icons/tb";
+import { useNavigate } from "react-router-dom";
+import HutIcon from "./HutIcon";
 
-const HutCard = ({ hut, user, setCurrentHut, setShow }) => {
-	console.log(hut);
+const HutCard = ({ hut }) => {
+	const navigate = useNavigate();
 
 	return (
-		<Col>
-			<Card className="mt-4 p-3">
+		<Col md={6} xs={12}>
+			<Card className="mx-0 mt-4 p-3 w-100">
 				<h4>{hut.name}</h4>
 				<Image
 					src={hut.thumbnail.length >= 1 ? hut.thumbnail[0].data : ""}
@@ -27,20 +29,12 @@ const HutCard = ({ hut, user, setCurrentHut, setShow }) => {
 					<HutIcon icon={<BiPhone size={24} />} text={`${hut.phone}`} />
 					<HutIcon icon={<BiGlobe size={24} />} text={`${hut.webSite}`} />
 					<HutIcon icon={<TbMail size={24} />} text={`${hut.email}`} />
+					<Button variant="dark" onClick={() => navigate("/hut", { state: { hut } })}>
+						Details
+					</Button>
 				</Stack>
 			</Card>
 		</Col>
-	);
-};
-
-const HutIcon = ({ icon, text }) => {
-	return (
-		<Stack direction="horizontal" gap={4}>
-			<div className="d-flex flex-row">
-				{icon}
-				<span className="ms-2">{text}</span>
-			</div>
-		</Stack>
 	);
 };
 

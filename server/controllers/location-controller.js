@@ -200,7 +200,7 @@ async function updateLocation(req, res) {
 			}),
 			webSite: joi.alternatives().conditional("locationType", {
 				is: LocationType.HUT,
-				then: joi.string().uri().allow(""),
+				then: joi.string().allow(""),
 			}),
 			description: joi.string(),
 		});
@@ -217,10 +217,23 @@ async function updateLocation(req, res) {
 	}
 }
 
+async function uploadHutPicture(req, res) {
+	try {
+		const { params, body } = req;
+
+		const id = params.id;
+		const result = await locationDAL.uploadHutPicture(id, body.base64Image);
+		return res.status(StatusCodes.OK).json(result);
+	} catch (err) {
+		return res.status(StatusCodes.BAD_REQUEST).json({ err: err.message });
+	}
+}
+
 module.exports = {
 	getLocations,
 	getLocationById,
 	createLocation,
 	updateLocationDescription,
 	updateLocation,
+	uploadHutPicture,
 };

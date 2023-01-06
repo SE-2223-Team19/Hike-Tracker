@@ -2,7 +2,7 @@ const ObjectId = require("mongoose").Types.ObjectId;
 const Hike = require("../models/hike-model");
 const RegisteredHike = require("../models/registered-hike-model");
 const { RegisteredHikeStatus } = require("../models/enums");
-
+const fetch = require("node-fetch");
 /**
  * Start a new hike, inserting the new registered hike in the database
  * @param {string} userId
@@ -28,6 +28,65 @@ async function insert(userId, hikeId) {
 	return registeredHike;
 }
 
+
+/**
+ * Plan a new hike, inserting the new registered hike in the database
+ * @param {string} userId
+ * @param {string} hikeId
+ * @returns Newly created registered hike
+ */
+async function insertPlan(userId, hikeId) {
+
+	const hike = await Hike.findById(hikeId);
+	if (!hike) {
+		throw new Error("Hike not found");
+	}
+
+	const registeredHike = await RegisteredHike.create({
+		hike: ObjectId(hikeId),
+		user: ObjectId(userId),
+		status: RegisteredHikeStatus.PLANNED,
+		startTime: new Date(), // Can be omitted, because there's the createdAt field by default
+	});
+	return registeredHike;
+}
+
+/**
+ * Add new Point to record points into registeredHikes
+ * @param {string} hikeId Id of the RegisteredHike
+ * @param {Array} point Array as point object as [Lon, Lat]
+ * @returns The updated registered hike
+ */
+
+async function registerPoint(hikeId, point) {
+
+	const registeredHike = await RegisteredHike.findById(hikeId)
+	if (!registeredHike) {
+		throw new Error("Hike not found");
+	}
+	registeredHike.recordedPoints.push(point)
+	registeredHike.timePoints.push(new Date(Date.now()))
+
+	console.log(point)
+	let url = new URL("https://api.open-elevation.com/api/v1/lookup");
+	url.searchParams.append("locations", `${point[1]},${point[0]}`);
+	const res = await fetch(url);
+	if (res.ok) {
+		const body = await res.json();
+		if (body.results && body.results.length === 1) {
+			registeredHike.altitudeRecordedPoints.push(body.results[0].elevation)
+		}
+	}
+
+	registeredHike.altitudeRecordedPoints.push()
+	return await RegisteredHike.findOneAndUpdate({ _id: hikeId }, {
+		recordedPoints: registeredHike.recordedPoints,
+		altitudeRecordedPoints: registeredHike.altitudeRecordedPoints,
+		timePoints: registeredHike.timePoints
+	}, { new: true })
+
+}
+
 /**
  * Sets the status to COMPLETED
  * @param {string} id Id of the RegisteredHike
@@ -40,6 +99,21 @@ async function completeRegisteredHike(id) {
 	if (registeredHike.status === RegisteredHikeStatus.ACTIVE) {
 		registeredHike.status = RegisteredHikeStatus.COMPLETED;
 		registeredHike.endTime = new Date();
+	}
+	return await registeredHike.save();
+}
+
+/**
+ * Sets the status to ACTIVE from PLANNED
+ * @param {string} id Id of the RegisteredHike
+ * @returns The saved hike
+ */
+async function startPlannedHike(id) {
+	const registeredHike = await RegisteredHike.findById(id);
+	if (registeredHike === null)
+		return null;
+	if (registeredHike.status === RegisteredHikeStatus.PLANNED) {
+		registeredHike.status = RegisteredHikeStatus.ACTIVE;
 	}
 	return await registeredHike.save();
 }
@@ -106,11 +180,20 @@ async function getRegisteredHikeByUserId(userId) {
 	return registeredHikes;
 }
 
+async function getCompletedRegisteredHikeByUserId(userId) {
+	const registeredHikes = await RegisteredHike.find({ user: new ObjectId(userId), status: RegisteredHikeStatus.COMPLETED }).populate("hike");
+	return registeredHikes;
+}
+
 module.exports = {
 	insert,
+	insertPlan,
 	completeRegisteredHike,
+	startPlannedHike,
 	cancelRegisteredHike,
 	userHasActiveRecordedHikes,
 	addBuddyToRegisteredHike,
 	getRegisteredHikeByUserId,
+	getCompletedRegisteredHikeByUserId,
+	registerPoint
 };

@@ -2,7 +2,9 @@ const joi = require("joi");
 const ObjectId = require("mongoose").Types.ObjectId;
 const { StatusCodes } = require("http-status-codes");
 const weatherAlertDAL = require("../data/weatherAlert-dal");
-const { WeatherCondition } = require("../models/enums");
+const userDAL = require("../data/user-dal");
+const {sendWeatherNotificationEmail} = require("../email/weather-notification")
+const { WeatherCondition, UserType } = require("../models/enums");
 const { object } = require("joi");
 
 
@@ -31,6 +33,14 @@ async function updateWeatherAlert(req, res) {
      if (error) throw error; // Joi validation error, goes to catch block
 
      const WeatherUpdated = await weatherAlertDAL.updateWeatherAlert(value);
+
+     const users= await userDAL.getUsers({})
+     users.forEach(user =>{
+        if(user.userType=== UserType.HIKER) {
+            sendWeatherNotificationEmail(user.email,WeatherUpdated.coordinates,WeatherUpdated.radius,WeatherUpdated.weatherAlert)
+        }
+     })
+
 
      return res.status(StatusCodes.OK).json(WeatherUpdated);
  } catch (err) {

@@ -44,6 +44,8 @@ describe("Registered Hike", () => {
 				userType: UserType.HIKER
 			}
 		}, new ResponseHelper());
+
+
 		expect(getRegisteredHikesResponse.statusCode).toBe(StatusCodes.OK);
 		expect(getRegisteredHikesResponse.responseBody.length).toBe(1);
 	});
@@ -156,7 +158,7 @@ describe("Registered Hike", () => {
 		// Check if the response is correct
 		expect(endHikeResponse.statusCode).toBe(StatusCodes.NOT_FOUND);
 	});
-	
+
 	test("Buddies notified at end of hike", async () => {
 		// Create local guide
 		const localguideReponse = await createLocalGuide();
@@ -203,4 +205,42 @@ describe("Registered Hike", () => {
 		const endHikeResponse = await endHike(hikerResponse, startHikeResponse);
 		expect(endHikeResponse.statusCode).toBe(StatusCodes.INTERNAL_SERVER_ERROR);
 	});
+
+	test("Add record point from users", async () => {
+
+		const localguideReponse = await createLocalGuide();
+
+		// Create hike
+		const hikeResponse = await createHike(localguideReponse);
+
+		// Create hiker
+		const hikerResponse = await createHiker();
+
+		// Start hike
+		const startHikeResponse = await startHike(hikerResponse, hikeResponse);
+
+		// Check if the response is correct
+		expect(startHikeResponse.statusCode).toBe(StatusCodes.CREATED);
+
+		const referencePoint = hikeResponse.responseBody.referencePoints[0]
+		const hikeID = startHikeResponse.responseBody._id.toString()
+		const responsePointRecord = new ResponseHelper()
+
+		await registerHikeController.addRecordPoint({
+			params: {
+				id: hikeID
+			},
+			body: {
+				point: referencePoint
+			}
+			
+		}, responsePointRecord)
+
+		expect(responsePointRecord.statusCode).toBe(StatusCodes.OK);
+		
+	})
+	
+
 });
+
+

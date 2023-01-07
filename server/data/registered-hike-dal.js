@@ -29,6 +29,42 @@ async function insert(userId, hikeId) {
 }
 
 /**
+ * Add new Point to record points into registeredHikes
+ * @param {string} hikeId Id of the RegisteredHike
+ * @param {Array} point Array as point object as [Lon, Lat]
+ * @returns The updated registered hike
+ */
+
+async function registerPoint(hikeId, point) {
+
+	const registeredHike = await RegisteredHike.findById(hikeId)
+	if (!registeredHike) {
+		throw new Error("Hike not found");
+	}
+	registeredHike.recordedPoints.push(point)
+	registeredHike.timePoints.push(new Date(Date.now()).toString())
+	
+	console.log(point)
+	let url = new URL("https://api.open-elevation.com/api/v1/lookup");
+	url.searchParams.append("locations", `${point[1]},${point[0]}`);
+	const res = await fetch(url);
+	if (res.ok) {
+		const body = await res.json();
+		if (body.results && body.results.length === 1) {
+			registeredHike.altitudeRecordedPoints.push(body.results[0].elevation)
+		}
+	}
+
+	registeredHike.altitudeRecordedPoints.push()
+	return await RegisteredHike.findOneAndUpdate({ _id: hikeId }, {
+		recordedPoints: registeredHike.recordedPoints,
+		altitudeRecordedPoints: registeredHike.altitudeRecordedPoints,
+		timePoints: registeredHike.timePoints
+	}, { new: true })
+
+}
+
+/**
  * Sets the status to COMPLETED
  * @param {string} id Id of the RegisteredHike
  * @returns The saved hike
@@ -113,4 +149,5 @@ module.exports = {
 	userHasActiveRecordedHikes,
 	addBuddyToRegisteredHike,
 	getRegisteredHikeByUserId,
+	registerPoint
 };

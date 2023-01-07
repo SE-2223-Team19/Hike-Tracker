@@ -10,6 +10,8 @@ const MONGO_DB = process.env.MONGO_DB || "hike-tracker";
 
 const MONGO_URI = `mongodb://${MONGO_HOST}:${MONGO_PORT}/${MONGO_DB}`;
 
+
+
 const runDb = async () => {
 	await mongoose.connect(MONGO_URI)
 		.then(() => {

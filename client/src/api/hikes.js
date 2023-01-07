@@ -23,6 +23,25 @@ async function getHikes(filters = {}) {
 	}
 }
 
+async function addRecordPoint(id, point) {
+	try {
+		const response = await fetch(
+			new URL(ENDPOINTS.registeredHikes.point.replace(":id", id), BACKEND_URL),
+			{
+				method: "PATCH",
+				credentials: "include",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({ point: point }),
+			}
+		);
+		return await response.json();
+	} catch (err) {
+		return { error: err };
+	}
+}
+
 /**
  * Get a single hike by id
  * @param {string} id - Id of the hike to get
@@ -155,29 +174,23 @@ async function updateHikeCondition(id, changes) {
 }
 
 async function updateWeatherAlert(Mapchanges) {
-	
 	//console.log(weather);
 	console.log(Mapchanges);
-	const pouya = 1
-	
+
 	try {
-		const response = await fetch(
-			new URL(ENDPOINTS.weatherAlert.update, BACKEND_URL),
-			{
-				method: "PATCH",
-				credentials: "include",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify(Mapchanges),
-			}
-		);
+		const response = await fetch(new URL(ENDPOINTS.weatherAlert.update, BACKEND_URL), {
+			method: "PATCH",
+			credentials: "include",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify(Mapchanges),
+		});
 		return await response.json();
 	} catch (err) {
 		console.error(err);
 	}
 }
-
 
 module.exports = {
 	getHikes,
@@ -188,5 +201,6 @@ module.exports = {
 	endHike,
 	getRegisteredHikesForUser,
 	updateHikeCondition,
-	updateWeatherAlert
+	addRecordPoint,
+	updateWeatherAlert,
 };

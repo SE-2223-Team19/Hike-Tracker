@@ -25,9 +25,9 @@ const Hikes = () => {
 	const [dirty, setDirty] = useState(false);
 	const {loggedIn, user } = useContext(AuthContext);
   
-function updated(){
-	setDirty(true);
-}
+// function updated(){
+// 	setDirty(true);
+// }
 	
 
 	return (
@@ -36,7 +36,7 @@ function updated(){
 				<h1 className="#tests-title">Hikes</h1>
                {loggedIn&&( <div>
 				{user.userType === UserType.PLATFORM_MANAGER&&(
-						<WeatherAlert hikesUpdated={updated} setDirty={setDirty}/>
+						<WeatherAlert  setDirty={setDirty}/>
 					)}
 				</div>)}
 				<Button

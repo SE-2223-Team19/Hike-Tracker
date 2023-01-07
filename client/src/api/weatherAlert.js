@@ -17,10 +17,6 @@ async function getWeatherAlertById(id) {
 
 async function updateWeatherAlert(Mapchanges) {
 	
-	//console.log(weather);
-	console.log(Mapchanges);
-	const pouya = 1
-	
 	try {
 		const response = await fetch(
 			new URL(ENDPOINTS.weatherAlert.update, BACKEND_URL),

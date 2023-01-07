@@ -13,16 +13,14 @@ import { WiDayRainMix } from "react-icons/wi";
 const WeatherAlert = ({ onRemoveFilter , hikesUpdated , setDirty}) => {
     const [coordinates, setCoordinates] = useState([45.068370, 7.683070]);
     const [radius, setRadius] = useState(50); // Radius in meters
-    console.log(radius);
-    console.log(coordinates);
+   
     
     const [city, setCity] = useState("Torino")
     const [ref, setRef] = useState(undefined)
     const [error, setError] = useState("")
     const [show,setshow] = useState()
     const [weather,setweather] = useState("")
-    //console.log(city);
-    //console.log(ref);
+    
     const handlesubmit = async (event)=>{
         event.preventDefault()
         const Mapchanges = {
@@ -30,23 +28,9 @@ const WeatherAlert = ({ onRemoveFilter , hikesUpdated , setDirty}) => {
             radius : radius,
             coordinates : coordinates
         }
-        
-       
-
-      //   for(var key in Mapchanges) {
-      //     if(Mapchanges.hasOwnProperty(key)) {
-      //         var value = Mapchanges[key];
-      //         console.log(value);
-      //         var Map = JSON.stringify(value);
-       
-      //       }  
-             
-      // }
      
       await updateWeatherAlert(Mapchanges) 
       setDirty(true)
-      //hikesUpdated();
-      console.log("########",hikesUpdated);
         setweather("")
         setCity("Torino")
         onHide()
@@ -72,7 +56,6 @@ const WeatherAlert = ({ onRemoveFilter , hikesUpdated , setDirty}) => {
     };
 
     const onHide = () => setshow(false);
-   // const handleClose = () => setshow(false);
     const handleShow = () => setshow(true);
     const resetcontent =() => {
         setCity("Torino")

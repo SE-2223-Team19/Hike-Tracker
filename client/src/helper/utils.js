@@ -71,6 +71,7 @@ export const ConditionColor = (condition) => {
 };
 
 export const weatherIcon = (weather) => {
+	
 	switch (weather) {
 		case "sunny":
 			return <WiDaySunny/>;

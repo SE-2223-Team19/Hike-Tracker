@@ -43,29 +43,25 @@ async function updateWeatherAlert(body){
    HikeTrackPoint.forEach(Trackpoint => { 
 	let elemts= {
 		_id: Trackpoint._id,
-		coordinates: parseInt(Trackpoint.trackPoints.coordinates[0][1])
+		coordinatesLat: parseInt(Trackpoint.trackPoints.coordinates[0][1]),
+		coordinatesLng: parseInt(Trackpoint.trackPoints.coordinates[0][0])
+
 	} 
-    const nearcorrdinateWeatherAlert=parseInt(coordinates[0])
-	if(elemts.coordinates==nearcorrdinateWeatherAlert){
+    const nearcorrdinateWeatherAlertLat=parseInt(coordinates[0])
+    const nearcorrdinateWeatherAlertLng=parseInt(coordinates[1])
+	if(elemts.coordinatesLat==nearcorrdinateWeatherAlertLat && elemts.coordinatesLng==nearcorrdinateWeatherAlertLng){
 		result.push(elemts._id);
 		}	
 	}); 
-			   console.log("iiiidddddddddd#######",result);
-            
    if(result.length === 0){
-
-	console.log("ssssaaaaveeeeee######");
 	const savedweather= await Mapchange.save()
 	return savedweather
-	
 	}else{
 		result.forEach(async id=>{
-			const updatedweather=  await Hike.updateMany({  _id: id},
+			     await Hike.updateMany({  _id: id},
 				{$set: {weather: weatherValue}});
 			});	
-			let t = await Hike.findById(result[0])	
-			 console.log("updateeeepaaaart######",t);
-			 return "update has done" 
+    return "update has done" 
 	}	
 }
 

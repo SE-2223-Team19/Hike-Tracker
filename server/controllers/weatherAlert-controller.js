@@ -16,19 +16,6 @@ async function updateWeatherAlert(req, res) {
      const { body } = req;
      
      
-	 const weatherkey = Object.keys(body)[0]
-	 const weather =  body[weatherkey]
-	 const radiuskey = Object.keys(body)[1]
-	 const radius =  body[radiuskey] 
-	 const coordinatesLatkey = Object.keys(body)[2]
-	 const coordinates=  body[coordinatesLatkey]
-	 
-	 console.log("controller**************************",body);
-     
-	 
-	//console.log("controller################",body);
-
-
      // Hike validation schema
      const schema = joi.object().keys({
          
@@ -44,11 +31,10 @@ async function updateWeatherAlert(req, res) {
      if (error) throw error; // Joi validation error, goes to catch block
 
      const WeatherUpdated = await weatherAlertDAL.updateWeatherAlert(value);
-     console.log("UpdatedWeather*******controller",WeatherUpdated);
 
      return res.status(StatusCodes.OK).json(WeatherUpdated);
  } catch (err) {
-     console.log(err);
+    
      return res.status(StatusCodes.BAD_REQUEST).json({ err: err.message, stack: err.stack });
  }
 }

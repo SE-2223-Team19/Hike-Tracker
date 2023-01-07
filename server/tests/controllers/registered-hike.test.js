@@ -182,7 +182,7 @@ describe("Registered Hike", () => {
 		expect(startHikeResponse.statusCode).toBe(StatusCodes.CREATED);
 
 		// Add buddies
-		const registeredHike = await registeredHikeDAL.addBuddyToRegisteredHike(startHikeResponse.responseBody._id, localguideReponse.responseBody._id);
+		await registeredHikeDAL.addBuddyToRegisteredHike(startHikeResponse.responseBody._id, localguideReponse.responseBody._id);
 
 		// End hike
 		const endHikeResponse = await endHike(hikerResponse, startHikeResponse);

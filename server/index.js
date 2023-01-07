@@ -11,8 +11,7 @@ const { localStrategy } = require("./passport-strategy");
 
 const notificationUser = require("./data/notificationUser-dal")
 const user = require("./data/user-dal");
-const sendEmail = require("./email/send-email");
-global.scheduledTask = {}
+const taskScheduler = require("./task-scheduler");
 
 // Constants
 const PORT = process.env.SERVER_PORT || 8080;
@@ -68,14 +67,9 @@ async function runNotification() {
 	const notification = await notificationUser.getNotificationUser();
 	notification.forEach(async (notify) => {
 		const currUser = await user.getUserById(notify.user);
-		if(notify.timeToNotify != 0)
-			global.scheduledTask[notify.user] = setInterval(async () => {
-				await sendEmail({
-					to: currUser.email,
-					subject: `[${registeredHike.hike.title}] Unfinished Hike`,
-					html: `<p>The hike <b>${registeredHike.hike.title}<b> is not finished by you <b>${registeredHike.user.fullName}</p>`
-				})
-			},  notify.timeToNotify * 60000);
+		if(notify.timeToNotify === 0)
+			return;
+		taskScheduler.addUnfinishedHikeNotification(currUser, registeredHike.hike, notify.timeToNotify * 60000);
 	});
 	
 }
@@ -91,7 +85,3 @@ const startServer = async () => {
 };
 
 startServer();
-
-module.exports = {
-	scheduledTask
-}

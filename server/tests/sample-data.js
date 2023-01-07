@@ -74,6 +74,39 @@ const createHike = async (responseUserCreation) => {
 	return response;
 };
 
+const createShortHike = async (responseUserCreation) => {
+	const response = new ResponseHelper();
+
+	await hikeController.createHike(
+		{
+			user: {
+				_id: responseUserCreation.responseBody._id,
+				userType: UserType.LOCAL_GUIDE,
+				email: "hiker@test.com",
+				fullName: "John Doe",
+			},
+			body: {
+				title: "Test hike",
+				length: 12000, // 12 km
+				ascent: 200, // 200 m
+				expectedTime: 0.01, // 0.6 s
+				difficulty: Difficulty.HIKER,
+				description: "A short test hike",
+				startPoint: null,
+				endPoint: null,
+				referencePoints: [[45.177913, 7.083268]],
+				trackPoints: [
+					[45.177786, 7.083372],
+					[45.177913, 7.083268],
+					[45.178044, 7.083159],
+				],
+			},
+		},
+		response
+	);
+	return response;
+};
+
 const startHike = async (responseUserCreation, responseHikeCreation) => {
 	const startHikeResponse = new ResponseHelper();
 	await registeredHikeController.startHike(
@@ -109,6 +142,7 @@ module.exports = {
 	createLocalGuide,
 	createHiker,
 	createHike,
+	createShortHike,
 	startHike,
 	endHike,
 };

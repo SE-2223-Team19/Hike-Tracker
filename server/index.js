@@ -9,7 +9,7 @@ const appRouter = require("./router");
 const passport = require("passport");
 const { localStrategy } = require("./passport-strategy");
 
-const notificationUser = require("./data/notificationUser-dal")
+const notificationUser = require("./data/notification-user-dal");
 const user = require("./data/user-dal");
 const taskScheduler = require("./task-scheduler");
 

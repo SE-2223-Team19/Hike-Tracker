@@ -22,6 +22,7 @@ class TaskScheduler {
     clearUnfinishedHikeNotification(userId) {
         if (this.unfinishedHikeNotifications[userId] !== undefined) {
             clearTimeout(this.unfinishedHikeNotifications[userId]);
+            delete this.unfinishedHikeNotifications[userId];
         }
     }
 

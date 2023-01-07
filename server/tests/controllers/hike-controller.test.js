@@ -1,14 +1,13 @@
 "use strict";
-const hikeController = require("../controllers/hike-controller");
-const userController = require("../controllers/user-controller");
-const locationController = require("../controllers/location-controller");
+const hikeController = require("../../controllers/hike-controller");
+const locationController = require("../../controllers/location-controller");
 const { StatusCodes } = require("http-status-codes");
-const { Difficulty, LocationType, UserType } = require("../models/enums");
-const { setupDB, ResponseHelper } = require("./setup");
+const { Difficulty, LocationType, UserType } = require("../../models/enums");
+const { setupDB, ResponseHelper } = require("../setup");
 const { ObjectId } = require("mongodb");
-const Location = require("../models/location-model");
+const Location = require("../../models/location-model");
 const dotenv = require("dotenv");
-const { createLocalGuide, createHiker } = require("./sample-data");
+const { createLocalGuide, createHiker } = require("../sample-data");
 
 dotenv.config();
 

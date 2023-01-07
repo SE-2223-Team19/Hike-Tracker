@@ -1,8 +1,8 @@
-const { setupDB, ResponseHelper } = require("./setup");
+const { setupDB, ResponseHelper } = require("../setup");
 const dotenv = require("dotenv");
-const registerHikeController = require("../controllers/registered-hike-controller");
-const registeredHikeDAL = require("../data/registered-hike-dal");
-const { createLocalGuide, createHiker, createHike, createShortHike, startHike, endHike } = require("./sample-data");
+const registerHikeController = require("../../controllers/registered-hike-controller");
+const registeredHikeDAL = require("../../data/registered-hike-dal");
+const { createLocalGuide, createHiker, createHike, createShortHike, startHike, endHike } = require("../sample-data");
 const { StatusCodes } = require("http-status-codes");
 
 dotenv.config();
@@ -11,8 +11,8 @@ setupDB("registered-hike-test");
 jest.mock("nodemailer");
 
 const nodemailer = require("nodemailer");
-const { UserType } = require("../models/enums");
-const taskScheduler = require("../task-scheduler");
+const { UserType } = require("../../models/enums");
+const taskScheduler = require("../../task-scheduler");
 
 beforeEach(() => {
 	nodemailer.clearAllInboxes();

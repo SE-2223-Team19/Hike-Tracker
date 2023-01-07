@@ -1,7 +1,7 @@
 const { StatusCodes } = require("http-status-codes");
 const joi = require("joi");
 const registeredHikeDAL = require("../data/registered-hike-dal");
-const notificationUserDAL = require("../data/notificationUser-dal")
+const notificationUserDAL = require("../data/notification-user-dal")
 const hikeDAL = require("../data/hike-dal");
 const user = require("../data/user-dal");
 const { sendRegisteredHikeTerminatedEmail } = require("../email/registered-hike");
@@ -52,8 +52,8 @@ async function endHike(req, res) {
 			await (await registeredHike.populate("hike")).populate("user")
 		);
 
-		await notificationUserDAL.addCompletedHike(registeredHike._id, req.user._id);
-		taskScheduler.clearUnfinishedHikeNotification(req.user);
+		await notificationUserDAL.addCompletedHike(id, req.user._id);
+		taskScheduler.clearUnfinishedHikeNotification(req.user._id.toString());
 
 		return res.status(StatusCodes.OK).json(registeredHike);
 	} catch (err) {

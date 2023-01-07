@@ -105,3 +105,6 @@ mongo
 # GitHub and VSCode
 .vscode
 .github
+
+# .DS_Store
+.DS_Store

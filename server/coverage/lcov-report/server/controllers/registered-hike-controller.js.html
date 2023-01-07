@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">97.56% </span>
+                <span class="strong">49.38% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>40/41</span>
+                <span class='fraction'>40/81</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">40% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>4/4</span>
+                <span class='fraction'>4/10</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">25% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>5/5</span>
+                <span class='fraction'>5/20</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">97.5% </span>
+                <span class="strong">50% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>39/40</span>
+                <span class='fraction'>39/78</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line high'></div>
+    <div class='status-line low'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -179,6 +179,18 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -223,6 +235,9 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">const { StatusCodes } = require("http-status-codes");
 const joi = require("joi");
 const registeredHikeDAL = require("../data/registered-hike-dal");
@@ -258,7 +273,19 @@ async function addRecordPoint(req, res) {
 		return res.status(StatusCodes.OK).json(registeredHikeUpdated)
 &nbsp;
 	} catch (err) {
+<span class="cstat-no" title="statement not covered" >		console.log(err);</span>
 <span class="cstat-no" title="statement not covered" >		return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(err)</span>
+	}
+}
+&nbsp;
+async function <span class="fstat-no" title="function not covered" >planHike(</span>req, res) {
+<span class="cstat-no" title="statement not covered" >	try {</span>
+		const { id } = <span class="cstat-no" title="statement not covered" >req.params;</span> // Hike id
+		// Plan hike for the current user
+		const registeredHike = <span class="cstat-no" title="statement not covered" >await registeredHikeDAL.insertPlan(req.user._id, id);</span>
+<span class="cstat-no" title="statement not covered" >		return res.status(StatusCodes.CREATED).json(registeredHike);</span>
+	} catch (err) {
+<span class="cstat-no" title="statement not covered" >		return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(err);</span>
 	}
 }
 &nbsp;
@@ -286,6 +313,23 @@ async function endHike(req, res) {
 	}
 }
 &nbsp;
+async function <span class="fstat-no" title="function not covered" >startPlannedHike(</span>req, res) {
+	const { id } = <span class="cstat-no" title="statement not covered" >req.params;</span> // Hike id
+<span class="cstat-no" title="statement not covered" >	try {</span>
+		const hikesForUser = <span class="cstat-no" title="statement not covered" >await registeredHikeDAL.getRegisteredHikeByUserId(req.user._id);</span>
+<span class="cstat-no" title="statement not covered" >		if (hikesForUser.length === 0 || !hikesForUser.some(<span class="fstat-no" title="function not covered" >(h</span>) =&gt; <span class="cstat-no" title="statement not covered" >h._id.equals(id))</span>) {</span>
+<span class="cstat-no" title="statement not covered" >			return res</span>
+				.status(StatusCodes.NOT_FOUND)
+				.json(new Error("Can't find the recorded hike"));
+		}
+		const registeredHike = <span class="cstat-no" title="statement not covered" >await registeredHikeDAL.startPlannedHike(id);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >		return res.status(StatusCodes.OK).json(registeredHike);</span>
+	} catch (err) {
+<span class="cstat-no" title="statement not covered" >		return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(err);</span>
+	}
+}
+&nbsp;
 async function getRegisteredHikes(req, res) {
 	const { userId } = req.params; // User id
 &nbsp;
@@ -296,12 +340,50 @@ async function getRegisteredHikes(req, res) {
 		return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(err);
 	}
 }
+function <span class="fstat-no" title="function not covered" >ascendingSpeed(</span>altArr, timeArr, n) {
+	let sumAlt = <span class="cstat-no" title="statement not covered" >0;</span>
+	let sumTime = <span class="cstat-no" title="statement not covered" >0;</span>
+<span class="cstat-no" title="statement not covered" >	for (var i = <span class="cstat-no" title="statement not covered" >1;</span> i &lt; n; i++) {</span>
+<span class="cstat-no" title="statement not covered" >		if (altArr[i] &gt; altArr[i - 1]) {</span>
+<span class="cstat-no" title="statement not covered" >			sumAlt += (altArr[i] - altArr[i - 1]);</span>
+<span class="cstat-no" title="statement not covered" >			sumTime += ((timeArr[i] - timeArr[i - 1]) / 36e5);</span>
+		}
+	}
+<span class="cstat-no" title="statement not covered" >	return sumAlt / sumTime;</span>
+}
+async function <span class="fstat-no" title="function not covered" >getStats(</span>req, res) {
+	const { id } = <span class="cstat-no" title="statement not covered" >req.params;</span> // User id
 &nbsp;
+<span class="cstat-no" title="statement not covered" >	try {</span>
+		const completedRegisteredHikes = <span class="cstat-no" title="statement not covered" >await registeredHikeDAL.getCompletedRegisteredHikeByUserId(id);</span>
+&nbsp;
+		const stats = <span class="cstat-no" title="statement not covered" >{</span>
+			numberHikes: completedRegisteredHikes.length,
+			numberKilometers: completedRegisteredHikes.reduce(<span class="fstat-no" title="function not covered" >(a</span>cc, curr) =&gt; <span class="cstat-no" title="statement not covered" >acc + curr.hike.length,</span> 0) / 1000,
+			highestAltitudeReached: completedRegisteredHikes.reduce(<span class="fstat-no" title="function not covered" >(a</span>cc, curr) =&gt; <span class="cstat-no" title="statement not covered" >Math.max(acc, Math.max(...curr.altitudeRecordedPoints)),</span> 0),
+			highestAltitudeRange: completedRegisteredHikes.reduce(<span class="fstat-no" title="function not covered" >(a</span>cc, curr) =&gt; <span class="cstat-no" title="statement not covered" >Math.max(acc, curr.hike.ascent),</span> 0),
+			longestLengthHike: completedRegisteredHikes.reduce(<span class="fstat-no" title="function not covered" >(a</span>cc, curr) =&gt; <span class="cstat-no" title="statement not covered" >Math.max(acc, curr.hike.length),</span> 0) / 1000,
+			longestTimeHike: completedRegisteredHikes.reduce(<span class="fstat-no" title="function not covered" >(a</span>cc, curr) =&gt; <span class="cstat-no" title="statement not covered" >Math.max(acc, curr.endTime - curr.startTime),</span> 0) / 36e5,
+			shortestLengthHike: completedRegisteredHikes.reduce(<span class="fstat-no" title="function not covered" >(a</span>cc, curr) =&gt; <span class="cstat-no" title="statement not covered" >Math.min(acc, curr.hike.length),</span> Number.MAX_VALUE) / 1000,
+			shortestTimeHike: completedRegisteredHikes.reduce(<span class="fstat-no" title="function not covered" >(a</span>cc, curr) =&gt; <span class="cstat-no" title="statement not covered" >Math.min(acc, curr.endTime - curr.startTime),</span> Number.MAX_VALUE) / 36e5,
+			averagePace: completedRegisteredHikes.reduce(<span class="fstat-no" title="function not covered" >(a</span>cc, curr) =&gt; <span class="cstat-no" title="statement not covered" >acc + ((curr.endTime - curr.startTime) / 60000) / (curr.hike.length / 1000),</span> 0) / completedRegisteredHikes.length,
+			fastestPacedHike: completedRegisteredHikes.reduce(<span class="fstat-no" title="function not covered" >(a</span>cc, curr) =&gt; <span class="cstat-no" title="statement not covered" >Math.min(acc, ((curr.endTime - curr.startTime) / 60000) / (curr.hike.length / 1000)),</span> Number.MAX_VALUE),
+			averageVerticalAscentSpeed: completedRegisteredHikes.reduce(<span class="fstat-no" title="function not covered" >(a</span>cc, curr) =&gt; <span class="cstat-no" title="statement not covered" >acc + (ascendingSpeed(curr.altitudeRecordedPoints, curr.timePoints, curr.altitudeRecordedPoints.length)),</span> 0) / completedRegisteredHikes.length,
+		}
+<span class="cstat-no" title="statement not covered" >		return res.status(StatusCodes.OK).json(stats);</span>
+	} catch (err) {
+<span class="cstat-no" title="statement not covered" >		console.log(err);</span>
+<span class="cstat-no" title="statement not covered" >		return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(err);</span>
+	}
+}
 module.exports = {
 	startHike,
+	planHike,
 	endHike,
+	startPlannedHike,
 	getRegisteredHikes,
-	addRecordPoint
+	addRecordPoint,
+	getStats,
 };
 &nbsp;</pre></td></tr></table></pre>
 

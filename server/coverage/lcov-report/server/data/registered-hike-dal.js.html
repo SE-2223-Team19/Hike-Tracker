@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">76.36% </span>
+                <span class="strong">61.76% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>42/55</span>
+                <span class='fraction'>42/68</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">53.57% </span>
+                <span class="strong">44.11% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>15/28</span>
+                <span class='fraction'>15/34</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">75% </span>
+                <span class="strong">54.54% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>6/8</span>
+                <span class='fraction'>6/11</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">77.77% </span>
+                <span class="strong">62.68% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>42/54</span>
+                <span class='fraction'>42/67</span>
             </div>
         
             
@@ -255,6 +255,29 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -294,6 +317,21 @@
 <span class="cline-any cline-yes">42x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">42x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -367,6 +405,9 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">const ObjectId = require("mongoose").Types.ObjectId;
 const Hike = require("../models/hike-model");
 const RegisteredHike = require("../models/registered-hike-model");
@@ -396,6 +437,29 @@ async function insert(userId, hikeId) {
 		startTime: new Date(), // Can be omitted, because there's the createdAt field by default
 	});
 	return registeredHike;
+}
+&nbsp;
+&nbsp;
+/**
+ * Plan a new hike, inserting the new registered hike in the database
+ * @param {string} userId
+ * @param {string} hikeId
+ * @returns Newly created registered hike
+ */
+async function <span class="fstat-no" title="function not covered" >insertPlan(</span>userId, hikeId) {
+&nbsp;
+	const hike = <span class="cstat-no" title="statement not covered" >await Hike.findById(hikeId);</span>
+<span class="cstat-no" title="statement not covered" >	if (!hike) {</span>
+<span class="cstat-no" title="statement not covered" >		throw new Error("Hike not found");</span>
+	}
+&nbsp;
+	const registeredHike = <span class="cstat-no" title="statement not covered" >await RegisteredHike.create({</span>
+		hike: ObjectId(hikeId),
+		user: ObjectId(userId),
+		status: RegisteredHikeStatus.PLANNED,
+		startTime: new Date(), // Can be omitted, because there's the createdAt field by default
+	});
+<span class="cstat-no" title="statement not covered" >	return registeredHike;</span>
 }
 &nbsp;
 /**
@@ -446,6 +510,21 @@ async function completeRegisteredHike(id) {
 		registeredHike.endTime = new Date();
 	}
 	return await registeredHike.save();
+}
+&nbsp;
+/**
+ * Sets the status to ACTIVE from PLANNED
+ * @param {string} id Id of the RegisteredHike
+ * @returns The saved hike
+ */
+async function <span class="fstat-no" title="function not covered" >startPlannedHike(</span>id) {
+	const registeredHike = <span class="cstat-no" title="statement not covered" >await RegisteredHike.findById(id);</span>
+<span class="cstat-no" title="statement not covered" >	if (registeredHike === null)</span>
+<span class="cstat-no" title="statement not covered" >		return null;</span>
+<span class="cstat-no" title="statement not covered" >	if (registeredHike.status === RegisteredHikeStatus.PLANNED) {</span>
+<span class="cstat-no" title="statement not covered" >		registeredHike.status = RegisteredHikeStatus.ACTIVE;</span>
+	}
+<span class="cstat-no" title="statement not covered" >	return await registeredHike.save();</span>
 }
 &nbsp;
 /**
@@ -510,14 +589,22 @@ async function getRegisteredHikeByUserId(userId) {
 	return registeredHikes;
 }
 &nbsp;
+async function <span class="fstat-no" title="function not covered" >getCompletedRegisteredHikeByUserId(</span>userId) {
+	const registeredHikes = <span class="cstat-no" title="statement not covered" >await RegisteredHike.find({ user: new ObjectId(userId), status: RegisteredHikeStatus.COMPLETED }).populate("hike");</span>
+<span class="cstat-no" title="statement not covered" >	return registeredHikes;</span>
+}
+&nbsp;
 module.exports = {
 	insert,
+	insertPlan,
 	completeRegisteredHike,
+	startPlannedHike,
 	cancelRegisteredHike,
 	userHasActiveRecordedHikes,
 	addBuddyToRegisteredHike,
 	getRegisteredHikeByUserId,
-	registerPoint
+	registerPoint,
+	getCompletedRegisteredHikeByUserId
 };
 &nbsp;</pre></td></tr></table></pre>
 

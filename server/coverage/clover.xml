@@ -21,7 +21,7 @@
       </file>
     </package>
     <package name="server.controllers">
-      <metrics statements="262" coveredstatements="224" conditionals="96" coveredconditionals="70" methods="29" coveredmethods="21"/>
+      <metrics statements="300" coveredstatements="224" conditionals="102" coveredconditionals="70" methods="44" coveredmethods="21"/>
       <file name="hike-controller.js" path="/Users/matteorosani/Documents/Software Engeneering 2/Hike-Tracker/server/controllers/hike-controller.js">
         <metrics statements="61" coveredstatements="50" conditionals="31" coveredconditionals="17" methods="5" coveredmethods="4"/>
         <line num="1" count="3" type="stmt"/>

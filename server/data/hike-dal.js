@@ -254,10 +254,6 @@ async function getHikeById(id) {
  * @returns
  */
 async function updateHike(id, hikeUpdate) {
-
-console.log("id#####",id);
-console.log("hikeUpdate########",hikeUpdate);
-
 	if (hikeUpdate.trackPoints) {
 		hikeUpdate.trackPoints = {
 			type: "LineString",

@@ -2,7 +2,7 @@ const { setupDB, ResponseHelper } = require("./setup");
 const dotenv = require("dotenv");
 const registerHikeController = require("../controllers/registered-hike-controller");
 const registeredHikeDAL = require("../data/registered-hike-dal");
-const { createLocalGuide, createHiker, createHike, startHike, endHike } = require("./sample-data");
+const { createLocalGuide, createHiker, createHike, createShortHike, startHike, endHike } = require("./sample-data");
 const { StatusCodes } = require("http-status-codes");
 
 dotenv.config();
@@ -12,9 +12,14 @@ jest.mock("nodemailer");
 
 const nodemailer = require("nodemailer");
 const { UserType } = require("../models/enums");
+const taskScheduler = require("../task-scheduler");
 
 beforeEach(() => {
 	nodemailer.clearAllInboxes();
+});
+
+afterAll(() => {
+	taskScheduler.clearAll();
 });
 
 describe("Registered Hike", () => {
@@ -223,8 +228,8 @@ describe("Registered Hike", () => {
 		expect(startHikeResponse.statusCode).toBe(StatusCodes.CREATED);
 
 		const referencePoint = hikeResponse.responseBody.referencePoints[0]
-		const hikeID = startHikeResponse.responseBody._id.toString()
-		const responsePointRecord = new ResponseHelper()
+		const hikeID = startHikeResponse.responseBody._id.toString();
+		const responsePointRecord = new ResponseHelper();
 
 		await registerHikeController.addRecordPoint({
 			params: {
@@ -233,14 +238,41 @@ describe("Registered Hike", () => {
 			body: {
 				point: referencePoint
 			}
-			
-		}, responsePointRecord)
+		}, responsePointRecord);
 
 		expect(responsePointRecord.statusCode).toBe(StatusCodes.OK);
 		
-	})
-	
+	});
 
+	test("Hiker receives notification of unfinished hike", async () => {
+		// Create local guide
+		const localguideReponse = await createLocalGuide();
+
+		// Create hike
+		const hikeResponse = await createShortHike(localguideReponse);
+
+		// Create hiker
+		const hikerResponse = await createHiker();
+
+		// Start hike
+		const startHikeResponse = await startHike(hikerResponse, hikeResponse);
+		expect(startHikeResponse.statusCode).toBe(StatusCodes.CREATED);
+
+		await new Promise((resolve, reject) => {
+			setTimeout(() => {
+				try {
+					const hikerEmails = nodemailer.getInboxFor("hiker@test.com");
+					expect(hikerEmails.length).toBe(2);
+			
+					const lastEmail = hikerEmails[1];
+					expect(lastEmail.subject).toBe(`[${hikeResponse.responseBody.title}] Unfinished Hike`);
+					resolve();
+				} catch {
+					reject(new Error("Unfinished hike email not received"));
+				}
+			}, 2000);
+		});
+	});
 });
 
 

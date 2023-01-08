@@ -28,7 +28,7 @@ const PointSelector = ({ filter = {}, name, handleChange, value, isInvalid, mult
 			{ !multiple && <option value="">Select a location</option> }
 			{locations.map((option) => (
 				<option key={option._id} value={option._id}>
-					{option.description}
+					{option.name}
 				</option>
 			))}
 		</Form.Select>

@@ -1,7 +1,7 @@
 const { ResponseHelper } = require("./setup");
 const userController = require("../controllers/user-controller");
 const hikeController = require("../controllers/hike-controller");
-const weatherAlertcontroller= require ("../controllers/weatherAlert-controller")
+const weatherAlertcontroller= require ("../controllers/weather-alert-controller")
 const registeredHikeController = require("../controllers/registered-hike-controller");
 const { UserType, Difficulty,WeatherCondition } = require("../models/enums");
 const dotenv = require("dotenv");
@@ -144,9 +144,9 @@ const updateWeatherAlert = async(responseUserCreation)=>{
 	await weatherAlertcontroller.updateWeatherAlert(
 		{
 			user: {
-				_id: response.responseBody.id,
+				_id: responseUserCreation.responseBody.id,
 				userType: UserType.PLATFORM_MANAGER,
-				email: "hiker@test_PlatformManager@test.it.com",
+				email: "test_PlatformManager@test.it",
 				fullName: "test_PlatformManager@test.it",
 			},
 			body: {
@@ -156,7 +156,8 @@ const updateWeatherAlert = async(responseUserCreation)=>{
 			},
 		},
 		response
-	)
+	);
+	return response;
 }
 
 module.exports = {

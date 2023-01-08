@@ -1,4 +1,3 @@
-const { object, number } = require("joi");
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
 const { WeatherCondition } = require("./enums");

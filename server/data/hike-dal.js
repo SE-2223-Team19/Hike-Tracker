@@ -3,7 +3,7 @@ const Hike = require("../models/hike-model");
 const Image = require("../models/image-model");
 const Location = require("../models/location-model");
 const User = require("../models/user-model");
-const WeatherAlert = require("../models/weatherAlert-model");
+const WeatherAlert = require("../models/weather-alert-model");
 
 /**
  * @typedef {Object} HikeModel

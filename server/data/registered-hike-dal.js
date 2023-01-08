@@ -120,6 +120,8 @@ async function startPlannedHike(userId, id) {
 		return null;
 	if (registeredHike.status === RegisteredHikeStatus.PLANNED) {
 		registeredHike.status = RegisteredHikeStatus.ACTIVE;
+	} else {
+		throw new Error("Hike is activated")
 	}
 	return await registeredHike.save();
 }

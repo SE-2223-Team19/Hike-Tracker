@@ -3,6 +3,8 @@ const mongoose = require("mongoose");
 const { Schema } = mongoose;
 const { WeatherCondition } = require("./enums");
 
+
+
 const trackSchema = new Schema({
 	type: {
 		type: String,
@@ -20,7 +22,8 @@ const WeatherSchema = new Schema(
 	{
 		 weatherAlert: [{ type: String, enum: Object.values(WeatherCondition)}],
 		 radius : Number,
-         coordinates : [[Number]]  
+         coordinates : [Number] ,
+		
 	},
 	{ timestamps: true }
 );

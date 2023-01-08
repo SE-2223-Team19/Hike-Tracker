@@ -10,19 +10,17 @@ import { json } from "react-router-dom";
 import { WiDayRainMix } from "react-icons/wi";
 
 
-const WeatherAlert = ({ onRemoveFilter }) => {
+const WeatherAlert = ({ onRemoveFilter , hikesUpdated , setDirty}) => {
     const [coordinates, setCoordinates] = useState([45.068370, 7.683070]);
     const [radius, setRadius] = useState(50); // Radius in meters
-    console.log(radius);
-    console.log(coordinates);
+   
     
     const [city, setCity] = useState("Torino")
     const [ref, setRef] = useState(undefined)
     const [error, setError] = useState("")
     const [show,setshow] = useState()
     const [weather,setweather] = useState("")
-    //console.log(city);
-    //console.log(ref);
+    
     const handlesubmit = async (event)=>{
         event.preventDefault()
         const Mapchanges = {
@@ -30,21 +28,11 @@ const WeatherAlert = ({ onRemoveFilter }) => {
             radius : radius,
             coordinates : coordinates
         }
-        
-        console.log("########",event._id);
-
-      //   for(var key in Mapchanges) {
-      //     if(Mapchanges.hasOwnProperty(key)) {
-      //         var value = Mapchanges[key];
-      //         console.log(value);
-      //         var Map = JSON.stringify(value);
-       
-      //       }  
-             
-      // }
      
       await updateWeatherAlert(Mapchanges) 
-        
+      setDirty(true)
+        setweather("")
+        setCity("Torino")
         onHide()
 
     }
@@ -68,9 +56,12 @@ const WeatherAlert = ({ onRemoveFilter }) => {
     };
 
     const onHide = () => setshow(false);
-   // const handleClose = () => setshow(false);
     const handleShow = () => setshow(true);
-
+    const resetcontent =() => {
+        setCity("Torino")
+        setweather("")
+        setshow(false)
+    }
     return (
         <>
         <Button variant="outline-info" style={{ borderRadius: 20 }} onClick={handleShow}>
@@ -131,8 +122,8 @@ const WeatherAlert = ({ onRemoveFilter }) => {
             </Modal.Body>
 
             <Modal.Footer>
-                <Button onClick={onRemoveFilter} variant={"danger"}>Remove</Button>
-                <Button onClick={onHide} variant={"secondary"}>Cancel</Button>
+                
+                <Button onClick={resetcontent} variant={"secondary"}>Cancel</Button>
                 <Button
                     data-test-id="position-ok-button"
                     onClick={handlesubmit} variant={"success"}>Ok</Button>

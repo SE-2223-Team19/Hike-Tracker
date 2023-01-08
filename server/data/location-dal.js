@@ -21,7 +21,14 @@ const ParkingLot = require("../models/parking-lot-model");
 async function getLocations(page, pageSize, filterQuery = {}) {
 	const paginationActive = page !== undefined && pageSize !== undefined;
 
-	let p = [
+	let p = [];
+	if (filterQuery.point) {
+		p = [filterQuery.point];
+		delete filterQuery.point;
+	}
+
+	p = [
+		...p,
 		{
 			$match: filterQuery,
 		},
@@ -137,6 +144,10 @@ async function updateLocationDescription(id, description) {
  */
 async function updateLocation(id, locationUpdate) {
 	if (locationUpdate.locationType === LocationType.HUT) {
+		if (locationUpdate.thumbnail) {
+			const thumbnail = await Image.create({ data: locationUpdate.thumbnail });
+			locationUpdate.thumbnail = thumbnail._id;
+		}
 		await Hut.findOneAndUpdate({ _id: id, locationType: LocationType.HUT }, locationUpdate, {
 			new: true,
 		}).lean();

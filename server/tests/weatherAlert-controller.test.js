@@ -18,7 +18,7 @@ describe("createWeatherAlert", () => {
         const response = new ResponseHelper();
 		 await updateWeatherAlert();
 
-		expect(response.statusCode).toBe(StatusCodes.CREATED);
+		expect(response.statusCode).toBe(StatusCodes.OK);
 
 		
 		await weatherAlertcontroller.updateWeatherAlert(
@@ -41,7 +41,7 @@ describe("createWeatherAlert", () => {
             },
 			response
 		);
-		expect(response.statusCode).toBe(StatusCodes.CREATED);
+		expect(response.statusCode).toBe(StatusCodes.OK);
 	});
 
 	test("error in schema", async () => {

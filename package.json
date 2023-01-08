@@ -1,9 +1,0 @@
-{
-  "dependencies": {
-<<<<<<< HEAD
-    "node-fetch": "^3.3.0"
-=======
-    "react-icons": "^4.7.1"
->>>>>>> 7a3eefe3e07dba2d75a91358d1d91f6ddc194588
-  }
-}

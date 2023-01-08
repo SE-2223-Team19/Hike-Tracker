@@ -4,7 +4,7 @@ const Hike = require("../models/hike-model");
 const Image = require("../models/image-model");
 const Location = require("../models/location-model");
 const User = require("../models/user-model");
-const WeatherAlert = require("../models/weatherAlert-model");
+const WeatherAlert = require("../models/weather-alert-model");
 
 
 
@@ -36,12 +36,12 @@ async function updateWeatherAlert(weatherValue,radiusValue,coordinates){
    	HikeTrackPoint.forEach(Trackpoint => { 
 	let elemts= {
 		_id: Trackpoint._id,
-		coordinatesLat: parseInt(Trackpoint.trackPoints.coordinates[0][1]),
-		coordinatesLng: parseInt(Trackpoint.trackPoints.coordinates[0][0])
+		coordinatesLat: parseFloat(Trackpoint.trackPoints.coordinates[0][1]),
+		coordinatesLng: parseFloat(Trackpoint.trackPoints.coordinates[0][0])
 
 	} 
-    const nearcorrdinateWeatherAlertLat=parseInt(coordinates[0])
-    const nearcorrdinateWeatherAlertLng=parseInt(coordinates[1])
+    const nearcorrdinateWeatherAlertLat=parseFloat(coordinates[0])
+    const nearcorrdinateWeatherAlertLng=parseFloat(coordinates[1])
 	if(elemts.coordinatesLat==nearcorrdinateWeatherAlertLat && elemts.coordinatesLng==nearcorrdinateWeatherAlertLng){
 		result.push(elemts._id);
 		}	

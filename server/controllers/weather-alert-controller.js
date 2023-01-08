@@ -1,7 +1,7 @@
 const joi = require("joi");
 const ObjectId = require("mongoose").Types.ObjectId;
 const { StatusCodes } = require("http-status-codes");
-const weatherAlertDAL = require("../data/weatherAlert-dal");
+const weatherAlertDAL = require("../data/weather-alert-dal");
 const userDAL = require("../data/user-dal");
 const {sendWeatherNotificationEmail} = require("../email/weather-notification")
 const { WeatherCondition, UserType } = require("../models/enums");

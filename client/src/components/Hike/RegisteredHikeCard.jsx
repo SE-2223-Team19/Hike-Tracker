@@ -187,6 +187,27 @@ const RegisteredHikeCard = ({ registeredHike, setDirty }) => {
 								</div>
 							</Stack>
 						)}
+						{registeredHike.status === RegisteredHikeStatus.COMPLETED && (
+							<Stack direction="horizontal" gap={4}>
+								<div className="ms-auto">
+									<OverlayTrigger
+										trigger={"click"}
+										overlay={(props) => (
+											<Tooltip {...props}>Share link copied to clipboard</Tooltip>
+										)}
+									>
+										<Button variant="outline-success" onClick={() => copyUrlToClipboard()}>
+											Share
+										</Button>
+									</OverlayTrigger>
+								</div>
+								<div>
+									<Button variant="dark" onClick={() => navigate("/registered-hike", { state: { registeredHike }})}>
+										Details
+									</Button>
+								</div>
+							</Stack>
+						)}
 						<Stack direction="horizontal" gap={4}>
 							<div className="d-flex flex-row">
 								<BiRuler size={24} />

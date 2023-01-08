@@ -70,8 +70,10 @@ const commonLookups = [
 			localField: "trackPoints",
 			foreignField: "coordinates",
 			as: "AlertId",
-		
+
+		}
 	},
+	{
 		$lookup: {
 			from: Location.collection.name,
 			localField: "startPoint",
@@ -266,7 +268,7 @@ async function updateHike(id, hikeUpdate) {
 			coordinates: hikeUpdate.trackPoints.map((p) => [p[1], p[0]]),
 		};
 	}
-     
+
 	if (hikeUpdate.thumbnail) {
 		const thumbnail = await Image.create({ data: hikeUpdate.thumbnail });
 		hikeUpdate.thumbnail = thumbnail._id;

@@ -140,7 +140,7 @@ const endHike = async (responseUserCreation, responseStartHikeCreation) => {
 };
 
 const updateWeatherAlert = async(responseUserCreation)=>{
-	const response = new ResponseHelper
+	const response = new ResponseHelper()
 	await weatherAlertcontroller.updateWeatherAlert(
 		{
 			user: {

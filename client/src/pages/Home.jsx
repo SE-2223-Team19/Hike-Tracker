@@ -14,6 +14,7 @@ import { AuthContext } from "../context/AuthContext";
 import HikeDetail from "./HikeDetail";
 import HutDetail from "./HutDetail";
 import BroadcastedUrl from "./BroadcastedUrl";
+import RegisteredHikeDetail from "./RegisteredHikeDetail";
 
 const Home = () => {
 	const { message, setMessage } = useContext(AuthContext);
@@ -39,6 +40,7 @@ const Home = () => {
 					<Route path="/parking-lots" element={<ParkingLots />} />
 					<Route path="/describe-parking" element={<DescribeParking />} />
 					<Route path="/registered-hike/broadcast/:id" element={<BroadcastedUrl />} />
+					<Route path="/registered-hike" element={<RegisteredHikeDetail />} />
 				</Routes>
 			</div>
 		</div>

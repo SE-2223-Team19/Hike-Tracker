@@ -173,6 +173,26 @@ async function endHike(id) {
 	}
 }
 
+async function updateRegisteredHike(id, changes) {
+	try {
+		const response = await fetch(new URL(ENDPOINTS.registeredHikes.update.replace(":id", id), BACKEND_URL), {
+			method: "PATCH",
+			credentials: "include",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify(changes)
+		});
+		if (response.ok) {
+			return await response.json();
+		}
+		throw await response.json();
+	} catch (err) {
+		console.error(err);
+		return null;
+	}
+}
+
 async function getRegisteredHikesForUser(userId) {
 	try {
 		const response = await fetch(
@@ -276,4 +296,5 @@ module.exports = {
 	startHikePlanned,
 	addRecordPoint,
 	updateWeatherAlert,
+	updateRegisteredHike
 };

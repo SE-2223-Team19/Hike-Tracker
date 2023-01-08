@@ -3,7 +3,7 @@ import { Stack } from "react-bootstrap";
 const HutIcon = ({ icon, text }) => {
 	return (
 		<Stack direction="horizontal" gap={4}>
-			<div className="d-flex flex-row">
+			<div className="d-flex flex-row align-items-center">
 				{icon}
 				<span className="ms-2">{text}</span>
 			</div>

@@ -244,6 +244,145 @@ describe("Registered Hike", () => {
 		
 	});
 
+	test('Test Plan Hike', async() => {
+		
+		const localguideReponse = await createLocalGuide();
+
+		// Create hike
+		const hikeResponse = await createHike(localguideReponse);
+
+		// Create hiker
+		const hikerResponse = await createHiker();
+
+		const responsePlanHike = new ResponseHelper();
+		const planHikeResponse = await registerHikeController.planHike({
+			params:{ id: hikeResponse.responseBody._id},
+			user: {
+				_id: hikerResponse.responseBody._id,
+				userType: UserType.HIKER,
+			}
+		},responsePlanHike);
+		
+		expect(responsePlanHike.statusCode).toBe(StatusCodes.CREATED);
+		
+	});
+
+	test('Test Plan Hike Fails', async() => {
+		
+		// Create hiker
+		const hikerResponse = await createHiker();
+
+		const responsePlanHike = new ResponseHelper();
+		const planHikeResponse = await registerHikeController.planHike({
+			params:{ id: 0},
+			user: {
+				_id: hikerResponse.responseBody._id,
+				userType: UserType.HIKER,
+			}
+		},responsePlanHike);
+		
+		expect(responsePlanHike.statusCode).toBe(StatusCodes.INTERNAL_SERVER_ERROR);
+		
+	});
+
+	test('Test Start Planned Hike', async() => {
+		
+		const localguideReponse = await createLocalGuide();
+
+		// Create hike
+		const hikeResponse = await createHike(localguideReponse);
+
+		// Create hiker
+		const hikerResponse = await createHiker();
+
+		const responsePlanHike = new ResponseHelper();
+		const planHike = await registerHikeController.planHike({
+			params:{ id: hikeResponse.responseBody._id},
+			user: {
+				_id: hikerResponse.responseBody._id,
+				userType: UserType.HIKER,
+			}
+		},responsePlanHike);
+		
+		expect(responsePlanHike.statusCode).toBe(StatusCodes.CREATED);
+
+		const responsePlannedHike = new ResponseHelper(); 
+		await registerHikeController.startPlannedHike({
+			params:{ id: planHike.responseBody._id},
+			user: {
+				_id: hikerResponse.responseBody._id,
+				userType: UserType.HIKER,
+			}
+		}, responsePlannedHike);
+
+		expect(responsePlannedHike.statusCode).toBe(StatusCodes.OK);
+		
+	});
+
+	test('Test Start Planned Hike Fails Not Found', async() => {
+		
+		const localguideReponse = await createLocalGuide();
+
+		// Create hike
+		const hikeResponse = await createHike(localguideReponse);
+
+		// Create hiker
+		const hikerResponse = await createHiker();
+
+		const responsePlanHike = new ResponseHelper();
+		const planHike = await registerHikeController.planHike({
+			params:{ id: hikeResponse.responseBody._id},
+			user: {
+				_id: hikerResponse.responseBody._id,
+				userType: UserType.HIKER,
+			}
+		},responsePlanHike);
+		
+		expect(responsePlanHike.statusCode).toBe(StatusCodes.CREATED);
+
+		const responsePlannedHike = new ResponseHelper(); 
+		await registerHikeController.startPlannedHike({
+			params:{ id: 0},
+			user: {
+				_id: hikerResponse.responseBody._id,
+				userType: UserType.HIKER,
+			}
+		}, responsePlannedHike);
+
+		expect(responsePlannedHike.statusCode).toBe(StatusCodes.NOT_FOUND);
+		
+	});
+
+	test('Test Start Planned Hike Fails Error General', async() => {
+		
+		// Create local guide
+		const localguideReponse = await createLocalGuide();
+
+		// Create hike
+		const hikeResponse = await createHike(localguideReponse);
+
+		// Create hiker
+		const hikerResponse = await createHiker();
+
+		// Start hike
+		const startHikeResponse = await startHike(hikerResponse, hikeResponse);
+
+		// Check if the response is correct
+		expect(startHikeResponse.statusCode).toBe(StatusCodes.CREATED);
+
+		const responsePlannedHike = new ResponseHelper(); 
+		await registerHikeController.startPlannedHike({
+			params:{ id: startHikeResponse.responseBody._id },
+			user: {
+				_id: hikerResponse.responseBody._id,
+				userType: UserType.HIKER,
+			}
+		}, responsePlannedHike);
+
+		expect(StatusCodes.INTERNAL_SERVER_ERROR).toBe(responsePlannedHike.statusCode);
+		
+	});
+
 	test("Hiker receives notification of unfinished hike", async () => {
 		// Create local guide
 		const localguideReponse = await createLocalGuide();
@@ -273,6 +412,93 @@ describe("Registered Hike", () => {
 			}, 2000);
 		});
 	});
+
+	test("Hiker can update the start and end time of a registered hike", async () => {
+		// Create local guide
+		const localguideReponse = await createLocalGuide();
+
+		// Create hike
+		const hikeResponse = await createHike(localguideReponse);
+
+		// Create hiker
+		const hikerResponse = await createHiker();
+
+		// Start hike
+		const startHikeResponse = await startHike(hikerResponse, hikeResponse);
+		expect(startHikeResponse.statusCode).toBe(StatusCodes.CREATED);
+
+		const updateRegisteredHikeResponse = await registerHikeController.updateRegisteredHike({
+			user: {
+				_id: hikerResponse.responseBody._id,
+				userType: UserType.HIKER
+			},
+			params: {
+				id: startHikeResponse.responseBody._id,
+			},
+			body: {
+				startTime: "2023-01-12T17:40"
+			}
+		}, new ResponseHelper());
+		expect(updateRegisteredHikeResponse.statusCode).toBe(StatusCodes.OK);
+
+		const updateRegisteredHikeResponse2 = await registerHikeController.updateRegisteredHike({
+			user: {
+				_id: hikerResponse.responseBody._id,
+				userType: UserType.HIKER
+			},
+			params: {
+				id: startHikeResponse.responseBody._id,
+			},
+			body: {
+				startTime: "2023-01-12T17:40",
+				endTime: "2023-01-12T17:41"
+			}
+		}, new ResponseHelper());
+		expect(updateRegisteredHikeResponse2.statusCode).toBe(StatusCodes.OK);
+
+		const updateRegisteredHikeResponse3 = await registerHikeController.updateRegisteredHike({
+			user: {
+				_id: hikerResponse.responseBody._id,
+				userType: UserType.HIKER
+			},
+			params: {
+				id: startHikeResponse.responseBody._id,
+			},
+			body: {
+				startTime: "2023-01-12T17:40",
+				endTime: "2023-01-12T17:39"
+			}
+		}, new ResponseHelper());
+		expect(updateRegisteredHikeResponse3.statusCode).toBe(StatusCodes.BAD_REQUEST);
+
+		const updateRegisteredHikeResponse4 = await registerHikeController.updateRegisteredHike({
+			user: {
+				_id: hikerResponse.responseBody._id,
+				userType: UserType.HIKER
+			},
+			params: {
+				id: "fakeId",
+			},
+			body: {
+				startTime: "2023-01-12T17:40",
+				endTime: "2023-01-12T17:41"
+			}
+		}, new ResponseHelper());
+		expect(updateRegisteredHikeResponse4.statusCode).toBe(StatusCodes.INTERNAL_SERVER_ERROR);
+	});
+
+	test('Test Get Stats', async() => {
+
+		// Create hiker
+		const hikerResponse = await createHiker();
+		const response = new ResponseHelper();
+
+		const stats = await registerHikeController.getStats({
+			params: {id: hikerResponse.responseBody._id}
+		}, response)
+		expect(response.statusCode).toBe(StatusCodes.OK);
+	});
+
 });
 
 

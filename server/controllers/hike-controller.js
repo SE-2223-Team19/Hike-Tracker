@@ -76,6 +76,7 @@ async function getHikes(req, res) {
 		const hikes = await hikeDAL.getHikes(value.page, value.pageSize, filter);
 		return res.status(StatusCodes.OK).json(hikes);
 	} catch (err) {
+		console.log(err)
 		return res.status(StatusCodes.BAD_REQUEST).json({ err: err.message });
 	}
 }
@@ -171,7 +172,7 @@ async function updateHike(req, res) {
 			expectedTime: joi.number(),
 			difficulty: joi.string().valid(...Object.values(Difficulty)),
 			description: joi.string(),
-			thumbnail: joi.string().allow(null),
+			thumbnail: joi.string().allow(null).allow(""),
 			startPoint: joi.string().allow(null),
 			endPoint: joi.string().allow(null),
 			linkedHuts: joi.array().items(joi.string()),
@@ -181,6 +182,7 @@ async function updateHike(req, res) {
 
 		// Validate request body against schema
 		const { error, value } = schema.validate(body);
+		if (value.thumbnail === "") delete value.thumbnail;
 
 		if (error) throw error; // Joi validation error, goes to catch block
 
@@ -196,7 +198,7 @@ async function updateHikeCondition(req, res) {
 	try {
 		// Validate request body
 		const { params, body } = req;
-
+		console.log(body)
 		// Hike validation schema
 		const schema = joi.object().keys({
 			hikeCondition: joi.string().valid(...Object.values(HikeCondition)),
@@ -205,7 +207,6 @@ async function updateHikeCondition(req, res) {
 		// Validate request body against schema
 		const { error, value } = schema.validate(body);
 		
-
 		if (error) throw error; // Joi validation error, goes to catch block
 
 		const hikeUpdated = await hikeDAL.updateHike(params.id, value);

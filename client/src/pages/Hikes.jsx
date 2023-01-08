@@ -2,7 +2,6 @@ import { React, useState } from "react";
 import { Button, Stack } from "react-bootstrap";
 import { getHikes } from "../api/hikes";
 import HikeCard from "../components/Hike/HikeCard";
-import ModalMap from "../components/ModalMap";
 import Loading from "../components/Loading";
 import NoData from "../components/NoData";
 import { CgOptions } from "react-icons/cg";
@@ -19,7 +18,6 @@ const Hikes = () => {
 	const [openFilters, setOpenFilters] = useState(false);
 	const [filters, setFilters] = useState({});
 	const [showPositionFilter, setShowPositionFilter] = useState(false);
-	const [currentHike, setCurrentHike] = useState(null);
 	const [dirty, setDirty] = useState(false);
 	const {loggedIn, user } = useContext(AuthContext);
   
@@ -58,7 +56,7 @@ const Hikes = () => {
 			)}
 			<PaginatedList
 				dataElement={(hike) => (
-					<HikeCard key={hike._id} hike={hike} showDetails={setCurrentHike} setDirty={setDirty} />
+					<HikeCard key={hike._id} hike={hike} setDirty={setDirty} />
 				)}
 				errorElement={(error) => (
 					<NoData message={"Something went wrong during the request. Try again later."} />
@@ -89,7 +87,6 @@ const Hikes = () => {
 					setFilters(f);
 				}}
 			></PositionFilterModal>
-			<ModalMap handleClose={() => setCurrentHike(null)} hike={currentHike}></ModalMap>
 		</div>
 	);
 };

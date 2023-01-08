@@ -64,6 +64,19 @@ const HikeCard = ({ hike, showDetails, setDirty }) => {
 		}
 	};
 
+	const checkIfCanUpdateHikeCondition = () => {
+		if (user.userType !== UserType.HUT_WORKER) { 
+			return false;
+		}
+
+		// Check if the user._id in the peopleWorks array of the linkedHuts (array) of the hike
+		const hutWorkers = hike.linkedHuts.map((hut) => hut.peopleWorks).flat();
+		if (hutWorkers.includes(user._id)) {
+			return true;
+		}
+		return false;
+	}
+
 	return (
 		<Card className="flex-row p-3 mt-4">
 			<Image
@@ -81,13 +94,16 @@ const HikeCard = ({ hike, showDetails, setDirty }) => {
 					<Card.Title>
 						<Stack direction="horizontal" className="align-items-center">
 							<h5>{hike.title}</h5>
-							{
-								(hike.weather && weatherIcon(hike.weather[0])) || weatherIcon(WeatherCondition.SUNNY)
-							}
+							{(hike.weather && weatherIcon(hike.weather[0])) ||
+								weatherIcon(WeatherCondition.SUNNY)}
 							<Badge bg={difficultyToColor(hike.difficulty)} className="ms-auto me-1">
 								{capitalizeAndReplaceUnderscores(hike.difficulty)}
 							</Badge>
-							<Badge bg={ConditionColor(hike.hikeCondition)} title="Hike condition">{capitalizeAndReplaceUnderscores(hike.hikeCondition)}</Badge>
+							{hike.hikeCondition && (
+								<Badge bg={ConditionColor(hike.hikeCondition)} title="Hike condition">
+									{capitalizeAndReplaceUnderscores(hike.hikeCondition)}
+								</Badge>
+							)}
 						</Stack>
 					</Card.Title>
 					<>
@@ -107,14 +123,23 @@ const HikeCard = ({ hike, showDetails, setDirty }) => {
 							<div className="ms-auto">
 								{loggedIn && (
 									<Stack direction="horizontal" gap={3}>
-										{user.userType === UserType.HUT_WORKER && (
+										{checkIfCanUpdateHikeCondition() && (
 											<NewHikeCondition hike={hike} setDirty={setDirty} />
 										)}
+                                        
+                                    
+										<Button
+											data-test-id="seeOnMap"
+											onClick={() => showDetails(hike)}
+											variant={"success"}
+										>
+											See on Map
+										</Button>
 										<Button variant="dark" onClick={() => navigate("/hike", { state: { hike } })}>
 											Details
 										</Button>
-										{
-											(user.userType === UserType.PLATFORM_MANAGER || user.userType === UserType.HIKER) &&
+										{(user.userType === UserType.PLATFORM_MANAGER ||
+											user.userType === UserType.HIKER) && (
 											<>
 												<Button variant="outline-success" onClick={() => start()}>
 													Start
@@ -123,7 +148,7 @@ const HikeCard = ({ hike, showDetails, setDirty }) => {
 													Plan
 												</Button>
 											</>
-										}
+										)}
 									</Stack>
 								)}
 							</div>

@@ -29,6 +29,10 @@ async function insert(userId, hikeId) {
 	return registeredHike;
 }
 
+async function update(id, changes) {
+	return await RegisteredHike.findByIdAndUpdate(id, changes);
+}
+
 
 /**
  * Plan a new hike, inserting the new registered hike in the database
@@ -116,6 +120,8 @@ async function startPlannedHike(userId, id) {
 		return null;
 	if (registeredHike.status === RegisteredHikeStatus.PLANNED) {
 		registeredHike.status = RegisteredHikeStatus.ACTIVE;
+	} else {
+		throw new Error("Hike is activated")
 	}
 	return await registeredHike.save();
 }
@@ -194,6 +200,7 @@ async function getCompletedRegisteredHikeByUserId(userId) {
 
 module.exports = {
 	insert,
+	update,
 	insertPlan,
 	completeRegisteredHike,
 	startPlannedHike,

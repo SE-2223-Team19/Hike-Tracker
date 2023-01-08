@@ -15,11 +15,13 @@ import { useState } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import { UserType } from "../../helper/enums";
 import RecordPoint from "../RecordPointForm";
+import { useNavigate } from "react-router-dom";
 
 const RegisteredHikeCard = ({ registeredHike, setDirty }) => {
 	const { user, setMessage } = useContext(AuthContext);
 	const [show, setShow] = useState(false);
 	const { _id, hike, status } = registeredHike;
+	const navigate = useNavigate();
 
 	const [point, setPoint] = useState(
 		registeredHike.recordedPoints[registeredHike.recordedPoints.length - 1]
@@ -112,7 +114,7 @@ const RegisteredHikeCard = ({ registeredHike, setDirty }) => {
 						<Card.Title>
 							<Stack direction="horizontal" className="align-items-center">
 								<h5>{hike.title}</h5>
-								<Badge bg={ConditionColor(hike.hikeCondition)}>{hike.hikeCondition}</Badge>{" "}
+								<Badge bg={ConditionColor(hike.hikeCondition)}>{capitalizeAndReplaceUnderscores(hike.hikeCondition)}</Badge>
 								<Badge bg={difficultyToColor(hike.difficulty)} className="ms-auto me-1">
 									{capitalizeAndReplaceUnderscores(hike.difficulty)}
 								</Badge>
@@ -128,7 +130,6 @@ const RegisteredHikeCard = ({ registeredHike, setDirty }) => {
 										<Button variant="outline-danger" onClick={() => end()}>
 											Stop
 										</Button>
-										{console.log(registeredHike.recordedPoints + " " + registeredHike.hike.referencePoints)}
 										{!(
 											registeredHike.recordedPoints.length ===
 											registeredHike.hike.referencePoints.length
@@ -150,6 +151,11 @@ const RegisteredHikeCard = ({ registeredHike, setDirty }) => {
 													Share
 												</Button>
 											</OverlayTrigger>
+										</div>
+										<div>
+											<Button variant="dark" onClick={() => navigate("/registered-hike", { state: { registeredHike }})}>
+												Details
+											</Button>
 										</div>
 									</Stack>
 								</div>
@@ -173,6 +179,32 @@ const RegisteredHikeCard = ({ registeredHike, setDirty }) => {
 											Share
 										</Button>
 									</OverlayTrigger>
+								</div>
+								<div>
+									<Button variant="dark" onClick={() => navigate("/registered-hike", { state: { registeredHike }})}>
+										Details
+									</Button>
+								</div>
+							</Stack>
+						)}
+						{registeredHike.status === RegisteredHikeStatus.COMPLETED && (
+							<Stack direction="horizontal" gap={4}>
+								<div className="ms-auto">
+									<OverlayTrigger
+										trigger={"click"}
+										overlay={(props) => (
+											<Tooltip {...props}>Share link copied to clipboard</Tooltip>
+										)}
+									>
+										<Button variant="outline-success" onClick={() => copyUrlToClipboard()}>
+											Share
+										</Button>
+									</OverlayTrigger>
+								</div>
+								<div>
+									<Button variant="dark" onClick={() => navigate("/registered-hike", { state: { registeredHike }})}>
+										Details
+									</Button>
 								</div>
 							</Stack>
 						)}

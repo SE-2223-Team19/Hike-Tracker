@@ -106,7 +106,16 @@ function DescribeHikeForm({ hike }) {
 		if (values.thumbnail) {
 			// Covert to base64 with prexif
 			values.thumbnail = await getBase64(values.thumbnail);
+		} else {
+			if (!hike) {
+				setMessage({
+					type: "danger",
+					msg: "Please select a thumbnail",
+				});
+				return;
+			}
 		}
+
 		if (hike) {
 			// Update hike
 			delete values.trackPoints;
@@ -467,7 +476,7 @@ function DescribeHikeForm({ hike }) {
 									{values.linkedHuts.map((point) => (
 										<ListGroupItem key={point._id} className="d-flex justify-content-between">
 											<span>
-												{point.description} (Lat: {point.point.lat} Long: {point.point.lng})
+												{point.name} (Lat: {point.point.lat} Long: {point.point.lng})
 											</span>
 											<CloseButton
 												onClick={() => {
@@ -496,6 +505,7 @@ function DescribeHikeForm({ hike }) {
 													},
 													locationType: location.locationType,
 													_id: location._id,
+													name: location.name,
 													description: location.description,
 												},
 											]);

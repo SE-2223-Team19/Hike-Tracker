@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">71.42% </span>
+                <span class="strong">67.34% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>30/42</span>
+                <span class='fraction'>33/49</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">52.63% </span>
+                <span class="strong">52.17% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>10/19</span>
+                <span class='fraction'>12/23</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">75% </span>
+                <span class="strong">70.21% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>30/40</span>
+                <span class='fraction'>33/47</span>
             </div>
         
             
@@ -233,11 +233,22 @@
 <a name='L168'></a><a href='#L168'>168</a>
 <a name='L169'></a><a href='#L169'>169</a>
 <a name='L170'></a><a href='#L170'>170</a>
-<a name='L171'></a><a href='#L171'>171</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-yes">6x</span>
+<a name='L171'></a><a href='#L171'>171</a>
+<a name='L172'></a><a href='#L172'>172</a>
+<a name='L173'></a><a href='#L173'>173</a>
+<a name='L174'></a><a href='#L174'>174</a>
+<a name='L175'></a><a href='#L175'>175</a>
+<a name='L176'></a><a href='#L176'>176</a>
+<a name='L177'></a><a href='#L177'>177</a>
+<a name='L178'></a><a href='#L178'>178</a>
+<a name='L179'></a><a href='#L179'>179</a>
+<a name='L180'></a><a href='#L180'>180</a>
+<a name='L181'></a><a href='#L181'>181</a>
+<a name='L182'></a><a href='#L182'>182</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -257,6 +268,13 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -373,6 +391,10 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -395,7 +417,7 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -426,7 +448,14 @@ const ParkingLot = require("../models/parking-lot-model");
 async function getLocations(page, pageSize, filterQuery = <span class="branch-0 cbranch-no" title="branch not covered" >{})</span> {
 	const paginationActive = page !== undefined &amp;&amp; <span class="branch-1 cbranch-no" title="branch not covered" >pageSize !== undefined;</span>
 &nbsp;
-	let p = [
+	let p = [];
+	<span class="missing-if-branch" title="if path not taken" >I</span>if (filterQuery.point) {
+<span class="cstat-no" title="statement not covered" >		p = [filterQuery.point];</span>
+<span class="cstat-no" title="statement not covered" >		delete filterQuery.point;</span>
+	}
+&nbsp;
+	p = [
+		...p,
 		{
 			$match: filterQuery,
 		},
@@ -542,6 +571,10 @@ async function updateLocationDescription(id, description) {
  */
 async function updateLocation(id, locationUpdate) {
 	<span class="missing-if-branch" title="else path not taken" >E</span>if (locationUpdate.locationType === LocationType.HUT) {
+		<span class="missing-if-branch" title="if path not taken" >I</span>if (locationUpdate.thumbnail) {
+			const thumbnail = <span class="cstat-no" title="statement not covered" >await Image.create({ data: locationUpdate.thumbnail });</span>
+<span class="cstat-no" title="statement not covered" >			locationUpdate.thumbnail = thumbnail._id;</span>
+		}
 		await Hut.findOneAndUpdate({ _id: id, locationType: LocationType.HUT }, locationUpdate, {
 			new: true,
 		}).lean();
@@ -580,7 +613,7 @@ module.exports = {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-01-08T14:32:03.875Z
+                at 2023-01-08T18:12:16.465Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

@@ -11,5 +11,6 @@ registeredHikeRouter.patch("/startplan/:id", isHiker, registeredHikeController.s
 registeredHikeRouter.get("/:userId", isHiker, registeredHikeController.getRegisteredHikes);
 registeredHikeRouter.get("/broadcast/:id", registeredHikeController.getRegisteredHikeById);
 registeredHikeRouter.patch("/point/:id", isHiker, registeredHikeController.addRecordPoint)
+registeredHikeRouter.patch("/update/:id", isHiker, registeredHikeController.updateRegisteredHike);
 
 module.exports = registeredHikeRouter;

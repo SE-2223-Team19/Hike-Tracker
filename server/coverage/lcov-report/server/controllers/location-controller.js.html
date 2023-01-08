@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">77.27% </span>
+                <span class="strong">75.71% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>51/66</span>
+                <span class='fraction'>53/70</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">68.42% </span>
+                <span class="strong">65.21% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>13/19</span>
+                <span class='fraction'>15/23</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">79.66% </span>
+                <span class="strong">80.32% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>47/59</span>
+                <span class='fraction'>49/61</span>
             </div>
         
             
@@ -302,7 +302,17 @@
 <a name='L237'></a><a href='#L237'>237</a>
 <a name='L238'></a><a href='#L238'>238</a>
 <a name='L239'></a><a href='#L239'>239</a>
-<a name='L240'></a><a href='#L240'>240</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">2x</span>
+<a name='L240'></a><a href='#L240'>240</a>
+<a name='L241'></a><a href='#L241'>241</a>
+<a name='L242'></a><a href='#L242'>242</a>
+<a name='L243'></a><a href='#L243'>243</a>
+<a name='L244'></a><a href='#L244'>244</a>
+<a name='L245'></a><a href='#L245'>245</a>
+<a name='L246'></a><a href='#L246'>246</a>
+<a name='L247'></a><a href='#L247'>247</a>
+<a name='L248'></a><a href='#L248'>248</a>
+<a name='L249'></a><a href='#L249'>249</a>
+<a name='L250'></a><a href='#L250'>250</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
@@ -319,6 +329,8 @@
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -342,11 +354,15 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -474,6 +490,10 @@
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -560,6 +580,8 @@ async function getLocations(req, res) {
 		const schema = joi.object().keys({
 			locationType: joi.string().valid(...Object.values(LocationType)),
 			description: joi.string(),
+			name: joi.string().allow(""),
+			capacity: joi.number().allow(""),
 			locationLat: joi.number().min(-90).max(90),
 			locationLon: joi.number().min(-180).max(180).when(joi.ref("locationLat"), {
 				is: joi.exist(),
@@ -584,14 +606,18 @@ async function getLocations(req, res) {
 		<span class="missing-if-branch" title="if path not taken" >I</span>if (value.locationType) <span class="cstat-no" title="statement not covered" >filter.locationType = value.locationType;</span>
 		<span class="missing-if-branch" title="if path not taken" >I</span>if (value.description) <span class="cstat-no" title="statement not covered" >filter.description = { $regex: value.description };</span>
 		<span class="missing-if-branch" title="if path not taken" >I</span>if (value.workedPeopleId) <span class="cstat-no" title="statement not covered" >filter.peopleWorks = ObjectId(value.workedPeopleId);</span>
+		<span class="missing-if-branch" title="if path not taken" >I</span>if (value.name) <span class="cstat-no" title="statement not covered" >filter.name = { $regex: value.name };</span>
+		<span class="missing-if-branch" title="if path not taken" >I</span>if (value.capacity) <span class="cstat-no" title="statement not covered" >filter.capacity = { $gte: value.capacity };</span>
 		<span class="missing-if-branch" title="if path not taken" >I</span>if (value.locationLat &amp;&amp; <span class="branch-1 cbranch-no" title="branch not covered" >value.locationLon </span>&amp;&amp; <span class="branch-2 cbranch-no" title="branch not covered" >value.locationRadius)</span>
 <span class="cstat-no" title="statement not covered" >			filter.point = {</span>
-				$near: {
-					$geometry: {
+				$geoNear: {
+					near: {
 						type: "Point",
 						coordinates: [value.locationLon, value.locationLat],
 					},
-					$maxDistance: value.locationRadius, // Distance in meters
+					maxDistance: value.locationRadius,
+					distanceField: "distance",
+					spherical: true,
 				},
 			};
 &nbsp;
@@ -745,6 +771,10 @@ async function updateLocation(req, res) {
 				is: LocationType.HUT,
 				then: joi.string().allow(""),
 			}),
+			thumbnail: joi.alternatives().conditional("locationType", {
+				is: LocationType.HUT,
+				then: joi.string().allow(null),
+			}),
 			description: joi.string(),
 		});
 &nbsp;
@@ -787,7 +817,7 @@ module.exports = {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-01-08T14:32:03.875Z
+                at 2023-01-08T18:12:16.465Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

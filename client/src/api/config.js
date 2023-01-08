@@ -16,7 +16,8 @@ const ENDPOINTS = {
 		byUser: "registered-hike/:userId",
 		byId: "registered-hike/broadcast/:id",
 		stats: "registered-hike/stats/:id",
-		point: "registered-hike/point/:id"
+		point: "registered-hike/point/:id",
+		update: "registered-hike/update/:id"
 	},
 	locations: {
 		all: "location",
@@ -37,8 +38,8 @@ const ENDPOINTS = {
 		preferences: "user/preferences",
 	},
 	weatherAlert: {
-		update: "weatherAlert/area",
-		byId: "weatherAlert/:id"
+		update: "weather-alert/area",
+		byId: "weather-alert/:id"
 	}
 };
 

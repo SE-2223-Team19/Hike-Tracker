@@ -71,20 +71,23 @@ export const ConditionColor = (condition) => {
 };
 
 export const weatherIcon = (weather) => {
-	
+	const props = {
+		size: 30,
+		title: "Weather condition"
+	};
 	switch (weather) {
-		case "sunny":
-			return <WiDaySunny/>;
-		case "blizzard":
-			return <IoSnowOutline/>;
-		case "cloudy":
-			return <WiCloudy/>;
-		case "thunder_storm":
-			return <WiDayThunderstorm/>;
-		case "windy":
-		    return 	<WiDayWindy/>;	
+		case WeatherCondition.SUNNY:
+			return <WiDaySunny {...props}/>;
+		case WeatherCondition.BLIZZARD:
+			return <IoSnowOutline {...props}/>;
+		case WeatherCondition.CLOUDY:
+			return <WiCloudy {...props}/>;
+		case WeatherCondition.THUNDER_STORM:
+			return <WiDayThunderstorm {...props}/>;
+		case WeatherCondition.WINDY:
+		    return 	<WiDayWindy {...props}/>;	
 		default:
-			return <WiThermometer/>;
+			return <WiThermometer {...props}/>;
 	}
 };
 

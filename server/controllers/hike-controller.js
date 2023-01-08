@@ -200,7 +200,6 @@ async function updateHikeCondition(req, res) {
 
 		// Hike validation schema
 		const schema = joi.object().keys({
-			description: joi.string(),
 			hikeCondition: joi.string().valid(...Object.values(HikeCondition)),
 		});
 

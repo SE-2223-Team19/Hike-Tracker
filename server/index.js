@@ -10,8 +10,10 @@ const passport = require("passport");
 const { localStrategy } = require("./passport-strategy");
 
 const notificationUser = require("./data/notification-user-dal");
-const user = require("./data/user-dal");
+const userDAL = require("./data/user-dal");
+const registeredHikeDAL = require("./data/registered-hike-dal");
 const taskScheduler = require("./task-scheduler");
+const { RegisteredHikeStatus } = require("./models/enums");
 
 // Constants
 const PORT = process.env.SERVER_PORT || 8080;
@@ -66,10 +68,13 @@ const getApp = () => {
 async function runNotification() {
 	const notification = await notificationUser.getNotificationUser();
 	notification.forEach(async (notify) => {
-		const currUser = await user.getUserById(notify.user);
 		if(notify.timeToNotify === 0)
 			return;
-		taskScheduler.addUnfinishedHikeNotification(currUser, registeredHike.hike, notify.timeToNotify * 60000);
+		const hikes = await registeredHikeDAL.getRegisteredHikeByUserId(notify.user);
+		if (hikes.length === 0 && hikes.some(h => h.status === RegisteredHikeStatus.ACTIVE))
+			return;
+		const currUser = await userDAL.getUserById(notify.user);
+		taskScheduler.addUnfinishedHikeNotification(currUser, hikes.filter(h => h.status === RegisteredHikeStatus.ACTIVE)[0].hike, notify.timeToNotify * 60000);
 	});
 	
 }

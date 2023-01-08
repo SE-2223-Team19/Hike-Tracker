@@ -1,7 +1,7 @@
 import { React, useState } from "react";
 import { Button, Container, Form, Modal, Row, Col, Alert } from "react-bootstrap";
 import { MapContainer, TileLayer, useMapEvent, Circle } from 'react-leaflet';
-import { getLatLongFromCity } from "../../helper/utils";
+import { capitalizeAndReplaceUnderscores, getLatLongFromCity } from "../../helper/utils";
 //import { WeatherCondition } from "../../helper/enums ";
 import {WeatherCondition} from '../../helper/enums'
 import {updateWeatherAlert} from '../../api/weatherAlert';
@@ -15,36 +15,35 @@ const WeatherAlert = ({ onRemoveFilter , hikesUpdated , setDirty}) => {
     const [radius, setRadius] = useState(50); // Radius in meters
    
     
-    const [city, setCity] = useState("Torino")
-    const [ref, setRef] = useState(undefined)
-    const [error, setError] = useState("")
-    const [show,setshow] = useState()
-    const [weather,setweather] = useState("")
+    const [city, setCity] = useState("Torino");
+    const [ref, setRef] = useState(undefined);
+    const [error, setError] = useState("");
+    const [show,setshow] = useState();
+    const [weather,setweather] = useState(WeatherCondition.SUNNY);
     
     const handlesubmit = async (event)=>{
-        event.preventDefault()
+        event.preventDefault();
         const Mapchanges = {
             weatherAlert : weather,
             radius : radius,
             coordinates : coordinates
-        }
+        };
      
-      await updateWeatherAlert(Mapchanges) 
-      setDirty(true)
-        setweather("")
-        setCity("Torino")
-        onHide()
-
+        await updateWeatherAlert(Mapchanges);
+        setDirty(true);
+        setweather(WeatherCondition.SUNNY);
+        setCity("Torino");
+        onHide();
     }
 
     async function loadAddress() {
         try {
-            const address = await getLatLongFromCity(city ? city : "Torino")
-            setCoordinates([address[0].lat, address[0].lon])
+            const address = await getLatLongFromCity(city ? city : "Torino");
+            setCoordinates([parseFloat(address[0].lat), parseFloat(address[0].lon)]);
             if (ref)
-                ref.flyTo([address[0].lat, address[0].lon])
+                ref.flyTo([address[0].lat, address[0].lon]);
         } catch (err) {
-            setError("City does not found")
+            setError("City does not found");
         }
     }
 
@@ -58,9 +57,9 @@ const WeatherAlert = ({ onRemoveFilter , hikesUpdated , setDirty}) => {
     const onHide = () => setshow(false);
     const handleShow = () => setshow(true);
     const resetcontent =() => {
-        setCity("Torino")
-        setweather("")
-        setshow(false)
+        setCity("Torino");
+        setweather("");
+        setshow(false);
     }
     return (
         <>
@@ -94,30 +93,27 @@ const WeatherAlert = ({ onRemoveFilter , hikesUpdated , setDirty}) => {
                         </Col>
                     </Row>
                     <Row>
-                        <Col>
-                            <Form.Group>
-                                <Form.Control onChange={(ev) => { setCity(ev.target.value) }} />
-                            </Form.Group>
-                        </Col>
-                        <Col><Button variant="success" onClick={async () => await loadAddress()}>Search</Button></Col>
+                        <Form.Group>
+                            <Form.Label>Center by city</Form.Label>
+                            <Form.Control onChange={(ev) => { setCity(ev.target.value) }} onBlur={() => loadAddress()} />
+                        </Form.Group>
+                    </Row>
+                    <Row>
+                        <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+                            <Form.Label>Weather condition</Form.Label>
+                            <Form.Select value={weather} onChange={(ev)=>setweather(ev.target.value)}>
+                                {
+                                    Object.values(WeatherCondition)
+                                    .map((x) => (
+                                    <option key={x} value={x}>
+                                        {capitalizeAndReplaceUnderscores(x)}
+                                    </option>
+                                    ))
+                                }
+                            </Form.Select> 
+                        </Form.Group>
                     </Row>
                 </Container>
-                 
-                <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-              
-                            <Form.Select value={weather} onChange={(ev)=>setweather(ev.target.value)}>
-                             <option value=""></option>
-                                 {
-                                     Object.values(WeatherCondition)
-                                     .map((x) => (
-                                     <option key={x} value={x}>
-                                         {x}
-                                     </option>
-                                     ))
-                                 }
-                              
-                              </Form.Select> 
-                           </Form.Group>
                      
             </Modal.Body>
 

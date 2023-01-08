@@ -1,12 +1,13 @@
 import { Button, Form, Modal } from "react-bootstrap";
 import { React } from "react";
-import { updateLocation } from "../api/locations";
-import { LocationType } from "../helper/enums";
+import { updateLocation } from "../../api/locations";
+import { LocationType } from "../../helper/enums";
 import { Formik } from "formik";
 import * as Yup from "yup";
+import { useNavigate } from "react-router-dom";
 
-function ModelFormHut({ currentHut, show, setShow, setDirty }) {
-
+function ModelFormHut({ currentHut, show, setShow }) {
+	const navigate = useNavigate();
 	
 	const onSaveModifiedHut = async (values) => {
 		await updateLocation(currentHut._id, {
@@ -20,7 +21,7 @@ function ModelFormHut({ currentHut, show, setShow, setDirty }) {
 		});
 		
 		setShow(false);
-		setDirty(true)
+		navigate(-1);
 	}
 
 	const validationSchema = Yup.object().shape({

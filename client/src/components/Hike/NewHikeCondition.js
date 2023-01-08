@@ -4,11 +4,11 @@ import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
 import { HikeCondition } from '../../helper/enums';
 import {updateHikeCondition} from '../../api/hikes';
+import { capitalizeAndReplaceUnderscores } from '../../helper/utils';
 
 function NewHikeCondition({ hike, setDirty }) {
 
     const [show, setShow] = useState(false);
-    const [description, setDescription] = useState("");
     const [condition, setCondition] = useState("");
 
 
@@ -20,14 +20,10 @@ function NewHikeCondition({ hike, setDirty }) {
         event.preventDefault();
 
         const changes = {
-          description: description,
           hikeCondition: condition
         }
         console.log(hike._id);
-        await updateHikeCondition(hike._id,{...changes})
-
-        console.log(description);
-        setDescription("")
+        await updateHikeCondition(hike._id, {...changes});
         handleClose();
         setDirty(true);
     };
@@ -55,18 +51,11 @@ function NewHikeCondition({ hike, setDirty }) {
                       Object.values(HikeCondition)
                       .map((e) => (
                       <option key={e} value={e}>
-                          {e}
+                          {capitalizeAndReplaceUnderscores(e)}
                       </option>
                       ))
                   }
               </Form.Select>
-            </Form.Group>
-            <Form.Group
-              className="mb-3"
-              controlId="exampleForm.ControlTextarea1"
-            >
-              <Form.Label>Description</Form.Label>
-              <Form.Control as="textarea" value={description} rows={3} onChange={(ev)=>{setDescription(ev.target.value)}}/>
             </Form.Group>
           </Form>
         </Modal.Body>

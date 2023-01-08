@@ -2,7 +2,6 @@ import React, { useContext } from "react";
 import { Badge, Button, Card, Image, Stack } from "react-bootstrap";
 import { BiRuler, BiTrendingUp, BiTime } from "react-icons/bi";
 import NewHikeCondition from "./NewHikeCondition";
-import WeatherAlert from "./NewWeatherAlert"
 import { useNavigate } from "react-router-dom";
 import {
 	capitalizeAndReplaceUnderscores,
@@ -16,8 +15,8 @@ import {
 import { AuthContext } from "../../context/AuthContext";
 import { UserType } from "../../helper/enums";
 import { startHike } from "../../api/hikes";
-import { IconContext } from "react-icons/lib";
-import { WiDaySunny } from 'react-icons/wi'
+import { WeatherCondition } from "../../helper/enums";
+
 const HikeCard = ({ hike, showDetails ,setDirty }) => {
 
 	const navigate = useNavigate();
@@ -59,25 +58,16 @@ const HikeCard = ({ hike, showDetails ,setDirty }) => {
 			<Card.Body className="py-0">
 				<Stack className="h-100" style={{ justifyContent: "space-between" }}>
 					<Card.Title>
-						<Stack direction="horizontal" className="justify-content-between align-items-center">
+						<Stack direction="horizontal" className="align-items-center">
 							<h5>{hike.title}</h5>
-							
-							<Badge bg={difficultyToColor(hike.difficulty)}>
+							{
+								(hike.weather && weatherIcon(hike.weather[0])) || weatherIcon(WeatherCondition.SUNNY)
+							}
+							<Badge bg={difficultyToColor(hike.difficulty)} className="ms-auto me-1">
 								{capitalizeAndReplaceUnderscores(hike.difficulty)}
 							</Badge>
+							<Badge bg={ConditionColor(hike.hikeCondition)} title="Hike condition">{capitalizeAndReplaceUnderscores(hike.hikeCondition)}</Badge>
 						</Stack>
-						<Stack direction="horizontal" className="justify-content-between align-items-center">
-						<Badge bg={ConditionColor(hike.hikeCondition)}>{hike.hikeCondition}</Badge>
-
-						</Stack>
-						
-						{/* <Badge bg={weathericon(hike.weather)}><WiDaySunny/></Badge> */}
-						{/* <IconContext.Provider value={weathericon(hike.weather)}><WiDaySunny/></IconContext.Provider> */}
-                        
-						<Stack>
-						<image>{weatherIcon(hike.weather[0])}</image>
-						</Stack>
-
 					</Card.Title>
 					<>
 						<Stack direction="horizontal" gap={4} className="mt-4">
@@ -112,9 +102,12 @@ const HikeCard = ({ hike, showDetails ,setDirty }) => {
 										<Button variant="dark" onClick={() => navigate("/hike", { state: { hike } })}>
 											Details
 										</Button>
-										<Button variant="outline-success" onClick={() => start()}>
-											Start
-										</Button>
+										{
+											(user.userType === UserType.PLATFORM_MANAGER || user.userType === UserType.HIKER) &&
+											<Button variant="outline-success" onClick={() => start()}>
+												Start
+											</Button>
+										}
 									</Stack>
 								)}
 							</div>

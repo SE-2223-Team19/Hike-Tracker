@@ -55,6 +55,49 @@ describe("Registered Hike", () => {
 		expect(getRegisteredHikesResponse.responseBody.length).toBe(1);
 	});
 
+	test('Get Registered Hike By ID', async() => {
+		// Create local guide
+		const localguideReponse = await createLocalGuide();
+
+		// Create hike
+		const hikeResponse = await createHike(localguideReponse);
+
+		// Create hiker
+		const hikerResponse = await createHiker();
+
+		// Start hike
+		const startHikeResponse = await startHike(hikerResponse, hikeResponse);
+
+		// Check if the response is correct
+		expect(startHikeResponse.statusCode).toBe(StatusCodes.CREATED);
+		
+		const response = new ResponseHelper()
+		await registerHikeController.getRegisteredHikeById({
+			params: {
+				id: startHikeResponse.responseBody._id
+			}
+		}, response);
+
+		expect(response.statusCode).toBe(StatusCodes.OK);
+	});
+
+	test('Fail Test Get Registered Hike By ID', async() => {
+		// Create local guide
+		const localguideReponse = await createLocalGuide();
+
+		// Create hike
+		const hikeResponse = await createHike(localguideReponse);
+
+		const response = new ResponseHelper()
+		await registerHikeController.getRegisteredHikeById({
+			params: {
+				id: hikeResponse.responseBody._id
+			}
+		}, response);
+
+		expect(response.responseBody).toBe(null);
+	});
+
 	test("Get registered hike for unknown userId format", async () => {
 		const getRegisteredHikesResponse = await registerHikeController.getRegisteredHikes({
 			params: {

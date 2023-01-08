@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1673195682402" clover="3.2.0">
-  <project timestamp="1673195682402" name="All files">
-    <metrics statements="729" coveredstatements="584" conditionals="215" coveredconditionals="130" methods="117" coveredmethods="84" elements="1061" coveredelements="798" complexity="0" loc="729" ncloc="729" packages="7" files="29" classes="29"/>
+<coverage generated="1673196406502" clover="3.2.0">
+  <project timestamp="1673196406502" name="All files">
+    <metrics statements="731" coveredstatements="585" conditionals="217" coveredconditionals="131" methods="117" coveredmethods="84" elements="1065" coveredelements="800" complexity="0" loc="731" ncloc="731" packages="7" files="29" classes="29"/>
     <package name="server">
       <metrics statements="12" coveredstatements="11" conditionals="4" coveredconditionals="2" methods="5" coveredmethods="5"/>
-      <file name="task-scheduler.js" path="/Users/vittorioarpino/Desktop/Projects/Hike-Tracker/server/task-scheduler.js">
+      <file name="task-scheduler.js" path="/Users/matteorosani/Documents/Software Engeneering 2/Hike-Tracker/server/task-scheduler.js">
         <metrics statements="12" coveredstatements="11" conditionals="4" coveredconditionals="2" methods="5" coveredmethods="5"/>
         <line num="2" count="4" type="stmt"/>
         <line num="6" count="4" type="stmt"/>
@@ -21,9 +21,9 @@
       </file>
     </package>
     <package name="server.controllers">
-      <metrics statements="336" coveredstatements="249" conditionals="112" coveredconditionals="74" methods="47" coveredmethods="23"/>
-      <file name="hike-controller.js" path="/Users/vittorioarpino/Desktop/Projects/Hike-Tracker/server/controllers/hike-controller.js">
-        <metrics statements="60" coveredstatements="49" conditionals="31" coveredconditionals="17" methods="5" coveredmethods="4"/>
+      <metrics statements="338" coveredstatements="250" conditionals="114" coveredconditionals="75" methods="47" coveredmethods="23"/>
+      <file name="hike-controller.js" path="/Users/matteorosani/Documents/Software Engeneering 2/Hike-Tracker/server/controllers/hike-controller.js">
+        <metrics statements="61" coveredstatements="50" conditionals="33" coveredconditionals="18" methods="5" coveredmethods="4"/>
         <line num="1" count="4" type="stmt"/>
         <line num="2" count="4" type="stmt"/>
         <line num="3" count="4" type="stmt"/>
@@ -64,28 +64,29 @@
         <line num="141" count="19" type="cond" truecount="2" falsecount="0"/>
         <line num="145" count="18" type="stmt"/>
         <line num="147" count="18" type="stmt"/>
-        <line num="148" count="17" type="stmt"/>
-        <line num="150" count="2" type="stmt"/>
+        <line num="148" count="18" type="stmt"/>
+        <line num="150" count="1" type="stmt"/>
         <line num="162" count="5" type="stmt"/>
         <line num="164" count="5" type="stmt"/>
         <line num="167" count="5" type="stmt"/>
         <line num="183" count="5" type="stmt"/>
-        <line num="185" count="5" type="cond" truecount="1" falsecount="1"/>
-        <line num="187" count="5" type="stmt"/>
-        <line num="189" count="5" type="stmt"/>
-        <line num="191" count="0" type="stmt"/>
-        <line num="196" count="0" type="stmt"/>
-        <line num="198" count="0" type="stmt"/>
-        <line num="201" count="0" type="stmt"/>
-        <line num="206" count="0" type="stmt"/>
-        <line num="209" count="0" type="cond" truecount="0" falsecount="2"/>
-        <line num="211" count="0" type="stmt"/>
-        <line num="213" count="0" type="stmt"/>
-        <line num="215" count="0" type="stmt"/>
+        <line num="184" count="5" type="cond" truecount="1" falsecount="1"/>
+        <line num="186" count="5" type="cond" truecount="1" falsecount="1"/>
+        <line num="188" count="5" type="stmt"/>
+        <line num="190" count="5" type="stmt"/>
+        <line num="192" count="0" type="stmt"/>
+        <line num="197" count="0" type="stmt"/>
+        <line num="199" count="0" type="stmt"/>
+        <line num="202" count="0" type="stmt"/>
+        <line num="207" count="0" type="stmt"/>
+        <line num="210" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="212" count="0" type="stmt"/>
+        <line num="214" count="0" type="stmt"/>
         <line num="216" count="0" type="stmt"/>
-        <line num="219" count="4" type="stmt"/>
+        <line num="217" count="0" type="stmt"/>
+        <line num="220" count="4" type="stmt"/>
       </file>
-      <file name="location-controller.js" path="/Users/vittorioarpino/Desktop/Projects/Hike-Tracker/server/controllers/location-controller.js">
+      <file name="location-controller.js" path="/Users/matteorosani/Documents/Software Engeneering 2/Hike-Tracker/server/controllers/location-controller.js">
         <metrics statements="61" coveredstatements="49" conditionals="23" coveredconditionals="15" methods="6" coveredmethods="4"/>
         <line num="1" count="2" type="stmt"/>
         <line num="2" count="2" type="stmt"/>
@@ -149,8 +150,8 @@
         <line num="238" count="0" type="stmt"/>
         <line num="242" count="2" type="stmt"/>
       </file>
-      <file name="registered-hike-controller.js" path="/Users/vittorioarpino/Desktop/Projects/Hike-Tracker/server/controllers/registered-hike-controller.js">
-        <metrics statements="89" coveredstatements="40" conditionals="12" coveredconditionals="4" methods="21" coveredmethods="5"/>
+      <file name="registered-hike-controller.js" path="/Users/matteorosani/Documents/Software Engeneering 2/Hike-Tracker/server/controllers/registered-hike-controller.js">
+        <metrics statements="90" coveredstatements="40" conditionals="12" coveredconditionals="4" methods="21" coveredmethods="5"/>
         <line num="1" count="4" type="stmt"/>
         <line num="2" count="4" type="stmt"/>
         <line num="3" count="4" type="stmt"/>
@@ -175,6 +176,7 @@
         <line num="37" count="0" type="stmt"/>
         <line num="39" count="0" type="cond" truecount="0" falsecount="2"/>
         <line num="40" count="0" type="stmt"/>
+        <line num="42" count="0" type="stmt"/>
         <line num="43" count="0" type="stmt"/>
         <line num="45" count="0" type="stmt"/>
         <line num="47" count="0" type="stmt"/>
@@ -241,7 +243,7 @@
         <line num="165" count="0" type="stmt"/>
         <line num="168" count="4" type="stmt"/>
       </file>
-      <file name="user-controller.js" path="/Users/vittorioarpino/Desktop/Projects/Hike-Tracker/server/controllers/user-controller.js">
+      <file name="user-controller.js" path="/Users/matteorosani/Documents/Software Engeneering 2/Hike-Tracker/server/controllers/user-controller.js">
         <metrics statements="102" coveredstatements="88" conditionals="42" coveredconditionals="36" methods="13" coveredmethods="8"/>
         <line num="1" count="6" type="stmt"/>
         <line num="2" count="6" type="stmt"/>
@@ -280,15 +282,15 @@
         <line num="104" count="44" type="stmt"/>
         <line num="106" count="44" type="stmt"/>
         <line num="108" count="44" type="stmt"/>
-        <line num="118" count="42" type="cond" truecount="1" falsecount="1"/>
+        <line num="118" count="43" type="cond" truecount="1" falsecount="1"/>
         <line num="119" count="0" type="stmt"/>
         <line num="120" count="0" type="stmt"/>
         <line num="121" count="0" type="stmt"/>
         <line num="122" count="0" type="stmt"/>
-        <line num="126" count="42" type="stmt"/>
-        <line num="127" count="42" type="stmt"/>
-        <line num="131" count="3" type="cond" truecount="4" falsecount="0"/>
-        <line num="132" count="2" type="stmt"/>
+        <line num="126" count="43" type="stmt"/>
+        <line num="127" count="43" type="stmt"/>
+        <line num="131" count="2" type="cond" truecount="4" falsecount="0"/>
+        <line num="132" count="1" type="stmt"/>
         <line num="136" count="1" type="stmt"/>
         <line num="138" count="1" type="stmt"/>
         <line num="150" count="2" type="stmt"/>
@@ -346,7 +348,7 @@
         <line num="261" count="1" type="stmt"/>
         <line num="265" count="6" type="stmt"/>
       </file>
-      <file name="weather-alert-controller.js" path="/Users/vittorioarpino/Desktop/Projects/Hike-Tracker/server/controllers/weather-alert-controller.js">
+      <file name="weather-alert-controller.js" path="/Users/matteorosani/Documents/Software Engeneering 2/Hike-Tracker/server/controllers/weather-alert-controller.js">
         <metrics statements="24" coveredstatements="23" conditionals="4" coveredconditionals="2" methods="2" coveredmethods="2"/>
         <line num="1" count="4" type="stmt"/>
         <line num="2" count="4" type="stmt"/>
@@ -376,7 +378,7 @@
     </package>
     <package name="server.data">
       <metrics statements="218" coveredstatements="167" conditionals="91" coveredconditionals="50" methods="37" coveredmethods="30"/>
-      <file name="hike-dal.js" path="/Users/vittorioarpino/Desktop/Projects/Hike-Tracker/server/data/hike-dal.js">
+      <file name="hike-dal.js" path="/Users/matteorosani/Documents/Software Engeneering 2/Hike-Tracker/server/data/hike-dal.js">
         <metrics statements="36" coveredstatements="29" conditionals="15" coveredconditionals="9" methods="6" coveredmethods="6"/>
         <line num="1" count="4" type="stmt"/>
         <line num="2" count="4" type="stmt"/>
@@ -402,7 +404,7 @@
         <line num="227" count="18" type="stmt"/>
         <line num="231" count="2077" type="stmt"/>
         <line num="234" count="18" type="stmt"/>
-        <line num="235" count="17" type="stmt"/>
+        <line num="235" count="18" type="stmt"/>
         <line num="244" count="56" type="stmt"/>
         <line num="253" count="55" type="stmt"/>
         <line num="263" count="5" type="cond" truecount="2" falsecount="0"/>
@@ -415,7 +417,7 @@
         <line num="277" count="5" type="stmt"/>
         <line num="280" count="4" type="stmt"/>
       </file>
-      <file name="location-dal.js" path="/Users/vittorioarpino/Desktop/Projects/Hike-Tracker/server/data/location-dal.js">
+      <file name="location-dal.js" path="/Users/matteorosani/Documents/Software Engeneering 2/Hike-Tracker/server/data/location-dal.js">
         <metrics statements="47" coveredstatements="33" conditionals="23" coveredconditionals="12" methods="6" coveredmethods="5"/>
         <line num="1" count="6" type="stmt"/>
         <line num="2" count="6" type="stmt"/>
@@ -465,7 +467,7 @@
         <line num="171" count="0" type="stmt"/>
         <line num="174" count="6" type="stmt"/>
       </file>
-      <file name="notification-user-dal.js" path="/Users/vittorioarpino/Desktop/Projects/Hike-Tracker/server/data/notification-user-dal.js">
+      <file name="notification-user-dal.js" path="/Users/matteorosani/Documents/Software Engeneering 2/Hike-Tracker/server/data/notification-user-dal.js">
         <metrics statements="26" coveredstatements="26" conditionals="4" coveredconditionals="4" methods="5" coveredmethods="5"/>
         <line num="1" count="4" type="stmt"/>
         <line num="2" count="4" type="stmt"/>
@@ -494,7 +496,7 @@
         <line num="48" count="42" type="stmt"/>
         <line num="51" count="4" type="stmt"/>
       </file>
-      <file name="registered-hike-dal.js" path="/Users/vittorioarpino/Desktop/Projects/Hike-Tracker/server/data/registered-hike-dal.js">
+      <file name="registered-hike-dal.js" path="/Users/matteorosani/Documents/Software Engeneering 2/Hike-Tracker/server/data/registered-hike-dal.js">
         <metrics statements="70" coveredstatements="42" conditionals="36" coveredconditionals="15" methods="12" coveredmethods="6"/>
         <line num="1" count="4" type="stmt"/>
         <line num="2" count="4" type="stmt"/>
@@ -567,7 +569,7 @@
         <line num="191" count="0" type="stmt"/>
         <line num="194" count="4" type="stmt"/>
       </file>
-      <file name="user-dal.js" path="/Users/vittorioarpino/Desktop/Projects/Hike-Tracker/server/data/user-dal.js">
+      <file name="user-dal.js" path="/Users/matteorosani/Documents/Software Engeneering 2/Hike-Tracker/server/data/user-dal.js">
         <metrics statements="14" coveredstatements="14" conditionals="7" coveredconditionals="6" methods="4" coveredmethods="4"/>
         <line num="1" count="6" type="stmt"/>
         <line num="22" count="5" type="cond" truecount="2" falsecount="0"/>
@@ -579,12 +581,12 @@
         <line num="69" count="4" type="stmt"/>
         <line num="78" count="44" type="stmt"/>
         <line num="79" count="44" type="stmt"/>
-        <line num="80" count="42" type="stmt"/>
+        <line num="80" count="43" type="stmt"/>
         <line num="89" count="8" type="stmt"/>
         <line num="93" count="58" type="stmt"/>
         <line num="96" count="6" type="stmt"/>
       </file>
-      <file name="weather-alert-dal.js" path="/Users/vittorioarpino/Desktop/Projects/Hike-Tracker/server/data/weather-alert-dal.js">
+      <file name="weather-alert-dal.js" path="/Users/matteorosani/Documents/Software Engeneering 2/Hike-Tracker/server/data/weather-alert-dal.js">
         <metrics statements="25" coveredstatements="23" conditionals="6" coveredconditionals="4" methods="4" coveredmethods="4"/>
         <line num="1" count="4" type="stmt"/>
         <line num="2" count="4" type="stmt"/>
@@ -615,18 +617,18 @@
     </package>
     <package name="server.email">
       <metrics statements="24" coveredstatements="20" conditionals="2" coveredconditionals="2" methods="8" coveredmethods="6"/>
-      <file name="account.js" path="/Users/vittorioarpino/Desktop/Projects/Hike-Tracker/server/email/account.js">
+      <file name="account.js" path="/Users/matteorosani/Documents/Software Engeneering 2/Hike-Tracker/server/email/account.js">
         <metrics statements="8" coveredstatements="6" conditionals="0" coveredconditionals="0" methods="3" coveredmethods="2"/>
         <line num="1" count="6" type="stmt"/>
-        <line num="10" count="42" type="stmt"/>
-        <line num="16" count="42" type="stmt"/>
+        <line num="10" count="43" type="stmt"/>
+        <line num="16" count="43" type="stmt"/>
         <line num="26" count="0" type="stmt"/>
         <line num="31" count="0" type="stmt"/>
         <line num="41" count="1" type="stmt"/>
         <line num="46" count="1" type="stmt"/>
         <line num="49" count="6" type="stmt"/>
       </file>
-      <file name="registered-hike.js" path="/Users/vittorioarpino/Desktop/Projects/Hike-Tracker/server/email/registered-hike.js">
+      <file name="registered-hike.js" path="/Users/matteorosani/Documents/Software Engeneering 2/Hike-Tracker/server/email/registered-hike.js">
         <metrics statements="8" coveredstatements="8" conditionals="2" coveredconditionals="2" methods="3" coveredmethods="3"/>
         <line num="1" count="4" type="stmt"/>
         <line num="2" count="4" type="stmt"/>
@@ -637,14 +639,14 @@
         <line num="12" count="1" type="stmt"/>
         <line num="20" count="4" type="stmt"/>
       </file>
-      <file name="send-email.js" path="/Users/vittorioarpino/Desktop/Projects/Hike-Tracker/server/email/send-email.js">
+      <file name="send-email.js" path="/Users/matteorosani/Documents/Software Engeneering 2/Hike-Tracker/server/email/send-email.js">
         <metrics statements="4" coveredstatements="4" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
         <line num="1" count="6" type="stmt"/>
-        <line num="9" count="45" type="stmt"/>
-        <line num="17" count="45" type="stmt"/>
+        <line num="9" count="46" type="stmt"/>
+        <line num="17" count="46" type="stmt"/>
         <line num="20" count="6" type="stmt"/>
       </file>
-      <file name="weather-notification.js" path="/Users/vittorioarpino/Desktop/Projects/Hike-Tracker/server/email/weather-notification.js">
+      <file name="weather-notification.js" path="/Users/matteorosani/Documents/Software Engeneering 2/Hike-Tracker/server/email/weather-notification.js">
         <metrics statements="4" coveredstatements="2" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="0"/>
         <line num="1" count="4" type="stmt"/>
         <line num="12" count="0" type="stmt"/>
@@ -654,7 +656,7 @@
     </package>
     <package name="server.helper">
       <metrics statements="10" coveredstatements="10" conditionals="4" coveredconditionals="2" methods="3" coveredmethods="3"/>
-      <file name="utility.js" path="/Users/vittorioarpino/Desktop/Projects/Hike-Tracker/server/helper/utility.js">
+      <file name="utility.js" path="/Users/matteorosani/Documents/Software Engeneering 2/Hike-Tracker/server/helper/utility.js">
         <metrics statements="10" coveredstatements="10" conditionals="4" coveredconditionals="2" methods="3" coveredmethods="3"/>
         <line num="6" count="6" type="stmt"/>
         <line num="7" count="44" type="stmt"/>
@@ -670,7 +672,7 @@
     </package>
     <package name="server.models">
       <metrics statements="60" coveredstatements="60" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
-      <file name="enums.js" path="/Users/vittorioarpino/Desktop/Projects/Hike-Tracker/server/models/enums.js">
+      <file name="enums.js" path="/Users/matteorosani/Documents/Software Engeneering 2/Hike-Tracker/server/models/enums.js">
         <metrics statements="7" coveredstatements="7" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
         <line num="2" count="6" type="stmt"/>
         <line num="9" count="6" type="stmt"/>
@@ -680,7 +682,7 @@
         <line num="37" count="6" type="stmt"/>
         <line num="47" count="6" type="stmt"/>
       </file>
-      <file name="hike-model.js" path="/Users/vittorioarpino/Desktop/Projects/Hike-Tracker/server/models/hike-model.js">
+      <file name="hike-model.js" path="/Users/matteorosani/Documents/Software Engeneering 2/Hike-Tracker/server/models/hike-model.js">
         <metrics statements="7" coveredstatements="7" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
         <line num="1" count="4" type="stmt"/>
         <line num="2" count="4" type="stmt"/>
@@ -690,7 +692,7 @@
         <line num="45" count="4" type="stmt"/>
         <line num="47" count="4" type="stmt"/>
       </file>
-      <file name="hut-model.js" path="/Users/vittorioarpino/Desktop/Projects/Hike-Tracker/server/models/hut-model.js">
+      <file name="hut-model.js" path="/Users/matteorosani/Documents/Software Engeneering 2/Hike-Tracker/server/models/hut-model.js">
         <metrics statements="6" coveredstatements="6" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
         <line num="1" count="6" type="stmt"/>
         <line num="2" count="6" type="stmt"/>
@@ -699,7 +701,7 @@
         <line num="7" count="6" type="stmt"/>
         <line num="48" count="6" type="stmt"/>
       </file>
-      <file name="image-model.js" path="/Users/vittorioarpino/Desktop/Projects/Hike-Tracker/server/models/image-model.js">
+      <file name="image-model.js" path="/Users/matteorosani/Documents/Software Engeneering 2/Hike-Tracker/server/models/image-model.js">
         <metrics statements="5" coveredstatements="5" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
         <line num="1" count="6" type="stmt"/>
         <line num="2" count="6" type="stmt"/>
@@ -707,7 +709,7 @@
         <line num="13" count="6" type="stmt"/>
         <line num="15" count="6" type="stmt"/>
       </file>
-      <file name="location-model.js" path="/Users/vittorioarpino/Desktop/Projects/Hike-Tracker/server/models/location-model.js">
+      <file name="location-model.js" path="/Users/matteorosani/Documents/Software Engeneering 2/Hike-Tracker/server/models/location-model.js">
         <metrics statements="6" coveredstatements="6" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
         <line num="1" count="6" type="stmt"/>
         <line num="2" count="6" type="stmt"/>
@@ -716,7 +718,7 @@
         <line num="27" count="6" type="stmt"/>
         <line num="29" count="6" type="stmt"/>
       </file>
-      <file name="notification-user-model.js" path="/Users/vittorioarpino/Desktop/Projects/Hike-Tracker/server/models/notification-user-model.js">
+      <file name="notification-user-model.js" path="/Users/matteorosani/Documents/Software Engeneering 2/Hike-Tracker/server/models/notification-user-model.js">
         <metrics statements="5" coveredstatements="5" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
         <line num="1" count="4" type="stmt"/>
         <line num="2" count="4" type="stmt"/>
@@ -724,7 +726,7 @@
         <line num="24" count="4" type="stmt"/>
         <line num="26" count="4" type="stmt"/>
       </file>
-      <file name="parking-lot-model.js" path="/Users/vittorioarpino/Desktop/Projects/Hike-Tracker/server/models/parking-lot-model.js">
+      <file name="parking-lot-model.js" path="/Users/matteorosani/Documents/Software Engeneering 2/Hike-Tracker/server/models/parking-lot-model.js">
         <metrics statements="6" coveredstatements="6" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
         <line num="1" count="6" type="stmt"/>
         <line num="2" count="6" type="stmt"/>
@@ -733,7 +735,7 @@
         <line num="7" count="6" type="stmt"/>
         <line num="27" count="6" type="stmt"/>
       </file>
-      <file name="registered-hike-model.js" path="/Users/vittorioarpino/Desktop/Projects/Hike-Tracker/server/models/registered-hike-model.js">
+      <file name="registered-hike-model.js" path="/Users/matteorosani/Documents/Software Engeneering 2/Hike-Tracker/server/models/registered-hike-model.js">
         <metrics statements="6" coveredstatements="6" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
         <line num="1" count="4" type="stmt"/>
         <line num="2" count="4" type="stmt"/>
@@ -742,7 +744,7 @@
         <line num="21" count="4" type="stmt"/>
         <line num="23" count="4" type="stmt"/>
       </file>
-      <file name="user-model.js" path="/Users/vittorioarpino/Desktop/Projects/Hike-Tracker/server/models/user-model.js">
+      <file name="user-model.js" path="/Users/matteorosani/Documents/Software Engeneering 2/Hike-Tracker/server/models/user-model.js">
         <metrics statements="6" coveredstatements="6" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
         <line num="1" count="6" type="stmt"/>
         <line num="2" count="6" type="stmt"/>
@@ -751,7 +753,7 @@
         <line num="21" count="6" type="stmt"/>
         <line num="23" count="6" type="stmt"/>
       </file>
-      <file name="weather-alert-model.js" path="/Users/vittorioarpino/Desktop/Projects/Hike-Tracker/server/models/weather-alert-model.js">
+      <file name="weather-alert-model.js" path="/Users/matteorosani/Documents/Software Engeneering 2/Hike-Tracker/server/models/weather-alert-model.js">
         <metrics statements="6" coveredstatements="6" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
         <line num="1" count="4" type="stmt"/>
         <line num="2" count="4" type="stmt"/>
@@ -763,7 +765,7 @@
     </package>
     <package name="server.tests">
       <metrics statements="69" coveredstatements="67" conditionals="2" coveredconditionals="0" methods="17" coveredmethods="17"/>
-      <file name="sample-data.js" path="/Users/vittorioarpino/Desktop/Projects/Hike-Tracker/server/tests/sample-data.js">
+      <file name="sample-data.js" path="/Users/matteorosani/Documents/Software Engeneering 2/Hike-Tracker/server/tests/sample-data.js">
         <metrics statements="37" coveredstatements="37" conditionals="0" coveredconditionals="0" methods="7" coveredmethods="7"/>
         <line num="1" count="4" type="stmt"/>
         <line num="2" count="4" type="stmt"/>
@@ -803,7 +805,7 @@
         <line num="160" count="1" type="stmt"/>
         <line num="163" count="4" type="stmt"/>
       </file>
-      <file name="setup.js" path="/Users/vittorioarpino/Desktop/Projects/Hike-Tracker/server/tests/setup.js">
+      <file name="setup.js" path="/Users/matteorosani/Documents/Software Engeneering 2/Hike-Tracker/server/tests/setup.js">
         <metrics statements="32" coveredstatements="30" conditionals="2" coveredconditionals="0" methods="10" coveredmethods="10"/>
         <line num="2" count="6" type="stmt"/>
         <line num="3" count="6" type="stmt"/>

@@ -29,8 +29,8 @@ async function updateRegisteredHike(req, res) {
 		const { id } = req.params;
 
 		const schema = joi.object().keys({
-			startTime: joi.date(),
-			endTime: joi.date().greater(joi.ref("startTime")),
+			startTime: joi.date().raw().default(null),
+			endTime: joi.date().raw().greater(joi.ref("startTime")).default(null),
 			status: joi.string().valid(...Object.values(RegisteredHikeStatus))
 		});
 
@@ -39,7 +39,7 @@ async function updateRegisteredHike(req, res) {
 		if (error) {
 			return res.status(StatusCodes.BAD_REQUEST).json(error);
 		}
-
+		console.log(value);
 		const updatedRegisteredHike = await registeredHikeDAL.update(id, value);
 
 		return res.status(StatusCodes.OK).json(updatedRegisteredHike);

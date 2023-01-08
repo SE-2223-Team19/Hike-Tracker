@@ -181,7 +181,7 @@ async function updateRegisteredHike(id, changes) {
 			headers: {
 				"Content-Type": "application/json",
 			},
-			data: JSON.stringify(changes)
+			body: JSON.stringify(changes)
 		});
 		if (response.ok) {
 			return await response.json();

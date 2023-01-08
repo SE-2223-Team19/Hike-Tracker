@@ -34,9 +34,11 @@ const RegisteredHikeDetail = () => {
 		e.preventDefault();
 
 		const body = {
-			startTime: new Date(startTimeRef.current.value),
-			endTime: new Date(endTimeRef.current.value),
+			startTime: startTimeRef.current.value
 		};
+		if (endTimeRef.current.value !== "") {
+			body.endTime = endTimeRef.current.value;
+		}
 
 		const updatedRegisteredHike = await updateRegisteredHike(registeredHike._id, body);
 		if (updatedRegisteredHike !== null) {

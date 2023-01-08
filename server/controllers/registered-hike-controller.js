@@ -87,7 +87,8 @@ async function endHike(req, res) {
 		await sendRegisteredHikeTerminatedEmail(
 			await (await registeredHike.populate("hike")).populate("user")
 		);
-
+		
+		
 		await notificationUserDAL.addCompletedHike(id, req.user._id);
 		taskScheduler.clearUnfinishedHikeNotification(req.user._id.toString());
 

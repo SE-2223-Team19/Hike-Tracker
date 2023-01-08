@@ -40,7 +40,7 @@ const HikerStatistics = () => {
                 {(JSON.stringify(stats) === "{}" || stats.numberHikes === 0) && !loading && (
                     <NoData message={"No statistics found."} />
                 )}
-                {!(JSON.stringify(stats) === "{}") && !loading && (
+                {!(JSON.stringify(stats) === "{}" || stats.numberHikes === 0) && !loading && (
                     <Statistics
                         key={user._id}
                         stats={stats}

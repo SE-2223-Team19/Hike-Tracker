@@ -68,10 +68,10 @@ const getApp = () => {
 async function runNotification() {
 	const notification = await notificationUser.getNotificationUser();
 	notification.forEach(async (notify) => {
-		if(notify.timeToNotify === 0)
+		if (notify.timeToNotify === 0)
 			return;
 		const hikes = await registeredHikeDAL.getRegisteredHikeByUserId(notify.user);
-		if (hikes.length === 0 && hikes.some(h => h.status === RegisteredHikeStatus.ACTIVE))
+		if (hikes.length === 0 || !hikes.some(h => h.status === RegisteredHikeStatus.ACTIVE))
 			return;
 		const currUser = await userDAL.getUserById(notify.user);
 		taskScheduler.addUnfinishedHikeNotification(currUser, hikes.filter(h => h.status === RegisteredHikeStatus.ACTIVE)[0].hike, notify.timeToNotify * 60000);

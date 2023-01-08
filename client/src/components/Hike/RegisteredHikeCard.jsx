@@ -42,7 +42,7 @@ const RegisteredHikeCard = ({ registeredHike, setDirty }) => {
 		}
 
 		const startedHikePlanned = await startHikePlanned(registeredHike._id);
-		if (JSON.stringify(startedHikePlanned)!=="{}") {
+		if (JSON.stringify(startedHikePlanned) !== "{}") {
 			setMessage({
 				msg: "Hike started successfully, you can track it in 'Active hikes' section",
 				type: "success",
@@ -110,10 +110,10 @@ const RegisteredHikeCard = ({ registeredHike, setDirty }) => {
 				<Card.Body className="py-0">
 					<Stack className="h-100" style={{ justifyContent: "space-between" }}>
 						<Card.Title>
-							<Stack direction="horizontal" className="justify-content-between align-items-center">
+							<Stack direction="horizontal" className="align-items-center">
 								<h5>{hike.title}</h5>
 								<Badge bg={ConditionColor(hike.hikeCondition)}>{hike.hikeCondition}</Badge>{" "}
-								<Badge bg={difficultyToColor(hike.difficulty)}>
+								<Badge bg={difficultyToColor(hike.difficulty)} className="ms-auto me-1">
 									{capitalizeAndReplaceUnderscores(hike.difficulty)}
 								</Badge>
 								<Badge bg={status === "active" ? "danger" : "success"}>
@@ -128,6 +128,7 @@ const RegisteredHikeCard = ({ registeredHike, setDirty }) => {
 										<Button variant="outline-danger" onClick={() => end()}>
 											Stop
 										</Button>
+										{console.log(registeredHike.recordedPoints + " " + registeredHike.hike.referencePoints)}
 										{!(
 											registeredHike.recordedPoints.length ===
 											registeredHike.hike.referencePoints.length
@@ -200,30 +201,6 @@ const RegisteredHikeCard = ({ registeredHike, setDirty }) => {
 									<span className="ms-1">{new Date(registeredHike.endTime).toUTCString()}</span>
 								</div>
 							)}
-							<Stack direction="horizontal" gap={4}>
-								<div className="d-flex flex-row">
-									<BiRuler size={24} />
-									<span className="ms-1">{displayLength(hike.length)} Km</span>
-								</div>
-								<div className="d-flex flex-row">
-									<BiTrendingUp size={24} />
-									<span className="ms-1">{hike.ascent.toFixed(2)} m</span>
-								</div>
-								<div className="d-flex flex-row">
-									<BiTime size={24} />
-									<span className="ms-1">{displayExpectedTime(hike.expectedTime)}</span>
-								</div>
-								<div className="d-flex flex-row ms-auto">
-									<BiPlay size={24} />
-									<span className="ms-1">{new Date(registeredHike.startTime).toUTCString()}</span>
-								</div>
-								{registeredHike.status === RegisteredHikeStatus.COMPLETED && (
-									<div className="d-flex flex-row">
-										<BiStop size={24} />
-										<span className="ms-1">{new Date(registeredHike.endTime).toUTCString()}</span>
-									</div>
-								)}
-							</Stack>
 						</Stack>
 					</Stack>
 				</Card.Body>

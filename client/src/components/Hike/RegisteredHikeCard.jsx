@@ -42,7 +42,7 @@ const RegisteredHikeCard = ({ registeredHike, setDirty }) => {
 		}
 
 		const startedHikePlanned = await startHikePlanned(registeredHike._id);
-		if (startedHikePlanned) {
+		if (JSON.stringify(startedHikePlanned)!=="{}") {
 			setMessage({
 				msg: "Hike started successfully, you can track it in 'Active hikes' section",
 				type: "success",

@@ -82,7 +82,7 @@ async function startPlannedHike(req, res) {
 				.status(StatusCodes.NOT_FOUND)
 				.json(new Error("Can't find the recorded hike"));
 		}
-		const registeredHike = await registeredHikeDAL.startPlannedHike(id);
+		const registeredHike = await registeredHikeDAL.startPlannedHike(req.user._id, id);
 		// Inform buddies
 		await sendRegisteredHikeTerminatedEmail(
 			await (await registeredHike.populate("hike")).populate("user")

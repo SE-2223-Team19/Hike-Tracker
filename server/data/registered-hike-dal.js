@@ -107,7 +107,10 @@ async function completeRegisteredHike(id) {
  * @param {string} id Id of the RegisteredHike
  * @returns The saved hike
  */
-async function startPlannedHike(id) {
+async function startPlannedHike(userId, id) {
+	if (await userHasActiveRecordedHikes(userId)) {
+		throw new Error("User has already an active registered hike");
+	}
 	const registeredHike = await RegisteredHike.findById(id);
 	if (registeredHike === null)
 		return null;

@@ -202,6 +202,10 @@ async function updateLocation(req, res) {
 				is: LocationType.HUT,
 				then: joi.string().allow(""),
 			}),
+			thumbnail: joi.alternatives().conditional("locationType", {
+				is: LocationType.HUT,
+				then: joi.string().allow(null),
+			}),
 			description: joi.string(),
 		});
 

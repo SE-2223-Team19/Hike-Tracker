@@ -17,6 +17,8 @@ async function getLocations(req, res) {
 		const schema = joi.object().keys({
 			locationType: joi.string().valid(...Object.values(LocationType)),
 			description: joi.string(),
+			name: joi.string().allow(""),
+			capacity: joi.number().allow(""),
 			locationLat: joi.number().min(-90).max(90),
 			locationLon: joi.number().min(-180).max(180).when(joi.ref("locationLat"), {
 				is: joi.exist(),
@@ -41,14 +43,18 @@ async function getLocations(req, res) {
 		if (value.locationType) filter.locationType = value.locationType;
 		if (value.description) filter.description = { $regex: value.description };
 		if (value.workedPeopleId) filter.peopleWorks = ObjectId(value.workedPeopleId);
+		if (value.name) filter.name = { $regex: value.name };
+		if (value.capacity) filter.capacity = { $gte: value.capacity };
 		if (value.locationLat && value.locationLon && value.locationRadius)
 			filter.point = {
-				$near: {
-					$geometry: {
+				$geoNear: {
+					near: {
 						type: "Point",
 						coordinates: [value.locationLon, value.locationLat],
 					},
-					$maxDistance: value.locationRadius, // Distance in meters
+					maxDistance: value.locationRadius,
+					distanceField: "distance",
+					spherical: true,
 				},
 			};
 
@@ -201,6 +207,10 @@ async function updateLocation(req, res) {
 			webSite: joi.alternatives().conditional("locationType", {
 				is: LocationType.HUT,
 				then: joi.string().allow(""),
+			}),
+			thumbnail: joi.alternatives().conditional("locationType", {
+				is: LocationType.HUT,
+				then: joi.string().allow(null),
 			}),
 			description: joi.string(),
 		});

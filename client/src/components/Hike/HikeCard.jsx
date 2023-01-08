@@ -17,8 +17,7 @@ import { UserType } from "../../helper/enums";
 import { startHike } from "../../api/hikes";
 import { WeatherCondition } from "../../helper/enums";
 
-const HikeCard = ({ hike, showDetails ,setDirty }) => {
-
+const HikeCard = ({ hike, showDetails, setDirty }) => {
 	const navigate = useNavigate();
 	// ** User (if user is not logged in and has not permission, he cannot see hike details)
 	const { loggedIn, user, setMessage } = useContext(AuthContext);
@@ -60,13 +59,16 @@ const HikeCard = ({ hike, showDetails ,setDirty }) => {
 					<Card.Title>
 						<Stack direction="horizontal" className="align-items-center">
 							<h5>{hike.title}</h5>
-							{
-								(hike.weather && weatherIcon(hike.weather[0])) || weatherIcon(WeatherCondition.SUNNY)
-							}
+							{(hike.weather && weatherIcon(hike.weather[0])) ||
+								weatherIcon(WeatherCondition.SUNNY)}
 							<Badge bg={difficultyToColor(hike.difficulty)} className="ms-auto me-1">
 								{capitalizeAndReplaceUnderscores(hike.difficulty)}
 							</Badge>
-							<Badge bg={ConditionColor(hike.hikeCondition)} title="Hike condition">{capitalizeAndReplaceUnderscores(hike.hikeCondition)}</Badge>
+							{hike.hikeCondition && (
+								<Badge bg={ConditionColor(hike.hikeCondition)} title="Hike condition">
+									{capitalizeAndReplaceUnderscores(hike.hikeCondition)}
+								</Badge>
+							)}
 						</Stack>
 					</Card.Title>
 					<>
@@ -90,8 +92,7 @@ const HikeCard = ({ hike, showDetails ,setDirty }) => {
 										{user.userType === UserType.HUT_WORKER && (
 											<NewHikeCondition hike={hike} setDirty={setDirty} />
 										)}
-                                        
-                                    
+
 										<Button
 											data-test-id="seeOnMap"
 											onClick={() => showDetails(hike)}
@@ -102,12 +103,12 @@ const HikeCard = ({ hike, showDetails ,setDirty }) => {
 										<Button variant="dark" onClick={() => navigate("/hike", { state: { hike } })}>
 											Details
 										</Button>
-										{
-											(user.userType === UserType.PLATFORM_MANAGER || user.userType === UserType.HIKER) &&
+										{(user.userType === UserType.PLATFORM_MANAGER ||
+											user.userType === UserType.HIKER) && (
 											<Button variant="outline-success" onClick={() => start()}>
 												Start
 											</Button>
-										}
+										)}
 									</Stack>
 								)}
 							</div>

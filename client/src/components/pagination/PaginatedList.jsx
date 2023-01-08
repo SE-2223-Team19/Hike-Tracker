@@ -16,21 +16,23 @@ import Paginator from "./Paginator";
  * }} param0
  * @returns
  */
-function PaginatedList({ 
-    fetchCall, 
-    dataElement: DataElement, 
-    loadingElement: LoadingElement, 
-    noDataElement: NoDataElement, 
-    errorElement: ErrorElement,
-    dataContainer: DataContainer = ({children}) => <>{children}</>,
-    filters,
-    dirty = null,
-    setDirty = null
+function PaginatedList({
+	fetchCall,
+	dataElement: DataElement,
+	loadingElement: LoadingElement,
+	noDataElement: NoDataElement,
+	errorElement: ErrorElement,
+	dataContainer: DataContainer = ({ children }) => <>{children}</>,
+	filters,
+	dirty = null,
+	setDirty = null,
 }) {
 	const [data, setData] = useState(null);
 	const [pagination, setPagination] = useState({ currentPage: 1, totalPages: 1, pageSize: 25 });
 	const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+	const [error, setError] = useState(null);
+
+	console.log(data);
 
 	useEffect(() => {
 		setLoading(true);

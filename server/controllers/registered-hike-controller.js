@@ -6,6 +6,7 @@ const hikeDAL = require("../data/hike-dal");
 const user = require("../data/user-dal");
 const { sendRegisteredHikeTerminatedEmail } = require("../email/registered-hike");
 const taskScheduler = require("../task-scheduler");
+const { RegisteredHikeStatus } = require("../models/enums");
 
 async function startHike(req, res) {
 	try {
@@ -18,6 +19,30 @@ async function startHike(req, res) {
 		taskScheduler.addUnfinishedHikeNotification(currUser, hike, time * 60000);
 
 		return res.status(StatusCodes.CREATED).json(registeredHike);
+	} catch (err) {
+		return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(err);
+	}
+}
+
+async function updateRegisteredHike(req, res) {
+	try {
+		const { id } = req.params;
+
+		const schema = joi.object().keys({
+			startTime: joi.date(),
+			endTime: joi.date().greater(joi.ref("startTime")),
+			status: joi.string().valid(...Object.values(RegisteredHikeStatus))
+		});
+
+		const { error, value } = schema.validate(req.body);
+
+		if (error) {
+			return res.status(StatusCodes.BAD_REQUEST).json(error);
+		}
+
+		const updatedRegisteredHike = await registeredHikeDAL.update(id, value);
+
+		return res.status(StatusCodes.OK).json(updatedRegisteredHike);
 	} catch (err) {
 		return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(err);
 	}
@@ -142,6 +167,7 @@ async function getStats(req, res) {
 }
 module.exports = {
 	startHike,
+	updateRegisteredHike,
 	planHike,
 	endHike,
 	startPlannedHike,

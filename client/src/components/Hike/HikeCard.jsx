@@ -17,7 +17,7 @@ import { UserType } from "../../helper/enums";
 import { startHike, planHike } from "../../api/hikes";
 import { WeatherCondition } from "../../helper/enums";
 
-const HikeCard = ({ hike, showDetails, setDirty }) => {
+const HikeCard = ({ hike, setDirty }) => {
 
 	const navigate = useNavigate();
 	// ** User (if user is not logged in and has not permission, he cannot see hike details)

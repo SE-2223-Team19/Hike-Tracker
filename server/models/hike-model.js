@@ -36,7 +36,8 @@ const hikeSchema = new Schema(
 		hikeCondition: { type: String, enum: Object.values(HikeCondition) },
 		thumbnail: { type: Schema.Types.ObjectId, ref: "Image", required: false },
 		photos: [{ type: Schema.Types.ObjectId, ref: "Image", required: false }],
-		weatherAlert: [{ type: String, enum: Object.values(WeatherCondition)}]
+		weather: [{ type: String, enum: Object.values(WeatherCondition)}]
+		
 	},
 	{ timestamps: true }
 );

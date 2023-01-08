@@ -1,7 +1,7 @@
 import { React, useState } from "react";
 import { Button, Container, Form, Modal, Row, Col, Alert } from "react-bootstrap";
 import { MapContainer, TileLayer, useMapEvent, Circle } from 'react-leaflet';
-import { getLatLongFromCity } from "../../helper/utils";
+import { capitalizeAndReplaceUnderscores, getLatLongFromCity } from "../../helper/utils";
 //import { WeatherCondition } from "../../helper/enums ";
 import {WeatherCondition} from '../../helper/enums'
 import {updateWeatherAlert} from '../../api/weatherAlert';
@@ -10,53 +10,40 @@ import { json } from "react-router-dom";
 import { WiDayRainMix } from "react-icons/wi";
 
 
-const WeatherAlert = ({ onRemoveFilter }) => {
+const WeatherAlert = ({ onRemoveFilter , hikesUpdated , setDirty}) => {
     const [coordinates, setCoordinates] = useState([45.068370, 7.683070]);
     const [radius, setRadius] = useState(50); // Radius in meters
-    console.log(radius);
-    console.log(coordinates);
+   
     
-    const [city, setCity] = useState("Torino")
-    const [ref, setRef] = useState(undefined)
-    const [error, setError] = useState("")
-    const [show,setshow] = useState()
-    const [weather,setweather] = useState("")
-    //console.log(city);
-    //console.log(ref);
+    const [city, setCity] = useState("Torino");
+    const [ref, setRef] = useState(undefined);
+    const [error, setError] = useState("");
+    const [show,setshow] = useState();
+    const [weather,setweather] = useState(WeatherCondition.SUNNY);
+    
     const handlesubmit = async (event)=>{
-        event.preventDefault()
+        event.preventDefault();
         const Mapchanges = {
             weatherAlert : weather,
             radius : radius,
             coordinates : coordinates
-        }
-        
-        console.log("########",event._id);
-
-      //   for(var key in Mapchanges) {
-      //     if(Mapchanges.hasOwnProperty(key)) {
-      //         var value = Mapchanges[key];
-      //         console.log(value);
-      //         var Map = JSON.stringify(value);
-       
-      //       }  
-             
-      // }
+        };
      
-      await updateWeatherAlert(Mapchanges) 
-        
-        onHide()
-
+        await updateWeatherAlert(Mapchanges);
+        setDirty(true);
+        setweather(WeatherCondition.SUNNY);
+        setCity("Torino");
+        onHide();
     }
 
     async function loadAddress() {
         try {
-            const address = await getLatLongFromCity(city ? city : "Torino")
-            setCoordinates([address[0].lat, address[0].lon])
+            const address = await getLatLongFromCity(city ? city : "Torino");
+            setCoordinates([parseFloat(address[0].lat), parseFloat(address[0].lon)]);
             if (ref)
-                ref.flyTo([address[0].lat, address[0].lon])
+                ref.flyTo([address[0].lat, address[0].lon]);
         } catch (err) {
-            setError("City does not found")
+            setError("City does not found");
         }
     }
 
@@ -68,9 +55,12 @@ const WeatherAlert = ({ onRemoveFilter }) => {
     };
 
     const onHide = () => setshow(false);
-   // const handleClose = () => setshow(false);
     const handleShow = () => setshow(true);
-
+    const resetcontent =() => {
+        setCity("Torino");
+        setweather("");
+        setshow(false);
+    }
     return (
         <>
         <Button variant="outline-info" style={{ borderRadius: 20 }} onClick={handleShow}>
@@ -103,36 +93,33 @@ const WeatherAlert = ({ onRemoveFilter }) => {
                         </Col>
                     </Row>
                     <Row>
-                        <Col>
-                            <Form.Group>
-                                <Form.Control onChange={(ev) => { setCity(ev.target.value) }} />
-                            </Form.Group>
-                        </Col>
-                        <Col><Button variant="success" onClick={async () => await loadAddress()}>Search</Button></Col>
+                        <Form.Group>
+                            <Form.Label>Center by city</Form.Label>
+                            <Form.Control onChange={(ev) => { setCity(ev.target.value) }} onBlur={() => loadAddress()} />
+                        </Form.Group>
+                    </Row>
+                    <Row>
+                        <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+                            <Form.Label>Weather condition</Form.Label>
+                            <Form.Select value={weather} onChange={(ev)=>setweather(ev.target.value)}>
+                                {
+                                    Object.values(WeatherCondition)
+                                    .map((x) => (
+                                    <option key={x} value={x}>
+                                        {capitalizeAndReplaceUnderscores(x)}
+                                    </option>
+                                    ))
+                                }
+                            </Form.Select> 
+                        </Form.Group>
                     </Row>
                 </Container>
-                 
-                <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-              
-                            <Form.Select value={weather} onChange={(ev)=>setweather(ev.target.value)}>
-                             <option value=""></option>
-                                 {
-                                     Object.values(WeatherCondition)
-                                     .map((x) => (
-                                     <option key={x} value={x}>
-                                         {x}
-                                     </option>
-                                     ))
-                                 }
-                              
-                              </Form.Select> 
-                           </Form.Group>
                      
             </Modal.Body>
 
             <Modal.Footer>
-                <Button onClick={onRemoveFilter} variant={"danger"}>Remove</Button>
-                <Button onClick={onHide} variant={"secondary"}>Cancel</Button>
+                
+                <Button onClick={resetcontent} variant={"secondary"}>Cancel</Button>
                 <Button
                     data-test-id="position-ok-button"
                     onClick={handlesubmit} variant={"success"}>Ok</Button>

@@ -115,6 +115,7 @@ async function createHike(req, res) {
 	try {
 		// Validate request body
 		const { body } = req;
+		
 
 		// Hike validation schema
 		const schema = joi.object().keys({
@@ -199,7 +200,6 @@ async function updateHikeCondition(req, res) {
 
 		// Hike validation schema
 		const schema = joi.object().keys({
-			description: joi.string(),
 			hikeCondition: joi.string().valid(...Object.values(HikeCondition)),
 		});
 

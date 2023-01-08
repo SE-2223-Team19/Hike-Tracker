@@ -10,19 +10,14 @@ const { object } = require("joi");
 
 
 
-
-
-
 async function updateWeatherAlert(req, res) {
 
-    //console.log("controller**************************",req);
+ 
  try {
-     // Validate request body
+     
      const { body } = req;
      
-     console.log("controller**************************",body);
-     //console.log("controller**************************",Mapchange);
-
+     
      // Hike validation schema
      const schema = joi.object().keys({
          
@@ -34,11 +29,16 @@ async function updateWeatherAlert(req, res) {
      // Validate request body against schema
      const { error, value } = schema.validate(body);
      
+     const weatherkey = Object.keys(value)[0]
+	const weatherValue =  value[weatherkey]
+	const radiuskey = Object.keys(value)[1]
+	const radiusValue =  value[radiuskey] 
+	const coordinateskey = Object.keys(value)[2]
+	const coordinates =  value[coordinateskey]
 
      if (error) throw error; // Joi validation error, goes to catch block
 
-     const WeatherUpdated = await weatherAlertDAL.updateWeatherAlert(value);
-     console.log("UpdatedWeather*******controller",WeatherUpdated);
+     const WeatherUpdated = await weatherAlertDAL.updateWeatherAlert(weatherValue,radiusValue,coordinates);
 
      const users= await userDAL.getUsers({})
      users.forEach(user =>{
@@ -50,11 +50,12 @@ async function updateWeatherAlert(req, res) {
 
      return res.status(StatusCodes.OK).json(WeatherUpdated);
  } catch (err) {
-     console.log(err);
+    
      return res.status(StatusCodes.BAD_REQUEST).json({ err: err.message, stack: err.stack });
  }
 }
 
 module.exports = {
-    updateWeatherAlert
+    updateWeatherAlert,
+    
 }

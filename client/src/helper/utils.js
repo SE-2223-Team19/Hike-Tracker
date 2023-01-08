@@ -1,7 +1,9 @@
 /** Utility functions */
 
-import { Difficulty, UserType, HikeCondition } from "./enums";
+import { Difficulty, UserType, HikeCondition, WeatherCondition } from "./enums";
 
+import { WiDaySunny ,WiDayWindy ,WiDayThunderstorm, WiCloudy ,WiThermometer } from 'react-icons/wi'
+import{IoSnowOutline} from 'react-icons/io5'
 /**
  * Convert minutes to hours and minutes display format
  */
@@ -68,6 +70,30 @@ export const ConditionColor = (condition) => {
 	}
 };
 
+export const weatherIcon = (weather) => {
+	const props = {
+		size: 30,
+		title: "Weather condition"
+	};
+	switch (weather) {
+		case WeatherCondition.SUNNY:
+			return <WiDaySunny {...props}/>;
+		case WeatherCondition.BLIZZARD:
+			return <IoSnowOutline {...props}/>;
+		case WeatherCondition.CLOUDY:
+			return <WiCloudy {...props}/>;
+		case WeatherCondition.THUNDER_STORM:
+			return <WiDayThunderstorm {...props}/>;
+		case WeatherCondition.WINDY:
+		    return 	<WiDayWindy {...props}/>;	
+		default:
+			return <WiThermometer {...props}/>;
+	}
+};
+
+
+
+
 export const removeMongoKeys = (obj) => {
 	const newObj = { ...obj };
 	delete newObj._id;
@@ -106,3 +132,5 @@ export const getBase64 = (file) =>
 		reader.onload = () => resolve(reader.result);
 		reader.onerror = (error) => reject(error);
 	});
+
+	

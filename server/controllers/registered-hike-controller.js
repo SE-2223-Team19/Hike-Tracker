@@ -39,7 +39,6 @@ async function updateRegisteredHike(req, res) {
 		if (error) {
 			return res.status(StatusCodes.BAD_REQUEST).json(error);
 		}
-		console.log(value);
 		const updatedRegisteredHike = await registeredHikeDAL.update(id, value);
 
 		return res.status(StatusCodes.OK).json(updatedRegisteredHike);

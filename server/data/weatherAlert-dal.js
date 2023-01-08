@@ -61,7 +61,7 @@ async function updateWeatherAlert(body){
 			     await Hike.updateMany({  _id: id},
 				{$set: {weather: weatherValue}});
 			});	
-    return "update has done" 
+    return Mapchange
 	}	
 }
 

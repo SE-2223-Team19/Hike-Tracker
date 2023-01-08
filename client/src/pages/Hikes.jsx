@@ -25,10 +25,6 @@ const Hikes = () => {
 	const [dirty, setDirty] = useState(false);
 	const {loggedIn, user } = useContext(AuthContext);
   
-// function updated(){
-// 	setDirty(true);
-// }
-	
 
 	return (
 		<div className="w-100">

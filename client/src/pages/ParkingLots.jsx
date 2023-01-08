@@ -58,7 +58,7 @@ function ParkingLots() {
 					openModal={() => setShowPositionFilter(true)}
 				/>
 			)}
-			<Container>
+			<>
 				<PaginatedList
 					dataElement={(parkingLot) => (
 						<ParkingLotCard key={parkingLot._id} parkingLot={parkingLot} />
@@ -72,7 +72,7 @@ function ParkingLots() {
 					fetchCall={getParkingLots}
 					filters={filters}
 				/>
-			</Container>
+			</>
 			<PositionFilterModal
 				show={showPositionFilter}
 				setShow={setShowPositionFilter}

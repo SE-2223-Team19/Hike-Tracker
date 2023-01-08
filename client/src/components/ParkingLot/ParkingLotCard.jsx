@@ -7,8 +7,6 @@ import HutIcon from "../Hut/HutIcon";
 import { FaParking } from "react-icons/fa";
 
 const ParkingLotCard = ({ parkingLot }) => {
-	console.log(parkingLot);
-
 	return (
 		<Col>
 			<Card className="mt-4">
@@ -26,6 +24,7 @@ const ParkingLotCard = ({ parkingLot }) => {
 						<Row className="justify-content-md-center ">
 							<ParkingLotMap parkinglot={parkingLot} />
 						</Row>
+						<p className="mt-3 mb-0">{parkingLot.description}</p>
 					</div>
 				</Card.Body>
 			</Card>

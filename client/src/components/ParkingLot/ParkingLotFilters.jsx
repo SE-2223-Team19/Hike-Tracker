@@ -11,13 +11,13 @@ const ParkingLotFilters = ({ filters, setFilters, openModal }) => {
 			<Row className="mt-4">
 				<Col xs={12} md={5}>
 					<Form.Group>
-						<Form.Label>Description</Form.Label>
+						<Form.Label>Name</Form.Label>
 						<Stack direction="horizontal" gap={2}>
 							<Form.Control
 								type="string"
-								placeholder="Insert a description of parking lot"
+								placeholder="Parking lot name..."
 								onChange={(event) => {
-									setFilters({ ...filters, description: event.target.value });
+									setFilters({ ...filters, name: event.target.value });
 								}}
 							/>
 						</Stack>
@@ -30,6 +30,20 @@ const ParkingLotFilters = ({ filters, setFilters, openModal }) => {
 							<Button onClick={openModal} variant={"success"}>
 								Select area
 							</Button>
+						</Stack>
+					</Form.Group>
+				</Col>
+				<Col>
+					<Form.Group>
+						<Form.Label>Capacity</Form.Label>
+						<Stack direction="horizontal" gap={2}>
+							<Form.Control
+								type="number"
+								placeholder="Min Capacity..."
+								onChange={(event) => {
+									setFilters({ ...filters, capacity: event.target.value });
+								}}
+							/>
 						</Stack>
 					</Form.Group>
 				</Col>

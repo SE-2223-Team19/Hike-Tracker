@@ -12,9 +12,7 @@ import PaginatedList from "../components/pagination/PaginatedList";
 import WeatherAlert from "../components/Hike/NewWeatherAlert";
 import { AuthContext } from "../context/AuthContext";
 import { UserType } from "../helper/enums";
-import { useAsyncError } from "react-router-dom";
-import getWeatherAlertById from "../api/weatherAlert"
-import { useEffect } from "react";
+import { useContext } from "react";
 
 const Hikes = () => {
 	// ** State

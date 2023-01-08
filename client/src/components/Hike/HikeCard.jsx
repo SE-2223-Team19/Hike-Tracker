@@ -17,7 +17,7 @@ import { UserType } from "../../helper/enums";
 import { startHike, planHike } from "../../api/hikes";
 import { WeatherCondition } from "../../helper/enums";
 
-const HikeCard = ({ hike, showDetails ,setDirty }) => {
+const HikeCard = ({ hike, showDetails, setDirty }) => {
 
 	const navigate = useNavigate();
 	// ** User (if user is not logged in and has not permission, he cannot see hike details)
@@ -31,7 +31,7 @@ const HikeCard = ({ hike, showDetails ,setDirty }) => {
 		}
 
 		const startedHike = await startHike(hike._id);
-		if (startedHike.status === undefined) {
+		if (JSON.stringify(startedHike) === "{}") {
 			setMessage({
 				msg: "You have another active hike, you can see it on your profile page under 'Active hikes'",
 				type: "danger",
@@ -54,7 +54,7 @@ const HikeCard = ({ hike, showDetails ,setDirty }) => {
 		}
 
 		const plannedHike = await planHike(hike._id);
-		if (plannedHike.status !== undefined) {
+		if (JSON.stringify(plannedHike) !== "{}") {
 			setMessage({
 				msg: "Hike planned successfully, you can see it in your profile in the 'Planned Hikes' section",
 				type: "success",
@@ -115,9 +115,14 @@ const HikeCard = ({ hike, showDetails ,setDirty }) => {
 										</Button>
 										{
 											(user.userType === UserType.PLATFORM_MANAGER || user.userType === UserType.HIKER) &&
-											<Button variant="outline-success" onClick={() => start()}>
-												Start
-											</Button>
+											<>
+												<Button variant="outline-success" onClick={() => start()}>
+													Start
+												</Button>
+												<Button variant="info" onClick={() => plan()}>
+													Plan
+												</Button>
+											</>
 										}
 									</Stack>
 								)}

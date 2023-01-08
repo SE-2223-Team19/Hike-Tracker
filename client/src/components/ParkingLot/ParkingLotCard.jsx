@@ -11,12 +11,15 @@ const ParkingLotCard = ({ parkingLot }) => {
 
 	return (
 		<Col>
-			<Card className="flex-col p-3 mt-4">
+			<Card className="mt-4">
 				<Card.Body>
 					<Card.Title>
 						<Stack direction="horizontal" className="justify-content-between align-items-center">
 							<h5>{parkingLot.name}</h5>
-							<HutIcon icon={<FaParking />} text={`Capacity: ${parkingLot.capacity}`} />
+							<Stack direction="horizontal" className="d-flex align-items-center" gap={2}>
+								<FaParking />
+								<h6 className="m-0">{parkingLot.capacity || "No capacity data"}</h6>
+							</Stack>
 						</Stack>
 					</Card.Title>
 					<div>

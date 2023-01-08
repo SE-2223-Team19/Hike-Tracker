@@ -15,9 +15,9 @@ function ParkingLotMap({ parkinglot }) {
 	});
 
 	return (
-		<Col xs={10} className="p-4">
+		<Col xs={12}>
 			<MapContainer
-				style={{ width: "100%", height: "30vh" }}
+				style={{ width: "100%", height: "100px" }}
 				center={parkinglot ? [...parkinglot.point].reverse() : [0, 0]}
 				zoom={7}
 				scrollWheelZoom={false}

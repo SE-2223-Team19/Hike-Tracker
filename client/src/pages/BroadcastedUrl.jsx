@@ -78,7 +78,7 @@ const BroadcastedUrl = () => {
             <div className="mt-4">{registeredHike.hike.description}</div>
 
             <div className="mt-4">
-                <HikeTrackMap hike={{ ...registeredHike.hike, trackPoints: registeredHike.hike.trackPoints.coordinates.map(p => [p[1], p[0]]) }} />
+                <HikeTrackMap hike={{ ...registeredHike.hike, trackPoints: registeredHike.hike.trackPoints.coordinates.map(p => [p[1], p[0]]) }} recordedPoints={registeredHike.recordedPoints} timePoints={registeredHike.timePoints} altitudeRecordedPoints={registeredHike.altitudeRecordedPoints} />
             </div>
         </>
     );

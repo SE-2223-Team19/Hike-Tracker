@@ -2,7 +2,18 @@ import React from "react";
 import { MapContainer, Marker, Polyline, Popup, TileLayer } from "react-leaflet";
 import * as L from "leaflet";
 
-const HikeTrackMap = ({ hike }) => {
+const HikeTrackMap = ({ hike, recordedPoints, timePoints, altitudeRecordedPoints }) => {
+
+	function checkEquals(point, idx) {
+		for (let i = 0; i < recordedPoints.length; i++) {
+			const currPoint = [...recordedPoints[i]].reverse()
+			if (currPoint[0] == point[0] && currPoint[1] == point[1]) {
+				return true
+			}
+		}
+		return false
+	}
+
 	const markerStartEndPoint = new L.icon({
 		iconUrl: require("../../icons/marker_start_end_point.png"),
 		iconSize: [35, 45],
@@ -17,17 +28,29 @@ const HikeTrackMap = ({ hike }) => {
 		popupAnchor: [0, -46],
 	});
 
+	const markerRecordedLocation = new L.icon({
+		iconUrl: require("../../icons/markerUser.png"),
+		iconSize: [40, 45],
+		iconAnchor: [20, 46],
+		popupAnchor: [0, -46],
+	});
+	const defaultIcon = new L.icon({
+		iconUrl: require("../../icons/defaultIcon.png"),
+		iconSize: [30, 40],
+		iconAnchor: [18, 46],
+		popupAnchor: [0, -46],
+	});
 	const bounds = [
 		hike &&
-			hike.trackPoints.reduce(([lat, lng], [maxLat, maxLng]) => [
-				Math.max(lat, maxLat),
-				Math.max(lng, maxLng),
-			]),
+		hike.trackPoints.reduce(([lat, lng], [maxLat, maxLng]) => [
+			Math.max(lat, maxLat),
+			Math.max(lng, maxLng),
+		]),
 		hike &&
-			hike.trackPoints.reduce(([lat, lng], [minLat, minLng]) => [
-				Math.min(lat, minLat),
-				Math.min(lng, minLng),
-			]),
+		hike.trackPoints.reduce(([lat, lng], [minLat, minLng]) => [
+			Math.min(lat, minLat),
+			Math.min(lng, minLng),
+		]),
 	];
 
 	return (
@@ -61,15 +84,18 @@ const HikeTrackMap = ({ hike }) => {
 				</Marker>
 			}
 			{
-				hike && 
+				hike &&
 				hike.referencePoints.map((point, index) => (
-					<Marker key={`ref-point-${index}`} position={point}>
-						<Popup>Reference Point N°. {index + 1}</Popup>
+					<Marker key={`ref-point-${index}`} position={point}
+						icon={recordedPoints && (checkEquals(point, index + 1)) ? markerRecordedLocation : defaultIcon}>
+						<Popup>Reference Point N°. {index + 1}
+							{recordedPoints && (checkEquals(point, index + 1) ? <p>Point recorded at {new Date(timePoints[index]).toUTCString()} and altitude {altitudeRecordedPoints[index]} m</p> : <p>Point not recorded</p>)}
+						</Popup>
 					</Marker>
 				))
 			}
 			{
-				hike && 
+				hike &&
 				hike.linkedHuts.map((point) => (
 					<Marker key={point._id} position={[...point.point].reverse()} icon={markerLocation}>
 						<Popup>{point.description}</Popup>

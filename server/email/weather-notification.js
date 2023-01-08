@@ -12,8 +12,12 @@ const sendEmail = require("./send-email");
     const mailOptions = {
         to: email,
         subject: "Weather news updates",
-        html: `<p> This area is reported with this condition:<p style="color:red;">geoCoordinates:${geoCoordinates}</p>
-        <p style="color:blue;"> geoRadius:${geoRadius},</p><p style="color:green;"> weatherState=${weatherState}</p> </p>`
+        html: `<p> Your area is reported with new weather updates:
+        <p style="color:green;"> weatherState=${weatherState}</p>
+        <p> More information:
+        <p style="color:blue;">geoCoordinates:${geoCoordinates}</p>
+        <p style="color:blue;"> geoRadius:${geoRadius},</p>
+         </p>`
     };
     return sendEmail(mailOptions);
 }

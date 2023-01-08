@@ -10,6 +10,8 @@ import * as L from "leaflet";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import PaginatedList from "../components/pagination/PaginatedList";
+import ParkingLotCard from "../components/ParkingLot/ParkingLotCard";
+import ParkingLotFilters from "../components/ParkingLot/ParkingLotFilters";
 
 function ParkingLots() {
 	const navigate = useNavigate();
@@ -58,8 +60,12 @@ function ParkingLots() {
 			)}
 			<Container>
 				<PaginatedList
-					dataElement={(parkingLot) => <ParkingLotCard key={parkingLot._id} hut={parkingLot} />}
-					dataContainer={({children}) => <Row className="g-4 row-cols-1 row-cols-sm-1 row-cols-md-3">{children}</Row>}
+					dataElement={(parkingLot) => (
+						<ParkingLotCard key={parkingLot._id} parkingLot={parkingLot} />
+					)}
+					dataContainer={({ children }) => (
+						<Row className="g-4 row-cols-1 row-cols-sm-1 row-cols-md-3">{children}</Row>
+					)}
 					errorElement={(error) => <NoData message={error} />}
 					noDataElement={() => <NoData message={"No parking lots found."} />}
 					loadingElement={() => <Loading />}
@@ -82,87 +88,6 @@ function ParkingLots() {
 				}}
 			></PositionFilterModal>
 		</div>
-	);
-}
-
-const ParkingLotCard = ({ hut: parkingLot }) => {
-	return (
-		<Col>
-			<Card className="flex-col p-3 mt-4">
-				<Card.Body>
-					<Card.Title>
-						<Stack direction="horizontal" className="justify-content-between align-items-center">
-							<h5>Description: {parkingLot.description}</h5>
-						</Stack>
-					</Card.Title>
-					<div>
-						<Row className="justify-content-md-center ">
-							<MapParking hut={parkingLot} />
-						</Row>
-					</div>
-				</Card.Body>
-			</Card>
-		</Col>
-	);
-};
-
-const ParkingLotFilters = ({ filters, setFilters, openModal }) => {
-	return (
-		<Form>
-			<Row className="mt-4">
-				<Col xs={12} md={5}>
-					<Form.Group>
-						<Form.Label>Description</Form.Label>
-						<Stack direction="horizontal" gap={2}>
-							<Form.Control
-								type="string"
-								placeholder="Insert a description of parking lot"
-								onChange={(event) => {
-									setFilters({ ...filters, description: event.target.value });
-								}}
-							/>
-						</Stack>
-					</Form.Group>
-				</Col>
-				<Col>
-					<Form.Group>
-						<Form.Label>Location</Form.Label> <br />
-						<Stack direction="horizontal" gap={2}>
-							<Button onClick={openModal} variant={"success"}>
-								Select area
-							</Button>
-						</Stack>
-					</Form.Group>
-				</Col>
-			</Row>
-		</Form>
-	);
-};
-
-function MapParking({ hut: parkinglot }) {
-	let markerLocation = new L.icon({
-		iconUrl: require("../icons/markerLocation.png"),
-		iconSize: [35, 45],
-		iconAnchor: [17, 46],
-		popupAnchor: [0, -46],
-	});
-
-	return (
-		<Col xs={10} className="p-4">
-			<MapContainer
-				style={{ width: "100%", height: "30vh" }}
-				center={parkinglot ? [...parkinglot.point].reverse() : [0, 0]}
-				zoom={7}
-				scrollWheelZoom={false}
-				zoomControl={false}
-				dragging={false}
-			>
-				<Marker position={[...parkinglot.point].reverse()} icon={markerLocation}>
-					<Popup>Reference point</Popup>
-				</Marker>
-				<TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-			</MapContainer>
-		</Col>
 	);
 }
 

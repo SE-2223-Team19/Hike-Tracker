@@ -12,7 +12,7 @@ async function getcoordinateHikes(coordinates){
 	
 	 const HikeWeather= await Hike.aggregate([{$geoNear: {
 		near: {
-			coordinates: coordinates,
+			coordinates: [ coordinates[1], coordinates[0] ],
 		}
 		,distanceField: "dist.calculated"
 		 
@@ -31,9 +31,9 @@ async function updateWeatherAlert(weatherValue,radiusValue,coordinates){
 		coordinates : coordinates,
         
 	})
-    const HikeTrackPoint=await getcoordinateHikes(coordinates)
-   let result =[];
-   HikeTrackPoint.forEach(Trackpoint => { 
+    const HikeTrackPoint=await getcoordinateHikes(coordinates);
+   	let result =[];
+   	HikeTrackPoint.forEach(Trackpoint => { 
 	let elemts= {
 		_id: Trackpoint._id,
 		coordinatesLat: parseInt(Trackpoint.trackPoints.coordinates[0][1]),

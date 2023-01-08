@@ -107,7 +107,13 @@ function DescribeHikeForm({ hike }) {
 			// Covert to base64 with prexif
 			values.thumbnail = await getBase64(values.thumbnail);
 		} else {
-			setMessage({ type: "danger", msg: "Please select a thumbnail" });
+			if (!hike) {
+				setMessage({
+					type: "danger",
+					msg: "Please select a thumbnail",
+				});
+				return;
+			}
 		}
 
 		if (hike) {

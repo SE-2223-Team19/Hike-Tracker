@@ -171,7 +171,7 @@ async function updateHike(req, res) {
 			expectedTime: joi.number(),
 			difficulty: joi.string().valid(...Object.values(Difficulty)),
 			description: joi.string(),
-			thumbnail: joi.string().allow(null),
+			thumbnail: joi.string().allow(null).allow(""),
 			startPoint: joi.string().allow(null),
 			endPoint: joi.string().allow(null),
 			linkedHuts: joi.array().items(joi.string()),
@@ -181,6 +181,7 @@ async function updateHike(req, res) {
 
 		// Validate request body against schema
 		const { error, value } = schema.validate(body);
+		if (value.thumbnail === "") delete value.thumbnail;
 
 		if (error) throw error; // Joi validation error, goes to catch block
 

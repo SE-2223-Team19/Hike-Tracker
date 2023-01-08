@@ -64,6 +64,19 @@ const HikeCard = ({ hike, showDetails, setDirty }) => {
 		}
 	};
 
+	const checkIfCanUpdateHikeCondition = () => {
+		if (user.userType !== UserType.HUT_WORKER) { 
+			return false;
+		}
+
+		// Check if the user._id in the peopleWorks array of the linkedHuts (array) of the hike
+		const hutWorkers = hike.linkedHuts.map((hut) => hut.peopleWorks).flat();
+		if (hutWorkers.includes(user._id)) {
+			return true;
+		}
+		return false;
+	}
+
 	return (
 		<Card className="flex-row p-3 mt-4">
 			<Image
@@ -110,7 +123,7 @@ const HikeCard = ({ hike, showDetails, setDirty }) => {
 							<div className="ms-auto">
 								{loggedIn && (
 									<Stack direction="horizontal" gap={3}>
-										{user.userType === UserType.HUT_WORKER && (
+										{checkIfCanUpdateHikeCondition() && (
 											<NewHikeCondition hike={hike} setDirty={setDirty} />
 										)}
                                         

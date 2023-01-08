@@ -29,10 +29,16 @@ async function updateWeatherAlert(req, res) {
      // Validate request body against schema
      const { error, value } = schema.validate(body);
      
+     const weatherkey = Object.keys(value)[0]
+	const weatherValue =  value[weatherkey]
+	const radiuskey = Object.keys(value)[1]
+	const radiusValue =  value[radiuskey] 
+	const coordinateskey = Object.keys(value)[2]
+	const coordinates =  value[coordinateskey]
 
      if (error) throw error; // Joi validation error, goes to catch block
 
-     const WeatherUpdated = await weatherAlertDAL.updateWeatherAlert(value);
+     const WeatherUpdated = await weatherAlertDAL.updateWeatherAlert(weatherValue,radiusValue,coordinates);
 
      const users= await userDAL.getUsers({})
      users.forEach(user =>{

@@ -23,21 +23,14 @@ async function getcoordinateHikes(coordinates){
 return HikeWeather
 }
 
-async function updateWeatherAlert(body){
+async function updateWeatherAlert(weatherValue,radiusValue,coordinates){
 
-	const weatherkey = Object.keys(body)[0]
-	const weatherValue =  body[weatherkey]
-	const radiuskey = Object.keys(body)[1]
-	const radiusValue =  body[radiuskey] 
-	const coordinateskey = Object.keys(body)[2]
-	const coordinates =  body[coordinateskey]
 	const Mapchange = new WeatherAlert({
         weatherAlert : weatherValue,
 		radius : radiusValue,
 		coordinates : coordinates,
         
 	})
-
     const HikeTrackPoint=await getcoordinateHikes(coordinates)
    let result =[];
    HikeTrackPoint.forEach(Trackpoint => { 

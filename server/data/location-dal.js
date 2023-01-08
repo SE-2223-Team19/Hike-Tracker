@@ -21,7 +21,14 @@ const ParkingLot = require("../models/parking-lot-model");
 async function getLocations(page, pageSize, filterQuery = {}) {
 	const paginationActive = page !== undefined && pageSize !== undefined;
 
-	let p = [
+	let p = [];
+	if (filterQuery.point) {
+		p = [filterQuery.point];
+		delete filterQuery.point;
+	}
+
+	p = [
+		...p,
 		{
 			$match: filterQuery,
 		},

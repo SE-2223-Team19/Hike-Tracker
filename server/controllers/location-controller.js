@@ -47,12 +47,14 @@ async function getLocations(req, res) {
 		if (value.capacity) filter.capacity = { $gte: value.capacity };
 		if (value.locationLat && value.locationLon && value.locationRadius)
 			filter.point = {
-				$near: {
-					$geometry: {
+				$geoNear: {
+					near: {
 						type: "Point",
 						coordinates: [value.locationLon, value.locationLat],
 					},
-					$maxDistance: value.locationRadius, // Distance in meters
+					maxDistance: value.locationRadius,
+					distanceField: "distance",
+					spherical: true,
 				},
 			};
 

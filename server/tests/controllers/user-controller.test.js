@@ -1,8 +1,8 @@
 "use strict";
-const userController = require("../controllers/user-controller");
+const userController = require("../../controllers/user-controller");
 const { StatusCodes } = require("http-status-codes");
-const { UserType } = require("../models/enums");
-const { setupDB, ResponseHelper } = require("./setup");
+const { UserType } = require("../../models/enums");
+const { setupDB, ResponseHelper } = require("../setup");
 const ObjectId = require("mongoose").Types.ObjectId;
 const dotenv = require("dotenv");
 

@@ -9,6 +9,12 @@ import { CgOptions } from "react-icons/cg";
 import HikeFilters from "../components/Hike/HikeFilters";
 import PositionFilterModal from "../components/PositionFilterModal";
 import PaginatedList from "../components/pagination/PaginatedList";
+import WeatherAlert from "../components/Hike/NewWeatherAlert";
+import { AuthContext } from "../context/AuthContext";
+import { UserType } from "../helper/enums";
+import { useAsyncError } from "react-router-dom";
+import getWeatherAlertById from "../api/weatherAlert"
+import { useEffect } from "react";
 
 const Hikes = () => {
 	// ** State
@@ -17,11 +23,18 @@ const Hikes = () => {
 	const [showPositionFilter, setShowPositionFilter] = useState(false);
 	const [currentHike, setCurrentHike] = useState(null);
 	const [dirty, setDirty] = useState(false);
+	const {loggedIn, user } = useContext(AuthContext);
+  
 
 	return (
 		<div className="w-100">
 			<Stack direction="horizontal" className="justify-content-between align-items-center">
 				<h1 className="#tests-title">Hikes</h1>
+               {loggedIn&&( <div>
+				{user.userType === UserType.PLATFORM_MANAGER&&(
+						<WeatherAlert  setDirty={setDirty}/>
+					)}
+				</div>)}
 				<Button
 					className="#tests-filter-button"
 					variant={openFilters ? "success" : "outline-success"}

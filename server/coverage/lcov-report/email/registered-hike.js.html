@@ -1,24 +1,19 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <!doctype html>
 =======
 <!DOCTYPE html>
 >>>>>>> development
+=======
+
+<!doctype html>
+>>>>>>> development
 <html lang="en">
-	<head>
-		<title>Code coverage report for email/registered-hike.js</title>
-		<meta charset="utf-8" />
-		<link rel="stylesheet" href="../prettify.css" />
-		<link rel="stylesheet" href="../base.css" />
-		<link rel="shortcut icon" type="image/x-icon" href="../favicon.png" />
-		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<style type="text/css">
-			.coverage-summary .sorter {
-				background-image: url(../sort-arrow-sprite.png);
-			}
-		</style>
-	</head>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> development
 <head>
     <title>Code coverage report for email/registered-hike.js</title>
     <meta charset="utf-8" />
@@ -32,6 +27,7 @@
         }
     </style>
 </head>
+<<<<<<< HEAD
 
 <body>
     <div class='wrapper'>
@@ -127,6 +123,56 @@
 			<div class="status-line high"></div>
 			<pre><table class="coverage">
 >>>>>>> development
+=======
+    
+<body>
+<div class='wrapper'>
+    <div class='pad1'>
+        <h1><a href="../index.html">All files</a> / <a href="index.html">email</a> registered-hike.js</h1>
+        <div class='clearfix'>
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">37.5% </span>
+                <span class="quiet">Statements</span>
+                <span class='fraction'>3/8</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">0% </span>
+                <span class="quiet">Branches</span>
+                <span class='fraction'>0/2</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">0% </span>
+                <span class="quiet">Functions</span>
+                <span class='fraction'>0/3</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">37.5% </span>
+                <span class="quiet">Lines</span>
+                <span class='fraction'>3/8</span>
+            </div>
+        
+            
+        </div>
+        <p class="quiet">
+            Press <em>n</em> or <em>j</em> to go to the next uncovered block, <em>b</em>, <em>p</em> or <em>k</em> for the previous block.
+        </p>
+        <template id="filterTemplate">
+            <div class="quiet">
+                Filter:
+                <input oninput="onInput()" type="search" id="fileSearch">
+            </div>
+        </template>
+    </div>
+    <div class='status-line low'></div>
+    <pre><table class="coverage">
+>>>>>>> development
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
 <a name='L3'></a><a href='#L3'>3</a>
@@ -148,12 +194,28 @@
 <a name='L19'></a><a href='#L19'>19</a>
 <a name='L20'></a><a href='#L20'>20</a>
 <a name='L21'></a><a href='#L21'>21</a>
-<a name='L22'></a><a href='#L22'>22</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<a name='L22'></a><a href='#L22'>22</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<<<<<<< HEAD
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -169,18 +231,20 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+=======
+>>>>>>> development
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">const sendEmail = require("./send-email");
 const userDAL = require("../data/user-dal");
 &nbsp;
-async function sendRegisteredHikeTerminatedEmail(registeredHike) {
-    const buddieEmails = await Promise.all(
+async function <span class="fstat-no" title="function not covered" >sendRegisteredHikeTerminatedEmail(</span>registeredHike) {
+    const buddieEmails = <span class="cstat-no" title="statement not covered" >await Promise.all(</span>
         registeredHike.buddyUsers
-        .map(buddy =&gt; userDAL.getUserById(buddy)
-                        .then(b =&gt; b.email)
+        .map(<span class="fstat-no" title="function not covered" >bu</span>ddy =&gt; <span class="cstat-no" title="statement not covered" >userDAL.getUserById(buddy)</span>
+                        .then(<span class="fstat-no" title="function not covered" >b </span>=&gt; <span class="cstat-no" title="statement not covered" >b.email)</span>
         )
     );
-    if (buddieEmails.length &gt; 0) {
-        sendEmail({
+<span class="cstat-no" title="statement not covered" >    if (buddieEmails.length &gt; 0) {</span>
+<span class="cstat-no" title="statement not covered" >        sendEmail({</span>
             to: buddieEmails,
             subject: `[${registeredHike.hike.title}] Registered hike terminated`,
             html: `&lt;p&gt;The hike &lt;b&gt;${registeredHike.hike.title}&lt;b&gt; you were following was terminated by the user &lt;b&gt;${registeredHike.user.fullName}&lt;/b&gt; at &lt;b&gt;${registeredHike.endTime.toString()}&lt;/b&gt;&lt;/p&gt;`
@@ -196,6 +260,7 @@ module.exports = {
         </table>
         </pre>
 
+<<<<<<< HEAD
 <<<<<<< HEAD
         <div class='push'></div><!-- for sticky footer -->
     </div><!-- /wrapper -->
@@ -235,4 +300,24 @@ module.exports = {
 		<script src="../block-navigation.js"></script>
 	</body>
 </html>
+>>>>>>> development
+=======
+                <div class='push'></div><!-- for sticky footer -->
+            </div><!-- /wrapper -->
+            <div class='footer quiet pad2 space-top1 center small'>
+                Code coverage generated by
+                <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
+                at 2023-01-07T09:39:38.249Z
+            </div>
+        <script src="../prettify.js"></script>
+        <script>
+            window.onload = function () {
+                prettyPrint();
+            };
+        </script>
+        <script src="../sorter.js"></script>
+        <script src="../block-navigation.js"></script>
+    </body>
+</html>
+    
 >>>>>>> development

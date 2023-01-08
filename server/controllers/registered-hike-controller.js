@@ -1,11 +1,11 @@
 const { StatusCodes } = require("http-status-codes");
 const joi = require("joi");
 const registeredHikeDAL = require("../data/registered-hike-dal");
-const notificationUserDAL = require("../data/notificationUser-dal")
+const notificationUserDAL = require("../data/notification-user-dal")
 const hikeDAL = require("../data/hike-dal");
 const user = require("../data/user-dal");
 const { sendRegisteredHikeTerminatedEmail } = require("../email/registered-hike");
-const sendEmail = require("../email/send-email");
+const taskScheduler = require("../task-scheduler");
 
 async function startHike(req, res) {
 	try {
@@ -15,17 +15,10 @@ async function startHike(req, res) {
 		const hike = await hikeDAL.getHikeById(id)
 		const time = await notificationUserDAL.addRegisteredHike(registeredHike._id, req.user._id)
 		const currUser = await user.getUserById(req.user._id);
-		global.scheduledTask[req.user._id] = setInterval(async () => {
-			await sendEmail({
-				to: currUser.email,
-				subject: `[${hike.title}] Unfinished Hike`,
-				html: `<p>The hike <b>${hike.title}<b> is not finished by you <b>${currUser.fullName}</p>`
-			})
-		}, time * 60000)
+		taskScheduler.addUnfinishedHikeNotification(currUser, hike, time * 60000);
 
 		return res.status(StatusCodes.CREATED).json(registeredHike);
 	} catch (err) {
-		console.log(err)
 		return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(err);
 	}
 }
@@ -71,12 +64,11 @@ async function endHike(req, res) {
 			await (await registeredHike.populate("hike")).populate("user")
 		);
 
-		await notificationUserDAL.addCompletedHike(registeredHike._id, req.user._id)
-		clearInterval(global.scheduledTask[req.user._id])
+		await notificationUserDAL.addCompletedHike(id, req.user._id);
+		taskScheduler.clearUnfinishedHikeNotification(req.user._id.toString());
 
 		return res.status(StatusCodes.OK).json(registeredHike);
 	} catch (err) {
-		console.log(err)
 		return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(err);
 	}
 }
@@ -109,7 +101,6 @@ async function getRegisteredHikes(req, res) {
 		const registeredHikes = await registeredHikeDAL.getRegisteredHikeByUserId(userId);
 		return res.status(StatusCodes.OK).json(registeredHikes);
 	} catch (err) {
-		console.log(err)
 		return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(err);
 	}
 }

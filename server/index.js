@@ -9,10 +9,11 @@ const appRouter = require("./router");
 const passport = require("passport");
 const { localStrategy } = require("./passport-strategy");
 
-const notificationUser = require("./data/notificationUser-dal")
-const user = require("./data/user-dal");
-const sendEmail = require("./email/send-email");
-global.scheduledTask = {}
+const notificationUser = require("./data/notification-user-dal");
+const userDAL = require("./data/user-dal");
+const registeredHikeDAL = require("./data/registered-hike-dal");
+const taskScheduler = require("./task-scheduler");
+const { RegisteredHikeStatus } = require("./models/enums");
 
 // Constants
 const PORT = process.env.SERVER_PORT || 8080;
@@ -67,15 +68,13 @@ const getApp = () => {
 async function runNotification() {
 	const notification = await notificationUser.getNotificationUser();
 	notification.forEach(async (notify) => {
-		const currUser = await user.getUserById(notify.user);
-		if (notify.timeToNotify != 0)
-			global.scheduledTask[notify.user] = setInterval(async () => {
-				await sendEmail({
-					to: currUser.email,
-					subject: `[${registeredHike.hike.title}] Unfinished Hike`,
-					html: `<p>The hike <b>${registeredHike.hike.title}<b> is not finished by you <b>${registeredHike.user.fullName}</p>`
-				})
-			}, notify.timeToNotify * 60000);
+		if(notify.timeToNotify === 0)
+			return;
+		const hikes = await registeredHikeDAL.getRegisteredHikeByUserId(notify.user);
+		if (hikes.length === 0 && hikes.some(h => h.status === RegisteredHikeStatus.ACTIVE))
+			return;
+		const currUser = await userDAL.getUserById(notify.user);
+		taskScheduler.addUnfinishedHikeNotification(currUser, hikes.filter(h => h.status === RegisteredHikeStatus.ACTIVE)[0].hike, notify.timeToNotify * 60000);
 	});
 
 }
@@ -91,7 +90,3 @@ const startServer = async () => {
 };
 
 startServer();
-
-module.exports = {
-	scheduledTask
-}

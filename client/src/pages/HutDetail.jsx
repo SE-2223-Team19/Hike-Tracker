@@ -14,12 +14,14 @@ import { useState } from "react";
 import { useFormik } from "formik";
 import { getBase64 } from "../helper/utils";
 import { uploadHutPicture } from "../api/locations";
+import ModalFormHut from "../components/Hut/ModalFormHut";
 
 const HutDetail = () => {
 	const location = useLocation();
 	const navigate = useNavigate();
 	const { user, setMessage } = useContext(AuthContext);
 	const [showUploadForm, setShowUploadForm] = useState(false);
+	const [show, setShow] = useState(false);
 
 	const formik = useFormik({
 		initialValues: {
@@ -43,8 +45,6 @@ const HutDetail = () => {
 	if (!hut) {
 		return <GenericError />;
 	}
-
-	console.log(hut);
 
 	return (
 		<>
@@ -105,8 +105,8 @@ const HutDetail = () => {
 							Upload photo
 						</div>
 					</Button>
-					<Button variant="outline-primary" className="mt-2">
-						<div className="d-flex flex-row align-items-center">Update hut</div>
+					<Button variant="outline-primary" className="mt-2" onClick={() => setShow(true)}>
+						Update hut
 					</Button>
 				</Stack>
 			)}
@@ -136,6 +136,7 @@ const HutDetail = () => {
 					/>
 				</Form>
 			)}
+			<ModalFormHut currentHut={hut} setShow={setShow} show={show} />
 		</>
 	);
 };

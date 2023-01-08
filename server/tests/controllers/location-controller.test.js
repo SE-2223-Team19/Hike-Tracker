@@ -1,9 +1,9 @@
 "use strict";
-const locationController = require("../controllers/location-controller");
-const userController = require("../controllers/user-controller");
+const locationController = require("../../controllers/location-controller");
+const userController = require("../../controllers/user-controller");
 const { StatusCodes } = require("http-status-codes");
-const { LocationType, UserType } = require("../models/enums");
-const { setupDB, ResponseHelper } = require("./setup");
+const { LocationType, UserType } = require("../../models/enums");
+const { setupDB, ResponseHelper } = require("../setup");
 const dotenv = require("dotenv");
 
 dotenv.config();

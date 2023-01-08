@@ -3,6 +3,7 @@ const Hike = require("../models/hike-model");
 const RegisteredHike = require("../models/registered-hike-model");
 const { RegisteredHikeStatus } = require("../models/enums");
 const fetch = require("node-fetch");
+
 /**
  * Start a new hike, inserting the new registered hike in the database
  * @param {string} userId
@@ -60,14 +61,13 @@ async function insertPlan(userId, hikeId) {
 
 async function registerPoint(hikeId, point) {
 
-	const registeredHike = await RegisteredHike.findById(hikeId)
+	const registeredHike = await RegisteredHike.findById(hikeId);
 	if (!registeredHike) {
 		throw new Error("Hike not found");
 	}
-	registeredHike.recordedPoints.push(point)
-	registeredHike.timePoints.push(new Date(Date.now()))
+	registeredHike.recordedPoints.push(point);
+	registeredHike.timePoints.push(new Date(Date.now()).toString());
 
-	console.log(point)
 	let url = new URL("https://api.open-elevation.com/api/v1/lookup");
 	url.searchParams.append("locations", `${point[1]},${point[0]}`);
 	const res = await fetch(url);
@@ -78,12 +78,11 @@ async function registerPoint(hikeId, point) {
 		}
 	}
 
-	registeredHike.altitudeRecordedPoints.push()
 	return await RegisteredHike.findOneAndUpdate({ _id: hikeId }, {
 		recordedPoints: registeredHike.recordedPoints,
 		altitudeRecordedPoints: registeredHike.altitudeRecordedPoints,
 		timePoints: registeredHike.timePoints
-	}, { new: true })
+	}, { new: true });
 
 }
 

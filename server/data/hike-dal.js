@@ -65,6 +65,13 @@ const User = require("../models/user-model");
 const commonLookups = [
 	{
 		$lookup: {
+			from: WeatherAlert.collection.name,
+			localField: "trackPoints",
+			foreignField: "coordinates",
+			as: "AlertId",
+		
+	},
+		$lookup: {
 			from: Location.collection.name,
 			localField: "startPoint",
 			foreignField: "_id",
@@ -258,7 +265,7 @@ async function updateHike(id, hikeUpdate) {
 			coordinates: hikeUpdate.trackPoints.map((p) => [p[1], p[0]]),
 		};
 	}
-
+     
 	if (hikeUpdate.thumbnail) {
 		const thumbnail = await Image.create({ data: hikeUpdate.thumbnail });
 		hikeUpdate.thumbnail = thumbnail._id;

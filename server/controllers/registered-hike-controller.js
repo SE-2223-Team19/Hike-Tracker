@@ -161,7 +161,6 @@ async function getStats(req, res) {
 		}
 		return res.status(StatusCodes.OK).json(stats);
 	} catch (err) {
-		console.log(err);
 		return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(err);
 	}
 }

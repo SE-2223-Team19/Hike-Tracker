@@ -486,6 +486,19 @@ describe("Registered Hike", () => {
 		}, new ResponseHelper());
 		expect(updateRegisteredHikeResponse4.statusCode).toBe(StatusCodes.INTERNAL_SERVER_ERROR);
 	});
+
+	test('Test Get Stats', async() => {
+
+		// Create hiker
+		const hikerResponse = await createHiker();
+		const response = new ResponseHelper();
+
+		const stats = await registerHikeController.getStats({
+			params: {id: hikerResponse.responseBody._id}
+		}, response)
+		expect(response.statusCode).toBe(StatusCodes.OK);
+	});
+
 });
 
 

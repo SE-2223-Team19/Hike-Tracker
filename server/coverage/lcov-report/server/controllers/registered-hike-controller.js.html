@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">70.65% </span>
+                <span class="strong">76.92% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>65/92</span>
+                <span class='fraction'>70/91</span>
             </div>
         
             
@@ -37,16 +37,16 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">42.85% </span>
+                <span class="strong">47.61% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>9/21</span>
+                <span class='fraction'>10/21</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">70.78% </span>
+                <span class="strong">77.27% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>63/89</span>
+                <span class='fraction'>68/88</span>
             </div>
         
             
@@ -239,8 +239,7 @@
 <a name='L174'></a><a href='#L174'>174</a>
 <a name='L175'></a><a href='#L175'>175</a>
 <a name='L176'></a><a href='#L176'>176</a>
-<a name='L177'></a><a href='#L177'>177</a>
-<a name='L178'></a><a href='#L178'>178</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">4x</span>
+<a name='L177'></a><a href='#L177'>177</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-yes">4x</span>
@@ -383,15 +382,15 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -401,9 +400,8 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -559,13 +557,13 @@ function <span class="fstat-no" title="function not covered" >ascendingSpeed(</s
 	}
 <span class="cstat-no" title="statement not covered" >	return sumAlt / sumTime;</span>
 }
-async function <span class="fstat-no" title="function not covered" >getStats(</span>req, res) {
-	const { id } = <span class="cstat-no" title="statement not covered" >req.params;</span> // User id
+async function getStats(req, res) {
+	const { id } = req.params; // User id
 &nbsp;
-<span class="cstat-no" title="statement not covered" >	try {</span>
-		const completedRegisteredHikes = <span class="cstat-no" title="statement not covered" >await registeredHikeDAL.getCompletedRegisteredHikeByUserId(id);</span>
+	try {
+		const completedRegisteredHikes = await registeredHikeDAL.getCompletedRegisteredHikeByUserId(id);
 &nbsp;
-		const stats = <span class="cstat-no" title="statement not covered" >{</span>
+		const stats = {
 			numberHikes: completedRegisteredHikes.length,
 			numberKilometers: completedRegisteredHikes.reduce(<span class="fstat-no" title="function not covered" >(a</span>cc, curr) =&gt; <span class="cstat-no" title="statement not covered" >acc + curr.hike.length,</span> 0) / 1000,
 			highestAltitudeReached: completedRegisteredHikes.reduce(<span class="fstat-no" title="function not covered" >(a</span>cc, curr) =&gt; <span class="cstat-no" title="statement not covered" >Math.max(acc, Math.max(...curr.altitudeRecordedPoints)),</span> 0),
@@ -578,9 +576,8 @@ async function <span class="fstat-no" title="function not covered" >getStats(</s
 			fastestPacedHike: completedRegisteredHikes.reduce(<span class="fstat-no" title="function not covered" >(a</span>cc, curr) =&gt; <span class="cstat-no" title="statement not covered" >Math.min(acc, ((curr.endTime - curr.startTime) / 60000) / (curr.hike.length / 1000)),</span> Number.MAX_VALUE),
 			averageVerticalAscentSpeed: completedRegisteredHikes.reduce(<span class="fstat-no" title="function not covered" >(a</span>cc, curr) =&gt; <span class="cstat-no" title="statement not covered" >acc + (ascendingSpeed(curr.altitudeRecordedPoints, curr.timePoints, curr.altitudeRecordedPoints.length)),</span> 0) / completedRegisteredHikes.length,
 		}
-<span class="cstat-no" title="statement not covered" >		return res.status(StatusCodes.OK).json(stats);</span>
+		return res.status(StatusCodes.OK).json(stats);
 	} catch (err) {
-<span class="cstat-no" title="statement not covered" >		console.log(err);</span>
 <span class="cstat-no" title="statement not covered" >		return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(err);</span>
 	}
 }
@@ -601,7 +598,7 @@ module.exports = {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-01-08T17:23:57.876Z
+                at 2023-01-08T17:35:58.089Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

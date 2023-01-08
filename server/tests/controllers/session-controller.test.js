@@ -3,6 +3,7 @@ const sessionController = require("../../controllers/session-controller");
 const { StatusCodes } = require("http-status-codes");
 const { LocationType, UserType } = require("../../models/enums");
 const { ResponseHelper } = require("../setup");
+const { updateWeatherAlert, createLocalGuide, createHike } = require("../sample-data");
 
 describe("session controller", () => {
     test("authenticated user returns session", async () => {

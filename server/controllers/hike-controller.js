@@ -76,6 +76,7 @@ async function getHikes(req, res) {
 		const hikes = await hikeDAL.getHikes(value.page, value.pageSize, filter);
 		return res.status(StatusCodes.OK).json(hikes);
 	} catch (err) {
+		console.log(err)
 		return res.status(StatusCodes.BAD_REQUEST).json({ err: err.message });
 	}
 }
@@ -197,7 +198,7 @@ async function updateHikeCondition(req, res) {
 	try {
 		// Validate request body
 		const { params, body } = req;
-
+		console.log(body)
 		// Hike validation schema
 		const schema = joi.object().keys({
 			hikeCondition: joi.string().valid(...Object.values(HikeCondition)),
@@ -206,7 +207,6 @@ async function updateHikeCondition(req, res) {
 		// Validate request body against schema
 		const { error, value } = schema.validate(body);
 		
-
 		if (error) throw error; // Joi validation error, goes to catch block
 
 		const hikeUpdated = await hikeDAL.updateHike(params.id, value);

@@ -2,12 +2,12 @@
 const hikeController = require("../../controllers/hike-controller");
 const locationController = require("../../controllers/location-controller");
 const { StatusCodes } = require("http-status-codes");
-const { Difficulty, LocationType, UserType } = require("../../models/enums");
+const { Difficulty, LocationType, UserType, HikeCondition } = require("../../models/enums");
 const { setupDB, ResponseHelper } = require("../setup");
 const { ObjectId } = require("mongodb");
 const Location = require("../../models/location-model");
 const dotenv = require("dotenv");
-const { createLocalGuide, createHiker } = require("../sample-data");
+const { createLocalGuide, createHiker, createHike } = require("../sample-data");
 
 dotenv.config();
 
@@ -472,6 +472,38 @@ describe("createHike", () => {
 });
 
 describe("update Hike", () => {
+
+	test('Test Update Hike Condition', async() => {
+		const responseUserCreation = await createLocalGuide();
+		const responseHikeCreation = await createHike(responseUserCreation);
+		const response = new ResponseHelper();
+
+		await hikeController.updateHikeCondition({
+			params: {id: responseHikeCreation.responseBody._id},
+			body: {hikeCondition: HikeCondition.OPEN}
+		}, response)
+
+		
+		expect(response.statusCode).toBe(StatusCodes.OK);
+
+	});
+
+	test('Test Update Hike Condition', async() => {
+		const responseUserCreation = await createLocalGuide();
+		const responseHikeCreation = await createHike(responseUserCreation);
+		const response = new ResponseHelper();
+
+		await hikeController.updateHikeCondition({
+			params: {id: responseHikeCreation.responseBody._id},
+			body: {hikeCondition: 0}
+		}, response)
+
+		
+		expect(response.statusCode).toBe(StatusCodes.BAD_REQUEST);
+
+	});
+
+
 	test("update a single field (like title)", async () => {
 		const responseUserCreation = await createHiker();
 

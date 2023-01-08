@@ -182,6 +182,11 @@ async function getRegisteredHikeByUserId(userId) {
 	return registeredHikes;
 }
 
+async function getRegisteredHikeById(id) {
+	const registeredHike = await RegisteredHike.findById(id).populate("hike").populate("user");
+	return registeredHike;
+}
+
 async function getCompletedRegisteredHikeByUserId(userId) {
 	const registeredHikes = await RegisteredHike.find({ user: new ObjectId(userId), status: RegisteredHikeStatus.COMPLETED }).populate("hike");
 	return registeredHikes;
@@ -196,6 +201,7 @@ module.exports = {
 	userHasActiveRecordedHikes,
 	addBuddyToRegisteredHike,
 	getRegisteredHikeByUserId,
+	getRegisteredHikeById,
 	getCompletedRegisteredHikeByUserId,
 	registerPoint
 };

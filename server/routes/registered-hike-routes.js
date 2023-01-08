@@ -8,8 +8,8 @@ registeredHikeRouter.post("/plan/:id", isHiker, registeredHikeController.planHik
 registeredHikeRouter.patch("/end/:id", isHiker, registeredHikeController.endHike); // Update the entity in the database
 registeredHikeRouter.get("/stats/:id", isHiker, registeredHikeController.getStats); // Get the stats of the hike
 registeredHikeRouter.patch("/startplan/:id", isHiker, registeredHikeController.startPlannedHike); // Update the entity in the database
-
 registeredHikeRouter.get("/:userId", isHiker, registeredHikeController.getRegisteredHikes);
+registeredHikeRouter.get("/broadcast/:id", registeredHikeController.getRegisteredHikeById);
 registeredHikeRouter.patch("/point/:id", isHiker, registeredHikeController.addRecordPoint)
 
 module.exports = registeredHikeRouter;

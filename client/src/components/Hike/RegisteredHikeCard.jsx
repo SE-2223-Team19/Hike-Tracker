@@ -87,7 +87,7 @@ const RegisteredHikeCard = ({ registeredHike, setDirty }) => {
 	};
 
 	const copyUrlToClipboard = async () => {
-		await navigator.clipboard.writeText(`https://localhost:3000/registered-hike/${_id}`);
+		await navigator.clipboard.writeText(`http://localhost:3000/registered-hike/broadcast/${_id}`);
 	};
 
 	return (

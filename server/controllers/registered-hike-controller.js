@@ -104,6 +104,17 @@ async function getRegisteredHikes(req, res) {
 		return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(err);
 	}
 }
+
+async function getRegisteredHikeById(req, res) {
+	const { id } = req.params; // id
+	try {
+		const registeredHike = await registeredHikeDAL.getRegisteredHikeById(id);
+		return res.status(StatusCodes.OK).json(registeredHike);
+	} catch (err) {
+		return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(err);
+	}
+}
+
 function ascendingSpeed(altArr, timeArr, n) {
 	let sumAlt = 0;
 	let sumTime = 0;
@@ -146,6 +157,7 @@ module.exports = {
 	endHike,
 	startPlannedHike,
 	getRegisteredHikes,
+	getRegisteredHikeById,
 	getStats,
 	addRecordPoint
 };

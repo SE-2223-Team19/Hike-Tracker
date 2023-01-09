@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">92% </span>
+                <span class="strong">68.75% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>23/25</span>
-            </div>
-        
-            
-            <div class='fl pad1y space-right2'>
-                <span class="strong">66.66% </span>
-                <span class="quiet">Branches</span>
-                <span class='fraction'>4/6</span>
+                <span class='fraction'>11/16</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
-                <span class="quiet">Functions</span>
-                <span class='fraction'>4/4</span>
+                <span class="quiet">Branches</span>
+                <span class='fraction'>0/0</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">92% </span>
+                <span class="strong">66.66% </span>
+                <span class="quiet">Functions</span>
+                <span class='fraction'>2/3</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">68.75% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>23/25</span>
+                <span class='fraction'>11/16</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line high'></div>
+    <div class='status-line medium'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -117,18 +117,7 @@
 <a name='L52'></a><a href='#L52'>52</a>
 <a name='L53'></a><a href='#L53'>53</a>
 <a name='L54'></a><a href='#L54'>54</a>
-<a name='L55'></a><a href='#L55'>55</a>
-<a name='L56'></a><a href='#L56'>56</a>
-<a name='L57'></a><a href='#L57'>57</a>
-<a name='L58'></a><a href='#L58'>58</a>
-<a name='L59'></a><a href='#L59'>59</a>
-<a name='L60'></a><a href='#L60'>60</a>
-<a name='L61'></a><a href='#L61'>61</a>
-<a name='L62'></a><a href='#L62'>62</a>
-<a name='L63'></a><a href='#L63'>63</a>
-<a name='L64'></a><a href='#L64'>64</a>
-<a name='L65'></a><a href='#L65'>65</a>
-<a name='L66'></a><a href='#L66'>66</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">5x</span>
+<a name='L55'></a><a href='#L55'>55</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-yes">5x</span>
@@ -150,7 +139,10 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -162,30 +154,16 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -203,22 +181,25 @@ const WeatherAlert = require("../models/weather-alert-model");
 &nbsp;
 &nbsp;
 &nbsp;
-async function getcoordinateHikes(coordinates){
+async function getcoordinateHikes(coordinates, maxDistance){
 	
-	 const HikeWeather= await Hike.aggregate([{$geoNear: {
-		near: {
-			coordinates: [ coordinates[1], coordinates[0] ],
+	 const HikeWeather= await Hike.aggregate([
+		{
+			$geoNear: {
+				near: {
+					type: "Point",
+					coordinates: [ coordinates[1], coordinates[0] ],
+				},
+				distanceField: "distance",
+				maxDistance: maxDistance,
+				spherical: true,
+   			}
 		}
-		,distanceField: "dist.calculated"
-		 
-   }},{ $project : { trackPoints:1 }}
-&nbsp;
-   
-])
-return HikeWeather
+	]);
+<span class="cstat-no" title="statement not covered" >	return HikeWeather;</span>
 }
 &nbsp;
-async function updateWeatherAlert(weatherValue,radiusValue,coordinates){
+async function updateWeatherAlert(weatherValue, radiusValue, coordinates){
 &nbsp;
 	const Mapchange = new WeatherAlert({
         weatherAlert : weatherValue,
@@ -226,31 +207,17 @@ async function updateWeatherAlert(weatherValue,radiusValue,coordinates){
 		coordinates : coordinates,
         
 	})
-    const HikeTrackPoint=await getcoordinateHikes(coordinates);
-   	let result =[];
-   	HikeTrackPoint.forEach(Trackpoint =&gt; { 
-	let elemts= {
-		_id: Trackpoint._id,
-		coordinatesLat: parseFloat(Trackpoint.trackPoints.coordinates[0][1]),
-		coordinatesLng: parseFloat(Trackpoint.trackPoints.coordinates[0][0])
+    const hikes = await getcoordinateHikes(coordinates, radiusValue);
 &nbsp;
-	} 
-    const nearcorrdinateWeatherAlertLat=parseFloat(coordinates[0])
-    const nearcorrdinateWeatherAlertLng=parseFloat(coordinates[1])
-	<span class="missing-if-branch" title="else path not taken" >E</span>if(elemts.coordinatesLat==nearcorrdinateWeatherAlertLat &amp;&amp; elemts.coordinatesLng==nearcorrdinateWeatherAlertLng){
-		result.push(elemts._id);
-		}	
-	}); 
-   <span class="missing-if-branch" title="if path not taken" >I</span>if(result.length === 0){
-	const savedweather= <span class="cstat-no" title="statement not covered" >await Mapchange.save()</span>
-<span class="cstat-no" title="statement not covered" >	return savedweather</span>
-	}else{
-		result.forEach(async id=&gt;{
-			     await Hike.updateMany({  _id: id},
-				{$set: {weather: weatherValue}});
-			});	
-    return Mapchange
-	}	
+<span class="cstat-no" title="statement not covered" >	await Promise.all(hikes.map(<span class="fstat-no" title="function not covered" >hi</span>ke =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >		return Hike.findByIdAndUpdate(hike._id, {</span>
+			weather: [
+				weatherValue
+			]
+		});
+	}));
+	const savedweather = <span class="cstat-no" title="statement not covered" >await Mapchange.save();</span>
+<span class="cstat-no" title="statement not covered" >	return savedweather;</span>
 }
 &nbsp;
 &nbsp;
@@ -265,7 +232,7 @@ module.exports={
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-01-09T05:18:46.381Z
+                at 2023-01-09T10:08:44.162Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

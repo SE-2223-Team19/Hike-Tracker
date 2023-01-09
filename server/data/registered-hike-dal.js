@@ -211,12 +211,24 @@ async function addBuddyToRegisteredHike(id, buddyId) {
  * @returns The list of all registered hikes created by the user
  */
 async function getRegisteredHikeByUserId(userId) {
-	const registeredHikes = await RegisteredHike.find({ user: new ObjectId(userId) }).populate("hike");
+	const registeredHikes = await RegisteredHike.find({ user: new ObjectId(userId) }).populate({
+		path: "hike",
+		populate: {
+			path: "linkedHuts",
+			model: "Location"
+		}
+	});
 	return registeredHikes;
 }
 
 async function getRegisteredHikeById(id) {
-	const registeredHike = await RegisteredHike.findById(id).populate("hike").populate("user");
+	const registeredHike = await RegisteredHike.findById(id).populate({
+		path: "hike",
+		populate: {
+			path: "linkedHuts",
+			model: "Location"
+		}
+	}).populate("user");
 	return registeredHike;
 }
 

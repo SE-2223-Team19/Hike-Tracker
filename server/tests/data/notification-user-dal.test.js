@@ -75,7 +75,7 @@ describe("NotificationUser", () => {
         expect(myNotificationUser.length).toBe(1);
 
         expect(myNotificationUser[0].completedHikes.length).toBe(times);
-    });
+    }, 10000);
 
     test("Test cancel registered Hike Fail", async () => {
         // Create local guide

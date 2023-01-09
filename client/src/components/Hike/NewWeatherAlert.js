@@ -25,7 +25,7 @@ const WeatherAlert = ({ onRemoveFilter , hikesUpdated , setDirty}) => {
         event.preventDefault();
         const Mapchanges = {
             weatherAlert : weather,
-            radius : radius,
+            radius : radius * 1000,
             coordinates : coordinates
         };
      

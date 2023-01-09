@@ -1,1 +1,1 @@
-{"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_"}],"uuid":"2e68ebdad9c74d609a5694129d62b6d4","collectionName":"hikes","type":"collection"}
+{"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_"},{"v":{"$numberInt":"2"},"key":{"trackPoints":"2dsphere"},"name":"trackPoints_2dsphere","background":true,"2dsphereIndexVersion":{"$numberInt":"3"}}],"uuid":"29b2c3d5bd174ffca661a4ebaaaf7c8d","collectionName":"hikes","type":"collection"}

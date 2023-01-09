@@ -281,6 +281,24 @@ async function updateWeatherAlert(Mapchanges) {
 		console.error(err);
 	}
 }
+
+async function deleteHikeByID(id) {
+	//console.log(weather);
+	// console.log(Mapchanges);
+	try {
+		const response = await fetch(new URL(ENDPOINTS.hikes.delete.replace(":id", id), BACKEND_URL), {
+			method: "DELETE",
+			credentials: "include",
+			headers: {
+				"Content-Type": "application/json",
+			}
+		});
+		return await response.json();
+	} catch (err) {
+		console.error(err);
+	}
+}
+
 module.exports = {
 	getHikes,
 	getHikeById,
@@ -296,5 +314,6 @@ module.exports = {
 	startHikePlanned,
 	addRecordPoint,
 	updateWeatherAlert,
-	updateRegisteredHike
+	updateRegisteredHike,
+	deleteHikeByID
 };

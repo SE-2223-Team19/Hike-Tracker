@@ -817,4 +817,60 @@ describe("update Hike", () => {
 		expect(hikeUpdated.responseBody.referencePoints.length).toBe(3);
 		expect(responseHikeUpdate.statusCode).toBe(StatusCodes.OK);
 	});
+
+	test("Delete Hike", async () => {
+		const responseUserCreation = await createLocalGuide();
+
+		expect(responseUserCreation.statusCode).toBe(StatusCodes.CREATED);
+
+		const responseHikeCreation = new ResponseHelper();
+
+		const hike = await hikeController.createHike(
+			{
+				user: {
+					_id: responseUserCreation.responseBody._id,
+					userType: UserType.LOCAL_GUIDE,
+					email: "hiker@test.com",
+					fullName: "John Doe",
+				},
+				body: {
+					title: "Test hike",
+					length: 12000, // 12 km
+					ascent: 200, // 200 m
+					expectedTime: 60 * 3, // 3 h
+					difficulty: Difficulty.HIKER,
+					description: "A test hike",
+					startPoint: null,
+					endPoint: null,
+					referencePoints: [
+						[45.178477, 7.082895],
+						[45.17988, 7.082138],
+						[45.178983, 7.081805],
+					],
+					trackPoints: trackPoints,
+				},
+			},
+			responseHikeCreation
+		);
+
+		expect(responseHikeCreation.statusCode).toBe(StatusCodes.CREATED);
+		
+		const responseDelete = new ResponseHelper();
+		await hikeController.deleteHike({
+			params: { id: hike.responseBody._id }
+		}, responseDelete);
+
+		expect(responseDelete.statusCode).toBe(StatusCodes.OK);
+	});
+
+	test("Delete Hike Fail", async () => {
+
+		const responseDelete = new ResponseHelper();
+		await hikeController.deleteHike({
+			params: {id: 20}
+		}, responseDelete);
+
+		expect(responseDelete.statusCode).toBe(StatusCodes.BAD_REQUEST);
+	})
+
 });

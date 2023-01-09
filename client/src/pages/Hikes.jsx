@@ -27,7 +27,7 @@ const Hikes = () => {
 			<Stack direction="horizontal" className="justify-content-between align-items-center">
 				<h1 className="#tests-title">Hikes</h1>
                {loggedIn&&( <div>
-				{user.userType === UserType.PLATFORM_MANAGER&&(
+				{user.userType === UserType.PLATFORM_MANAGER &&(
 						<WeatherAlert  setDirty={setDirty}/>
 					)}
 				</div>)}

@@ -115,7 +115,7 @@ function DescribeHikeForm({ hike }) {
 				return;
 			}
 		}
-
+		console.log(hike)
 		if (hike) {
 			// Update hike
 			delete values.trackPoints;
@@ -131,16 +131,17 @@ function DescribeHikeForm({ hike }) {
 				msg: "Error updating hike",
 			});
 			return;
+		} else {
+			console.log("create hike", values);
+			const createdHike = await createHike({ ...values });
+			if (createdHike._id) {
+				return navigate("/profile");
+			}
+			setMessage({
+				type: "danger",
+				msg: "Error creating hike",
+			});
 		}
-		console.log("create hike", values);
-		const createdHike = await createHike({ ...values });
-		if (createdHike._id) {
-			return navigate("/profile");
-		}
-		setMessage({
-			type: "danger",
-			msg: "Error creating hike",
-		});
 	};
 
 	// ** Form validation
@@ -522,7 +523,8 @@ function DescribeHikeForm({ hike }) {
 						className="mt-4 justify-self-end"
 						disabled={isSubmitting}
 					>
-						{hike ? "Update" : "Create"}
+						{/* {hike ? "Update" : "Create"} */}
+						
 					</Button>
 				</Form>
 			)}

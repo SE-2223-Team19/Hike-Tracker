@@ -279,9 +279,14 @@ async function updateHike(id, hikeUpdate) {
 	return await getHikeById(id);
 }
 
+async function deleteHike(id) {
+	await Hike.deleteOne({_id: id})
+}
+
 module.exports = {
 	getHikes,
 	createHike,
 	getHikeById,
 	updateHike,
+	deleteHike
 };

@@ -5,6 +5,7 @@ import GenericError from "./errors/GenericError";
 import { CgArrowLeft } from "react-icons/cg";
 import HikeTrackMap from "../components/Hike/HikeTrackMap";
 import { BiRuler, BiTime, BiTrendingUp } from "react-icons/bi";
+import HikeAPI from "../api/hikes"
 import {
 	capitalizeAndReplaceUnderscores,
 	difficultyToColor,
@@ -22,6 +23,11 @@ const HikeDetail = () => {
 
 	if (!hike) {
 		return <GenericError />;
+	}
+
+	const deleteHike = async(id) => {
+		await HikeAPI.deleteHikeByID(id)
+		navigate(-1)
 	}
 
 	return (
@@ -57,7 +63,7 @@ const HikeDetail = () => {
 			{/** Only for the creator of the hike */}
 			{hike.createdBy._id === user._id && (
 				<Stack direction="horizontal" gap={3} className="mt-4">
-					<Button variant="outline-danger" onClick={() => navigate(-1)}>
+					<Button variant="outline-danger" onClick={async () => await deleteHike(hike._id)}>
 						Delete
 					</Button>
 					<div className="ms-auto">

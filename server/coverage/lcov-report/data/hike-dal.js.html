@@ -821,8 +821,7 @@ const commonLookups = [
 			foreignField: "_id",
 			as: "startPoint",
 		},
-	},
-	{
+
 		$lookup: {
 			from: Location.collection.name,
 			localField: "endPoint",

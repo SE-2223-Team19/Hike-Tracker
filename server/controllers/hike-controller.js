@@ -217,10 +217,22 @@ async function updateHikeCondition(req, res) {
 		return res.status(StatusCodes.BAD_REQUEST).json({ err: err.message, stack: err.stack });
 	}
 }
+
+async function deleteHike(req, res) {
+	try {
+		const { params } = req;
+		await hikeDAL.deleteHike(params.id);
+		return res.status(StatusCodes.OK).end()
+	} catch(err) {
+		return res.status(StatusCodes.BAD_REQUEST).json({ err: err.message, stack: err.stack });
+	}
+}
+
 module.exports = {
 	getHikes,
 	getHikeById,
 	createHike,
 	updateHike,
-	updateHikeCondition
+	updateHikeCondition,
+	deleteHike
 };

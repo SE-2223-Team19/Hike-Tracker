@@ -15,6 +15,7 @@ import { useFormik } from "formik";
 import { getBase64 } from "../helper/utils";
 import { uploadHutPicture } from "../api/locations";
 import ModalFormHut from "../components/Hut/ModalFormHut";
+import { UserType } from "../helper/enums";
 
 const HutDetail = () => {
 	const location = useLocation();
@@ -93,9 +94,9 @@ const HutDetail = () => {
 					</Col>
 				))}
 			</Row>
-			{hut.peopleWorks.includes(user._id) && (
+			{(hut.peopleWorks.includes(user._id) || user.userType === UserType.LOCAL_GUIDE) && (
 				<Stack direction="horizontal" gap={3}>
-					<Button
+					{hut.peopleWorks.includes(user._id) && <Button
 						variant="outline-success"
 						className="mt-2"
 						onClick={() => setShowUploadForm(!showUploadForm)}
@@ -104,7 +105,7 @@ const HutDetail = () => {
 							<MdOutlineAddPhotoAlternate size={24} className="me-2" />
 							Upload photo
 						</div>
-					</Button>
+					</Button>}
 					<Button variant="outline-primary" className="mt-2" onClick={() => setShow(true)}>
 						Update hut
 					</Button>

@@ -127,14 +127,6 @@ const HikeCard = ({ hike, showDetails, setDirty }) => {
 											<NewHikeCondition hike={hike} setDirty={setDirty} />
 										)}
                                         
-                                    
-										<Button
-											data-test-id="seeOnMap"
-											onClick={() => showDetails(hike)}
-											variant={"success"}
-										>
-											See on Map
-										</Button>
 										<Button variant="dark" onClick={() => navigate("/hike", { state: { hike } })}>
 											Details
 										</Button>

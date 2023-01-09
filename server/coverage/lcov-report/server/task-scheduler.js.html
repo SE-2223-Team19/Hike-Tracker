@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">91.66% </span>
+                <span class="strong">25% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>11/12</span>
+                <span class='fraction'>3/12</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">50% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>2/4</span>
+                <span class='fraction'>0/4</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">20% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>5/5</span>
+                <span class='fraction'>1/5</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">91.66% </span>
+                <span class="strong">25% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>11/12</span>
+                <span class='fraction'>3/12</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line high'></div>
+    <div class='status-line low'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -99,41 +99,41 @@
 <a name='L34'></a><a href='#L34'>34</a>
 <a name='L35'></a><a href='#L35'>35</a>
 <a name='L36'></a><a href='#L36'>36</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">52x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">52x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">52x</span>
-<span class="cline-any cline-yes">52x</span>
-<span class="cline-any cline-yes">52x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">5x</span></td><td class="text"><pre class="prettyprint lang-js">"use strict";
+<span class="cline-any cline-yes">1x</span></td><td class="text"><pre class="prettyprint lang-js">"use strict";
 const sendEmail = require("./email/send-email");
 &nbsp;
 class TaskScheduler {
@@ -141,12 +141,12 @@ class TaskScheduler {
         this.unfinishedHikeNotifications = {};
     }
     
-    addUnfinishedHikeNotification(user, hike, timeout) {
-        <span class="missing-if-branch" title="if path not taken" >I</span>if (this.unfinishedHikeNotifications[user._id] !== undefined) {
+<span class="fstat-no" title="function not covered" >    ad</span>dUnfinishedHikeNotification(user, hike, timeout) {
+<span class="cstat-no" title="statement not covered" >        if (this.unfinishedHikeNotifications[user._id] !== undefined) {</span>
 <span class="cstat-no" title="statement not covered" >            throw new Error(`A notification is already planned for '${user._id}'.`);</span>
         }
-        this.unfinishedHikeNotifications[user._id] = setTimeout(async () =&gt; {
-            await sendEmail({
+<span class="cstat-no" title="statement not covered" >        this.unfinishedHikeNotifications[user._id] = setTimeout(<span class="fstat-no" title="function not covered" >as</span>ync () =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >            await sendEmail({</span>
 				to: user.email,
 				subject: `[${hike.title}] Unfinished Hike`,
 				html: `&lt;p&gt;The hike &lt;b&gt;${hike.title}&lt;/b&gt; has not been finished by you &lt;b&gt;${user.fullName}&lt;/b&gt;&lt;/p&gt;`
@@ -154,16 +154,16 @@ class TaskScheduler {
         }, timeout);
     }
 &nbsp;
-    clearUnfinishedHikeNotification(userId) {
-        <span class="missing-if-branch" title="else path not taken" >E</span>if (this.unfinishedHikeNotifications[userId] !== undefined) {
-            clearTimeout(this.unfinishedHikeNotifications[userId]);
-            delete this.unfinishedHikeNotifications[userId];
+<span class="fstat-no" title="function not covered" >    cl</span>earUnfinishedHikeNotification(userId) {
+<span class="cstat-no" title="statement not covered" >        if (this.unfinishedHikeNotifications[userId] !== undefined) {</span>
+<span class="cstat-no" title="statement not covered" >            clearTimeout(this.unfinishedHikeNotifications[userId]);</span>
+<span class="cstat-no" title="statement not covered" >            delete this.unfinishedHikeNotifications[userId];</span>
         }
     }
 &nbsp;
-    clearAll() {
-        for (const key in this.unfinishedHikeNotifications) {
-            this.clearUnfinishedHikeNotification(key);
+<span class="fstat-no" title="function not covered" >    cl</span>earAll() {
+<span class="cstat-no" title="statement not covered" >        for (const key in this.unfinishedHikeNotifications) {</span>
+<span class="cstat-no" title="statement not covered" >            this.clearUnfinishedHikeNotification(key);</span>
         }
     }
 }
@@ -175,7 +175,7 @@ module.exports = new TaskScheduler();</pre></td></tr></table></pre>
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-01-08T19:01:54.952Z
+                at 2023-01-09T04:45:57.708Z
             </div>
         <script src="../prettify.js"></script>
         <script>

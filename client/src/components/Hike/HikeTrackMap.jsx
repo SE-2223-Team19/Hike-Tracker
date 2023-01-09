@@ -7,7 +7,7 @@ const HikeTrackMap = ({ hike, recordedPoints, timePoints, altitudeRecordedPoints
 	function checkEquals(point, idx) {
 		for (let i = 0; i < recordedPoints.length; i++) {
 			const currPoint = [...recordedPoints[i]].reverse()
-			if (currPoint[0] == point[0] && currPoint[1] == point[1]) {
+			if (currPoint[0] === point[0] && currPoint[1] === point[1]) {
 				return true
 			}
 		}

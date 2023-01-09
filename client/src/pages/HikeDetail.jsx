@@ -61,7 +61,7 @@ const HikeDetail = () => {
 				<HikeTrackMap hike={hike} />
 			</div>
 			{/** Only for the creator of the hike */}
-			{hike.createdBy._id === user._id && (
+			{user && hike.createdBy._id === user._id && (
 				<Stack direction="horizontal" gap={3} className="mt-4">
 					<Button variant="outline-danger" onClick={async () => await deleteHike(hike._id)}>
 						Delete

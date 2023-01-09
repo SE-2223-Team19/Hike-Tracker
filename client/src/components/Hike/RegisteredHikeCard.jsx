@@ -154,6 +154,11 @@ const RegisteredHikeCard = ({ registeredHike, setDirty }) => {
 										</div>
 									</Stack>
 								</div>
+								<div>
+									<Button variant="dark" onClick={() => navigate("/registered-hike", { state: { registeredHike }})}>
+										Details
+									</Button>
+								</div>
 							</Stack>
 						)}
 						{registeredHike.status === RegisteredHikeStatus.PLANNED && (
@@ -175,6 +180,11 @@ const RegisteredHikeCard = ({ registeredHike, setDirty }) => {
 										</Button>
 									</OverlayTrigger>
 								</div>
+								<div>
+									<Button variant="dark" onClick={() => navigate("/registered-hike", { state: { registeredHike }})}>
+										Details
+									</Button>
+								</div>
 							</Stack>
 						)}
 						{registeredHike.status === RegisteredHikeStatus.COMPLETED && (
@@ -190,6 +200,11 @@ const RegisteredHikeCard = ({ registeredHike, setDirty }) => {
 											Share
 										</Button>
 									</OverlayTrigger>
+								</div>
+								<div>
+									<Button variant="dark" onClick={() => navigate("/registered-hike", { state: { registeredHike }})}>
+										Details
+									</Button>
 								</div>
 							</Stack>
 						)}

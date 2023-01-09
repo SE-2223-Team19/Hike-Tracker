@@ -14,8 +14,11 @@ const userSchema = new Schema({
 	uniqueString: { type: String, unique: true },
 	isEmailValidated: Boolean,
 	isValid: Boolean,
-	preferences: { minLength: Number, maxLength: Number, minAscent: Number, maxAscent: Number, minExpectedTime: Number, maxExpectedTime: Number, difficulty: String, locationCoordinatesLat: Number, locationCoordinatesLng: Number, locationRadius: Number }
+	preferences: { minLength: Number, maxLength: Number, minAscent: Number, maxAscent: Number, minExpectedTime: Number, maxExpectedTime: Number, difficulty: String, locationCoordinatesLat: Number, locationCoordinatesLng: Number, locationRadius: Number },
+    phone: String,
+	website: String
 });
+
 
 // User Model
 const User = mongoose.model("User", userSchema);

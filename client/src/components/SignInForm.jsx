@@ -18,6 +18,8 @@ function SignInForm() {
 	const [hutsSelected, setHutsSelected] = useState([]);
 	const [showModal, setShowModal] = useState(false);
 	const [showModalHutWorker, setShowModalHutWorker] = useState(false);
+	const [phone,setPhone]=useState("");
+	const [website, setWebsite] = useState("");
 	const [errors, setErrors] = useState({
 		email: "",
 		fullName: "",
@@ -86,7 +88,10 @@ function SignInForm() {
 					setErrors({ ...errors, form: "" });
 					user = { ...user, hutsSelected };
 				}
-
+				if (userType === UserType.LOCAL_GUIDE) {
+					setErrors({ ...errors, form: "" });
+					user = { ...user, phone, website };
+				}
 				await createUser(user);
 
 				setShowModal(true);
@@ -161,6 +166,37 @@ function SignInForm() {
 						</Form.Group>
 					</Col>
 				</Row>
+				{/* shahab */}
+				{userType === UserType.LOCAL_GUIDE&&<Row>
+					<Col xs={12} md={6}>
+						<Form.Group className="mt-4">
+							<Form.Label>Phone Number</Form.Label>
+							<Form.Control
+								data-test-id="phone"
+								type={"text"}
+								value={phone}
+								onChange={(e) => setPhone(e.target.value)}
+								isInvalid={!!errors.phone}
+							/>
+							<Form.Control.Feedback type="invalid">{errors.phone}</Form.Control.Feedback>
+						</Form.Group>
+					</Col>
+					<Col xs={12} md={6}>
+						<Form.Group>
+							<Form.Label className="mt-4">Website</Form.Label>
+							<Form.Control
+								data-test-id="website"
+								type={"text"}
+								value={website}
+								onChange={(e) => setWebsite(e.target.value)}
+						
+								isInvalid={!!errors.website}
+							/>
+							<Form.Control.Feedback type="invalid">{errors.website}</Form.Control.Feedback>
+						</Form.Group>
+					</Col>
+				</Row>}
+				{/* shahab */}
 				<Row>
 					<Col xs={12}>
 						<Form.Group className="mt-4">

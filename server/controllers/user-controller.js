@@ -80,6 +80,13 @@ async function createUser(req, res) {
 				is: UserType.HUT_WORKER,
 				then: joi.array().items(joi.string()).min(1).required(),
 			}),
+			phone:joi.alternatives().conditional("userType", {
+				is: UserType.LOCAL_GUIDE,
+				then: joi.number()
+			}),
+			website: joi.string()
+
+
 		});
 
 		// Validate request body against schema
@@ -113,6 +120,7 @@ async function createUser(req, res) {
 			salt: salt,
 			uniqueString: uniqueString,
 			isValid: isValid,
+			phone: value.phone,
 		});
 
 		if (UserType.HUT_WORKER === value.userType) {

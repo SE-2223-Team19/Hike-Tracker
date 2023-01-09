@@ -100,10 +100,37 @@ async function completeRegisteredHike(id) {
 	if (registeredHike === null)
 		return null;
 	if (registeredHike.status === RegisteredHikeStatus.ACTIVE) {
-		registeredHike.status = RegisteredHikeStatus.COMPLETED;
-		registeredHike.endTime = new Date();
+		const hike = await Hike.findById(registeredHike.hike)
+		let idx_start = registeredHike.recordedPoints.length
+		for (let i = idx_start; i < hike.referencePoints.length; i++) {
+			registeredHike.timePoints[i] = new Date(Date.now()).toString()
+			
+			let url = new URL("https://api.open-elevation.com/api/v1/lookup");
+			url.searchParams.append("locations", `${hike.referencePoints[i][1]},${hike.referencePoints[i][0]}`);
+			const res = await fetch(url);
+			if (res.ok) {
+				const body = await res.json();
+				if (body.results && body.results.length === 1) {
+					registeredHike.altitudeRecordedPoints.push(body.results[0].elevation)
+				}
+			}
+		}
+		let reversed_point = []
+		hike.referencePoints.forEach(e => {
+			reversed_point.push([e[1], e[0]])
+		})
+
+
+		await RegisteredHike.updateOne({ _id: id }, {
+			recordedPoints: reversed_point,
+			timePoints: registeredHike.timePoints,
+			status: RegisteredHikeStatus.COMPLETED,
+			altitudeRecordedPoints: registeredHike.altitudeRecordedPoints,
+			endTime: new Date(Date.now()).toString()
+		})
+		return await RegisteredHike.findById({ _id: id })
 	}
-	return await registeredHike.save();
+	return;
 }
 
 /**

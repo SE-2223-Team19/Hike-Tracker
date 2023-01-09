@@ -83,6 +83,7 @@ async function endHike(req, res) {
 				.json(new Error("Can't find the recorded hike"));
 		}
 		const registeredHike = await registeredHikeDAL.completeRegisteredHike(id);
+		console.log(registeredHike)
 		// Inform buddies
 		await sendRegisteredHikeTerminatedEmail(
 			await (await registeredHike.populate("hike")).populate("user")
@@ -94,6 +95,7 @@ async function endHike(req, res) {
 
 		return res.status(StatusCodes.OK).json(registeredHike);
 	} catch (err) {
+		console.log(err)
 		return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(err);
 	}
 }

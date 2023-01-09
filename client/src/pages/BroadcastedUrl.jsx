@@ -14,14 +14,15 @@ import {
 } from "../helper/utils";
 
 const BroadcastedUrl = () => {
+    
     const { id } = useParams();
+
     const [registeredHike, setRegisteredHike] = useState(null);
 
     useEffect(() => {
         const getRegisteredHike = async () => {
             const hike = await getRegisteredHikeById(id);
             if (hike) {
-                console.log(hike);
                 setRegisteredHike(hike);
             }
         }

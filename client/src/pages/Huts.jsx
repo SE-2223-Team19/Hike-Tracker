@@ -49,13 +49,12 @@ function Huts({ setCurrentHut, setShow, dirty, setDirty }) {
 					<CgOptions style={{ marginRight: ".4rem" }} />
 					Filters
 				</Button>
-				{userType === UserType.HUT_WORKER ? (
-					<></>
-				) : (
+				{
+					(userType === UserType.LOCAL_GUIDE || userType === UserType.PLATFORM_MANAGER) &&
 					<Button variant="success" onClick={() => navigate("/describe-hut")}>
 						Create Hut
 					</Button>
-				)}
+				}
 			</Stack>
 			{/* Filters */}
 			{openFilters && (

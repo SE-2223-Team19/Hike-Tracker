@@ -6,16 +6,17 @@ import Loading from "../components/Loading";
 import NoData from "../components/NoData";
 import { CgOptions } from "react-icons/cg";
 import PositionFilterModal from "../components/PositionFilterModal";
-import * as L from "leaflet";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import PaginatedList from "../components/pagination/PaginatedList";
 import ParkingLotCard from "../components/ParkingLot/ParkingLotCard";
 import ParkingLotFilters from "../components/ParkingLot/ParkingLotFilters";
+import { UserType } from "../helper/enums";
 
 function ParkingLots() {
 	const navigate = useNavigate();
 	const { user, setMessage } = useContext(AuthContext);
+	let userType = user ? user.userType : undefined;
 
 	const [openFilters, setOpenFilters] = useState(false);
 	const [filters, setFilters] = useState({});
@@ -46,9 +47,12 @@ function ParkingLots() {
 					<CgOptions style={{ marginRight: ".4rem" }} />
 					Filters
 				</Button>
-				<Button variant="success" onClick={() => navigate("/describe-parking")}>
-					Create Parking Lot
-				</Button>
+				{
+					(userType === UserType.LOCAL_GUIDE || userType === UserType.PLATFORM_MANAGER) &&
+					<Button variant="success" onClick={() => navigate("/describe-parking")}>
+						Create Parking Lot
+					</Button>
+				}
 			</Stack>
 			{/* Filters */}
 			{openFilters && (

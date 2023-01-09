@@ -95,6 +95,14 @@ const HikeTrackMap = ({ hike, recordedPoints, timePoints, altitudeRecordedPoints
 				))
 			}
 			{
+				hike && 
+				hike.linkedHuts.map((point) => (
+					<Marker key={point._id} position={[...point.point].reverse()} icon={markerLocation}>
+						<Popup>{point.description}</Popup>
+					</Marker>
+				))
+			}
+			{
 				hike == undefined ? <></> : 
 				<Polyline
 					pathOptions={{ fillColor: "red", color: "blue" }}

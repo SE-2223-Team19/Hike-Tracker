@@ -8,22 +8,25 @@ const WeatherAlert = require("../models/weather-alert-model");
 
 
 
-async function getcoordinateHikes(coordinates){
+async function getcoordinateHikes(coordinates, maxDistance){
 	
-	 const HikeWeather= await Hike.aggregate([{$geoNear: {
-		near: {
-			coordinates: [ coordinates[1], coordinates[0] ],
+	 const HikeWeather= await Hike.aggregate([
+		{
+			$geoNear: {
+				near: {
+					type: "Point",
+					coordinates: [ coordinates[1], coordinates[0] ],
+				},
+				distanceField: "distance",
+				maxDistance: maxDistance,
+				spherical: true,
+   			}
 		}
-		,distanceField: "dist.calculated"
-		 
-   }},{ $project : { trackPoints:1 }}
-
-   
-])
-return HikeWeather
+	]);
+	return HikeWeather;
 }
 
-async function updateWeatherAlert(weatherValue,radiusValue,coordinates){
+async function updateWeatherAlert(weatherValue, radiusValue, coordinates){
 
 	const Mapchange = new WeatherAlert({
         weatherAlert : weatherValue,
@@ -31,31 +34,17 @@ async function updateWeatherAlert(weatherValue,radiusValue,coordinates){
 		coordinates : coordinates,
         
 	})
-    const HikeTrackPoint=await getcoordinateHikes(coordinates);
-   	let result =[];
-   	HikeTrackPoint.forEach(Trackpoint => { 
-	let elemts= {
-		_id: Trackpoint._id,
-		coordinatesLat: parseFloat(Trackpoint.trackPoints.coordinates[0][1]),
-		coordinatesLng: parseFloat(Trackpoint.trackPoints.coordinates[0][0])
+    const hikes = await getcoordinateHikes(coordinates, radiusValue);
 
-	} 
-    const nearcorrdinateWeatherAlertLat=parseFloat(coordinates[0])
-    const nearcorrdinateWeatherAlertLng=parseFloat(coordinates[1])
-	if(elemts.coordinatesLat==nearcorrdinateWeatherAlertLat && elemts.coordinatesLng==nearcorrdinateWeatherAlertLng){
-		result.push(elemts._id);
-		}	
-	}); 
-   if(result.length === 0){
-	const savedweather= await Mapchange.save()
-	return savedweather
-	}else{
-		result.forEach(async id=>{
-			     await Hike.updateMany({  _id: id},
-				{$set: {weather: weatherValue}});
-			});	
-    return Mapchange
-	}	
+	await Promise.all(hikes.map(hike => {
+		return Hike.findByIdAndUpdate(hike._id, {
+			weather: [
+				weatherValue
+			]
+		});
+	}));
+	const savedweather = await Mapchange.save();
+	return savedweather;
 }
 
 

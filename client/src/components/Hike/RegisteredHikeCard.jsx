@@ -97,8 +97,8 @@ const RegisteredHikeCard = ({ registeredHike, setDirty }) => {
 			<Card className="flex-row p-3 mt-4">
 				<Image
 					src={
-						hike.thumbnail && hike.thumbnail.length >= 1
-							? hike.thumbnail[0].data
+						hike.thumbnail
+							? hike.thumbnail.data
 							: getRandomHikeThumbnail()
 					}
 					alt="hike"

@@ -217,6 +217,12 @@ async function getRegisteredHikeByUserId(userId) {
 			path: "linkedHuts",
 			model: "Location"
 		}
+	}).populate({
+		path: "hike",
+		populate: {
+			path: "thumbnail",
+			model: "Image"
+		}
 	});
 	return registeredHikes;
 }
@@ -228,12 +234,32 @@ async function getRegisteredHikeById(id) {
 			path: "linkedHuts",
 			model: "Location"
 		}
+	}).populate({
+		path: "hike",
+		populate: {
+			path: "thumbnail",
+			model: "Image"
+		}
 	}).populate("user");
 	return registeredHike;
 }
 
 async function getCompletedRegisteredHikeByUserId(userId) {
-	const registeredHikes = await RegisteredHike.find({ user: new ObjectId(userId), status: RegisteredHikeStatus.COMPLETED }).populate("hike");
+	const registeredHikes = await RegisteredHike.find({ user: new ObjectId(userId), status: RegisteredHikeStatus.COMPLETED })
+	.populate({
+		path: "hike",
+		populate: {
+			path: "linkedHuts",
+			model: "Location"
+		}
+	}).populate({
+		path: "hike",
+		populate: {
+			path: "thumbnail",
+			model: "Image"
+		}
+	})
+	.populate("thumbnail");
 	return registeredHikes;
 }
 

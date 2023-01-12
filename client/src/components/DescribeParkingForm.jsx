@@ -71,11 +71,11 @@ function DescribeParkingForm() {
 						<Form onSubmit={handleSubmit}>
 							<Row>
 								<Col xs={12} md={6}>
-									<Form.Group controlId="latitude" className="mt-3">
+									<Form.Group controlId="pointLat" className="mt-3">
 										<Form.Label>Latitude Point</Form.Label>
 										<Form.Control
 											type="number"
-											name="latitude"
+											name="pointLat"
 											value={values.pointLat}
 											onChange={handleChange}
 											onBlur={handleBlur}
@@ -85,11 +85,11 @@ function DescribeParkingForm() {
 									</Form.Group>
 								</Col>
 								<Col xs={12} md={6}>
-									<Form.Group controlId="longitude" className="mt-3">
+									<Form.Group controlId="pointLng" className="mt-3">
 										<Form.Label>Longitude Point</Form.Label>
 										<Form.Control
 											type="number"
-											name="longitude"
+											name="pointLng"
 											value={values.pointLng}
 											onChange={handleChange}
 											onBlur={handleBlur}

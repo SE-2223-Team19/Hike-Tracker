@@ -114,7 +114,9 @@ const RegisteredHikeCard = ({ registeredHike, setDirty }) => {
 						<Card.Title>
 							<Stack direction="horizontal" className="align-items-center">
 								<h5>{hike.title}</h5>
-								<Badge bg={ConditionColor(hike.hikeCondition)}>{capitalizeAndReplaceUnderscores(hike.hikeCondition)}</Badge>
+								{
+									hike.hikeCondition && <Badge bg={ConditionColor(hike.hikeCondition)}>{capitalizeAndReplaceUnderscores(hike.hikeCondition)}</Badge>
+								}
 								<Badge bg={difficultyToColor(hike.difficulty)} className="ms-auto me-1">
 									{capitalizeAndReplaceUnderscores(hike.difficulty)}
 								</Badge>

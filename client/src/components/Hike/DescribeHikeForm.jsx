@@ -48,7 +48,8 @@ function DescribeHikeForm({ hike }) {
 		}
 		if (values.thumbnail) {
 			// Covert to base64 with prexif
-			values.thumbnail = await getBase64(values.thumbnail);
+			if (values.thumbnail instanceof Blob)
+				values.thumbnail = await getBase64(values.thumbnail);
 		} else {
 			if (!hike) {
 				setMessage({
@@ -65,6 +66,7 @@ function DescribeHikeForm({ hike }) {
 			delete values.referencePoints;
 			delete values.startPoint;
 			delete values.endPoint;
+			console.log("update hike", values);
 			const updatedHike = await updateHike(hike._id, { ...values });
 			if (updatedHike._id) {
 				return navigate("/profile");

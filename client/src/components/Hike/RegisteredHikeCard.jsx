@@ -148,6 +148,7 @@ const RegisteredHikeCard = ({ registeredHike, setDirty }) => {
 												overlay={(props) => (
 													<Tooltip {...props}>Share link copied to clipboard</Tooltip>
 												)}
+												rootClose
 											>
 												<Button variant="outline-success" onClick={() => copyUrlToClipboard()}>
 													Share
@@ -176,6 +177,7 @@ const RegisteredHikeCard = ({ registeredHike, setDirty }) => {
 										overlay={(props) => (
 											<Tooltip {...props}>Share link copied to clipboard</Tooltip>
 										)}
+										rootClose
 									>
 										<Button variant="outline-success" onClick={() => copyUrlToClipboard()}>
 											Share
@@ -197,6 +199,7 @@ const RegisteredHikeCard = ({ registeredHike, setDirty }) => {
 										overlay={(props) => (
 											<Tooltip {...props}>Share link copied to clipboard</Tooltip>
 										)}
+										rootClose
 									>
 										<Button variant="outline-success" onClick={() => copyUrlToClipboard()}>
 											Share

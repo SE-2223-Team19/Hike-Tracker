@@ -5,6 +5,8 @@ import { useParams } from "react-router-dom";
 import HikeTrackMap from "../components/Hike/HikeTrackMap";
 import { BiRuler, BiTime, BiTrendingUp, BiPlay, BiStop } from "react-icons/bi";
 import { RegisteredHikeStatus } from "../helper/enums";
+import Loading from "../components/Loading";
+import NoData from "../components/NoData";
 
 import {
     capitalizeAndReplaceUnderscores,
@@ -18,14 +20,25 @@ const BroadcastedUrl = () => {
     const { id } = useParams();
 
     const [registeredHike, setRegisteredHike] = useState(null);
+    const [initiaLoading, setInitialLoading] = useState(true);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
         const getRegisteredHike = async () => {
-            const hike = await getRegisteredHikeById(id);
-            if (hike) {
-                setRegisteredHike(hike);
+            try {
+                const hike = await getRegisteredHikeById(id);
+                if (hike) {
+                    setRegisteredHike(hike);
+                }
+                setError(null);
+            } catch (err) {
+                setError(err);
             }
         }
+        getRegisteredHike()
+        .then(() => {
+            setInitialLoading(false);
+        });
         const interval = setInterval(() => {
             getRegisteredHike();
         }, 5000);
@@ -34,6 +47,10 @@ const BroadcastedUrl = () => {
     }, [id]);
 
     return (
+        initiaLoading && !error ?
+        <Loading /> :
+        error ?
+        <NoData message={error}/> :
         registeredHike &&
         <>
             <h1 className="mt-4">Follow {registeredHike.user.fullName} during the {registeredHike.hike.title} hike!</h1>

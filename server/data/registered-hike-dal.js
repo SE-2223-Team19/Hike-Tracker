@@ -259,7 +259,6 @@ async function getCompletedRegisteredHikeByUserId(userId) {
 			model: "Image"
 		}
 	})
-	.populate("thumbnail");
 	return registeredHikes;
 }
 
